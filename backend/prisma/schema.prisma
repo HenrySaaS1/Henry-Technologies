@@ -19,6 +19,7 @@ model User {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   contacts     Contact[]
+  authEvents   AuthEvent[]
 }
 
 model Contact {
@@ -31,4 +32,20 @@ model Contact {
   notes       String?
   userId      String?
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model AuthEvent {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  eventType  String
+  email      String
+  success    Boolean
+  message    String?
+  ip         String?
+  userAgent  String?
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([email, createdAt])
 }

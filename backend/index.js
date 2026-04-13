@@ -56,6 +56,35 @@ function userToClient(u) {
   }
 }
 
+function getRequestIp(req) {
+  const forwarded = req.headers['x-forwarded-for']
+  if (typeof forwarded === 'string' && forwarded.trim()) {
+    return forwarded.split(',')[0].trim()
+  }
+  if (Array.isArray(forwarded) && forwarded.length > 0) {
+    return String(forwarded[0]).trim()
+  }
+  return req.ip || null
+}
+
+async function logAuthEvent(req, { eventType, email, success, userId = null, message = null }) {
+  try {
+    await prisma.authEvent.create({
+      data: {
+        eventType,
+        email: String(email || '').trim().toLowerCase(),
+        success: Boolean(success),
+        userId: userId || null,
+        message: message || null,
+        ip: getRequestIp(req),
+        userAgent: req.get('user-agent') || null,
+      },
+    })
+  } catch (err) {
+    console.error('[auth-event]', err)
+  }
+}
+
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, message: 'HENRY backend is running' })
 })
@@ -86,15 +115,39 @@ app.post('/api/auth/register', async (req, res) => {
   const ids = Array.isArray(productIds) ? productIds.filter((x) => typeof x === 'string') : []
 
   if (!emailNorm || !emailNorm.includes('@')) {
+    await logAuthEvent(req, {
+      eventType: 'register',
+      email: emailNorm,
+      success: false,
+      message: 'invalid_email',
+    })
     return res.status(400).json({ ok: false, message: 'Valid email is required.' })
   }
   if (!password || String(password).length < 8) {
+    await logAuthEvent(req, {
+      eventType: 'register',
+      email: emailNorm,
+      success: false,
+      message: 'weak_password',
+    })
     return res.status(400).json({ ok: false, message: 'Password must be at least 8 characters.' })
   }
   if (!companyName) {
+    await logAuthEvent(req, {
+      eventType: 'register',
+      email: emailNorm,
+      success: false,
+      message: 'missing_company',
+    })
     return res.status(400).json({ ok: false, message: 'Organization name is required.' })
   }
   if (ids.length === 0) {
+    await logAuthEvent(req, {
+      eventType: 'register',
+      email: emailNorm,
+      success: false,
+      message: 'missing_products',
+    })
     return res.status(400).json({ ok: false, message: 'Select at least one product module.' })
   }
 
@@ -114,6 +167,13 @@ app.post('/api/auth/register', async (req, res) => {
       },
     })
     const token = signUserToken(user.id)
+    await logAuthEvent(req, {
+      eventType: 'register',
+      email: emailNorm,
+      success: true,
+      userId: user.id,
+      message: 'registered',
+    })
     res.status(201).json({
       ok: true,
       token,
@@ -121,8 +181,20 @@ app.post('/api/auth/register', async (req, res) => {
     })
   } catch (e) {
     if (e.code === 'P2002') {
+      await logAuthEvent(req, {
+        eventType: 'register',
+        email: emailNorm,
+        success: false,
+        message: 'email_exists',
+      })
       return res.status(409).json({ ok: false, message: 'This email is already registered.' })
     }
+    await logAuthEvent(req, {
+      eventType: 'register',
+      email: emailNorm,
+      success: false,
+      message: 'register_error',
+    })
     console.error(e)
     res.status(500).json({ ok: false, message: 'Registration failed.' })
   }
@@ -134,16 +206,35 @@ app.post('/api/auth/login', async (req, res) => {
     .trim()
     .toLowerCase()
   if (!emailNorm || !password) {
+    await logAuthEvent(req, {
+      eventType: 'login',
+      email: emailNorm,
+      success: false,
+      message: 'missing_credentials',
+    })
     return res.status(400).json({ ok: false, message: 'Email and password are required.' })
   }
 
   try {
     const user = await prisma.user.findUnique({ where: { email: emailNorm } })
     if (!user) {
+      await logAuthEvent(req, {
+        eventType: 'login',
+        email: emailNorm,
+        success: false,
+        message: 'user_not_found',
+      })
       return res.status(401).json({ ok: false, message: 'Email or password does not match.' })
     }
     const ok = await bcrypt.compare(String(password), user.passwordHash)
     if (!ok) {
+      await logAuthEvent(req, {
+        eventType: 'login',
+        email: emailNorm,
+        success: false,
+        userId: user.id,
+        message: 'bad_password',
+      })
       return res.status(401).json({ ok: false, message: 'Email or password does not match.' })
     }
     const refreshed = await prisma.user.update({
@@ -151,8 +242,21 @@ app.post('/api/auth/login', async (req, res) => {
       data: { lastLoginAt: new Date() },
     })
     const token = signUserToken(user.id)
+    await logAuthEvent(req, {
+      eventType: 'login',
+      email: emailNorm,
+      success: true,
+      userId: user.id,
+      message: 'logged_in',
+    })
     res.json({ ok: true, token, user: userToClient(refreshed) })
   } catch (e) {
+    await logAuthEvent(req, {
+      eventType: 'login',
+      email: emailNorm,
+      success: false,
+      message: 'login_error',
+    })
     console.error(e)
     res.status(500).json({ ok: false, message: 'Sign in failed.' })
   }
