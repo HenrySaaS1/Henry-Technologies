@@ -13,10 +13,13 @@ export function assertProductionEnv() {
   if (!secret || secret === 'dev-only-change-me' || secret.length < 16) {
     errors.push('JWT_SECRET must be set to a strong secret (at least 16 characters) in production.')
   }
-  const origin = process.env.CORS_ORIGIN || ''
-  if (!origin.startsWith('https://')) {
+  const origins = String(process.env.CORS_ORIGIN || '')
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean)
+  if (origins.length === 0 || origins.some((o) => !o.startsWith('https://'))) {
     errors.push(
-      'CORS_ORIGIN must be your Azure Static Web App URL starting with https:// (no trailing slash).',
+      'CORS_ORIGIN must be one or more https origins (comma-separated, no trailing slash), e.g. https://app.azurestaticapps.net',
     )
   }
 

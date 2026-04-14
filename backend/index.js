@@ -15,14 +15,26 @@ const PORT = Number(process.env.PORT) || 5000
 // Azure App Service sits behind a reverse proxy
 app.set('trust proxy', 1)
 
-const corsOrigin =
+function parseCorsOrigins(value) {
+  return String(value || '')
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean)
+}
+
+const corsOrigins =
   process.env.NODE_ENV === 'production'
-    ? process.env.CORS_ORIGIN
-    : process.env.CORS_ORIGIN || 'http://localhost:5173'
+    ? parseCorsOrigins(process.env.CORS_ORIGIN)
+    : parseCorsOrigins(process.env.CORS_ORIGIN || 'http://localhost:5173')
 
 app.use(
   cors({
-    origin: corsOrigin,
+    origin(origin, callback) {
+      // Allow non-browser clients and same-origin requests with no Origin header.
+      if (!origin) return callback(null, true)
+      if (corsOrigins.includes(origin)) return callback(null, true)
+      return callback(new Error(`CORS blocked for origin: ${origin}`))
+    },
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
   }),
