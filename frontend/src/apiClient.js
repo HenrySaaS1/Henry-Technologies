@@ -28,12 +28,23 @@ export async function apiJson(path, { method = 'GET', body, token, signal } = {}
   const headers = { 'Content-Type': 'application/json' }
   const t = token === undefined ? getToken() : token
   if (t) headers.Authorization = `Bearer ${t}`
-  const res = await fetch(`${getApiBase()}${path}`, {
-    method,
-    headers,
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-    signal,
-  })
+  const url = `${getApiBase()}${path}`
+  let res
+  try {
+    res = await fetch(url, {
+      method,
+      headers,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+      signal,
+    })
+  } catch (err) {
+    const base = getApiBase()
+    const hint =
+      typeof window !== 'undefined' && window.location?.protocol === 'https:' && base.startsWith('http:')
+        ? ' The site is HTTPS but VITE_API_URL uses HTTP — use an https API URL or a proxy.'
+        : ' Is the API running? Check VITE_API_URL and browser Network tab for CORS errors.'
+    throw new Error(`Cannot reach API at ${base}.${hint}`)
+  }
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
     const msg = data.message || `Request failed (${res.status})`

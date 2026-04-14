@@ -104,7 +104,8 @@ const REPORT_RANGE_PRESETS = [
 ]
 
 /** Demo floor asset — same PNG used as placeholder map for all sites until you upload per-site plans. */
-const DEFAULT_FLOOR_PLAN_SRC = '/site-floor-plan-us.png'
+const DEFAULT_FLOOR_PLAN_SRC = `${import.meta.env.BASE_URL}site-floor-plan-us.png`
+const HARLAND_US_FLOOR_PLAN_SRC = `${import.meta.env.BASE_URL}site-floor-plan-us-v3.png`
 
 const BUILDING_FOOTER_TABS = [
   { id: 'status', label: 'Status' },
@@ -138,16 +139,17 @@ const GLOBAL_SITES = [
     country: 'United States',
     flagEmoji: '🇺🇸',
     leadRole: 'Site Director',
-    leadName: 'Alex Morgan',
+    leadName: 'Mark Stockhowe',
     timeZone: 'America/Chicago',
-    employees: 120,
-    efficiency: 88,
-    address: '100 Sample Industrial Pkwy, Suite 200, Minneapolis, MN 55401 USA',
-    phoneDisplay: '+1 (555) 010-1001',
-    phoneTel: '+15550101001',
+    employees: 125,
+    efficiency: 12,
+    address: '7418 Washington Ave S, Eden Prairie, MN 55344 USA',
+    phoneDisplay: '+1 (952) 941-0475',
+    phoneTel: '+19529410475',
     building: {
       name: 'US Headquarters',
-      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      // Client-approved US building visual
+      floorPlanSrc: HARLAND_US_FLOOR_PLAN_SRC,
       footerBlurb: {
         status:
           'Production cells mostly green. Rack hall B within spec; weld East in planned maintenance.',
@@ -157,34 +159,90 @@ const GLOBAL_SITES = [
       },
       zones: [
         {
-          id: 'us-rack-b',
-          label: 'Rack hall B',
-          pct: { left: 54, top: 20, width: 26, height: 34 },
+          id: 'us-bu-125',
+          label: 'BU 125',
+          pct: { left: 26, top: 22, width: 9, height: 18 },
           machinery: {
-            title: 'Rack hall B — integration & MES edge',
+            title: 'BU 125',
             status: 'running',
+            unitPanel: {
+              unit: 'BU125',
+              description: 'Machines Commercialization',
+              manager: 'Alex Anderson',
+              assistant: 'Clayton Wilmes',
+              activeMachines: '8/10',
+              activeOperators: '12',
+              updatedAt: 'Timestamp',
+              todaysOutput: '1,250 units',
+              targetVsActual: '1,500 vs 1,250',
+              cycleTime: '45 sec',
+              throughput: '100 units/hr',
+              focus: { x: 24, y: 44 },
+            },
             lines: [
-              { k: 'Cell OEE', v: '91.2%' },
-              { k: 'Historian H-3', v: 'Sync OK · ~12 ms lag' },
-              { k: 'Power rail A', v: 'Stable · 48.1 Hz' },
-              { k: 'Ambient', v: '21.4 °C' },
+              { k: 'Line status', v: 'Running' },
+              { k: 'Operational efficiency', v: '88%' },
+              { k: 'Assigned team', v: 'US Day Shift' },
             ],
-            foot: 'Drill-down: bind OPC tags, torque traces, and CMMS work orders per rack row.',
+            foot: 'BU 125 monitoring view for Harland US Headquarters.',
           },
         },
         {
-          id: 'us-weld-east',
-          label: 'Weld cell East',
-          pct: { left: 74, top: 36, width: 18, height: 24 },
+          id: 'us-bu-120',
+          label: 'BU 120',
+          pct: { left: 35, top: 22, width: 9, height: 18 },
           machinery: {
-            title: 'Weld cell East — robots R-12 / R-13',
-            status: 'idle',
+            title: 'BU 120',
+            status: 'running',
+            unitPanel: {
+              unit: 'BU120',
+              description: 'Machines Commercialization',
+              manager: 'Kevin Langeberg',
+              assistant: 'Mikhail Shimko',
+              activeMachines: '8/10',
+              activeOperators: '12',
+              updatedAt: 'Timestamp',
+              todaysOutput: '1,250 units',
+              targetVsActual: '1,500 vs 1,250',
+              cycleTime: '45 sec',
+              throughput: '100 units/hr',
+              focus: { x: 54, y: 50 },
+            },
             lines: [
-              { k: 'Mode', v: 'Tooling changeover (approved)' },
-              { k: 'Est. ready', v: '~18 min' },
-              { k: 'Last cycle drift', v: '+8% vs 7d avg' },
+              { k: 'Line status', v: 'Running' },
+              { k: 'Operational efficiency', v: '84%' },
+              { k: 'Assigned team', v: 'US Swing Shift' },
             ],
-            foot: 'Open torque calibration checklist before restart sign-off.',
+            foot: 'BU 120 monitoring view for Harland US Headquarters.',
+          },
+        },
+        {
+          id: 'us-bu-140',
+          label: 'BU 140',
+          pct: { left: 75, top: 23, width: 9, height: 18 },
+          machinery: {
+            title: 'BU 140',
+            status: 'alert',
+            unitPanel: {
+              unit: 'BU140',
+              description: 'Production',
+              manager: 'Mark Stockhowe',
+              assistant: 'Clayton Wilmes',
+              activeMachines: '8/10',
+              activeOperators: '12',
+              updatedAt: 'Timestamp',
+              todaysOutput: '1,250 units',
+              targetVsActual: '1,500 vs 1,250',
+              cycleTime: '45 sec',
+              throughput: '100 units/hr',
+              focus: { x: 74, y: 46 },
+            },
+            lines: [
+              { k: 'Line status', v: 'Attention required' },
+              { k: 'Operational efficiency', v: '81%' },
+              { k: 'Assigned team', v: 'US Night Shift' },
+            ],
+            foot: 'BU 140 monitoring view for Harland US Headquarters.',
           },
         },
       ],
@@ -195,13 +253,13 @@ const GLOBAL_SITES = [
     country: 'Ireland',
     flagEmoji: '🇮🇪',
     leadRole: 'Site Lead',
-    leadName: 'Jordan Lee',
+    leadName: 'Kevin Conlon',
     timeZone: 'Europe/Dublin',
     employees: 78,
     efficiency: 84,
-    address: 'Unit 3 Demo Business Park, 42 Placeholder Rd, Dublin 2, D02 XY00, Ireland',
-    phoneDisplay: '+353 (0) 1 555 0102',
-    phoneTel: '+35315550102',
+    address: 'Unit 1 Cherrywood Business Park, Little Island, Cork, Ireland T45 XP70',
+    phoneDisplay: '+353 (0) 21 242 7228',
+    phoneTel: '+353212427228',
     building: {
       name: 'Dublin Manufacturing Center',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
@@ -249,13 +307,13 @@ const GLOBAL_SITES = [
     country: 'Costa Rica',
     flagEmoji: '🇨🇷',
     leadRole: 'Site Lead',
-    leadName: 'Sam Rivera',
+    leadName: 'Miguel Zaballa',
     timeZone: 'America/Costa_Rica',
     employees: 56,
     efficiency: 78,
-    address: 'Edificio Demo 12, Zona Ejemplo, San José 10101, Costa Rica',
-    phoneDisplay: '+506 5550 0103',
-    phoneTel: '+50655500103',
+    address: 'The Greenpark Free Zone, San Antonio, Alajuela, Costa Rica',
+    phoneDisplay: '+1 (952) 941-0475',
+    phoneTel: '+19529410475',
     building: {
       name: 'San José Assembly Hub',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
@@ -288,13 +346,13 @@ const GLOBAL_SITES = [
     country: 'Israel',
     flagEmoji: '🇮🇱',
     leadRole: 'Site Lead',
-    leadName: 'Taylor Brooks',
+    leadName: 'Itamar Haran',
     timeZone: 'Asia/Jerusalem',
     employees: 34,
     efficiency: 75,
-    address: '15 Mock Tech Park, Building B, Herzliya 4672501, Israel',
-    phoneDisplay: '+972 55-501-0104',
-    phoneTel: '+972555010104',
+    address: '20 Alon ha-Tavor St, Building 5, Caesarea, Israel',
+    phoneDisplay: '+972 549 985610',
+    phoneTel: '+972549985610',
     building: {
       name: 'Herzliya R&D & light mfg',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
@@ -327,13 +385,13 @@ const GLOBAL_SITES = [
     country: 'India',
     flagEmoji: '🇮🇳',
     leadRole: 'Site Lead',
-    leadName: 'Priya Shah',
+    leadName: 'Deepak Teja',
     timeZone: 'Asia/Kolkata',
-    employees: 12,
-    efficiency: 82,
-    address: 'Floor 4, Sample IT Tower, Indiranagar, Bengaluru, Karnataka 560038, India',
-    phoneDisplay: '+91 80 5550 0105',
-    phoneTel: '+91805550105',
+    employees: 78,
+    efficiency: 84,
+    address: 'Nsl Centrum Mall, Kukatpally Housing Board Colony, KPHB Phase 2, Kukatpally, Hyderabad, Telangana 500085',
+    phoneDisplay: '+1 (952) 941-0475',
+    phoneTel: '+19529410475',
     building: {
       name: 'Bengaluru support & NOC',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
@@ -366,13 +424,13 @@ const GLOBAL_SITES = [
     country: 'Malaysia',
     flagEmoji: '🇲🇾',
     leadRole: 'Site Lead',
-    leadName: 'Casey Ng',
+    leadName: 'KS',
     timeZone: 'Asia/Kuala_Lumpur',
-    employees: null,
-    efficiency: null,
-    address: 'TBD — demo site (address to be confirmed)',
-    phoneDisplay: '+60 3-5550 0106',
-    phoneTel: '+60355500106',
+    employees: 56,
+    efficiency: 78,
+    address: 'TBD',
+    phoneDisplay: '+1 (952) 941-0475',
+    phoneTel: '+19529410475',
     building: {
       name: 'Kuala Lumpur — planned facility',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
@@ -455,30 +513,86 @@ function BuildingSiteOverlay({ site, zoneId, panelTab, now, onClose, onSelectZon
         </div>
 
         {activeZone ? (
-          <div className="client-building-machinery">
-            <button type="button" className="client-building-back" onClick={() => onSelectZone(null)}>
-              ← Floor plan
-            </button>
-            <div className="client-building-machinery-head">
-              <h3 className="client-building-machinery-title">{activeZone.machinery.title}</h3>
-              <span
-                className={`client-building-machinery-badge ${buildingMachineryToneClass(activeZone.machinery.status)}`}
-              >
-                {activeZone.machinery.status}
-              </span>
-            </div>
-            <dl className="client-building-machinery-metrics">
-              {activeZone.machinery.lines.map((row) => (
-                <div key={row.k} className="client-building-machinery-row">
-                  <dt>{row.k}</dt>
-                  <dd>{row.v}</dd>
+          activeZone.machinery.unitPanel ? (
+            <div className="client-bu-view">
+              <aside className="client-bu-side">
+                <button type="button" className="client-building-back" onClick={() => onSelectZone(null)}>
+                  ← Back to home page
+                </button>
+                <h3 className="client-bu-title">Business Unit: {activeZone.machinery.unitPanel.unit}</h3>
+                <div className="client-bu-text">
+                  <p>
+                    <strong>Description:</strong> {activeZone.machinery.unitPanel.description}
+                  </p>
+                  <p>
+                    <strong>BU Manager:</strong> {activeZone.machinery.unitPanel.manager}
+                  </p>
+                  <p>
+                    <strong>Assistant:</strong> {activeZone.machinery.unitPanel.assistant}
+                  </p>
+                  <p>
+                    <strong>Real Time Status:</strong>
+                  </p>
+                  <ul>
+                    <li>Current Status: {activeZone.machinery.status}</li>
+                    <li>Active Machines: {activeZone.machinery.unitPanel.activeMachines}</li>
+                    <li>Active Operators: {activeZone.machinery.unitPanel.activeOperators}</li>
+                    <li>Last Updated: {activeZone.machinery.unitPanel.updatedAt}</li>
+                  </ul>
+                  <p>
+                    <strong>Production Details:</strong>
+                  </p>
+                  <ul>
+                    <li>Today&apos;s Output: {activeZone.machinery.unitPanel.todaysOutput}</li>
+                    <li>Target vs Actual: {activeZone.machinery.unitPanel.targetVsActual}</li>
+                    <li>Cycle Time (Avg): {activeZone.machinery.unitPanel.cycleTime}</li>
+                    <li>Throughput: {activeZone.machinery.unitPanel.throughput}</li>
+                  </ul>
                 </div>
-              ))}
-            </dl>
-            {activeZone.machinery.foot ? (
-              <p className="client-building-machinery-foot">{activeZone.machinery.foot}</p>
-            ) : null}
-          </div>
+                <div className="client-bu-local">Local Time: {localLine}</div>
+                <div className="client-bu-actions">
+                  <span>Safety</span>
+                  <span>Security</span>
+                  <span>Performance</span>
+                </div>
+              </aside>
+              <div className="client-bu-image-wrap">
+                <img
+                  className="client-bu-image"
+                  src={b.floorPlanSrc}
+                  alt={`${activeZone.machinery.unitPanel.unit} detail`}
+                  style={{
+                    objectPosition: `${activeZone.machinery.unitPanel.focus.x}% ${activeZone.machinery.unitPanel.focus.y}%`,
+                  }}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="client-building-machinery">
+              <button type="button" className="client-building-back" onClick={() => onSelectZone(null)}>
+                ← Floor plan
+              </button>
+              <div className="client-building-machinery-head">
+                <h3 className="client-building-machinery-title">{activeZone.machinery.title}</h3>
+                <span
+                  className={`client-building-machinery-badge ${buildingMachineryToneClass(activeZone.machinery.status)}`}
+                >
+                  {activeZone.machinery.status}
+                </span>
+              </div>
+              <dl className="client-building-machinery-metrics">
+                {activeZone.machinery.lines.map((row) => (
+                  <div key={row.k} className="client-building-machinery-row">
+                    <dt>{row.k}</dt>
+                    <dd>{row.v}</dd>
+                  </div>
+                ))}
+              </dl>
+              {activeZone.machinery.foot ? (
+                <p className="client-building-machinery-foot">{activeZone.machinery.foot}</p>
+              ) : null}
+            </div>
+          )
         ) : (
           <>
             <div className="client-building-floor">
@@ -489,9 +603,6 @@ function BuildingSiteOverlay({ site, zoneId, panelTab, now, onClose, onSelectZon
                   alt={`Floor plan — ${b.name}`}
                   draggable={false}
                 />
-                {/* Cover baked-in header/footer chrome on the reference PNG (React supplies labels). */}
-                <div className="client-building-embed-mask client-building-embed-mask--header" aria-hidden />
-                <div className="client-building-embed-mask client-building-embed-mask--bars" aria-hidden />
                 {b.zones.map((z) => (
                   <button
                     key={z.id}
@@ -516,25 +627,27 @@ function BuildingSiteOverlay({ site, zoneId, panelTab, now, onClose, onSelectZon
           </>
         )}
 
-        <div className="client-building-footer-panel">
-          <div className="client-building-tablist" role="tablist" aria-label="Building summary">
-            {BUILDING_FOOTER_TABS.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                role="tab"
-                aria-selected={panelTab === t.id}
-                className={`client-building-tab${panelTab === t.id ? ' client-building-tab--active' : ''}`}
-                onClick={() => onSelectTab(t.id)}
-              >
-                {t.label}
-              </button>
-            ))}
+        {!(activeZone && activeZone.machinery.unitPanel) ? (
+          <div className="client-building-footer-panel">
+            <div className="client-building-tablist" role="tablist" aria-label="Building summary">
+              {BUILDING_FOOTER_TABS.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={panelTab === t.id}
+                  className={`client-building-tab${panelTab === t.id ? ' client-building-tab--active' : ''}`}
+                  onClick={() => onSelectTab(t.id)}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+            <div className="client-building-tab-panel" role="tabpanel">
+              <p className="client-building-tab-panel-text">{panelCopy}</p>
+            </div>
           </div>
-          <div className="client-building-tab-panel" role="tabpanel">
-            <p className="client-building-tab-panel-text">{panelCopy}</p>
-          </div>
-        </div>
+        ) : null}
       </div>
     </div>
   )
@@ -650,6 +763,12 @@ const WORKSPACE = {
       text: 'Maria’s crew holds lowest rework on similar SKUs; playbook shared.',
     },
   ],
+}
+
+const TENANT_OVERRIDES = {
+  harland: {
+    sub: 'Harland Medical Systems operations dashboard — live line performance, quality, and alerts.',
+  },
 }
 
 const NAV_ITEMS = [
@@ -845,7 +964,14 @@ export default function ClientDashboard({ user, onSignOut }) {
     }
   }, [buildingSiteId, buildingZoneId])
 
-  const ctx = WORKSPACE
+  const tenantKey =
+    typeof user.slug === 'string' && user.slug.trim()
+      ? user.slug.trim().toLowerCase()
+      : typeof user.company === 'string' && user.company.toLowerCase().includes('harland')
+        ? 'harland'
+        : ''
+  const tenantOverride = TENANT_OVERRIDES[tenantKey] || null
+  const ctx = tenantOverride ? { ...WORKSPACE, ...tenantOverride } : WORKSPACE
   const activeProductTitles = titlesForProductIds(user.products)
   const greetName = displayNameFromEmail(user.email)
   const heading = TAB_HEADINGS[tab] || TAB_HEADINGS.dashboard

@@ -455,8 +455,11 @@ function App() {
       }
       setCurrentUser(u)
       closeSignupModal()
-    } catch {
-      setSignupStatus('Email or password does not match. Try again or use Create account.')
+    } catch (e) {
+      setSignupStatus(
+        e?.message?.trim() ||
+          'Email or password does not match. Try again or use Create account.',
+      )
     }
   }
 

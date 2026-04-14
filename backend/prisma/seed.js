@@ -8,15 +8,11 @@ const prisma = new PrismaClient()
 
 async function main() {
   const email = 'ops@harlandmedical.com'
-  const password = 'HarlandMed#2026'
-  const existing = await prisma.user.findUnique({ where: { email } })
-  if (existing) {
-    console.log('Seed skipped: demo user already exists.')
-    return
-  }
+  const password = 'ops@harlandmedical.com'
   const passwordHash = await bcrypt.hash(password, 10)
-  await prisma.user.create({
-    data: {
+  const user = await prisma.user.upsert({
+    where: { email },
+    create: {
       email,
       passwordHash,
       company: 'Harland Medical Systems',
@@ -24,8 +20,15 @@ async function main() {
       planId: 'premium',
       productIds: JSON.stringify([...DEFAULT_PRODUCT_IDS]),
     },
+    update: {
+      passwordHash,
+      company: 'Harland Medical Systems',
+      slug: 'harland',
+      planId: 'premium',
+      productIds: JSON.stringify([...DEFAULT_PRODUCT_IDS]),
+    },
   })
-  console.log('Seeded demo tenant:', email)
+  console.log('Harland client user ready:', user.email)
 }
 
 main()
