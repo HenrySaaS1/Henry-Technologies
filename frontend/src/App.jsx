@@ -9,22 +9,21 @@ import aiIconImage from './assets/uploads/img-1.png'
 import securityIconImage from './assets/uploads/img-3.png'
 import analyticsIconImage from './assets/uploads/img-4.png'
 import healthcareImage from './assets/uploads/img-6.png'
-import laptopTeamImage from './assets/uploads/img-7.png'
 import pharmaImage from './assets/uploads/img-8.png'
 import medicalDevicesImage from './assets/uploads/img-10.png'
+import snapshotProductImage from './assets/uploads/product-snapshot-new.png'
+import systemsProductImage from './assets/uploads/product-systems-new.png'
+import safetyProductImage from './assets/uploads/product-safety-new.png'
+import securityProductImage from './assets/uploads/product-security-new.png'
+import myhenryProductImage from './assets/uploads/product-myhenry-new.png'
 import aboutHenryImage from './assets/about-henry.png'
 
 const PRODUCT_IMAGES = {
-  snapshot:
-    'https://henrysaas.com/wp-content/uploads/2026/04/Sleek-laptop-showcasing-corporate-dashboard-UI-1.webp',
-  systems:
-    'https://henrysaas.com/wp-content/uploads/2026/04/Laptop-displaying-HENRY-dashboard-interface.webp',
-  safety:
-    'https://henrysaas.com/wp-content/uploads/2026/04/Workplace-safety-dashboard-on-laptop-screen.webp',
-  security:
-    'https://henrysaas.com/wp-content/uploads/2026/04/Modern-security-dashboard-on-laptop-screen.webp',
-  myhenry:
-    'https://henrysaas.com/wp-content/uploads/2026/04/SaaS-dashboard-mockup-on-laptop-screen.webp',
+  snapshot: snapshotProductImage,
+  systems: systemsProductImage,
+  safety: safetyProductImage,
+  security: securityProductImage,
+  myhenry: myhenryProductImage,
 }
 
 /** Default HENRY modules suggested when registering from a pricing tier. */
@@ -588,6 +587,16 @@ function App() {
     setStatus('')
   }
 
+  const openAuthFromAnyPage = (mode = 'signin') => {
+    if (typeof window === 'undefined') return
+    const onLanding = !isPricingPage && !isProductsPage && !isCaseStudiesPage
+    if (onLanding) {
+      openAuthModal(mode)
+      return
+    }
+    window.location.assign(`/?auth=${mode}`)
+  }
+
   const openAuthModal = (mode = 'signup', options = {}) => {
     setAuthMode(mode)
     setSignupStatus('')
@@ -603,6 +612,18 @@ function App() {
     }
     setShowSignup(true)
   }
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (isPricingPage || isProductsPage || isCaseStudiesPage) return
+    const params = new URLSearchParams(window.location.search)
+    const auth = params.get('auth')
+    if (auth !== 'signin' && auth !== 'signup') return
+    openAuthModal(auth)
+    params.delete('auth')
+    const next = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}${window.location.hash || ''}`
+    window.history.replaceState({}, '', next || '/')
+  }, [isPricingPage, isProductsPage, isCaseStudiesPage])
 
   const submitSignup = async (event) => {
     event.preventDefault()
@@ -940,10 +961,10 @@ function App() {
             </a>
             {!AUTH_BYPASS ? (
               <>
-                <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signin')}>
+                <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
                   Sign in
                 </button>
-                <button type="button" className="btn-dark" onClick={() => openAuthModal('signup')}>
+                <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
                   Sign up
                 </button>
               </>
@@ -975,8 +996,8 @@ function App() {
           </nav>
           <div className="topbar-actions">
             {!AUTH_BYPASS ? (
-              <button type="button" className="btn-dark" onClick={() => openAuthModal('signin')}>
-                Login
+              <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
+                Sign in
               </button>
             ) : null}
           </div>
@@ -1008,8 +1029,8 @@ function App() {
           </nav>
           <div className="topbar-actions">
             {!AUTH_BYPASS ? (
-              <button type="button" className="btn-dark" onClick={() => openAuthModal('signin')}>
-                Login
+              <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
+                Sign in
               </button>
             ) : null}
           </div>

@@ -4625,6 +4625,37 @@ h3 {
     display: none;
   }
 
+  .topbar {
+    gap: 0.7rem;
+    padding: 0.55rem 0.8rem;
+    min-height: auto;
+    flex-wrap: wrap;
+  }
+
+  .logo-main {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .logo-sub {
+    font-size: 0.43rem;
+    letter-spacing: 0.08em;
+  }
+
+  .topbar-actions {
+    margin-left: auto;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .btn-contact-nav,
+  .btn-signin-nav,
+  .btn-dark {
+    font-size: 0.86rem;
+    padding: 0.5rem 0.72rem;
+  }
+
   .product-pick-grid {
     grid-template-columns: 1fr;
   }
@@ -4634,15 +4665,17 @@ h3 {
   }
 
   .overlay {
-    padding: 2rem;
+    padding: 1.25rem 1.1rem 1.5rem;
   }
 
   .overlay h1 {
-    font-size: 2.1rem;
+    font-size: 2rem;
+    line-height: 1.12;
   }
 
   .overlay p {
-    font-size: 1rem;
+    font-size: 1.02rem;
+    line-height: 1.4;
   }
 
   .about {
@@ -4850,6 +4883,73 @@ h3 {
 }
 
 @media (max-width: 520px) {
+  .topbar {
+    align-items: flex-start;
+    padding: 0.5rem 0.62rem;
+  }
+
+  .logo {
+    max-width: 36%;
+  }
+
+  .logo-main {
+    font-size: 0.95rem;
+  }
+
+  .logo-sub {
+    margin-top: 0.1rem;
+    font-size: 0.34rem;
+    letter-spacing: 0.07em;
+  }
+
+  .topbar-actions {
+    max-width: 62%;
+    gap: 0.34rem;
+  }
+
+  .btn-contact-nav {
+    font-size: 0.74rem;
+    padding: 0.38rem 0.52rem;
+    border-radius: 6px;
+  }
+
+  .btn-signin-nav {
+    font-size: 0.76rem;
+    padding: 0.36rem 0.45rem;
+  }
+
+  .topbar-actions .btn-dark {
+    font-size: 0.74rem;
+    padding: 0.4rem 0.58rem;
+  }
+
+  .hero {
+    min-height: 460px;
+    align-items: flex-start;
+    background-position: center 20%;
+  }
+
+  .overlay {
+    max-width: 100%;
+    padding: 1rem 0.95rem 1.35rem;
+  }
+
+  .overlay h1 {
+    font-size: 2.25rem;
+  }
+
+  .overlay p {
+    margin-bottom: 1.1rem;
+    font-size: 0.96rem;
+  }
+
+  .overlay .btn-primary {
+    width: 100%;
+    max-width: 170px;
+    font-size: 1.28rem;
+    padding: 0.85rem 0.8rem;
+  }
+
   .card-grid.five {
     grid-template-columns: 1fr;
   }
