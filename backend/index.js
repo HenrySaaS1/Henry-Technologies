@@ -22,6 +22,14 @@ function parseCorsOrigins(value) {
     .filter(Boolean)
 }
 
+function isTrustedAzureFrontend(origin) {
+  return (
+    origin.endsWith('.azurestaticapps.net') ||
+    origin.endsWith('.azurewebsites.net') ||
+    origin.endsWith('.centralus-01.azurewebsites.net')
+  )
+}
+
 const corsOrigins =
   process.env.NODE_ENV === 'production'
     ? parseCorsOrigins(process.env.CORS_ORIGIN)
@@ -33,7 +41,9 @@ app.use(
       // Allow non-browser clients and same-origin requests with no Origin header.
       if (!origin) return callback(null, true)
       if (corsOrigins.includes(origin)) return callback(null, true)
-      return callback(new Error(`CORS blocked for origin: ${origin}`))
+      if (isTrustedAzureFrontend(origin)) return callback(null, true)
+      // Reject safely without throwing 500 on preflight.
+      return callback(null, false)
     },
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
