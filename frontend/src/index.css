@@ -1,10 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Roboto:wght@500;700;800&display=swap');
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
   color: #102347;
   background: #eef3fa;
 }
@@ -12,6 +14,12 @@ body {
 a {
   text-decoration: none;
   color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
 }
 
 .page {
@@ -41,9 +49,10 @@ a {
 
 .btn-signin-nav {
   border: none;
+  font-family: 'Montserrat', 'Open Sans', Arial, sans-serif;
   background: transparent;
   color: #0d2f73;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
   padding: 0.65rem 0.65rem;
@@ -58,13 +67,14 @@ a {
 .btn-contact-nav {
   display: inline-flex;
   align-items: center;
+  font-family: 'Montserrat', 'Open Sans', Arial, sans-serif;
   border: 1px solid #0d2f73;
   background: #fff;
   color: #0d2f73;
   border-radius: 5px;
   padding: 0.7rem 1rem;
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: none;
 }
@@ -97,8 +107,10 @@ a {
 .menu {
   display: flex;
   gap: 1.85rem;
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-family: 'Poppins', 'Open Sans', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 0.94rem;
+  text-transform: uppercase;
   color: #101c35;
 }
 
@@ -108,9 +120,10 @@ a {
 
 .btn-dark,
 .btn-primary {
+  font-family: 'Montserrat', 'Open Sans', Arial, sans-serif;
   border: 0;
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 600;
   border-radius: 5px;
   padding: 0.78rem 1.35rem;
   font-size: 1.02rem;
@@ -278,48 +291,16 @@ a {
   font-weight: 800;
 }
 
-.products-subtitle {
-  margin: 1.6rem auto 0;
-  text-align: center;
-  max-width: 660px;
-  color: #f5f6fa;
-  font-size: 1.2rem;
-  line-height: 1.45;
-  font-weight: 500;
-}
-
-.products .card-grid {
-  margin-top: 2.25rem;
-  gap: 1.25rem;
-}
-
-.products .card {
-  color: #1a1f33;
-  border: 1px solid #d8dce6;
-  border-radius: 8px;
-  padding: 1rem 0.9rem 1.1rem;
-}
-
-.products .card h3 {
-  margin: 0.15rem 0 0.45rem;
-  font-size: 1.5rem;
-  line-height: 1.2;
-  text-align: center;
-  font-weight: 600;
-}
-
-.products .card p {
-  margin: 0;
-  text-align: center;
-  line-height: 1.5;
-  font-size: 1.02rem;
-  color: #242b3f;
-}
 
 .case-studies {
   background: #e9edf2;
   border-radius: 6px;
   padding: 2rem;
+}
+
+.case-studies .btn-dark.small {
+  display: block;
+  margin: 0.85rem auto 0;
 }
 
 .card-grid {
@@ -334,6 +315,10 @@ a {
 
 .card-grid.four {
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.card-grid.five {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .card {
@@ -363,6 +348,45 @@ a {
   height: 155px;
   margin-bottom: 0.95rem;
   object-fit: cover;
+}
+
+.products .card-grid {
+  margin-top: 1.55rem;
+  gap: 0.9rem;
+}
+
+.products .card {
+  display: flex;
+  flex-direction: column;
+  color: #1a1f33;
+  border: 1px solid #d8dce6;
+  border-radius: 8px;
+  padding: 0.8rem 0.75rem 0.95rem;
+}
+
+.products .card h3 {
+  margin: 0.2rem 0 0.38rem;
+  font-size: 1.55rem;
+  line-height: 1.1;
+  text-align: center;
+  font-weight: 500;
+  color: #101828;
+}
+
+.products .card p {
+  margin: 0;
+  text-align: center;
+  line-height: 1.45;
+  font-size: 0.94rem;
+  color: #1f2937;
+  flex-grow: 1;
+}
+
+.btn-product-learn {
+  margin: 0.75rem auto 0;
+  min-width: 120px;
+  padding: 0.58rem 0.95rem;
+  font-size: 0.98rem;
 }
 
 .pricing-section {
@@ -4114,6 +4138,21 @@ a {
   border-color: #93c5fd;
 }
 
+.site-footer {
+  margin-top: 2rem;
+  padding: 1.1rem 1rem;
+  background: #05070d;
+  border-top: 1px solid #1e293b;
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
 @media (max-width: 900px) {
   .signup-modal {
     max-height: none;
@@ -4321,9 +4360,17 @@ a {
     width: 100%;
     order: 4;
   }
+
+  .card-grid.five {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 520px) {
+  .card-grid.five {
+    grid-template-columns: 1fr;
+  }
+
   .client-kpi-grid {
     grid-template-columns: 1fr;
   }

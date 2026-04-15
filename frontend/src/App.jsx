@@ -78,24 +78,29 @@ const solutions = [
 
 const products = [
   {
-    title: 'HENRY Core',
-    text: 'A centralized platform that gives you real-time visibility into your production.',
+    title: 'Snapshot',
+    text: 'Get a real-time pulse of your operations in seconds. Track key updates across business units with insights refreshed every few minutes, so you are always in the loop.',
     image: laptopTeamImage,
   },
   {
-    title: 'Factory Analytics',
-    text: 'Turn your factory data into actionable insights with advanced analytics and reporting.',
-    image: analyticsIconImage,
+    title: 'Systems',
+    text: 'A unified view of your entire plant, powered by IIoT. Monitor machines, equipment, and workflows in real time to optimize performance and reduce downtime.',
+    image: laptopTeamImage,
   },
   {
-    title: 'Automation Tools',
-    text: 'Streamline operations with smart automation and predictive maintenance.',
-    image: securityIconImage,
+    title: 'Safety',
+    text: 'Proactively detect and prevent safety risks on the factory floor. From boundary violations to unsafe behaviors, stay compliant and protect your workforce at all times.',
+    image: laptopTeamImage,
   },
   {
-    title: 'MyHenry',
-    text: 'A personalized AI business agent tailored to your company workflows and knowledge.',
-    image: aiIconImage,
+    title: 'Security',
+    text: 'Keep your facility secure with intelligent monitoring. Detect anomalies like unauthorized access, unlocked doors, or suspicious activity, before they become problems.',
+    image: laptopTeamImage,
+  },
+  {
+    title: 'MyHenry Agent',
+    text: 'Your personalised AI agent trained on your business. Get instant answers, insights, and recommendations across operations, HR, finance, and more, tailored to your workflows.',
+    image: laptopTeamImage,
   },
 ]
 
@@ -278,12 +283,16 @@ function renderPricingBlock(block) {
 }
 
 function App() {
+  const isPricingPage =
+    typeof window !== 'undefined' &&
+    /\/pricing\/?$/.test(window.location.pathname)
+
   const [showSignup, setShowSignup] = useState(false)
   const [form, setForm] = useState({
     name: '',
     email: '',
     companyName: '',
-    interest: 'Request a demo — general tour',
+    interest: 'Smart Monitoring Setup',
     notes: '',
   })
   const [status, setStatus] = useState('')
@@ -347,7 +356,7 @@ function App() {
         name: '',
         email: '',
         companyName: '',
-        interest: 'Request a demo — general tour',
+        interest: 'Smart Monitoring Setup',
         notes: '',
       })
     } catch (error) {
@@ -467,10 +476,88 @@ function App() {
     setSignupStatus('Google sign-in will connect when you add OAuth in production.')
   }
 
+  const pricingSection = (
+    <section id="pricing" className="pricing-section">
+      <h2 className="pricing-title">Pricing</h2>
+      <p className="pricing-lead">
+        Choose a plan that fits your operations. Scale seamlessly as your business grows with flexible features and
+        transparent pricing.
+      </p>
+      <div className="pricing-grid">
+        {pricingTiers.map((tier) => (
+          <article
+            key={tier.name}
+            className={`pricing-card${tier.highlighted ? ' pricing-card--featured' : ''}`}
+          >
+            {tier.highlighted ? <span className="pricing-ribbon">Popular</span> : null}
+            <h3 className="pricing-tier-name">{tier.name}</h3>
+            <p className="pricing-price">{tier.price}</p>
+            <p className="pricing-best-for">
+              <span className="pricing-best-label">Best for</span> {tier.bestFor}
+            </p>
+            {tier.inherit ? <p className="pricing-inherit">{tier.inherit}</p> : null}
+            <div className="pricing-body">
+              {tier.blocks.map((block, i) => (
+                <div key={`${tier.name}-${i}`}>{renderPricingBlock(block)}</div>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="btn-pricing-cta"
+              onClick={() =>
+                AUTH_BYPASS ? enterBypassWorkspace() : openAuthModal('signup', { planId: tier.planId })
+              }
+            >
+              {AUTH_BYPASS ? 'Open workspace' : 'Get started'}
+            </button>
+          </article>
+        ))}
+      </div>
+      <p className="pricing-footnote">
+        Volume pricing and annual billing available. <a href="#request-demo">Request a demo</a> or{' '}
+        <a href="#contact">contact sales</a> for a tailored quote.
+      </p>
+    </section>
+  )
+
   if (currentUser) {
     return (
       <div className="page page--client">
         <ClientDashboard user={currentUser} onSignOut={signOut} />
+      </div>
+    )
+  }
+
+  if (isPricingPage) {
+    return (
+      <div className="page">
+        <header className="topbar">
+          <div className="logo">
+            <span className="logo-main">HENRY</span>
+            <span className="logo-sub">SMART BUSINESS TOOLS</span>
+          </div>
+          <nav className="menu">
+            <a href="/#products">PRODUCTS</a>
+            <a href="/#case-studies">CASE STUDIES</a>
+            <a href="/#about">ABOUT</a>
+            <a href="/pricing">PRICING</a>
+            <a href="/#contact">CONTACT</a>
+          </nav>
+          <div className="topbar-actions">
+            <a className="btn-contact-nav" href="/#request-demo">
+              Request a demo
+            </a>
+            {!AUTH_BYPASS ? (
+              <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signin')}>
+                Sign in
+              </button>
+            ) : null}
+          </div>
+        </header>
+        {pricingSection}
+        <footer className="site-footer" aria-label="Site footer">
+          <p>@2026 Henry , Inc. All rights reserved</p>
+        </footer>
       </div>
     )
   }
@@ -483,9 +570,9 @@ function App() {
           <span className="logo-sub">SMART BUSINESS TOOLS</span>
         </div>
         <nav className="menu">
-          <a href="#pricing">PRICING</a>
           <a href="#products">PRODUCTS</a>
           <a href="#case-studies">CASE STUDIES</a>
+          <a href="/pricing">PRICING</a>
           <a href="#about">ABOUT</a>
           <a href="#contact">CONTACT</a>
         </nav>
@@ -502,9 +589,6 @@ function App() {
             <>
               <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signin')}>
                 Sign in
-              </button>
-              <button className="btn-dark" onClick={() => openAuthModal('signup')}>
-                Get Started
               </button>
             </>
           ) : null}
@@ -1000,15 +1084,18 @@ function App() {
       <section id="products" className="products">
         <h2 className="products-title">PRODUCTS</h2>
         <p className="products-subtitle">
-          Streamline your operations with smart automation. From monitoring to predictive
-          maintenance, automate processes and save valuable time.
+          Streamline your operations with smart automation. From monitoring to predictive maintenance, automate
+          processes and save valuable time.
         </p>
-        <div className="card-grid four">
+        <div className="card-grid five">
           {products.map((item) => (
             <article key={item.title} className="card product">
               <img className="product-image" src={item.image} alt={item.title} />
               <h3>{item.title}</h3>
               <p>{item.text}</p>
+              <button type="button" className="btn-dark small btn-product-learn">
+                Learn More
+              </button>
             </article>
           ))}
         </div>
@@ -1026,49 +1113,6 @@ function App() {
             </article>
           ))}
         </div>
-      </section>
-
-      <section id="pricing" className="pricing-section">
-        <h2 className="pricing-title">Pricing</h2>
-        <p className="pricing-lead">
-          Choose the tier that matches your footprint. <strong>Get started</strong> on a card runs the same new-client
-          flow: account → tenant → product modules (pre-filled for that tier; you can adjust before checkout). All plans
-          share the same HENRY workspace layout.
-        </p>
-        <div className="pricing-grid">
-          {pricingTiers.map((tier) => (
-            <article
-              key={tier.name}
-              className={`pricing-card${tier.highlighted ? ' pricing-card--featured' : ''}`}
-            >
-              {tier.highlighted ? <span className="pricing-ribbon">Popular</span> : null}
-              <h3 className="pricing-tier-name">{tier.name}</h3>
-              <p className="pricing-price">{tier.price}</p>
-              <p className="pricing-best-for">
-                <span className="pricing-best-label">Best for</span> {tier.bestFor}
-              </p>
-              {tier.inherit ? <p className="pricing-inherit">{tier.inherit}</p> : null}
-              <div className="pricing-body">
-                {tier.blocks.map((block, i) => (
-                  <div key={`${tier.name}-${i}`}>{renderPricingBlock(block)}</div>
-                ))}
-              </div>
-              <button
-                type="button"
-                className="btn-pricing-cta"
-                onClick={() =>
-                  AUTH_BYPASS ? enterBypassWorkspace() : openAuthModal('signup', { planId: tier.planId })
-                }
-              >
-                {AUTH_BYPASS ? 'Open workspace' : 'Get started'}
-              </button>
-            </article>
-          ))}
-        </div>
-        <p className="pricing-footnote">
-          Volume pricing and annual billing available. <a href="#request-demo">Request a demo</a> or{' '}
-          <a href="#contact">contact sales</a> for a tailored quote.
-        </p>
       </section>
 
       <section id="about" className="about about-last">
@@ -1092,20 +1136,23 @@ function App() {
       </section>
 
       <section id="request-demo" className="request-demo">
-        <h2>Request a demo</h2>
+        <h2>Ready to Transform Your Manufacturing?</h2>
         <p className="request-demo-intro">
-          Schedule a live walkthrough of HENRY with our team. For general questions, hours, and email, see{' '}
-          <a href="#contact">Contact</a> below. To start on your own, use <strong>Get Started</strong> in the header.
+          We&apos;d love to hear from you. Fill out the form below and our team will get back to you shortly.
         </p>
         <form className="contact-form demo-request-form" onSubmit={submitContact}>
           <input name="name" value={form.name} onChange={updateField} placeholder="Name *" />
           <input name="email" value={form.email} onChange={updateField} placeholder="Email *" />
           <input name="companyName" value={form.companyName} onChange={updateField} placeholder="Company Name" />
           <select name="interest" value={form.interest} onChange={updateField}>
-            <option>Request a demo — general tour</option>
             <option>Smart Monitoring Setup</option>
-            <option>Factory Analytics</option>
-            <option>Automation Tools</option>
+            <option>Real-time Data &amp; Dashboard</option>
+            <option>System Integration (Machines, Devices, APIs)</option>
+            <option>Data Processing &amp; Cloud Setup</option>
+            <option>Performance Optimization</option>
+            <option>Custom SaaS Development</option>
+            <option>AI &amp; Predictive Insights</option>
+            <option>Consultation &amp; Strategy</option>
           </select>
           <textarea
             name="notes"
@@ -1114,7 +1161,7 @@ function App() {
             onChange={updateField}
             placeholder="TELL US BRIEFLY ABOUT YOUR REQUIREMENT..."
           />
-          <button type="submit" className="btn-primary">Submit demo request</button>
+          <button type="submit" className="btn-primary">Get Free Consultation</button>
           {status ? <p className="form-status">{status}</p> : null}
         </form>
       </section>
@@ -1122,7 +1169,8 @@ function App() {
       <section id="contact" className="contact">
         <h2>Contact us</h2>
         <p className="contact-intro">
-          Reach the HENRY SaaS team for pricing, partnerships, and support. We read every message.
+          Talk to the HENRY team. From onboarding to optimization, we&apos;re here to help.
+          Whether you&apos;re exploring HENRY, need a custom setup, or require support, our team will get you the answers you need.
         </p>
         <div className="contact-info-wrap">
           <aside className="contact-info-panel" aria-labelledby="contact-info-heading">
@@ -1157,6 +1205,10 @@ function App() {
           </aside>
         </div>
       </section>
+
+      <footer className="site-footer" aria-label="Site footer">
+        <p>@2026 Henry , Inc. All rights reserved</p>
+      </footer>
     </div>
   )
 }
