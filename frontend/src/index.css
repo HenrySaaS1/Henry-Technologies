@@ -4924,14 +4924,15 @@ h3 {
   }
 
   .hero {
-    min-height: 460px;
+    min-height: 320px;
     align-items: flex-start;
     background-position: center 20%;
+    background-size: cover;
   }
 
   .overlay {
     max-width: 100%;
-    padding: 1rem 0.95rem 1.35rem;
+    padding: 1rem 0.95rem 1rem;
   }
 
   .overlay h1 {
