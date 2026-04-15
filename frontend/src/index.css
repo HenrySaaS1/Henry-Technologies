@@ -295,12 +295,42 @@ h3 {
 .case-studies {
   background: #e9edf2;
   border-radius: 6px;
-  padding: 2rem;
+  width: min(1360px, 98%);
+  padding: 2.35rem 2.1rem;
 }
 
 .case-studies .btn-dark.small {
   display: block;
   margin: 0.85rem auto 0;
+  border: 2px solid #f0b43a;
+  border-radius: 4px;
+  background: #061948;
+  color: #ffffff;
+}
+
+.case-studies .card-grid.three {
+  gap: 1.25rem;
+}
+
+.case-studies .card {
+  padding: 0.9rem 0.95rem 1.1rem;
+  border: 1.5px solid #cfd6e2;
+  border-radius: 9px;
+  box-shadow: none;
+}
+
+.case-studies .card h3 {
+  font-size: 2rem;
+  margin-top: 0.15rem;
+}
+
+.case-studies .card p {
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.case-studies .case-image {
+  height: 185px;
 }
 
 .case-study-overlay {

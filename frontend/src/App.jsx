@@ -322,6 +322,9 @@ function App() {
   const isPricingPage =
     typeof window !== 'undefined' &&
     /\/pricing\/?$/.test(window.location.pathname)
+  const isProductsPage =
+    typeof window !== 'undefined' &&
+    /\/products\/?$/.test(window.location.pathname)
 
   const [showSignup, setShowSignup] = useState(false)
   const [form, setForm] = useState({
@@ -473,8 +476,10 @@ function App() {
         setAuthMode('signin')
         return
       }
-      setCurrentUser(u)
       closeSignupModal()
+      if (typeof window !== 'undefined') {
+        window.location.assign('/products')
+      }
     } catch (e) {
       const msg = e.message || ''
       if (msg.includes('already registered')) {
@@ -561,7 +566,104 @@ function App() {
     </section>
   )
 
-  if (currentUser) {
+  const productsSection = (
+    <section id="products" className="products">
+      <h2 className="products-title">PRODUCTS</h2>
+      <p className="products-subtitle">
+        Streamline your operations with smart automation. From monitoring to predictive maintenance, automate
+        processes and save valuable time.
+      </p>
+      <div className="card-grid five">
+        {products.map((item) => (
+          <article key={item.title} className="card product">
+            <img className="product-image" src={item.image} alt={item.title} />
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+            <button type="button" className="btn-dark small btn-product-learn">
+              Learn More
+            </button>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+
+  const requestDemoSection = (
+    <section id="request-demo" className="request-demo">
+      <h2>Ready to Transform Your Manufacturing?</h2>
+      <p className="request-demo-intro">
+        We&apos;d love to hear from you. Fill out the form below and our team will get back to you shortly.
+      </p>
+      <form className="contact-form demo-request-form" onSubmit={submitContact}>
+        <input name="name" value={form.name} onChange={updateField} placeholder="Name *" />
+        <input name="email" value={form.email} onChange={updateField} placeholder="Email *" />
+        <input name="companyName" value={form.companyName} onChange={updateField} placeholder="Company Name" />
+        <select name="interest" value={form.interest} onChange={updateField}>
+          <option>Smart Monitoring Setup</option>
+          <option>Real-time Data &amp; Dashboard</option>
+          <option>System Integration (Machines, Devices, APIs)</option>
+          <option>Data Processing &amp; Cloud Setup</option>
+          <option>Performance Optimization</option>
+          <option>Custom SaaS Development</option>
+          <option>AI &amp; Predictive Insights</option>
+          <option>Consultation &amp; Strategy</option>
+        </select>
+        <textarea
+          name="notes"
+          rows="4"
+          value={form.notes}
+          onChange={updateField}
+          placeholder="TELL US BRIEFLY ABOUT YOUR REQUIREMENT..."
+        />
+        <button type="submit" className="btn-primary">Get Free Consultation</button>
+        {status ? <p className="form-status">{status}</p> : null}
+      </form>
+    </section>
+  )
+
+  const contactSection = (
+    <section id="contact" className="contact">
+      <h2>Contact us</h2>
+      <p className="contact-intro">
+        Talk to the HENRY team. From onboarding to optimization, we&apos;re here to help.
+        Whether you&apos;re exploring HENRY, need a custom setup, or require support, our team will get you the answers you need.
+      </p>
+      <div className="contact-info-wrap">
+        <aside className="contact-info-panel" aria-labelledby="contact-info-heading">
+          <h3 id="contact-info-heading">HENRY SaaS</h3>
+          <p className="contact-info-lead">
+            Cloud manufacturing intelligence — onboarding, billing questions, and technical evaluations all start
+            here.
+          </p>
+          <dl className="contact-info-list">
+            <div className="contact-info-row">
+              <dt>Email</dt>
+              <dd>
+                <a href="mailto:info@henrysaas.com">info@Henrysaas.com</a>
+              </dd>
+            </div>
+            <div className="contact-info-row">
+              <dt>Hours</dt>
+              <dd>Monday–Friday, 9:00 a.m.–6:00 p.m. US Eastern</dd>
+            </div>
+            <div className="contact-info-row">
+              <dt>Response time</dt>
+              <dd>We aim to reply within one business day. Include your company and time zone for faster scheduling.</dd>
+            </div>
+            <div className="contact-info-row">
+              <dt>Existing customers</dt>
+              <dd>
+                Sign in to your workspace for in-app alerts and reports. For account changes, email us from your
+                registered address and mention your organization name.
+              </dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+  )
+
+  if (currentUser && !isPricingPage && !isProductsPage) {
     return (
       <div className="page page--client">
         <ClientDashboard user={currentUser} onSignOut={signOut} />
@@ -601,6 +703,36 @@ function App() {
           </div>
         </header>
         {pricingSection}
+        <footer className="site-footer" aria-label="Site footer">
+          <p>@2026 Henry , Inc. All rights reserved</p>
+        </footer>
+      </div>
+    )
+  }
+
+  if (isProductsPage) {
+    return (
+      <div className="page">
+        <header className="topbar">
+          <div className="logo">
+            <span className="logo-main">HENRY</span>
+            <span className="logo-sub">SMART BUSINESS TOOLS</span>
+          </div>
+          <nav className="menu">
+            <a href="/products">PRODUCTS</a>
+            <a href="/#request-demo">REQUEST A DEMO</a>
+            <a href="/#contact">CONTACT</a>
+            <a href="/pricing">PRICING</a>
+          </nav>
+          <div className="topbar-actions">
+            <a className="btn-contact-nav" href="#request-demo">
+              Request a demo
+            </a>
+          </div>
+        </header>
+        {productsSection}
+        {requestDemoSection}
+        {contactSection}
         <footer className="site-footer" aria-label="Site footer">
           <p>@2026 Henry , Inc. All rights reserved</p>
         </footer>
@@ -1130,25 +1262,7 @@ function App() {
         </div>
       </section>
 
-      <section id="products" className="products">
-        <h2 className="products-title">PRODUCTS</h2>
-        <p className="products-subtitle">
-          Streamline your operations with smart automation. From monitoring to predictive maintenance, automate
-          processes and save valuable time.
-        </p>
-        <div className="card-grid five">
-          {products.map((item) => (
-            <article key={item.title} className="card product">
-              <img className="product-image" src={item.image} alt={item.title} />
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-              <button type="button" className="btn-dark small btn-product-learn">
-                Learn More
-              </button>
-            </article>
-          ))}
-        </div>
-      </section>
+      {productsSection}
 
       <section id="case-studies" className="case-studies">
         <h2>CASE STUDIES</h2>
@@ -1218,76 +1332,8 @@ function App() {
         </div>
       </section>
 
-      <section id="request-demo" className="request-demo">
-        <h2>Ready to Transform Your Manufacturing?</h2>
-        <p className="request-demo-intro">
-          We&apos;d love to hear from you. Fill out the form below and our team will get back to you shortly.
-        </p>
-        <form className="contact-form demo-request-form" onSubmit={submitContact}>
-          <input name="name" value={form.name} onChange={updateField} placeholder="Name *" />
-          <input name="email" value={form.email} onChange={updateField} placeholder="Email *" />
-          <input name="companyName" value={form.companyName} onChange={updateField} placeholder="Company Name" />
-          <select name="interest" value={form.interest} onChange={updateField}>
-            <option>Smart Monitoring Setup</option>
-            <option>Real-time Data &amp; Dashboard</option>
-            <option>System Integration (Machines, Devices, APIs)</option>
-            <option>Data Processing &amp; Cloud Setup</option>
-            <option>Performance Optimization</option>
-            <option>Custom SaaS Development</option>
-            <option>AI &amp; Predictive Insights</option>
-            <option>Consultation &amp; Strategy</option>
-          </select>
-          <textarea
-            name="notes"
-            rows="4"
-            value={form.notes}
-            onChange={updateField}
-            placeholder="TELL US BRIEFLY ABOUT YOUR REQUIREMENT..."
-          />
-          <button type="submit" className="btn-primary">Get Free Consultation</button>
-          {status ? <p className="form-status">{status}</p> : null}
-        </form>
-      </section>
-
-      <section id="contact" className="contact">
-        <h2>Contact us</h2>
-        <p className="contact-intro">
-          Talk to the HENRY team. From onboarding to optimization, we&apos;re here to help.
-          Whether you&apos;re exploring HENRY, need a custom setup, or require support, our team will get you the answers you need.
-        </p>
-        <div className="contact-info-wrap">
-          <aside className="contact-info-panel" aria-labelledby="contact-info-heading">
-            <h3 id="contact-info-heading">HENRY SaaS</h3>
-            <p className="contact-info-lead">
-              Cloud manufacturing intelligence — onboarding, billing questions, and technical evaluations all start
-              here.
-            </p>
-            <dl className="contact-info-list">
-              <div className="contact-info-row">
-                <dt>Email</dt>
-                <dd>
-                  <a href="mailto:info@henrysaas.com">info@Henrysaas.com</a>
-                </dd>
-              </div>
-              <div className="contact-info-row">
-                <dt>Hours</dt>
-                <dd>Monday–Friday, 9:00 a.m.–6:00 p.m. US Eastern</dd>
-              </div>
-              <div className="contact-info-row">
-                <dt>Response time</dt>
-                <dd>We aim to reply within one business day. Include your company and time zone for faster scheduling.</dd>
-              </div>
-              <div className="contact-info-row">
-                <dt>Existing customers</dt>
-                <dd>
-                  Sign in to your workspace for in-app alerts and reports. For account changes, email us from your
-                  registered address and mention your organization name.
-                </dd>
-              </div>
-            </dl>
-          </aside>
-        </div>
-      </section>
+      {requestDemoSection}
+      {contactSection}
 
       <footer className="site-footer" aria-label="Site footer">
         <p>@2026 Henry , Inc. All rights reserved</p>
