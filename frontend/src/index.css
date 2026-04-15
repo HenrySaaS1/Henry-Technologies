@@ -1059,6 +1059,91 @@ h3 {
   text-underline-offset: 2px;
 }
 
+.pricing-compare {
+  margin-top: 2.1rem;
+  background: #eef2f8;
+  border: 1px solid #d3dbe8;
+  border-radius: 14px;
+  padding: 1.35rem 1rem 1.1rem;
+}
+
+.pricing-compare-title {
+  margin: 0 0 1rem;
+  text-align: center;
+  font-size: clamp(1.5rem, 3.8vw, 2.2rem);
+  letter-spacing: 0.13em;
+  color: #0f172a;
+}
+
+.pricing-compare-wrap {
+  overflow-x: auto;
+}
+
+.pricing-compare-table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.pricing-compare-table thead th {
+  background: linear-gradient(90deg, #29256f 0%, #37399f 60%, #4a4dd2 100%);
+  color: #ffffff;
+  font-size: 0.96rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 800;
+  padding: 0.92rem 0.8rem;
+  text-align: center;
+}
+
+.pricing-compare-table thead th:first-child {
+  text-align: left;
+  padding-left: 1.05rem;
+}
+
+.pricing-compare-table tbody th,
+.pricing-compare-table tbody td {
+  border-top: 1px solid #d8deea;
+  padding: 0.76rem 0.8rem;
+  text-align: center;
+  background: #edf1f7;
+}
+
+.pricing-compare-table tbody tr:nth-child(even) th,
+.pricing-compare-table tbody tr:nth-child(even) td {
+  background: #e6ebf4;
+}
+
+.pricing-compare-table tbody th {
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #253046;
+  width: 44%;
+}
+
+.pricing-compare-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.pricing-compare-icon.is-check {
+  color: #22c55e;
+}
+
+.pricing-compare-icon.is-cross {
+  color: #ef4444;
+}
+
+.pricing-compare-text {
+  color: #334155;
+  font-weight: 700;
+}
+
 #pricing {
   scroll-margin-top: 84px;
 }
@@ -4701,6 +4786,10 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  .pricing-compare {
+    padding: 1rem 0.65rem 0.8rem;
+  }
+
   .products {
     padding: 1.4rem 1rem 1.8rem;
   }
@@ -4936,18 +5025,18 @@ h3 {
   }
 
   .overlay h1 {
-    font-size: 2.25rem;
+    font-size: 1.95rem;
   }
 
   .overlay p {
     margin-bottom: 1.1rem;
-    font-size: 0.96rem;
+    font-size: 0.86rem;
   }
 
   .overlay .btn-primary {
     width: 100%;
     max-width: 170px;
-    font-size: 1.28rem;
+    font-size: 0.68rem;
     padding: 0.85rem 0.8rem;
   }
 

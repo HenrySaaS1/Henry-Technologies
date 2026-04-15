@@ -413,6 +413,19 @@ const pricingTiers = [
   },
 ]
 
+const pricingComparisonRows = [
+  { feature: 'Machine Integration', basic: 'check', plus: 'check', premium: 'check' },
+  { feature: 'Machine Metrics Dashboard', basic: 'check', plus: 'check', premium: 'check' },
+  { feature: 'Camera Feed (Security)', basic: 'check', plus: 'check', premium: 'check' },
+  { feature: 'AI Vision Monitoring', basic: 'cross', plus: 'check', premium: 'check' },
+  { feature: 'Safety Alerts', basic: 'cross', plus: 'check', premium: 'check' },
+  { feature: 'Drone / Mobile Scanning', basic: 'cross', plus: 'check', premium: 'check' },
+  { feature: 'Locations Included', basic: '1', plus: '1', premium: '5' },
+  { feature: 'Additional Locations', basic: 'cross', plus: 'cross', premium: 'Paid On' },
+  { feature: 'AskHenry AI Agent', basic: 'cross', plus: 'cross', premium: 'check' },
+  { feature: 'Multi-Location Dashboard', basic: 'cross', plus: 'cross', premium: 'check' },
+]
+
 function renderPricingBlock(block) {
   if (block.kind === 'subheading') {
     return (
@@ -447,6 +460,12 @@ function renderPricingBlock(block) {
     )
   }
   return null
+}
+
+function renderComparisonValue(value) {
+  if (value === 'check') return <span className="pricing-compare-icon is-check">✓</span>
+  if (value === 'cross') return <span className="pricing-compare-icon is-cross">✕</span>
+  return <span className="pricing-compare-text">{value}</span>
 }
 
 function App() {
@@ -752,6 +771,31 @@ function App() {
         Volume pricing and annual billing available. <a href="#request-demo">Request a demo</a> or{' '}
         <a href="#contact">contact sales</a> for a tailored quote.
       </p>
+      <section className="pricing-compare" aria-label="Pricing feature comparison">
+        <h3 className="pricing-compare-title">PRICING</h3>
+        <div className="pricing-compare-wrap">
+          <table className="pricing-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Features</th>
+                <th scope="col">Basic</th>
+                <th scope="col">Plus</th>
+                <th scope="col">Premium</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pricingComparisonRows.map((row) => (
+                <tr key={row.feature}>
+                  <th scope="row">{row.feature}</th>
+                  <td>{renderComparisonValue(row.basic)}</td>
+                  <td>{renderComparisonValue(row.plus)}</td>
+                  <td>{renderComparisonValue(row.premium)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </section>
   )
 
