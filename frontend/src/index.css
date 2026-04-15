@@ -5025,19 +5025,21 @@ h3 {
   }
 
   .overlay h1 {
-    font-size: 1.95rem;
+    font-size: 1.42rem;
+    line-height: 1.16;
   }
 
   .overlay p {
     margin-bottom: 1.1rem;
-    font-size: 0.86rem;
+    font-size: 0.67rem;
+    line-height: 1.32;
   }
 
   .overlay .btn-primary {
     width: 100%;
     max-width: 170px;
-    font-size: 0.68rem;
-    padding: 0.85rem 0.8rem;
+    font-size: 0.56rem;
+    padding: 0.62rem 0.72rem;
   }
 
   .card-grid.five {
