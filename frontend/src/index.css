@@ -303,6 +303,63 @@ h3 {
   margin: 0.85rem auto 0;
 }
 
+.case-study-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(3, 9, 22, 0.62);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.case-study-modal {
+  width: min(760px, 96vw);
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #d7ddeb;
+  box-shadow: 0 20px 55px rgba(15, 23, 42, 0.28);
+  padding: 1.2rem 1.3rem 1.25rem;
+  color: #0f172a;
+  position: relative;
+}
+
+.case-study-close {
+  position: absolute;
+  right: 0.55rem;
+  top: 0.45rem;
+  border: none;
+  background: transparent;
+  font-size: 1.65rem;
+  line-height: 1;
+  color: #334155;
+  cursor: pointer;
+}
+
+.case-study-modal h3 {
+  margin: 0 0 0.65rem;
+  font-size: 1.4rem;
+  color: #0f172a;
+}
+
+.case-study-modal p {
+  margin: 0 0 0.75rem;
+  line-height: 1.55;
+  color: #1f2937;
+  font-size: 0.98rem;
+}
+
+.case-study-highlights {
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.3rem;
+  font-weight: 600;
+  color: #0f5132;
+}
+
 .card-grid {
   display: grid;
   gap: 1rem;

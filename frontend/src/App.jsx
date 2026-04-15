@@ -109,16 +109,52 @@ const caseStudies = [
     title: 'Medical Equipment & Devices',
     text: 'Enhancing precision manufacturing, quality control, and traceability in high-stakes production environments.',
     image: medicalDevicesImage,
+    details: {
+      heading: 'Medical Equipment & Devices',
+      intro:
+        'Precision, compliance, and zero-defect manufacturing are critical in medical device production. A leading manufacturer partnered with HENRY to gain real-time visibility across assembly lines and ensure consistent product quality.',
+      body:
+        'With Snapshot and Systems, they monitored live production metrics and equipment performance, while Safety ensured adherence to operational protocols. MyHenry Agent enabled teams to instantly access insights and resolve issues faster.',
+      highlights: [
+        '25% faster inspection cycles',
+        '30% reduction in production defects',
+        'Full compliance with ISO and regulatory standards',
+      ],
+    },
   },
   {
     title: 'Healthcare',
     text: 'Improving patient care and operational efficiency through data-driven monitoring and automation.',
     image: healthcareImage,
+    details: {
+      heading: 'Healthcare',
+      intro:
+        'Healthcare facilities require real-time coordination, operational efficiency, and strict safety monitoring. A multi-specialty hospital network implemented HENRY to optimise daily operations and improve response times.',
+      body:
+        'Using Snapshot, they gained instant updates across departments, while Security and Safety ensured compliance and risk monitoring. MyHenry Agent provided staff with on-demand insights for faster, data-driven decisions.',
+      highlights: [
+        '30% improvement in operational efficiency',
+        '20% faster response time to critical alerts',
+        'Enhanced safety, compliance, and patient care',
+      ],
+    },
   },
   {
     title: 'Pharmaceuticals',
     text: 'Ensuring compliance, batch traceability, and contamination-free production with real-time monitoring.',
     image: pharmaImage,
+    details: {
+      heading: 'Pharmaceutical',
+      intro:
+        'Pharmaceutical manufacturing demands complete traceability, strict compliance, and consistent quality across batches. A pharmaceutical company adopted HENRY to gain full visibility and control over production processes.',
+      body:
+        'With Systems and Snapshot, they tracked production in real time, while Safety ensured regulatory adherence and Security monitored facility access and anomalies. MyHenry Agent enabled instant querying of production data and compliance status.',
+      highlights: [
+        '28% reduction in batch inconsistencies',
+        'Real-time production monitoring and traceability',
+        'Compliance with FDA, GMP, and global standards',
+      ],
+    },
   },
 ]
 
@@ -302,6 +338,7 @@ function App() {
     confirmPassword: '',
   })
   const [signupStatus, setSignupStatus] = useState('')
+  const [activeCaseStudy, setActiveCaseStudy] = useState(null)
   const [authMode, setAuthMode] = useState('signup')
   const [signupFromPlan, setSignupFromPlan] = useState(null)
   const [signupDashTab, setSignupDashTab] = useState('dashboard')
@@ -374,6 +411,10 @@ function App() {
     setSignupStatus('')
     setSignupFromPlan(null)
     setSignupForm({ email: '', password: '', confirmPassword: '' })
+  }
+
+  const closeCaseStudyModal = () => {
+    setActiveCaseStudy(null)
   }
 
   const openAuthModal = (mode = 'signup', options = {}) => {
@@ -548,9 +589,14 @@ function App() {
               Request a demo
             </a>
             {!AUTH_BYPASS ? (
-              <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signin')}>
-                Sign in
-              </button>
+              <>
+                <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signin')}>
+                  Sign in
+                </button>
+                <button type="button" className="btn-dark" onClick={() => openAuthModal('signup')}>
+                  Sign up
+                </button>
+              </>
             ) : null}
           </div>
         </header>
@@ -589,6 +635,9 @@ function App() {
             <>
               <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signin')}>
                 Sign in
+              </button>
+              <button type="button" className="btn-dark" onClick={() => openAuthModal('signup')}>
+                Sign up
               </button>
             </>
           ) : null}
@@ -1109,11 +1158,45 @@ function App() {
               <img className="case-image" src={item.image} alt={item.title} />
               <h3>{item.title}</h3>
               <p>{item.text}</p>
-              <button className="btn-dark small">Learn More</button>
+              <button
+                type="button"
+                className="btn-dark small"
+                onClick={() => {
+                  if (item.details) setActiveCaseStudy(item.details)
+                }}
+              >
+                Learn More
+              </button>
             </article>
           ))}
         </div>
       </section>
+
+      {activeCaseStudy ? (
+        <section
+          className="case-study-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="case-study-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeCaseStudyModal()
+          }}
+        >
+          <div className="case-study-modal">
+            <button type="button" className="case-study-close" aria-label="Close" onClick={closeCaseStudyModal}>
+              ×
+            </button>
+            <h3 id="case-study-title">{activeCaseStudy.heading}</h3>
+            <p>{activeCaseStudy.intro}</p>
+            <p>{activeCaseStudy.body}</p>
+            <ul className="case-study-highlights">
+              {activeCaseStudy.highlights.map((item) => (
+                <li key={item}>✅ {item}</li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : null}
 
       <section id="about" className="about about-last">
         <div className="about-image">
