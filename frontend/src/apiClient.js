@@ -36,57 +36,78 @@ export function clearAuth() {
   localStorage.removeItem('henry_session_v1')
 }
 
+async function requestJson(url, { method, headers, body, signal }) {
+  const res = await fetch(url, {
+    method,
+    headers,
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+    signal,
+  })
+  const data = await res.json().catch(() => ({}))
+  return { res, data }
+}
+
 export async function apiJson(path, { method = 'GET', body, token, signal } = {}) {
   const headers = { 'Content-Type': 'application/json' }
   const t = token === undefined ? getToken() : token
   if (t) headers.Authorization = `Bearer ${t}`
   const base = getApiBase()
-  const url = `${base}${path}`
-  let res
+  const directBase = normalizeApiBase(import.meta.env.VITE_API_URL)
+  const primaryUrl = `${base}${path}`
+  const canTryProxy = typeof window !== 'undefined' && String(path).startsWith('/')
+  let primary
   try {
-    res = await fetch(url, {
-      method,
-      headers,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
-      signal,
-    })
+    primary = await requestJson(primaryUrl, { method, headers, body, signal })
   } catch {
-    const base = getApiBase()
-    const where =
-      base ||
-      (typeof window !== 'undefined'
-        ? `${window.location.origin}/api (same-origin proxy)`
-        : '/api (same-origin proxy)')
+    // If direct API is down, try same-origin /api proxy once.
+    if (base && canTryProxy) {
+      try {
+        const fallback = await requestJson(path, { method, headers, body, signal })
+        if (!fallback.res.ok) {
+          const msg = fallback.data.message || `Request failed (${fallback.res.status})`
+          throw new Error(msg)
+        }
+        return fallback.data
+      } catch {
+        // fall through to user-facing network error below
+      }
+    }
+    // If proxy/base is empty and failed, try direct API URL once.
+    if (!base && directBase) {
+      try {
+        const fallback = await requestJson(`${directBase}${path}`, { method, headers, body, signal })
+        if (!fallback.res.ok) {
+          const msg = fallback.data.message || `Request failed (${fallback.res.status})`
+          throw new Error(msg)
+        }
+        return fallback.data
+      } catch {
+        // fall through to user-facing network error below
+      }
+    }
+    const where = base || (typeof window !== 'undefined'
+      ? `${window.location.origin}/api (same-origin proxy)`
+      : '/api (same-origin proxy)')
     const hint =
       typeof window !== 'undefined' && window.location?.protocol === 'https:' && base.startsWith('http:')
         ? ' The site is HTTPS but VITE_API_URL uses HTTP — use an https API URL or a proxy.'
         : ' Is the API running? Check VITE_API_URL, Static Web App /api proxy, and the Network tab.'
     throw new Error(`Cannot reach API at ${where}.${hint}`)
   }
-  const data = await res.json().catch(() => ({}))
-  // If same-origin /api proxy rejects non-GET methods (405/404), retry direct API URL once.
-  if (
-    typeof window !== 'undefined' &&
-    window.location.hostname.endsWith('.azurestaticapps.net') &&
-    !base &&
-    (res.status === 404 || res.status === 405)
-  ) {
-    const directBase = normalizeApiBase(import.meta.env.VITE_API_URL)
-    if (directBase) {
-      const retry = await fetch(`${directBase}${path}`, {
-        method,
-        headers,
-        body: body !== undefined ? JSON.stringify(body) : undefined,
-        signal,
-      })
-      const retryData = await retry.json().catch(() => ({}))
-      if (!retry.ok) {
-        const retryMsg = retryData.message || `Request failed (${retry.status})`
-        throw new Error(retryMsg)
-      }
-      return retryData
+
+  const { res, data } = primary
+
+  // Retry once with alternate endpoint for common proxy/backend mismatch statuses.
+  if (res.status === 404 || res.status === 405 || res.status === 502 || res.status === 503 || res.status === 504) {
+    if (base && canTryProxy) {
+      const retry = await requestJson(path, { method, headers, body, signal })
+      if (retry.res.ok) return retry.data
+    } else if (!base && directBase) {
+      const retry = await requestJson(`${directBase}${path}`, { method, headers, body, signal })
+      if (retry.res.ok) return retry.data
     }
   }
+
   if (!res.ok) {
     const msg = data.message || `Request failed (${res.status})`
     throw new Error(msg)
