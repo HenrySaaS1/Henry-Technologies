@@ -1,5 +1,11 @@
 const TOKEN_KEY = 'henry_auth_token_v1'
 
+function normalizeApiBase(raw) {
+  const trimmed = String(raw || '').trim().replace(/\/$/, '')
+  // Common Azure hostname typo seen in deployment secrets.
+  return trimmed.replace('henry-dev-api-cvcpd', 'henry-dev-api-cycpd')
+}
+
 export function getApiBase() {
   // On Azure Static Web Apps, build injects a same-origin /api/* proxy to App Service
   // (see scripts/inject-swa-api-proxy.mjs + public/staticwebapp.config.json).
@@ -13,7 +19,7 @@ export function getApiBase() {
       '[henry] VITE_API_URL is missing. Set it in GitHub Actions (secret) for Azure Static Web Apps.',
     )
   }
-  return (fromEnv || 'http://localhost:5000').replace(/\/$/, '')
+  return normalizeApiBase(fromEnv || 'http://localhost:5000')
 }
 
 export function getToken() {
@@ -34,7 +40,8 @@ export async function apiJson(path, { method = 'GET', body, token, signal } = {}
   const headers = { 'Content-Type': 'application/json' }
   const t = token === undefined ? getToken() : token
   if (t) headers.Authorization = `Bearer ${t}`
-  const url = `${getApiBase()}${path}`
+  const base = getApiBase()
+  const url = `${base}${path}`
   let res
   try {
     res = await fetch(url, {
@@ -57,6 +64,29 @@ export async function apiJson(path, { method = 'GET', body, token, signal } = {}
     throw new Error(`Cannot reach API at ${where}.${hint}`)
   }
   const data = await res.json().catch(() => ({}))
+  // If same-origin /api proxy rejects non-GET methods (405/404), retry direct API URL once.
+  if (
+    typeof window !== 'undefined' &&
+    window.location.hostname.endsWith('.azurestaticapps.net') &&
+    !base &&
+    (res.status === 404 || res.status === 405)
+  ) {
+    const directBase = normalizeApiBase(import.meta.env.VITE_API_URL)
+    if (directBase) {
+      const retry = await fetch(`${directBase}${path}`, {
+        method,
+        headers,
+        body: body !== undefined ? JSON.stringify(body) : undefined,
+        signal,
+      })
+      const retryData = await retry.json().catch(() => ({}))
+      if (!retry.ok) {
+        const retryMsg = retryData.message || `Request failed (${retry.status})`
+        throw new Error(retryMsg)
+      }
+      return retryData
+    }
+  }
   if (!res.ok) {
     const msg = data.message || `Request failed (${res.status})`
     throw new Error(msg)
