@@ -529,49 +529,6 @@ function App() {
         </div>
       </section>
 
-      <section id="pricing" className="pricing-section">
-        <h2 className="pricing-title">Pricing</h2>
-        <p className="pricing-lead">
-          Choose the tier that matches your footprint. <strong>Get started</strong> on a card runs the same new-client
-          flow: account → tenant → product modules (pre-filled for that tier; you can adjust before checkout). All plans
-          share the same HENRY workspace layout.
-        </p>
-        <div className="pricing-grid">
-          {pricingTiers.map((tier) => (
-            <article
-              key={tier.name}
-              className={`pricing-card${tier.highlighted ? ' pricing-card--featured' : ''}`}
-            >
-              {tier.highlighted ? <span className="pricing-ribbon">Popular</span> : null}
-              <h3 className="pricing-tier-name">{tier.name}</h3>
-              <p className="pricing-price">{tier.price}</p>
-              <p className="pricing-best-for">
-                <span className="pricing-best-label">Best for</span> {tier.bestFor}
-              </p>
-              {tier.inherit ? <p className="pricing-inherit">{tier.inherit}</p> : null}
-              <div className="pricing-body">
-                {tier.blocks.map((block, i) => (
-                  <div key={`${tier.name}-${i}`}>{renderPricingBlock(block)}</div>
-                ))}
-              </div>
-              <button
-                type="button"
-                className="btn-pricing-cta"
-                onClick={() =>
-                  AUTH_BYPASS ? enterBypassWorkspace() : openAuthModal('signup', { planId: tier.planId })
-                }
-              >
-                {AUTH_BYPASS ? 'Open workspace' : 'Get started'}
-              </button>
-            </article>
-          ))}
-        </div>
-        <p className="pricing-footnote">
-          Volume pricing and annual billing available. <a href="#request-demo">Request a demo</a> or{' '}
-          <a href="#contact">contact sales</a> for a tailored quote.
-        </p>
-      </section>
-
       {showSignup ? (
         <section
           className="signup-overlay"
@@ -1069,6 +1026,49 @@ function App() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section id="pricing" className="pricing-section">
+        <h2 className="pricing-title">Pricing</h2>
+        <p className="pricing-lead">
+          Choose the tier that matches your footprint. <strong>Get started</strong> on a card runs the same new-client
+          flow: account → tenant → product modules (pre-filled for that tier; you can adjust before checkout). All plans
+          share the same HENRY workspace layout.
+        </p>
+        <div className="pricing-grid">
+          {pricingTiers.map((tier) => (
+            <article
+              key={tier.name}
+              className={`pricing-card${tier.highlighted ? ' pricing-card--featured' : ''}`}
+            >
+              {tier.highlighted ? <span className="pricing-ribbon">Popular</span> : null}
+              <h3 className="pricing-tier-name">{tier.name}</h3>
+              <p className="pricing-price">{tier.price}</p>
+              <p className="pricing-best-for">
+                <span className="pricing-best-label">Best for</span> {tier.bestFor}
+              </p>
+              {tier.inherit ? <p className="pricing-inherit">{tier.inherit}</p> : null}
+              <div className="pricing-body">
+                {tier.blocks.map((block, i) => (
+                  <div key={`${tier.name}-${i}`}>{renderPricingBlock(block)}</div>
+                ))}
+              </div>
+              <button
+                type="button"
+                className="btn-pricing-cta"
+                onClick={() =>
+                  AUTH_BYPASS ? enterBypassWorkspace() : openAuthModal('signup', { planId: tier.planId })
+                }
+              >
+                {AUTH_BYPASS ? 'Open workspace' : 'Get started'}
+              </button>
+            </article>
+          ))}
+        </div>
+        <p className="pricing-footnote">
+          Volume pricing and annual billing available. <a href="#request-demo">Request a demo</a> or{' '}
+          <a href="#contact">contact sales</a> for a tailored quote.
+        </p>
       </section>
 
       <section id="about" className="about about-last">
