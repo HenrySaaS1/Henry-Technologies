@@ -14,6 +14,19 @@ import pharmaImage from './assets/uploads/img-8.png'
 import medicalDevicesImage from './assets/uploads/img-10.png'
 import aboutHenryImage from './assets/about-henry.png'
 
+const PRODUCT_IMAGES = {
+  snapshot:
+    'https://henrysaas.com/wp-content/uploads/2026/04/Sleek-laptop-showcasing-corporate-dashboard-UI-1.webp',
+  systems:
+    'https://henrysaas.com/wp-content/uploads/2026/04/Laptop-displaying-HENRY-dashboard-interface.webp',
+  safety:
+    'https://henrysaas.com/wp-content/uploads/2026/04/Workplace-safety-dashboard-on-laptop-screen.webp',
+  security:
+    'https://henrysaas.com/wp-content/uploads/2026/04/Modern-security-dashboard-on-laptop-screen.webp',
+  myhenry:
+    'https://henrysaas.com/wp-content/uploads/2026/04/SaaS-dashboard-mockup-on-laptop-screen.webp',
+}
+
 /** Default HENRY modules suggested when registering from a pricing tier. */
 const PLAN_REGISTRATION_DEFAULTS = {
   basic: { productIds: ['core'] },
@@ -26,6 +39,7 @@ const PLAN_DISPLAY = {
   plus: { label: 'Plus', price: '$200 / month' },
   premium: { label: 'Premium', price: '$300 / month' },
 }
+const BOOK_DEMO_URL = 'https://larrya-dostiglobal61.zohobookings.com/#/yourbusinessname'
 
 function defaultOrganizationFromEmail(email) {
   const norm = String(email).trim().toLowerCase()
@@ -78,29 +92,147 @@ const solutions = [
 
 const products = [
   {
+    slug: 'snapshot',
     title: 'Snapshot',
     text: 'Get a real-time pulse of your operations in seconds. Track key updates across business units with insights refreshed every few minutes, so you are always in the loop.',
-    image: laptopTeamImage,
+    image: PRODUCT_IMAGES.snapshot,
   },
   {
+    slug: 'systems',
     title: 'Systems',
     text: 'A unified view of your entire plant, powered by IIoT. Monitor machines, equipment, and workflows in real time to optimize performance and reduce downtime.',
-    image: laptopTeamImage,
+    image: PRODUCT_IMAGES.systems,
   },
   {
+    slug: 'safety',
     title: 'Safety',
     text: 'Proactively detect and prevent safety risks on the factory floor. From boundary violations to unsafe behaviors, stay compliant and protect your workforce at all times.',
-    image: laptopTeamImage,
+    image: PRODUCT_IMAGES.safety,
   },
   {
+    slug: 'security',
     title: 'Security',
     text: 'Keep your facility secure with intelligent monitoring. Detect anomalies like unauthorized access, unlocked doors, or suspicious activity, before they become problems.',
-    image: laptopTeamImage,
+    image: PRODUCT_IMAGES.security,
   },
   {
+    slug: 'myhenry-agent',
     title: 'MyHenry Agent',
     text: 'Your personalised AI agent trained on your business. Get instant answers, insights, and recommendations across operations, HR, finance, and more, tailored to your workflows.',
-    image: laptopTeamImage,
+    image: PRODUCT_IMAGES.myhenry,
+  },
+]
+
+const productDetails = [
+  {
+    slug: 'snapshot',
+    title: 'Snapshot',
+    intro:
+      'HENRY Snapshot gives you a quick, real-time overview of your operations. Stay updated with key metrics across business units within minutes, enabling faster and smarter decision-making.',
+    body:
+      'Whether you’re monitoring production or tracking performance, Snapshot ensures you always have the latest insights at a glance.',
+    bullets: [
+      'Live Operational Updates: Get real-time data refreshed at defined intervals',
+      'Quick KPI Overview: Track critical metrics without deep dives',
+      'Multi-Unit Visibility: Monitor multiple business units from one place.',
+      'Trend Indicators: Spot patterns and anomalies instantly.',
+      'Action-Ready Insights: Make faster decisions with concise data.',
+    ],
+    benefits: [
+      'Improve operational efficiency',
+      'Reduce downtime and errors',
+      'Make faster, smarter decisions',
+      'Gain full control over business performance',
+    ],
+    image: PRODUCT_IMAGES.snapshot,
+  },
+  {
+    slug: 'systems',
+    title: 'Systems',
+    intro:
+      'HENRY Systems connects your entire plant through IIoT, providing a unified operational view. From machines to workflows, monitor everything in real time to optimise efficiency and reduce downtime.',
+    body:
+      'Designed for modern manufacturing, Systems brings clarity and control to complex operations.',
+    bullets: [
+      'Machine Monitoring: Track equipment performance in real time.',
+      'IIoT Integration: Seamlessly connect sensors, PLCs, and devices.',
+      'Downtime Analysis: Identify and reduce operational inefficiencies.',
+      'Centralised Dashboard: View all systems in one unified interface.',
+      'Performance Optimisation: Improve output with data-driven insights.',
+    ],
+    benefits: [
+      'Increase production efficiency',
+      'Identify bottlenecks quickly',
+      'Reduce operational costs',
+      'Improve decision-making with accurate data',
+    ],
+    image: PRODUCT_IMAGES.systems,
+  },
+  {
+    slug: 'safety',
+    title: 'Safety',
+    intro:
+      'HENRY Safety ensures a safer workplace through intelligent monitoring and alerts. Detects risks proactively and enforce safety protocols across your factory floor.',
+    body:
+      'From compliance to prevention, safety helps protect both people and operations.',
+    bullets: [
+      'Boundary Violation Detection: Identify safety line breaches instantly.',
+      'Unsafe Behaviour Alerts: Monitor and flag risky actions.',
+      'Real-time Notifications: Get immediate alerts for safety issues.',
+      'Compliance Monitoring: Ensure adherence to safety standards.',
+      'Incident Prevention: Reduce risks before they escalate.',
+    ],
+    benefits: [
+      'Save time and resources',
+      'Reduce human errors',
+      'Increase productivity',
+      'Scale operations effortlessly',
+    ],
+    image: PRODUCT_IMAGES.safety,
+  },
+  {
+    slug: 'security',
+    title: 'Security',
+    intro:
+      'HENRY Security provides advanced monitoring to safeguard your facility. Detects threats, prevents unauthorised access, and maintains full control over your premises.',
+    body:
+      'Built for modern industrial environments, Security keeps your operations protected 24/7.',
+    bullets: [
+      'Access Monitoring: Detect unauthorised entry in real time.',
+      'Anomaly Detection: Identify unusual activities instantly.',
+      'Smart Surveillance Integration: Connect cameras and sensors seamlessly.',
+      'Alert System: Get notified of security breaches immediately.',
+      '24/7 Protection: Continuous monitoring for complete peace of mind.',
+    ],
+    benefits: [
+      'Improve operational efficiency',
+      'Reduce downtime and errors',
+      'Make faster, smarter decisions',
+      'Gain full control over business performance',
+    ],
+    image: PRODUCT_IMAGES.security,
+  },
+  {
+    slug: 'myhenry-agent',
+    title: 'MyHenry Agent',
+    intro:
+      'MyHenry is your personalised AI agent trained specifically on your business. It delivers instant answers, insights, and recommendations across all functions, helping teams work smarter and faster.',
+    body:
+      'From operations to strategy, MyHenry becomes your intelligent decision-making partner.',
+    bullets: [
+      'AI-Powered Assistance: Get instant answers to business queries.',
+      'Custom Knowledge Base: Trained on your workflows, data, and processes.',
+      'Cross-Functional Support: Covers HR, finance, operations, and more.',
+      'Smart Recommendations: Receive actionable insights in real time.',
+      'Continuous Learning: Improves over time with usage and data.',
+    ],
+    benefits: [
+      'Improve operational efficiency',
+      'Reduce downtime and errors',
+      'Make faster, smarter decisions',
+      'Gain full control over business performance',
+    ],
+    image: PRODUCT_IMAGES.myhenry,
   },
 ]
 
@@ -114,11 +246,11 @@ const caseStudies = [
       intro:
         'Precision, compliance, and zero-defect manufacturing are critical in medical device production. A leading manufacturer partnered with HENRY to gain real-time visibility across assembly lines and ensure consistent product quality.',
       body:
-        'With Snapshot and Systems, they monitored live production metrics and equipment performance, while Safety ensured adherence to operational protocols. MyHenry Agent enabled teams to instantly access insights and resolve issues faster.',
+        'With HENRY Core and Factory Analytics, they monitored every stage of production, detected defects instantly, and maintained strict regulatory standards without slowing down operations.',
       highlights: [
         '25% faster inspection cycles',
-        '30% reduction in production defects',
-        'Full compliance with ISO and regulatory standards',
+        '32% reduction in production defects',
+        'Full compliance with ISO standards',
       ],
     },
   },
@@ -129,13 +261,13 @@ const caseStudies = [
     details: {
       heading: 'Healthcare',
       intro:
-        'Healthcare facilities require real-time coordination, operational efficiency, and strict safety monitoring. A multi-specialty hospital network implemented HENRY to optimise daily operations and improve response times.',
+        'A fast-growing healthcare provider faced challenges in managing patient flow, optimizing equipment usage, and maintaining operational efficiency across multiple locations.',
       body:
-        'Using Snapshot, they gained instant updates across departments, while Security and Safety ensured compliance and risk monitoring. MyHenry Agent provided staff with on-demand insights for faster, data-driven decisions.',
+        'By implementing HENRY intelligent analytics and automation tools, they gained real-time insights into hospital operations, streamlined workflows, and improved decision-making across departments.',
       highlights: [
-        '30% improvement in operational efficiency',
-        '20% faster response time to critical alerts',
-        'Enhanced safety, compliance, and patient care',
+        '40% increase in operational efficiency',
+        '30% reduction in patient wait times',
+        'Centralized monitoring across all facilities',
       ],
     },
   },
@@ -144,15 +276,15 @@ const caseStudies = [
     text: 'Ensuring compliance, batch traceability, and contamination-free production with real-time monitoring.',
     image: pharmaImage,
     details: {
-      heading: 'Pharmaceutical',
+      heading: 'Pharmaceuticals',
       intro:
-        'Pharmaceutical manufacturing demands complete traceability, strict compliance, and consistent quality across batches. A pharmaceutical company adopted HENRY to gain full visibility and control over production processes.',
+        'Maintaining compliance, ensuring batch traceability, and preventing contamination are top priorities in pharmaceutical manufacturing. One company leveraged HENRY to digitize their monitoring systems and automate compliance reporting.',
       body:
-        'With Systems and Snapshot, they tracked production in real time, while Safety ensured regulatory adherence and Security monitored facility access and anomalies. MyHenry Agent enabled instant querying of production data and compliance status.',
+        'With real-time tracking and intelligent alerts, they improved production safety while significantly reducing manual workload.',
       highlights: [
-        '28% reduction in batch inconsistencies',
-        'Real-time production monitoring and traceability',
-        'Compliance with FDA, GMP, and global standards',
+        '50% faster compliance reporting',
+        'Zero contamination incidents',
+        'Improved batch traceability and audit readiness',
       ],
     },
   },
@@ -325,8 +457,12 @@ function App() {
   const isProductsPage =
     typeof window !== 'undefined' &&
     /\/products\/?$/.test(window.location.pathname)
+  const isCaseStudiesPage =
+    typeof window !== 'undefined' &&
+    /\/case-studies\/?$/.test(window.location.pathname)
 
   const [showSignup, setShowSignup] = useState(false)
+  const [showCaseDemo, setShowCaseDemo] = useState(false)
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -346,6 +482,18 @@ function App() {
   const [signupFromPlan, setSignupFromPlan] = useState(null)
   const [signupDashTab, setSignupDashTab] = useState('dashboard')
   const [currentUser, setCurrentUser] = useState(() => (AUTH_BYPASS ? bypassDemoUser() : null))
+
+  useEffect(() => {
+    if (!isProductsPage || typeof window === 'undefined') return
+    const hash = String(window.location.hash || '').replace(/^#/, '')
+    if (!hash) return
+    const el = document.getElementById(hash)
+    if (el) {
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 40)
+    }
+  }, [isProductsPage])
 
   useEffect(() => {
     if (AUTH_BYPASS) return
@@ -379,6 +527,12 @@ function App() {
 
   const enterBypassWorkspace = () => {
     setCurrentUser(bypassDemoUser())
+  }
+
+  const openBookDemo = () => {
+    if (typeof window !== 'undefined') {
+      window.location.assign(BOOK_DEMO_URL)
+    }
   }
 
   const updateField = (event) => {
@@ -418,6 +572,20 @@ function App() {
 
   const closeCaseStudyModal = () => {
     setActiveCaseStudy(null)
+  }
+
+  const openCaseDemoModal = (caseStudyTitle) => {
+    setStatus('')
+    setForm((current) => ({
+      ...current,
+      notes: current.notes || `Interested in "${caseStudyTitle}" case study.`,
+    }))
+    setShowCaseDemo(true)
+  }
+
+  const closeCaseDemoModal = () => {
+    setShowCaseDemo(false)
+    setStatus('')
   }
 
   const openAuthModal = (mode = 'signup', options = {}) => {
@@ -579,12 +747,92 @@ function App() {
             <img className="product-image" src={item.image} alt={item.title} />
             <h3>{item.title}</h3>
             <p>{item.text}</p>
-            <button type="button" className="btn-dark small btn-product-learn">
+            <button
+              type="button"
+              className="btn-dark small btn-product-learn"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.location.assign(`/products#${item.slug}`)
+                }
+              }}
+            >
               Learn More
             </button>
           </article>
         ))}
       </div>
+    </section>
+  )
+
+  const productsDetailsSection = (
+    <section className="products-detailed-page" aria-label="Detailed products">
+      {productDetails.map((item, idx) => (
+        <article
+          id={item.slug}
+          key={item.title}
+          className={`product-detail-row${idx % 2 === 1 ? ' reverse' : ''}`}
+        >
+          <div className="product-detail-media">
+            <div className="product-detail-visual">
+              <img src={item.image} alt={item.title} />
+              <div className="product-benefits-overlay">
+                <h4>Benefits</h4>
+                <ul>
+                  {(item.benefits || []).map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <button type="button" className="btn-dark small" onClick={openBookDemo}>
+              Book a Demo
+            </button>
+          </div>
+          <div className="product-detail-content">
+            <h3>{item.title}</h3>
+            <p>{item.intro}</p>
+            <p>{item.body}</p>
+            <ul>
+              {item.bullets.map((line) => (
+                <li key={line}>
+                  <span aria-hidden="true">☑</span> {line}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </section>
+  )
+
+  const caseStudiesDetailsSection = (
+    <section className="case-studies-detailed-page" aria-label="Detailed case studies">
+      {caseStudies.map((item, idx) => (
+        <article
+          id={`case-${item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+          key={item.title}
+          className={`case-study-detail-row${idx % 2 === 1 ? ' reverse' : ''}`}
+        >
+          <div className="case-study-detail-media">
+            <img src={item.image} alt={item.title} />
+            <button type="button" className="btn-dark small" onClick={() => openCaseDemoModal(item.title)}>
+              Learn More
+            </button>
+          </div>
+          <div className="case-study-detail-content">
+            <h3>{item.details.heading}</h3>
+            <p>{item.details.intro}</p>
+            <p>{item.details.body}</p>
+            <ul>
+              {item.details.highlights.map((line) => (
+                <li key={line}>
+                  <span aria-hidden="true">☑</span> {line}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      ))}
     </section>
   )
 
@@ -663,7 +911,7 @@ function App() {
     </section>
   )
 
-  if (currentUser && !isPricingPage && !isProductsPage) {
+  if (currentUser && !isPricingPage && !isProductsPage && !isCaseStudiesPage) {
     return (
       <div className="page page--client">
         <ClientDashboard user={currentUser} onSignOut={signOut} />
@@ -681,7 +929,7 @@ function App() {
           </div>
           <nav className="menu">
             <a href="/#products">PRODUCTS</a>
-            <a href="/#case-studies">CASE STUDIES</a>
+            <a href="/case-studies">CASE STUDIES</a>
             <a href="/#about">ABOUT</a>
             <a href="/pricing">PRICING</a>
             <a href="/#contact">CONTACT</a>
@@ -720,22 +968,121 @@ function App() {
           </div>
           <nav className="menu">
             <a href="/products">PRODUCTS</a>
-            <a href="/#request-demo">REQUEST A DEMO</a>
-            <a href="/#contact">CONTACT</a>
+            <a href="/case-studies">CASE STUDIES</a>
+            <a href="/#about">ABOUT</a>
             <a href="/pricing">PRICING</a>
+            <a href="/#contact">CONTACT</a>
           </nav>
           <div className="topbar-actions">
-            <a className="btn-contact-nav" href="#request-demo">
-              Request a demo
-            </a>
+            {!AUTH_BYPASS ? (
+              <button type="button" className="btn-dark" onClick={() => openAuthModal('signin')}>
+                Login
+              </button>
+            ) : null}
           </div>
         </header>
-        {productsSection}
+        {productsDetailsSection}
         {requestDemoSection}
         {contactSection}
         <footer className="site-footer" aria-label="Site footer">
           <p>@2026 Henry , Inc. All rights reserved</p>
         </footer>
+      </div>
+    )
+  }
+
+  if (isCaseStudiesPage) {
+    return (
+      <div className="page page-case-studies">
+        <header className="topbar">
+          <div className="logo">
+            <span className="logo-main">HENRY</span>
+            <span className="logo-sub">SMART BUSINESS TOOLS</span>
+          </div>
+          <nav className="menu">
+            <a href="/products">PRODUCTS</a>
+            <a href="/case-studies">CASE STUDIES</a>
+            <a href="/#about">ABOUT</a>
+            <a href="/pricing">PRICING</a>
+            <a href="/#contact">CONTACT</a>
+          </nav>
+          <div className="topbar-actions">
+            {!AUTH_BYPASS ? (
+              <button type="button" className="btn-dark" onClick={() => openAuthModal('signin')}>
+                Login
+              </button>
+            ) : null}
+          </div>
+        </header>
+        <section className="case-studies-page-top-strip" aria-label="Case Studies page title">
+          <h1>CASE STUDIES</h1>
+        </section>
+        {caseStudiesDetailsSection}
+        <footer className="site-footer" aria-label="Site footer">
+          <p>@2026 Henry , Inc. All rights reserved</p>
+        </footer>
+        {showCaseDemo ? (
+          <section
+            className="case-demo-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="case-demo-title"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) closeCaseDemoModal()
+            }}
+          >
+            <div className="case-demo-modal">
+              <button
+                type="button"
+                className="case-demo-close"
+                aria-label="Close"
+                onClick={closeCaseDemoModal}
+              >
+                ×
+              </button>
+              <h3 id="case-demo-title">Let&apos;s Talk!</h3>
+              <form className="case-demo-form" onSubmit={submitContact}>
+                <label>
+                  Name <span aria-hidden="true">*</span>
+                  <input name="name" value={form.name} onChange={updateField} required />
+                </label>
+                <label>
+                  Email <span aria-hidden="true">*</span>
+                  <input name="email" type="email" value={form.email} onChange={updateField} required />
+                </label>
+                <label>
+                  Company Name
+                  <input name="companyName" value={form.companyName} onChange={updateField} />
+                </label>
+                <label>
+                  Area of Interest <span aria-hidden="true">*</span>
+                  <select name="interest" value={form.interest} onChange={updateField}>
+                    <option>Smart Monitoring Setup</option>
+                    <option>Real-time Data &amp; Dashboard</option>
+                    <option>System Integration (Machines, Devices, APIs)</option>
+                    <option>Data Processing &amp; Cloud Setup</option>
+                    <option>Performance Optimization</option>
+                    <option>Custom SaaS Development</option>
+                    <option>AI &amp; Predictive Insights</option>
+                    <option>Consultation &amp; Strategy</option>
+                  </select>
+                </label>
+                <label className="case-demo-notes">
+                  Notes
+                  <textarea
+                    name="notes"
+                    rows="4"
+                    value={form.notes}
+                    onChange={updateField}
+                    placeholder="TELL US BRIEFLY ABOUT YOUR REQUIREMENT..."
+                  />
+                </label>
+                <button type="submit" className="case-demo-submit">Get Free Consultation</button>
+                {status ? <p className="case-demo-status">{status}</p> : null}
+              </form>
+            </div>
+          </section>
+        ) : null}
       </div>
     )
   }
@@ -748,8 +1095,8 @@ function App() {
           <span className="logo-sub">SMART BUSINESS TOOLS</span>
         </div>
         <nav className="menu">
-          <a href="#products">PRODUCTS</a>
-          <a href="#case-studies">CASE STUDIES</a>
+          <a href="/products">PRODUCTS</a>
+          <a href="/case-studies">CASE STUDIES</a>
           <a href="/pricing">PRICING</a>
           <a href="#about">ABOUT</a>
           <a href="#contact">CONTACT</a>
