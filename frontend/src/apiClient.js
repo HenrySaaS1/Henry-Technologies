@@ -7,10 +7,15 @@ function normalizeApiBase(raw) {
 }
 
 export function getApiBase() {
-  // On Azure Static Web Apps, build injects a same-origin /api/* proxy to App Service
-  // (see scripts/inject-swa-api-proxy.mjs + public/staticwebapp.config.json).
-  if (typeof window !== 'undefined' && window.location.hostname.endsWith('.azurestaticapps.net')) {
-    return ''
+  // In production hosting (SWA default domain or custom domain), prefer same-origin /api proxy.
+  // This avoids direct App Service reachability/CORS/DNS issues from browsers.
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname
+    const isLocalHost =
+      host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host.endsWith('.local')
+    if (!isLocalHost) {
+      return ''
+    }
   }
 
   const fromEnv = import.meta.env.VITE_API_URL
