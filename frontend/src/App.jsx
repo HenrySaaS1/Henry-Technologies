@@ -817,7 +817,7 @@ function App() {
               className="btn-dark small btn-product-learn"
               onClick={() => {
                 if (typeof window !== 'undefined') {
-                  window.location.assign(`/products#${item.slug}`)
+                  window.open(`/products#${item.slug}`, '_blank', 'noopener,noreferrer')
                 }
               }}
             >
@@ -903,7 +903,7 @@ function App() {
 
   const requestDemoSection = (
     <section id="request-demo" className="request-demo">
-      <h2>Ready to Transform Your Manufacturing?</h2>
+      <h2>Ready to Transform Your Business?</h2>
       <p className="request-demo-intro">
         We&apos;d love to hear from you. Fill out the form below and our team will get back to you shortly.
       </p>
@@ -934,6 +934,32 @@ function App() {
     </section>
   )
 
+  const requestDemoIntroSection = (
+    <section className="request-demo-intro-block">
+      <h2>Request a Demo</h2>
+      <p>
+        See Henry in action. Book a personalized demo to explore how Henry can help you monitor operations, improve
+        visibility, and make faster decisions across your business.
+      </p>
+      <button
+        type="button"
+        className="btn-primary"
+        onClick={() => {
+          if (typeof window !== 'undefined') {
+            const el = document.getElementById('request-demo')
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            } else {
+              window.location.assign('/#request-demo')
+            }
+          }
+        }}
+      >
+        Request a demo
+      </button>
+    </section>
+  )
+
   const contactSection = (
     <section id="contact" className="contact">
       <h2>Contact us</h2>
@@ -952,7 +978,9 @@ function App() {
             <div className="contact-info-row">
               <dt>Email</dt>
               <dd>
-                <a href="mailto:info@henrysaas.com">info@Henrysaas.com</a>
+                <a href="mailto:info@goaskhenry.com">info@goaskhenry.com</a>
+                {' \u00b7 '}
+                <a href="mailto:larrya@goaskhenry.com">larrya@goaskhenry.com</a>
               </dd>
             </div>
             <div className="contact-info-row">
@@ -988,11 +1016,20 @@ function App() {
     return (
       <div className="page">
         <header className="topbar">
-          <div className="logo">
+          <button
+            type="button"
+            className="logo"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.location.assign('/')
+              }
+            }}
+          >
             <span className="logo-main">HENRY</span>
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
-          </div>
+          </button>
           <nav className="menu">
+            <a href="/">HOME</a>
             <a href="/#products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
             <a href="/#about">ABOUT</a>
@@ -1016,6 +1053,9 @@ function App() {
           </div>
         </header>
         {pricingSection}
+        {requestDemoIntroSection}
+        {requestDemoSection}
+        {contactSection}
         <footer className="site-footer" aria-label="Site footer">
           <p>@2026 Henry , Inc. All rights reserved</p>
         </footer>
@@ -1027,11 +1067,20 @@ function App() {
     return (
       <div className="page">
         <header className="topbar">
-          <div className="logo">
+          <button
+            type="button"
+            className="logo"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.location.assign('/')
+              }
+            }}
+          >
             <span className="logo-main">HENRY</span>
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
-          </div>
+          </button>
           <nav className="menu">
+            <a href="/">HOME</a>
             <a href="/products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
             <a href="/#about">ABOUT</a>
@@ -1039,14 +1088,23 @@ function App() {
             <a href="/#contact">CONTACT</a>
           </nav>
           <div className="topbar-actions">
+            <a className="btn-contact-nav" href="/#request-demo">
+              Request a demo
+            </a>
             {!AUTH_BYPASS ? (
-              <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
-                Sign in
-              </button>
+              <>
+                <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
+                  Sign in
+                </button>
+                <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
+                  Sign up
+                </button>
+              </>
             ) : null}
           </div>
         </header>
         {productsDetailsSection}
+        {requestDemoIntroSection}
         {requestDemoSection}
         {contactSection}
         <footer className="site-footer" aria-label="Site footer">
@@ -1060,11 +1118,20 @@ function App() {
     return (
       <div className="page page-case-studies">
         <header className="topbar">
-          <div className="logo">
+          <button
+            type="button"
+            className="logo"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.location.assign('/')
+              }
+            }}
+          >
             <span className="logo-main">HENRY</span>
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
-          </div>
+          </button>
           <nav className="menu">
+            <a href="/">HOME</a>
             <a href="/products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
             <a href="/#about">ABOUT</a>
@@ -1072,10 +1139,18 @@ function App() {
             <a href="/#contact">CONTACT</a>
           </nav>
           <div className="topbar-actions">
+            <a className="btn-contact-nav" href="/#request-demo">
+              Request a demo
+            </a>
             {!AUTH_BYPASS ? (
-              <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
-                Sign in
-              </button>
+              <>
+                <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
+                  Sign in
+                </button>
+                <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
+                  Sign up
+                </button>
+              </>
             ) : null}
           </div>
         </header>
@@ -1083,6 +1158,9 @@ function App() {
           <h1>CASE STUDIES</h1>
         </section>
         {caseStudiesDetailsSection}
+        {requestDemoIntroSection}
+        {requestDemoSection}
+        {contactSection}
         <footer className="site-footer" aria-label="Site footer">
           <p>@2026 Henry , Inc. All rights reserved</p>
         </footer>
@@ -1155,11 +1233,20 @@ function App() {
   return (
     <div className="page">
       <header className="topbar">
-        <div className="logo">
+        <button
+          type="button"
+          className="logo"
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              window.location.assign('/')
+            }
+          }}
+        >
           <span className="logo-main">HENRY</span>
           <span className="logo-sub">SMART BUSINESS TOOLS</span>
-        </div>
+        </button>
         <nav className="menu">
+          <a href="/">HOME</a>
           <a href="/products">PRODUCTS</a>
           <a href="/case-studies">CASE STUDIES</a>
           <a href="/pricing">PRICING</a>
@@ -1679,22 +1766,27 @@ function App() {
       <section id="case-studies" className="case-studies">
         <h2>CASE STUDIES</h2>
         <div className="card-grid three">
-          {caseStudies.map((item) => (
-            <article key={item.title} className="card">
-              <img className="case-image" src={item.image} alt={item.title} />
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-              <button
-                type="button"
-                className="btn-dark small"
-                onClick={() => {
-                  if (item.details) setActiveCaseStudy(item.details)
-                }}
-              >
-                Learn More
-              </button>
-            </article>
-          ))}
+          {caseStudies.map((item) => {
+            const slug = `case-${item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+            return (
+              <article key={item.title} className="card">
+                <img className="case-image" src={item.image} alt={item.title} />
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+                <button
+                  type="button"
+                  className="btn-dark small"
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      window.open(`/case-studies#${slug}`, '_blank', 'noopener,noreferrer')
+                    }
+                  }}
+                >
+                  Learn More
+                </button>
+              </article>
+            )
+          })}
         </div>
       </section>
 
@@ -1730,9 +1822,9 @@ function App() {
         </div>
         <div className="about-content">
           <h2>ABOUT HENRY</h2>
-          <h3>Smarter Manufacturing Starts Here</h3>
+          <h3>Smarter Business Starts Here</h3>
           <p>
-            HENRY is built to help manufacturers make faster, smarter decisions using
+            HENRY is built to help your business make faster, smarter decisions using
             real-time data and AI-powered insights. From monitoring operations to
             optimizing performance, everything you need is in one powerful platform.
           </p>
@@ -1744,6 +1836,7 @@ function App() {
         </div>
       </section>
 
+      {requestDemoIntroSection}
       {requestDemoSection}
       {contactSection}
 
