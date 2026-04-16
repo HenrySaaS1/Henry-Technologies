@@ -1033,6 +1033,7 @@ function App() {
             <a href="/#products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
             <a href="/pricing">PRICING</a>
+            <a href="/#about">ABOUT</a>
             <a href="/#contact">CONTACT</a>
           </nav>
           <div className="topbar-actions">
@@ -1083,6 +1084,7 @@ function App() {
             <a href="/products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
             <a href="/pricing">PRICING</a>
+            <a href="/#about">ABOUT</a>
             <a href="/#contact">CONTACT</a>
           </nav>
           <div className="topbar-actions">
@@ -1133,6 +1135,7 @@ function App() {
             <a href="/products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
             <a href="/pricing">PRICING</a>
+            <a href="/#about">ABOUT</a>
             <a href="/#contact">CONTACT</a>
           </nav>
           <div className="topbar-actions">
@@ -1247,6 +1250,7 @@ function App() {
           <a href="/products">PRODUCTS</a>
           <a href="/case-studies">CASE STUDIES</a>
           <a href="/pricing">PRICING</a>
+          <a href="#about">ABOUT</a>
           <a href="#contact">CONTACT</a>
         </nav>
         <div className="topbar-actions">
