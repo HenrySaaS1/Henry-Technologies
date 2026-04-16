@@ -2001,6 +2001,22 @@ h3 {
   flex-shrink: 0;
 }
 
+.signup-bailout {
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: transparent;
+  color: rgba(226, 232, 255, 0.86);
+  border-radius: 10px;
+  padding: 0.66rem 0.9rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.signup-bailout:hover {
+  background: rgba(148, 163, 184, 0.1);
+}
+
 .signup-status-new {
   margin: 0.5rem 0 0;
   font-size: 0.85rem;
@@ -4747,6 +4763,8 @@ h3 {
 @media (max-width: 900px) {
   .signup-modal {
     max-height: none;
+    width: min(96vw, 480px);
+    overflow: visible;
   }
 
   .signup-modal-grid {
@@ -4754,8 +4772,7 @@ h3 {
   }
 
   .signup-hero {
-    min-height: 280px;
-    padding: 1.5rem 1.1rem;
+    display: none;
   }
 
   .signup-dashboard-mock {
@@ -4763,7 +4780,19 @@ h3 {
   }
 
   .signup-panel {
-    padding: 1.25rem 1rem 1.5rem;
+    padding: 1rem 0.85rem 1.2rem;
+  }
+
+  .signup-glass {
+    max-width: 100%;
+    padding: 1.15rem 0.95rem 1rem;
+  }
+
+  .signup-close {
+    top: -0.2rem;
+    right: 0.1rem;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(148, 163, 184, 0.45);
   }
 
   .menu {

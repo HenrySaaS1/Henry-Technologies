@@ -589,6 +589,13 @@ function App() {
     setSignupForm({ email: '', password: '', confirmPassword: '' })
   }
 
+  const backToHomeFromSignup = () => {
+    closeSignupModal()
+    if (typeof window !== 'undefined') {
+      window.location.assign('/')
+    }
+  }
+
   const closeCaseStudyModal = () => {
     setActiveCaseStudy(null)
   }
@@ -1738,6 +1745,9 @@ function App() {
                           </svg>
                           Continue with Google
                         </button>
+                        <button type="button" className="signup-bailout" onClick={backToHomeFromSignup}>
+                          Maybe later — Back to Home
+                        </button>
                         {signupStatus ? (
                           <p className={`signup-status-new ${signupStatusTone(signupStatus)}`}>{signupStatus}</p>
                         ) : null}
@@ -1815,6 +1825,9 @@ function App() {
                             />
                           </svg>
                           Continue with Google
+                        </button>
+                        <button type="button" className="signup-bailout" onClick={backToHomeFromSignup}>
+                          Maybe later — Back to Home
                         </button>
                         {signupStatus ? (
                           <p className={`signup-status-new ${signupStatusTone(signupStatus)}`}>{signupStatus}</p>
