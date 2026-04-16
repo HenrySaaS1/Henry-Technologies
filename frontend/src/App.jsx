@@ -1032,7 +1032,6 @@ function App() {
             <a href="/">HOME</a>
             <a href="/#products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
-            <a href="/#about">ABOUT</a>
             <a href="/pricing">PRICING</a>
             <a href="/#contact">CONTACT</a>
           </nav>
@@ -1083,7 +1082,6 @@ function App() {
             <a href="/">HOME</a>
             <a href="/products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
-            <a href="/#about">ABOUT</a>
             <a href="/pricing">PRICING</a>
             <a href="/#contact">CONTACT</a>
           </nav>
@@ -1134,7 +1132,6 @@ function App() {
             <a href="/">HOME</a>
             <a href="/products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
-            <a href="/#about">ABOUT</a>
             <a href="/pricing">PRICING</a>
             <a href="/#contact">CONTACT</a>
           </nav>
@@ -1250,7 +1247,6 @@ function App() {
           <a href="/products">PRODUCTS</a>
           <a href="/case-studies">CASE STUDIES</a>
           <a href="/pricing">PRICING</a>
-          <a href="#about">ABOUT</a>
           <a href="#contact">CONTACT</a>
         </nav>
         <div className="topbar-actions">
@@ -1283,7 +1279,7 @@ function App() {
       >
         <div className="overlay">
           <h1>When You Need Answers Now<br />ASK HENRY</h1>
-          <p>Get real-time insights, reduce downtime, and make smarter manufacturing decisions instantly.</p>
+          <p>Get real-time insights, reduce downtime, and make smarter business decisions instantly.</p>
           <button
             className="btn-primary"
             onClick={() => (AUTH_BYPASS ? enterBypassWorkspace() : openAuthModal('signup'))}
@@ -1749,7 +1745,7 @@ function App() {
       ) : null}
 
       <section className="solutions">
-        <h2>Smart Manufacturing Solutions with Real-Time Data & Insights</h2>
+        <h2>Smart Business Solutions with Real-Time Data & Insights</h2>
         <div className="card-grid three">
           {solutions.map((item) => (
             <article key={item.title} className="card">

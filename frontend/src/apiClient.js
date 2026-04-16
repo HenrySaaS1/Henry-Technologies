@@ -7,18 +7,22 @@ function normalizeApiBase(raw) {
 }
 
 export function getApiBase() {
-  // In production hosting (SWA default domain or custom domain), prefer same-origin /api proxy.
-  // This avoids direct App Service reachability/CORS/DNS issues from browsers.
+  const fromEnv = import.meta.env.VITE_API_URL
+
+  // For non-local browser hosts, prefer explicit backend URL when provided.
+  // This keeps custom domains working even if /api proxy rewriting is missing.
   if (typeof window !== 'undefined') {
     const host = window.location.hostname
     const isLocalHost =
       host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host.endsWith('.local')
     if (!isLocalHost) {
+      if (fromEnv && String(fromEnv).trim()) {
+        return normalizeApiBase(fromEnv)
+      }
       return ''
     }
   }
 
-  const fromEnv = import.meta.env.VITE_API_URL
   if (import.meta.env.PROD && (!fromEnv || !String(fromEnv).trim())) {
     console.error(
       '[henry] VITE_API_URL is missing. Set it in GitHub Actions (secret) for Azure Static Web Apps.',
