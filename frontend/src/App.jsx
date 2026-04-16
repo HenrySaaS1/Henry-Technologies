@@ -500,6 +500,7 @@ function App() {
   const [signupFromPlan, setSignupFromPlan] = useState(null)
   const [signupDashTab, setSignupDashTab] = useState('dashboard')
   const [currentUser, setCurrentUser] = useState(() => (AUTH_BYPASS ? bypassDemoUser() : null))
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     if (!isProductsPage || typeof window === 'undefined') return
@@ -728,6 +729,28 @@ function App() {
 
   const continueWithGoogle = () => {
     setSignupStatus('Google sign-in will connect when you add OAuth in production.')
+  }
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const onResize = () => {
+      if (window.innerWidth > 900) setMobileMenuOpen(false)
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  const renderMobileMenu = (links) => {
+    if (!mobileMenuOpen) return null
+    return (
+      <nav className="mobile-menu" aria-label="Mobile navigation">
+        {links.map((item) => (
+          <a key={`${item.href}-${item.label}`} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    )
   }
 
   const pricingSection = (
@@ -1050,8 +1073,25 @@ function App() {
                 </button>
               </>
             ) : null}
+            <button
+              type="button"
+              className="mobile-menu-toggle"
+              aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen((current) => !current)}
+            >
+              ☰
+            </button>
           </div>
         </header>
+        {renderMobileMenu([
+          { href: '/', label: 'HOME' },
+          { href: '/#products', label: 'PRODUCTS' },
+          { href: '/case-studies', label: 'CASE STUDIES' },
+          { href: '/pricing', label: 'PRICING' },
+          { href: '/#about', label: 'ABOUT' },
+          { href: '/#contact', label: 'CONTACT' },
+        ])}
         {pricingSection}
         {requestDemoIntroSection}
         {requestDemoSection}
@@ -1101,8 +1141,25 @@ function App() {
                 </button>
               </>
             ) : null}
+            <button
+              type="button"
+              className="mobile-menu-toggle"
+              aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen((current) => !current)}
+            >
+              ☰
+            </button>
           </div>
         </header>
+        {renderMobileMenu([
+          { href: '/', label: 'HOME' },
+          { href: '/products', label: 'PRODUCTS' },
+          { href: '/case-studies', label: 'CASE STUDIES' },
+          { href: '/pricing', label: 'PRICING' },
+          { href: '/#about', label: 'ABOUT' },
+          { href: '/#contact', label: 'CONTACT' },
+        ])}
         {productsDetailsSection}
         {requestDemoIntroSection}
         {requestDemoSection}
@@ -1152,8 +1209,25 @@ function App() {
                 </button>
               </>
             ) : null}
+            <button
+              type="button"
+              className="mobile-menu-toggle"
+              aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen((current) => !current)}
+            >
+              ☰
+            </button>
           </div>
         </header>
+        {renderMobileMenu([
+          { href: '/', label: 'HOME' },
+          { href: '/products', label: 'PRODUCTS' },
+          { href: '/case-studies', label: 'CASE STUDIES' },
+          { href: '/pricing', label: 'PRICING' },
+          { href: '/#about', label: 'ABOUT' },
+          { href: '/#contact', label: 'CONTACT' },
+        ])}
         <section className="case-studies-page-top-strip" aria-label="Case Studies page title">
           <h1>CASE STUDIES</h1>
         </section>
@@ -1272,8 +1346,25 @@ function App() {
               </button>
             </>
           ) : null}
+          <button
+            type="button"
+            className="mobile-menu-toggle"
+            aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((current) => !current)}
+          >
+            ☰
+          </button>
         </div>
       </header>
+      {renderMobileMenu([
+        { href: '/', label: 'HOME' },
+        { href: '/products', label: 'PRODUCTS' },
+        { href: '/case-studies', label: 'CASE STUDIES' },
+        { href: '/pricing', label: 'PRICING' },
+        { href: '#about', label: 'ABOUT' },
+        { href: '#contact', label: 'CONTACT' },
+      ])}
 
       <section
         className="hero"
