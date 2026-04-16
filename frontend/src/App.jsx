@@ -753,6 +753,24 @@ function App() {
     )
   }
 
+  const sectionPageMobileLinks = [
+    { href: '/', label: 'HOME' },
+    { href: '/products', label: 'PRODUCTS' },
+    { href: '/case-studies', label: 'CASE STUDIES' },
+    { href: '/pricing', label: 'PRICING' },
+    { href: '/#about', label: 'ABOUT' },
+    { href: '/#contact', label: 'CONTACT' },
+  ]
+
+  const landingMobileLinks = [
+    { href: '/', label: 'HOME' },
+    { href: '/products', label: 'PRODUCTS' },
+    { href: '/case-studies', label: 'CASE STUDIES' },
+    { href: '/pricing', label: 'PRICING' },
+    { href: '#about', label: 'ABOUT' },
+    { href: '#contact', label: 'CONTACT' },
+  ]
+
   const pricingSection = (
     <section id="pricing" className="pricing-section">
       <h2 className="pricing-title">Pricing</h2>
@@ -1084,14 +1102,7 @@ function App() {
             </button>
           </div>
         </header>
-        {renderMobileMenu([
-          { href: '/', label: 'HOME' },
-          { href: '/#products', label: 'PRODUCTS' },
-          { href: '/case-studies', label: 'CASE STUDIES' },
-          { href: '/pricing', label: 'PRICING' },
-          { href: '/#about', label: 'ABOUT' },
-          { href: '/#contact', label: 'CONTACT' },
-        ])}
+        {renderMobileMenu(sectionPageMobileLinks)}
         {pricingSection}
         {requestDemoIntroSection}
         {requestDemoSection}
@@ -1152,14 +1163,7 @@ function App() {
             </button>
           </div>
         </header>
-        {renderMobileMenu([
-          { href: '/', label: 'HOME' },
-          { href: '/products', label: 'PRODUCTS' },
-          { href: '/case-studies', label: 'CASE STUDIES' },
-          { href: '/pricing', label: 'PRICING' },
-          { href: '/#about', label: 'ABOUT' },
-          { href: '/#contact', label: 'CONTACT' },
-        ])}
+        {renderMobileMenu(sectionPageMobileLinks)}
         {productsDetailsSection}
         {requestDemoIntroSection}
         {requestDemoSection}
@@ -1220,14 +1224,7 @@ function App() {
             </button>
           </div>
         </header>
-        {renderMobileMenu([
-          { href: '/', label: 'HOME' },
-          { href: '/products', label: 'PRODUCTS' },
-          { href: '/case-studies', label: 'CASE STUDIES' },
-          { href: '/pricing', label: 'PRICING' },
-          { href: '/#about', label: 'ABOUT' },
-          { href: '/#contact', label: 'CONTACT' },
-        ])}
+        {renderMobileMenu(sectionPageMobileLinks)}
         <section className="case-studies-page-top-strip" aria-label="Case Studies page title">
           <h1>CASE STUDIES</h1>
         </section>
@@ -1357,14 +1354,7 @@ function App() {
           </button>
         </div>
       </header>
-      {renderMobileMenu([
-        { href: '/', label: 'HOME' },
-        { href: '/products', label: 'PRODUCTS' },
-        { href: '/case-studies', label: 'CASE STUDIES' },
-        { href: '/pricing', label: 'PRICING' },
-        { href: '#about', label: 'ABOUT' },
-        { href: '#contact', label: 'CONTACT' },
-      ])}
+      {renderMobileMenu(landingMobileLinks)}
 
       <section
         className="hero"
