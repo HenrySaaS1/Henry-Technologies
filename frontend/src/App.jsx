@@ -756,18 +756,20 @@ function App() {
       }
     }
     return (
-      <nav className="mobile-menu" aria-label="Mobile navigation">
-        {links.map((item) => (
-          <button
-            key={`${item.href}-${item.label}`}
-            type="button"
-            className="mobile-menu-link"
-            onClick={() => goTo(item.href)}
-          >
-            {item.label}
-          </button>
-        ))}
-      </nav>
+      <section className="mobile-menu-overlay" onClick={() => setMobileMenuOpen(false)}>
+        <nav className="mobile-menu" aria-label="Mobile navigation" onClick={(e) => e.stopPropagation()}>
+          {links.map((item) => (
+            <button
+              key={`${item.href}-${item.label}`}
+              type="button"
+              className="mobile-menu-link"
+              onClick={() => goTo(item.href)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+      </section>
     )
   }
 

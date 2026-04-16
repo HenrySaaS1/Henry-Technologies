@@ -64,6 +64,10 @@ h3 {
   display: none;
 }
 
+.mobile-menu-overlay {
+  display: none;
+}
+
 .btn-signin-nav {
   border: none;
   font-family: 'Montserrat', 'Open Sans', Arial, sans-serif;
@@ -4813,9 +4817,23 @@ h3 {
   .mobile-menu {
     display: grid;
     gap: 0.35rem;
-    padding: 0.7rem 0.8rem 0.85rem;
+    padding: 0.8rem;
     background: #fff;
-    border-bottom: 1px solid #d6deed;
+    border: 1px solid #d6deed;
+    border-radius: 10px;
+    width: min(320px, calc(100vw - 1.2rem));
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.18);
+  }
+
+  .mobile-menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 4.2rem 0.6rem 0.6rem;
+    background: rgba(5, 15, 35, 0.2);
   }
 
   .mobile-menu-link {
