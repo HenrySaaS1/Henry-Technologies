@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import bcrypt from 'bcryptjs'
+import nodemailer from 'nodemailer'
 import { prisma } from './lib/prisma.js'
 import { signUserToken, readBearerUserId } from './lib/authTokens.js'
 import { assertProductionEnv } from './lib/productionEnv.js'
@@ -87,6 +88,80 @@ function getRequestIp(req) {
     return String(forwarded[0]).trim()
   }
   return req.ip || null
+}
+
+function parseEmailList(value, fallback = []) {
+  const fromEnv = String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+  if (fromEnv.length > 0) return fromEnv
+  return fallback
+}
+
+const contactNotificationRecipients = parseEmailList(process.env.CONTACT_NOTIFICATION_TO, [
+  'info@goaskhenry.com',
+])
+
+const smtpConfigured =
+  Boolean(process.env.SMTP_HOST) &&
+  Boolean(process.env.SMTP_PORT) &&
+  Boolean(process.env.SMTP_USER) &&
+  Boolean(process.env.SMTP_PASS)
+
+const mailTransport = smtpConfigured
+  ? nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: String(process.env.SMTP_SECURE || '').toLowerCase() === 'true',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    })
+  : null
+
+async function sendContactNotification(payload) {
+  if (!mailTransport || contactNotificationRecipients.length === 0) {
+    return false
+  }
+
+  const submittedAt = new Date().toISOString()
+  const {
+    name,
+    email,
+    companyName = null,
+    interest = null,
+    notes = null,
+    requestIp = null,
+    userAgent = null,
+  } = payload
+
+  const fromAddress = process.env.SMTP_FROM || process.env.SMTP_USER
+  const subject = `New demo/contact request from ${name}`
+  const text = [
+    'A new contact request was submitted on goaskhenry.com.',
+    '',
+    `Name: ${name}`,
+    `Email: ${email}`,
+    `Company: ${companyName || '-'}`,
+    `Interest: ${interest || '-'}`,
+    `Notes: ${notes || '-'}`,
+    '',
+    `Submitted at (UTC): ${submittedAt}`,
+    `IP: ${requestIp || '-'}`,
+    `User Agent: ${userAgent || '-'}`,
+  ].join('\n')
+
+  await mailTransport.sendMail({
+    from: fromAddress,
+    to: contactNotificationRecipients.join(','),
+    replyTo: email,
+    subject,
+    text,
+  })
+
+  return true
 }
 
 async function logAuthEvent(req, { eventType, email, success, userId = null, message = null }) {
@@ -322,9 +397,25 @@ app.post('/api/contact', async (req, res) => {
         userId: userId || null,
       },
     })
+    let emailSent = false
+    try {
+      emailSent = await sendContactNotification({
+        name: nameTrim,
+        email: emailTrim,
+        companyName: companyName ? String(companyName).trim() : null,
+        interest: interest ? String(interest).trim() : null,
+        notes: notes ? String(notes).trim() : null,
+        requestIp: getRequestIp(req),
+        userAgent: req.get('user-agent') || null,
+      })
+    } catch (mailErr) {
+      console.error('[contact-email]', mailErr)
+    }
+
     return res.status(201).json({
       ok: true,
       message: 'Thanks — we received your request.',
+      emailSent,
       data: { name: nameTrim, email: emailTrim, companyName, interest, notes },
     })
   } catch (e) {
