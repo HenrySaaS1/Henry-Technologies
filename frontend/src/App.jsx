@@ -749,33 +749,35 @@ function App() {
 
   const renderMobileMenu = (links) => {
     if (!mobileMenuOpen) return null
+    const goTo = (href) => {
+      setMobileMenuOpen(false)
+      if (typeof window !== 'undefined') {
+        window.location.assign(href)
+      }
+    }
     return (
       <nav className="mobile-menu" aria-label="Mobile navigation">
         {links.map((item) => (
-          <a key={`${item.href}-${item.label}`} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+          <button
+            key={`${item.href}-${item.label}`}
+            type="button"
+            className="mobile-menu-link"
+            onClick={() => goTo(item.href)}
+          >
             {item.label}
-          </a>
+          </button>
         ))}
       </nav>
     )
   }
 
-  const sectionPageMobileLinks = [
+  const mobileNavLinks = [
     { href: '/', label: 'HOME' },
-    { href: '/products', label: 'PRODUCTS' },
+    { href: '/#products', label: 'PRODUCTS' },
     { href: '/case-studies', label: 'CASE STUDIES' },
     { href: '/pricing', label: 'PRICING' },
     { href: '/#about', label: 'ABOUT' },
     { href: '/#contact', label: 'CONTACT' },
-  ]
-
-  const landingMobileLinks = [
-    { href: '/', label: 'HOME' },
-    { href: '/products', label: 'PRODUCTS' },
-    { href: '/case-studies', label: 'CASE STUDIES' },
-    { href: '/pricing', label: 'PRICING' },
-    { href: '#about', label: 'ABOUT' },
-    { href: '#contact', label: 'CONTACT' },
   ]
 
   const pricingSection = (
@@ -1109,7 +1111,7 @@ function App() {
             </button>
           </div>
         </header>
-        {renderMobileMenu(sectionPageMobileLinks)}
+        {renderMobileMenu(mobileNavLinks)}
         {pricingSection}
         {requestDemoIntroSection}
         {requestDemoSection}
@@ -1170,7 +1172,7 @@ function App() {
             </button>
           </div>
         </header>
-        {renderMobileMenu(sectionPageMobileLinks)}
+        {renderMobileMenu(mobileNavLinks)}
         {productsDetailsSection}
         {requestDemoIntroSection}
         {requestDemoSection}
@@ -1231,7 +1233,7 @@ function App() {
             </button>
           </div>
         </header>
-        {renderMobileMenu(sectionPageMobileLinks)}
+        {renderMobileMenu(mobileNavLinks)}
         <section className="case-studies-page-top-strip" aria-label="Case Studies page title">
           <h1>CASE STUDIES</h1>
         </section>
@@ -1361,7 +1363,7 @@ function App() {
           </button>
         </div>
       </header>
-      {renderMobileMenu(landingMobileLinks)}
+      {renderMobileMenu(mobileNavLinks)}
 
       <section
         className="hero"
