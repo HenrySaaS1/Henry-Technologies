@@ -4805,6 +4805,11 @@ h3 {
     justify-content: center;
   }
 
+  .mobile-menu-toggle--standalone {
+    margin-left: 0.25rem;
+    flex-shrink: 0;
+  }
+
   .mobile-menu {
     display: grid;
     gap: 0.35rem;

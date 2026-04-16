@@ -1100,16 +1100,16 @@ function App() {
                 </button>
               </>
             ) : null}
-            <button
-              type="button"
-              className="mobile-menu-toggle"
-              aria-label="Toggle menu"
-              aria-expanded={mobileMenuOpen}
-              onClick={() => setMobileMenuOpen((current) => !current)}
-            >
-              ☰
-            </button>
           </div>
+          <button
+            type="button"
+            className="mobile-menu-toggle mobile-menu-toggle--standalone"
+            aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((current) => !current)}
+          >
+            ☰
+          </button>
         </header>
         {renderMobileMenu(mobileNavLinks)}
         {pricingSection}
@@ -1161,16 +1161,16 @@ function App() {
                 </button>
               </>
             ) : null}
-            <button
-              type="button"
-              className="mobile-menu-toggle"
-              aria-label="Toggle menu"
-              aria-expanded={mobileMenuOpen}
-              onClick={() => setMobileMenuOpen((current) => !current)}
-            >
-              ☰
-            </button>
           </div>
+          <button
+            type="button"
+            className="mobile-menu-toggle mobile-menu-toggle--standalone"
+            aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((current) => !current)}
+          >
+            ☰
+          </button>
         </header>
         {renderMobileMenu(mobileNavLinks)}
         {productsDetailsSection}
@@ -1222,16 +1222,16 @@ function App() {
                 </button>
               </>
             ) : null}
-            <button
-              type="button"
-              className="mobile-menu-toggle"
-              aria-label="Toggle menu"
-              aria-expanded={mobileMenuOpen}
-              onClick={() => setMobileMenuOpen((current) => !current)}
-            >
-              ☰
-            </button>
           </div>
+          <button
+            type="button"
+            className="mobile-menu-toggle mobile-menu-toggle--standalone"
+            aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((current) => !current)}
+          >
+            ☰
+          </button>
         </header>
         {renderMobileMenu(mobileNavLinks)}
         <section className="case-studies-page-top-strip" aria-label="Case Studies page title">
@@ -1352,16 +1352,16 @@ function App() {
               </button>
             </>
           ) : null}
-          <button
-            type="button"
-            className="mobile-menu-toggle"
-            aria-label="Toggle menu"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((current) => !current)}
-          >
-            ☰
-          </button>
         </div>
+        <button
+          type="button"
+          className="mobile-menu-toggle mobile-menu-toggle--standalone"
+          aria-label="Toggle menu"
+          aria-expanded={mobileMenuOpen}
+          onClick={() => setMobileMenuOpen((current) => !current)}
+        >
+          ☰
+        </button>
       </header>
       {renderMobileMenu(mobileNavLinks)}
 
