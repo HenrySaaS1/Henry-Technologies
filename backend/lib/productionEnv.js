@@ -15,7 +15,7 @@ export function assertProductionEnv() {
   }
   const origins = String(process.env.CORS_ORIGIN || '')
     .split(',')
-    .map((v) => v.trim())
+    .map((v) => v.trim().replace(/\/+$/, ''))
     .filter(Boolean)
   if (origins.length === 0 || origins.some((o) => !o.startsWith('https://'))) {
     errors.push(

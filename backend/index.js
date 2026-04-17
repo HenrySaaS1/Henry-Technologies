@@ -19,7 +19,7 @@ app.set('trust proxy', 1)
 function parseCorsOrigins(value) {
   return String(value || '')
     .split(',')
-    .map((v) => v.trim())
+    .map((v) => v.trim().replace(/\/+$/, ''))
     .filter(Boolean)
 }
 
