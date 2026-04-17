@@ -575,6 +575,157 @@ h3 {
   letter-spacing: 0.02em;
 }
 
+@keyframes henry-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes henry-pop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes henry-snapshot-card {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes henry-live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.68;
+  }
+}
+
+@keyframes henry-hint-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.52;
+  }
+}
+
+@keyframes henry-cta-ring {
+  from {
+    box-shadow: 0 0 0 0 rgba(11, 99, 209, 0.45);
+  }
+
+  to {
+    box-shadow: 0 0 0 14px rgba(11, 99, 209, 0);
+  }
+}
+
+/* Mobile landing: light motion on hero + snapshot strip (respects reduced-motion below) */
+@media (prefers-reduced-motion: no-preference) {
+  @media (max-width: 900px) {
+    .hero .overlay > h1,
+    .hero .overlay > p,
+    .hero .overlay > .btn-primary {
+      animation: henry-rise 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero .overlay > h1 {
+      animation-delay: 0.05s;
+    }
+
+    .hero .overlay > p {
+      animation-delay: 0.14s;
+    }
+
+    .hero .overlay > .btn-primary {
+      animation-delay: 0.24s;
+    }
+
+    .hero-mini-snap {
+      animation: henry-pop 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-mini-snap:nth-child(1) {
+      animation-delay: 0.18s;
+    }
+
+    .hero-mini-snap:nth-child(2) {
+      animation-delay: 0.28s;
+    }
+
+    .hero-mini-snap:nth-child(3) {
+      animation-delay: 0.38s;
+    }
+
+    .snapshot-mobile-head h2 {
+      animation: henry-rise 0.68s ease-out both;
+    }
+
+    .snapshot-mobile-head p {
+      animation: henry-rise 0.68s ease-out 0.1s both;
+    }
+
+    .snapshot-mobile-card {
+      animation: henry-snapshot-card 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .snapshot-mobile-track .snapshot-mobile-card:nth-child(1) {
+      animation-delay: 0.02s;
+    }
+
+    .snapshot-mobile-track .snapshot-mobile-card:nth-child(2) {
+      animation-delay: 0.08s;
+    }
+
+    .snapshot-mobile-track .snapshot-mobile-card:nth-child(3) {
+      animation-delay: 0.14s;
+    }
+
+    .snapshot-mobile-track .snapshot-mobile-card:nth-child(4) {
+      animation-delay: 0.2s;
+    }
+
+    .snapshot-mobile-track .snapshot-mobile-card:nth-child(5) {
+      animation-delay: 0.26s;
+    }
+
+    .snapshot-mobile-fresh {
+      animation: henry-live-pulse 2.5s ease-in-out infinite;
+    }
+
+    .snapshot-mobile-hint-scroll {
+      animation: henry-hint-breathe 2.4s ease-in-out infinite;
+    }
+
+    .snapshot-mobile-cta {
+      animation: henry-cta-ring 1.05s ease-out 0.5s both;
+    }
+  }
+}
+
 /* “Snapshot on mobile” strip is for small screens only — hidden on desktop */
 @media (min-width: 901px) {
   .snapshot-mobile-section {
@@ -5725,5 +5876,18 @@ h3 {
   .client-quick-action:hover,
   .client-signout:hover {
     transform: none;
+  }
+
+  .hero .overlay > h1,
+  .hero .overlay > p,
+  .hero .overlay > .btn-primary,
+  .hero-mini-snap,
+  .snapshot-mobile-head h2,
+  .snapshot-mobile-head p,
+  .snapshot-mobile-card,
+  .snapshot-mobile-fresh,
+  .snapshot-mobile-hint-scroll,
+  .snapshot-mobile-cta {
+    animation: none !important;
   }
 }
