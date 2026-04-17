@@ -1,0 +1,19 @@
+{
+  "name": "HENRY — Smart Business Tools",
+  "short_name": "HENRY",
+  "description": "Smart business solutions with real-time data and insights.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#eef3fa",
+  "theme_color": "#05153f",
+  "icons": [
+    {
+      "src": "./henry-pwa-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
