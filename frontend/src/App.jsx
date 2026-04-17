@@ -1176,15 +1176,6 @@ function App() {
     return (
       <div className="page">
         <header className="topbar">
-          <div className="topbar-left">
-            <nav className="menu">
-              <a href="/#products">PRODUCTS</a>
-              <a href="/case-studies">CASE STUDIES</a>
-              <a href="/pricing">PRICING</a>
-              <a href="/#about">ABOUT</a>
-              <a href="/#contact">CONTACT</a>
-            </nav>
-          </div>
           <button
             type="button"
             className="logo"
@@ -1200,6 +1191,15 @@ function App() {
               <span className="logo-word">HENRY</span>
             </span>
           </button>
+          <div className="topbar-left">
+            <nav className="menu">
+              <a href="/#products">PRODUCTS</a>
+              <a href="/case-studies">CASE STUDIES</a>
+              <a href="/pricing">PRICING</a>
+              <a href="/#about">ABOUT</a>
+              <a href="/#contact">CONTACT</a>
+            </nav>
+          </div>
           <div className="topbar-right">
             <div className="topbar-actions">
               <a className="btn-contact-nav" href="/#request-demo">
@@ -1243,15 +1243,6 @@ function App() {
     return (
       <div className="page">
         <header className="topbar">
-          <div className="topbar-left">
-            <nav className="menu">
-              <a href="/products">PRODUCTS</a>
-              <a href="/case-studies">CASE STUDIES</a>
-              <a href="/pricing">PRICING</a>
-              <a href="/#about">ABOUT</a>
-              <a href="/#contact">CONTACT</a>
-            </nav>
-          </div>
           <button
             type="button"
             className="logo"
@@ -1267,6 +1258,15 @@ function App() {
               <span className="logo-word">HENRY</span>
             </span>
           </button>
+          <div className="topbar-left">
+            <nav className="menu">
+              <a href="/products">PRODUCTS</a>
+              <a href="/case-studies">CASE STUDIES</a>
+              <a href="/pricing">PRICING</a>
+              <a href="/#about">ABOUT</a>
+              <a href="/#contact">CONTACT</a>
+            </nav>
+          </div>
           <div className="topbar-right">
             <div className="topbar-actions">
               <a className="btn-contact-nav" href="/#request-demo">
@@ -1310,15 +1310,6 @@ function App() {
     return (
       <div className="page page-case-studies">
         <header className="topbar">
-          <div className="topbar-left">
-            <nav className="menu">
-              <a href="/products">PRODUCTS</a>
-              <a href="/case-studies">CASE STUDIES</a>
-              <a href="/pricing">PRICING</a>
-              <a href="/#about">ABOUT</a>
-              <a href="/#contact">CONTACT</a>
-            </nav>
-          </div>
           <button
             type="button"
             className="logo"
@@ -1334,6 +1325,15 @@ function App() {
               <span className="logo-word">HENRY</span>
             </span>
           </button>
+          <div className="topbar-left">
+            <nav className="menu">
+              <a href="/products">PRODUCTS</a>
+              <a href="/case-studies">CASE STUDIES</a>
+              <a href="/pricing">PRICING</a>
+              <a href="/#about">ABOUT</a>
+              <a href="/#contact">CONTACT</a>
+            </nav>
+          </div>
           <div className="topbar-right">
             <div className="topbar-actions">
               <a className="btn-contact-nav" href="/#request-demo">
@@ -1441,15 +1441,6 @@ function App() {
   return (
     <div className="page">
       <header className="topbar">
-        <div className="topbar-left">
-          <nav className="menu">
-            <a href="/products">PRODUCTS</a>
-            <a href="/case-studies">CASE STUDIES</a>
-            <a href="/pricing">PRICING</a>
-            <a href="#about">ABOUT</a>
-            <a href="#contact">CONTACT</a>
-          </nav>
-        </div>
         <button
           type="button"
           className="logo"
@@ -1465,6 +1456,15 @@ function App() {
             <span className="logo-word">HENRY</span>
           </span>
         </button>
+        <div className="topbar-left">
+          <nav className="menu">
+            <a href="/products">PRODUCTS</a>
+            <a href="/case-studies">CASE STUDIES</a>
+            <a href="/pricing">PRICING</a>
+            <a href="#about">ABOUT</a>
+            <a href="#contact">CONTACT</a>
+          </nav>
+        </div>
         <div className="topbar-right">
           <div className="topbar-actions">
             {AUTH_BYPASS ? (
