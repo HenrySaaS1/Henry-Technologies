@@ -790,6 +790,8 @@ const NAV_ITEMS = [
   {
     id: 'alerts',
     label: 'AI Alerts',
+    /** Shorter label for the mobile bottom dock only */
+    dockLabel: 'Alerts',
     icon: (
       <path d="M12 22a2.5 2.5 0 002.45-2h-4.9A2.5 2.5 0 0012 22zm8-4v-6a8 8 0 00-6-7.74V4a2 2 0 10-4 0v.26A8 8 0 004 12v6l-2 2v1h20v-1l-2-2z" />
     ),
@@ -1059,7 +1061,7 @@ export default function ClientDashboard({ user, onSignOut }) {
   })
 
   return (
-    <div className="client-app">
+    <div className={`client-app${buildingSiteId ? ' client-app--modal-open' : ''}`}>
       {toast ? (
         <div className="client-toast" role="status">
           {toast}
@@ -1881,6 +1883,22 @@ export default function ClientDashboard({ user, onSignOut }) {
           </footer>
         </main>
       </div>
+
+      <nav className="client-mobile-dock" aria-label="Workspace tabs">
+        {NAV_ITEMS.map((item) => (
+          <button
+            key={`dock-${item.id}`}
+            type="button"
+            className={`client-dock-item${tab === item.id ? ' is-active' : ''}`}
+            onClick={() => setTab(item.id)}
+          >
+            <svg className="client-dock-icon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+              {item.icon}
+            </svg>
+            <span className="client-dock-label">{item.dockLabel ?? item.label}</span>
+          </button>
+        ))}
+      </nav>
 
       {buildingSite?.building ? (
         <BuildingSiteOverlay

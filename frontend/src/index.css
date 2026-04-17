@@ -4118,6 +4118,11 @@ h3 {
   opacity: 1;
 }
 
+/* Mobile workspace: bottom tab dock (hidden on desktop; shown in max-width: 900px rules). */
+.client-mobile-dock {
+  display: none;
+}
+
 .client-main {
   padding: 1.5rem 1.75rem 2.5rem;
   overflow: auto;
@@ -5204,22 +5209,95 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  /* Sidebar nav → fixed bottom dock on small screens (thumb reach). */
   .client-sidebar {
+    display: none;
+  }
+
+  .client-app {
+    padding-bottom: calc(3.65rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .client-app--modal-open {
+    padding-bottom: 0;
+  }
+
+  .client-app--modal-open .client-mobile-dock {
+    display: none !important;
+  }
+
+  .client-mobile-dock {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    border-right: none;
-    border-bottom: 1px solid #e2e8f0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.25rem max(0.25rem, env(safe-area-inset-left, 0px)) calc(0.35rem + env(safe-area-inset-bottom, 0px))
+      max(0.25rem, env(safe-area-inset-right, 0px));
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -8px 28px rgba(15, 23, 42, 0.08);
   }
 
-  .client-sidebar-label {
-    width: 100%;
-    margin-bottom: 0.25rem;
+  .client-dock-item {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.12rem;
+    padding: 0.35rem 0.15rem;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    font: inherit;
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: color 0.15s ease, background 0.15s ease;
   }
 
-  .client-nav-item {
-    width: auto;
-    margin-bottom: 0;
+  .client-dock-item.is-active {
+    color: #1d4ed8;
+    background: #eff6ff;
+  }
+
+  .client-dock-item:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 1px;
+  }
+
+  .client-dock-icon {
+    flex-shrink: 0;
+    fill: currentColor;
+    opacity: 0.88;
+  }
+
+  .client-dock-item.is-active .client-dock-icon {
+    opacity: 1;
+  }
+
+  .client-dock-label {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.15;
+    text-align: center;
+  }
+
+  .client-toast {
+    bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
   }
 
   .client-charts-row {
@@ -5277,6 +5355,7 @@ h3 {
 
   .client-notif-wrap {
     order: 4;
+    z-index: 120;
   }
 
   .client-alert-row {
@@ -5464,6 +5543,16 @@ h3 {
 
   .client-sites-section-title {
     font-size: 0.95rem;
+  }
+
+  .client-dock-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .client-dock-item {
+    font-size: 0.52rem;
+    padding: 0.3rem 0.1rem;
   }
 }
 
