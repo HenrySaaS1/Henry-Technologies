@@ -530,6 +530,13 @@ h3 {
   letter-spacing: 0.02em;
 }
 
+/* “Snapshot on mobile” strip is for small screens only — hidden on desktop */
+@media (min-width: 901px) {
+  .snapshot-mobile-section {
+    display: none;
+  }
+}
+
 .products {
   background:
     radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.08), transparent 35%),
