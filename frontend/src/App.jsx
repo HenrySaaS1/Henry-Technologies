@@ -1176,6 +1176,15 @@ function App() {
     return (
       <div className="page">
         <header className="topbar">
+          <div className="topbar-left">
+            <nav className="menu">
+              <a href="/#products">PRODUCTS</a>
+              <a href="/case-studies">CASE STUDIES</a>
+              <a href="/pricing">PRICING</a>
+              <a href="/#about">ABOUT</a>
+              <a href="/#contact">CONTACT</a>
+            </nav>
+          </div>
           <button
             type="button"
             className="logo"
@@ -1190,39 +1199,33 @@ function App() {
               <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
               <span className="logo-word">HENRY</span>
             </span>
-            <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
-          <nav className="menu">
-            <a href="/#products">PRODUCTS</a>
-            <a href="/case-studies">CASE STUDIES</a>
-            <a href="/pricing">PRICING</a>
-            <a href="/#about">ABOUT</a>
-            <a href="/#contact">CONTACT</a>
-          </nav>
-          <div className="topbar-actions">
-            <a className="btn-contact-nav" href="/#request-demo">
-              Request a demo
-            </a>
-            {!AUTH_BYPASS ? (
-              <>
-                <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
-                  Sign in
-                </button>
-                <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
-                  Sign up
-                </button>
-              </>
-            ) : null}
+          <div className="topbar-right">
+            <div className="topbar-actions">
+              <a className="btn-contact-nav" href="/#request-demo">
+                Request a demo
+              </a>
+              {!AUTH_BYPASS ? (
+                <>
+                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
+                    Sign in
+                  </button>
+                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
+                    Sign up
+                  </button>
+                </>
+              ) : null}
+            </div>
+            <button
+              type="button"
+              className="mobile-menu-toggle mobile-menu-toggle--standalone"
+              aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen((current) => !current)}
+            >
+              ☰
+            </button>
           </div>
-          <button
-            type="button"
-            className="mobile-menu-toggle mobile-menu-toggle--standalone"
-            aria-label="Toggle menu"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((current) => !current)}
-          >
-            ☰
-          </button>
         </header>
         {renderMobileMenu(mobileNavLinks)}
         {pricingSection}
@@ -1240,6 +1243,15 @@ function App() {
     return (
       <div className="page">
         <header className="topbar">
+          <div className="topbar-left">
+            <nav className="menu">
+              <a href="/products">PRODUCTS</a>
+              <a href="/case-studies">CASE STUDIES</a>
+              <a href="/pricing">PRICING</a>
+              <a href="/#about">ABOUT</a>
+              <a href="/#contact">CONTACT</a>
+            </nav>
+          </div>
           <button
             type="button"
             className="logo"
@@ -1254,39 +1266,33 @@ function App() {
               <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
               <span className="logo-word">HENRY</span>
             </span>
-            <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
-          <nav className="menu">
-            <a href="/products">PRODUCTS</a>
-            <a href="/case-studies">CASE STUDIES</a>
-            <a href="/pricing">PRICING</a>
-            <a href="/#about">ABOUT</a>
-            <a href="/#contact">CONTACT</a>
-          </nav>
-          <div className="topbar-actions">
-            <a className="btn-contact-nav" href="/#request-demo">
-              Request a demo
-            </a>
-            {!AUTH_BYPASS ? (
-              <>
-                <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
-                  Sign in
-                </button>
-                <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
-                  Sign up
-                </button>
-              </>
-            ) : null}
+          <div className="topbar-right">
+            <div className="topbar-actions">
+              <a className="btn-contact-nav" href="/#request-demo">
+                Request a demo
+              </a>
+              {!AUTH_BYPASS ? (
+                <>
+                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
+                    Sign in
+                  </button>
+                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
+                    Sign up
+                  </button>
+                </>
+              ) : null}
+            </div>
+            <button
+              type="button"
+              className="mobile-menu-toggle mobile-menu-toggle--standalone"
+              aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen((current) => !current)}
+            >
+              ☰
+            </button>
           </div>
-          <button
-            type="button"
-            className="mobile-menu-toggle mobile-menu-toggle--standalone"
-            aria-label="Toggle menu"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((current) => !current)}
-          >
-            ☰
-          </button>
         </header>
         {renderMobileMenu(mobileNavLinks)}
         {productsDetailsSection}
@@ -1304,6 +1310,15 @@ function App() {
     return (
       <div className="page page-case-studies">
         <header className="topbar">
+          <div className="topbar-left">
+            <nav className="menu">
+              <a href="/products">PRODUCTS</a>
+              <a href="/case-studies">CASE STUDIES</a>
+              <a href="/pricing">PRICING</a>
+              <a href="/#about">ABOUT</a>
+              <a href="/#contact">CONTACT</a>
+            </nav>
+          </div>
           <button
             type="button"
             className="logo"
@@ -1318,39 +1333,33 @@ function App() {
               <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
               <span className="logo-word">HENRY</span>
             </span>
-            <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
-          <nav className="menu">
-            <a href="/products">PRODUCTS</a>
-            <a href="/case-studies">CASE STUDIES</a>
-            <a href="/pricing">PRICING</a>
-            <a href="/#about">ABOUT</a>
-            <a href="/#contact">CONTACT</a>
-          </nav>
-          <div className="topbar-actions">
-            <a className="btn-contact-nav" href="/#request-demo">
-              Request a demo
-            </a>
-            {!AUTH_BYPASS ? (
-              <>
-                <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
-                  Sign in
-                </button>
-                <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
-                  Sign up
-                </button>
-              </>
-            ) : null}
+          <div className="topbar-right">
+            <div className="topbar-actions">
+              <a className="btn-contact-nav" href="/#request-demo">
+                Request a demo
+              </a>
+              {!AUTH_BYPASS ? (
+                <>
+                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
+                    Sign in
+                  </button>
+                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
+                    Sign up
+                  </button>
+                </>
+              ) : null}
+            </div>
+            <button
+              type="button"
+              className="mobile-menu-toggle mobile-menu-toggle--standalone"
+              aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen((current) => !current)}
+            >
+              ☰
+            </button>
           </div>
-          <button
-            type="button"
-            className="mobile-menu-toggle mobile-menu-toggle--standalone"
-            aria-label="Toggle menu"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((current) => !current)}
-          >
-            ☰
-          </button>
         </header>
         {renderMobileMenu(mobileNavLinks)}
         <section className="case-studies-page-top-strip" aria-label="Case Studies page title">
@@ -1432,6 +1441,15 @@ function App() {
   return (
     <div className="page">
       <header className="topbar">
+        <div className="topbar-left">
+          <nav className="menu">
+            <a href="/products">PRODUCTS</a>
+            <a href="/case-studies">CASE STUDIES</a>
+            <a href="/pricing">PRICING</a>
+            <a href="#about">ABOUT</a>
+            <a href="#contact">CONTACT</a>
+          </nav>
+        </div>
         <button
           type="button"
           className="logo"
@@ -1446,44 +1464,38 @@ function App() {
             <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
             <span className="logo-word">HENRY</span>
           </span>
-          <span className="logo-sub">SMART BUSINESS TOOLS</span>
         </button>
-        <nav className="menu">
-          <a href="/products">PRODUCTS</a>
-          <a href="/case-studies">CASE STUDIES</a>
-          <a href="/pricing">PRICING</a>
-          <a href="#about">ABOUT</a>
-          <a href="#contact">CONTACT</a>
-        </nav>
-        <div className="topbar-actions">
-          {AUTH_BYPASS ? (
-            <button type="button" className="btn-dark" onClick={enterBypassWorkspace}>
-              Open workspace
-            </button>
-          ) : null}
-          <a className="btn-contact-nav" href="#request-demo">
-            Request a demo
-          </a>
-          {!AUTH_BYPASS ? (
-            <>
-              <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signin')}>
-                Sign in
+        <div className="topbar-right">
+          <div className="topbar-actions">
+            {AUTH_BYPASS ? (
+              <button type="button" className="btn-dark" onClick={enterBypassWorkspace}>
+                Open workspace
               </button>
-              <button type="button" className="btn-dark" onClick={() => openAuthModal('signup')}>
-                Sign up
-              </button>
-            </>
-          ) : null}
+            ) : null}
+            <a className="btn-contact-nav" href="#request-demo">
+              Request a demo
+            </a>
+            {!AUTH_BYPASS ? (
+              <>
+                <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signin')}>
+                  Sign in
+                </button>
+                <button type="button" className="btn-dark" onClick={() => openAuthModal('signup')}>
+                  Sign up
+                </button>
+              </>
+            ) : null}
+          </div>
+          <button
+            type="button"
+            className="mobile-menu-toggle mobile-menu-toggle--standalone"
+            aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((current) => !current)}
+          >
+            ☰
+          </button>
         </div>
-        <button
-          type="button"
-          className="mobile-menu-toggle mobile-menu-toggle--standalone"
-          aria-label="Toggle menu"
-          aria-expanded={mobileMenuOpen}
-          onClick={() => setMobileMenuOpen((current) => !current)}
-        >
-          ☰
-        </button>
       </header>
       {renderMobileMenu(mobileNavLinks)}
 
