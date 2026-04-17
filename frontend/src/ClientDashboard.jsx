@@ -1,5 +1,6 @@
 import { useState, useEffect, useId, useRef } from 'react'
 import { titlesForProductIds } from './productCatalog.js'
+import henryLogo from './assets/henry-logo.png'
 
 const DASH_KPIS = [
   { label: 'OEE', value: '94.2%', hint: 'vs target 90%', trend: '+1.2%', up: true },
@@ -1065,8 +1066,8 @@ export default function ClientDashboard({ user, onSignOut }) {
         </div>
       ) : null}
       <header className="client-topbar">
-        <div className="client-brand">
-          <span className="client-logo-main">HENRY</span>
+        <div className="client-brand" aria-label="HENRY client workspace">
+          <img src={henryLogo} alt="" className="client-logo-mark" width={160} height={160} decoding="async" />
           <span className="client-logo-sub">Client workspace</span>
         </div>
         <div className="client-topbar-search" role="search">

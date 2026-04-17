@@ -17,6 +17,7 @@ import safetyProductImage from './assets/uploads/product-safety-new.png'
 import securityProductImage from './assets/uploads/product-security-new.png'
 import myhenryProductImage from './assets/uploads/product-myhenry-new.png'
 import aboutHenryImage from './assets/about-henry.png'
+import henryLogo from './assets/henry-logo.png'
 
 const PRODUCT_IMAGES = {
   snapshot: snapshotProductImage,
@@ -1177,13 +1178,14 @@ function App() {
           <button
             type="button"
             className="logo"
+            aria-label="HENRY — Home"
             onClick={() => {
               if (typeof window !== 'undefined') {
                 window.location.assign('/')
               }
             }}
           >
-            <span className="logo-main">HENRY</span>
+            <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
           <nav className="menu">
@@ -1237,13 +1239,14 @@ function App() {
           <button
             type="button"
             className="logo"
+            aria-label="HENRY — Home"
             onClick={() => {
               if (typeof window !== 'undefined') {
                 window.location.assign('/')
               }
             }}
           >
-            <span className="logo-main">HENRY</span>
+            <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
           <nav className="menu">
@@ -1297,13 +1300,14 @@ function App() {
           <button
             type="button"
             className="logo"
+            aria-label="HENRY — Home"
             onClick={() => {
               if (typeof window !== 'undefined') {
                 window.location.assign('/')
               }
             }}
           >
-            <span className="logo-main">HENRY</span>
+            <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
           <nav className="menu">
@@ -1421,13 +1425,14 @@ function App() {
         <button
           type="button"
           className="logo"
+          aria-label="HENRY — Home"
           onClick={() => {
             if (typeof window !== 'undefined') {
               window.location.assign('/')
             }
           }}
         >
-          <span className="logo-main">HENRY</span>
+          <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
           <span className="logo-sub">SMART BUSINESS TOOLS</span>
         </button>
         <nav className="menu">
