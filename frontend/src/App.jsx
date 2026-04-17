@@ -772,7 +772,6 @@ function App() {
   }
 
   const mobileNavLinks = [
-    { href: '/', label: 'HOME' },
     { href: '/#products', label: 'PRODUCTS' },
     { href: '/case-studies', label: 'CASE STUDIES' },
     { href: '/pricing', label: 'PRICING' },
@@ -1079,7 +1078,6 @@ function App() {
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
           <nav className="menu">
-            <a href="/">HOME</a>
             <a href="/#products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
             <a href="/pricing">PRICING</a>
@@ -1140,7 +1138,6 @@ function App() {
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
           <nav className="menu">
-            <a href="/">HOME</a>
             <a href="/products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
             <a href="/pricing">PRICING</a>
@@ -1201,7 +1198,6 @@ function App() {
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
           <nav className="menu">
-            <a href="/">HOME</a>
             <a href="/products">PRODUCTS</a>
             <a href="/case-studies">CASE STUDIES</a>
             <a href="/pricing">PRICING</a>
@@ -1326,7 +1322,6 @@ function App() {
           <span className="logo-sub">SMART BUSINESS TOOLS</span>
         </button>
         <nav className="menu">
-          <a href="/">HOME</a>
           <a href="/products">PRODUCTS</a>
           <a href="/case-studies">CASE STUDIES</a>
           <a href="/pricing">PRICING</a>
