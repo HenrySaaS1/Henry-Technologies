@@ -5506,10 +5506,35 @@ h3 {
     touch-action: manipulation;
   }
 
+  /* Single-column header: centered lockup on its own row so it never collides with Sign in / Sign up. */
   .topbar {
-    column-gap: 0.5rem;
-    padding: 0.55rem 0.8rem;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 0;
+    row-gap: 0.4rem;
+    padding: 0.5rem 0.8rem 0.55rem;
     min-height: auto;
+    align-items: center;
+  }
+
+  .topbar-left {
+    display: none;
+  }
+
+  .logo {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .topbar-right {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: stretch;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
   }
 
   .logo-lockup {
@@ -5527,7 +5552,7 @@ h3 {
   .topbar-actions {
     gap: 0.4rem;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: center;
   }
 
   .btn-contact-nav {
