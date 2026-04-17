@@ -71,6 +71,55 @@ function signupStatusTone(message) {
   return ''
 }
 
+/** Demo tiles for the landing-page mobile snapshot carousel (marketing). */
+const snapshotMobileCards = [
+  {
+    id: 'oee',
+    title: 'Plant pulse',
+    value: '94.2%',
+    unit: 'OEE',
+    hint: 'vs target 90%',
+    freshness: 'Updated 2 min ago',
+    accent: 'blue',
+  },
+  {
+    id: 'units',
+    title: 'Throughput',
+    value: '512',
+    unit: 'units / hr',
+    hint: '+3.8% vs morning shift',
+    freshness: 'Live shift',
+    accent: 'cyan',
+  },
+  {
+    id: 'alerts',
+    title: 'Open alerts',
+    value: '3',
+    unit: 'need attention',
+    hint: '2 high · 1 medium',
+    freshness: 'Just now',
+    accent: 'amber',
+  },
+  {
+    id: 'lines',
+    title: 'Lines running',
+    value: '12 / 14',
+    unit: 'assets',
+    hint: 'Press Cell 2 idle',
+    freshness: 'Refreshed every 5 min',
+    accent: 'violet',
+  },
+  {
+    id: 'snapshot',
+    title: 'HENRY Snapshot',
+    value: 'Live',
+    unit: 'multi-site',
+    hint: 'BU 125 · 120 · 140',
+    freshness: 'What teams see on mobile',
+    accent: 'navy',
+  },
+]
+
 const solutions = [
   {
     title: 'Real-Time Data Monitoring',
@@ -845,6 +894,66 @@ function App() {
           </table>
         </div>
       </section>
+    </section>
+  )
+
+  const snapshotMobileSection = (
+    <section
+      id="snapshot-preview"
+      className="snapshot-mobile-section"
+      aria-labelledby="snapshot-mobile-heading"
+    >
+      <div className="snapshot-mobile-inner">
+        <div className="snapshot-mobile-head">
+          <h2 id="snapshot-mobile-heading">Snapshot on mobile</h2>
+          <p>
+            Swipe through live-style tiles — the same at-a-glance view teams check between line walks and meetings.
+            HENRY Snapshot keeps metrics readable on a phone.
+          </p>
+        </div>
+        <div
+          className="snapshot-mobile-scroll"
+          tabIndex={0}
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Example operations snapshot cards. Scroll horizontally."
+        >
+          <div className="snapshot-mobile-track">
+            {snapshotMobileCards.map((card) => (
+              <article
+                key={card.id}
+                className={`snapshot-mobile-card snapshot-mobile-card--${card.accent}`}
+                aria-label={`${card.title}: ${card.value} ${card.unit}`}
+              >
+                <div className="snapshot-mobile-chrome" aria-hidden="true">
+                  <span className="snapshot-mobile-time">9:41</span>
+                  <span className="snapshot-mobile-signal">
+                    <span />
+                    <span />
+                    <span />
+                  </span>
+                </div>
+                <div className="snapshot-mobile-body">
+                  <p className="snapshot-mobile-title">{card.title}</p>
+                  <p className="snapshot-mobile-value">
+                    {card.value} <span className="snapshot-mobile-unit">{card.unit}</span>
+                  </p>
+                  <p className="snapshot-mobile-hint">{card.hint}</p>
+                </div>
+                <p className="snapshot-mobile-fresh">{card.freshness}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+        <div className="snapshot-mobile-actions">
+          <a className="btn-primary snapshot-mobile-cta" href="/products#snapshot">
+            Learn about Snapshot
+          </a>
+          <span className="snapshot-mobile-hint-scroll" aria-hidden="true">
+            ← Swipe for more →
+          </span>
+        </div>
+      </div>
     </section>
   )
 
@@ -1633,6 +1742,8 @@ function App() {
           ))}
         </div>
       </section>
+
+      {snapshotMobileSection}
 
       {productsSection}
 

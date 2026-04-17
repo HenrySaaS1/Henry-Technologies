@@ -309,6 +309,207 @@ h3 {
   padding: 2rem;
 }
 
+/* Landing: mobile-style horizontal snapshot carousel (HENRY Snapshot) */
+.snapshot-mobile-section {
+  width: 100%;
+  margin: 0 auto 2rem;
+  padding: 2rem 0 2.35rem;
+  background: linear-gradient(180deg, #e4edfc 0%, #eef3fa 55%, #eef3fa 100%);
+  border-top: 1px solid #c5d4eb;
+  border-bottom: 1px solid #c5d4eb;
+}
+
+.snapshot-mobile-inner {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  padding: 0 max(1rem, env(safe-area-inset-right, 0px)) 0 max(1rem, env(safe-area-inset-left, 0px));
+}
+
+.snapshot-mobile-head {
+  text-align: center;
+  max-width: 40rem;
+  margin: 0 auto 1.35rem;
+}
+
+.snapshot-mobile-head h2 {
+  margin: 0 0 0.55rem;
+  font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+  font-weight: 800;
+  color: #0a1f4a;
+  letter-spacing: -0.02em;
+}
+
+.snapshot-mobile-head p {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: #334155;
+}
+
+.snapshot-mobile-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: max(1rem, env(safe-area-inset-left, 0px));
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5rem 0 1rem;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+}
+
+.snapshot-mobile-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  padding: 0.25rem max(1rem, calc(env(safe-area-inset-left, 0px) + 0.5rem)) 0.5rem
+    max(1rem, calc(env(safe-area-inset-right, 0px) + 0.5rem));
+}
+
+.snapshot-mobile-card {
+  --snap-accent: #2563eb;
+  flex: 0 0 min(280px, 84vw);
+  scroll-snap-align: center;
+  border-radius: 22px;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 18px 40px rgba(15, 23, 42, 0.12);
+  padding: 0.65rem 1rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 11.5rem;
+}
+
+.snapshot-mobile-card--blue {
+  --snap-accent: #2563eb;
+}
+
+.snapshot-mobile-card--cyan {
+  --snap-accent: #0891b2;
+}
+
+.snapshot-mobile-card--amber {
+  --snap-accent: #d97706;
+}
+
+.snapshot-mobile-card--violet {
+  --snap-accent: #7c3aed;
+}
+
+.snapshot-mobile-card--navy {
+  --snap-accent: #0f4580;
+}
+
+.snapshot-mobile-chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.45rem;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.snapshot-mobile-time {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.snapshot-mobile-signal {
+  display: inline-flex;
+  gap: 3px;
+  align-items: flex-end;
+}
+
+.snapshot-mobile-signal span {
+  display: block;
+  width: 4px;
+  border-radius: 1px;
+  background: #94a3b8;
+}
+
+.snapshot-mobile-signal span:nth-child(1) {
+  height: 5px;
+}
+
+.snapshot-mobile-signal span:nth-child(2) {
+  height: 8px;
+}
+
+.snapshot-mobile-signal span:nth-child(3) {
+  height: 11px;
+}
+
+.snapshot-mobile-body {
+  flex: 1;
+}
+
+.snapshot-mobile-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+}
+
+.snapshot-mobile-value {
+  margin: 0 0 0.4rem;
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.snapshot-mobile-unit {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--snap-accent);
+}
+
+.snapshot-mobile-hint {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: #475569;
+}
+
+.snapshot-mobile-fresh {
+  margin: 0.65rem 0 0;
+  padding-top: 0.55rem;
+  border-top: 1px dashed rgba(15, 23, 42, 0.1);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--snap-accent);
+}
+
+.snapshot-mobile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.snapshot-mobile-cta {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+.snapshot-mobile-hint-scroll {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.02em;
+}
+
 .products {
   background:
     radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.08), transparent 35%),
@@ -4914,6 +5115,18 @@ h3 {
 
   .pricing-compare {
     padding: 1rem 0.65rem 0.8rem;
+  }
+
+  .snapshot-mobile-head {
+    margin-bottom: 1rem;
+  }
+
+  .snapshot-mobile-head p {
+    font-size: 0.92rem;
+  }
+
+  .snapshot-mobile-card {
+    flex: 0 0 min(260px, 86vw);
   }
 
   .products {
