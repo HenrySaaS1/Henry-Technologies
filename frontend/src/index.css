@@ -1404,10 +1404,10 @@ h3 {
 
 .signup-modal {
   position: relative;
-  width: min(980px, 100%);
-  max-height: min(92vh, 720px);
+  width: min(96vw, 480px);
+  max-height: none;
   border-radius: 16px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow:
     0 0 0 1px rgba(120, 180, 255, 0.15),
     0 24px 80px rgba(0, 0, 0, 0.55),
@@ -1416,14 +1416,14 @@ h3 {
 
 .signup-close {
   position: absolute;
-  top: 0.65rem;
-  right: 0.75rem;
+  top: -0.2rem;
+  right: 0.1rem;
   z-index: 5;
   width: 2.25rem;
   height: 2.25rem;
-  border: none;
+  border: 1px solid rgba(148, 163, 184, 0.45);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.65);
   color: #e8eefc;
   font-size: 1.5rem;
   line-height: 1;
@@ -1431,13 +1431,14 @@ h3 {
 }
 
 .signup-close:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(186, 200, 240, 0.55);
 }
 
 .signup-modal-grid {
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  min-height: 520px;
+  grid-template-columns: 1fr;
+  min-height: 0;
 }
 
 .signup-hero {
@@ -1727,7 +1728,7 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem 1.25rem;
+  padding: 1rem 0.85rem 1.2rem;
   background: radial-gradient(ellipse 120% 80% at 50% 0%, rgba(59, 130, 246, 0.12), transparent 50%),
     #0a0c14;
 }
@@ -1739,8 +1740,8 @@ h3 {
 
 .signup-glass {
   width: 100%;
-  max-width: min(420px, 94vw);
-  padding: 1.5rem 1.35rem 1.35rem;
+  max-width: 100%;
+  padding: 1.15rem 0.95rem 1rem;
   border-radius: 14px;
   background: rgba(18, 22, 38, 0.55);
   backdrop-filter: blur(18px);
@@ -4765,40 +4766,6 @@ h3 {
 }
 
 @media (max-width: 900px) {
-  .signup-modal {
-    max-height: none;
-    width: min(96vw, 480px);
-    overflow: visible;
-  }
-
-  .signup-modal-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .signup-hero {
-    display: none;
-  }
-
-  .signup-dashboard-mock {
-    min-height: 180px;
-  }
-
-  .signup-panel {
-    padding: 1rem 0.85rem 1.2rem;
-  }
-
-  .signup-glass {
-    max-width: 100%;
-    padding: 1.15rem 0.95rem 1rem;
-  }
-
-  .signup-close {
-    top: -0.2rem;
-    right: 0.1rem;
-    background: rgba(15, 23, 42, 0.65);
-    border: 1px solid rgba(148, 163, 184, 0.45);
-  }
-
   .menu {
     display: none;
   }
