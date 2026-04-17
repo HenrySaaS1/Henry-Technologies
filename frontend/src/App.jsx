@@ -18,6 +18,7 @@ import securityProductImage from './assets/uploads/product-security-new.png'
 import myhenryProductImage from './assets/uploads/product-myhenry-new.png'
 import aboutHenryImage from './assets/about-henry.png'
 import henryLogo from './assets/henry-logo.png'
+import HeroLiveChartsHud from './HeroLiveCharts.jsx'
 
 const PRODUCT_IMAGES = {
   snapshot: snapshotProductImage,
@@ -1488,6 +1489,7 @@ function App() {
 
       <section className="hero" style={{ '--hero-url': `url(${heroMainImage})` }}>
         <div className="hero-inner">
+          <HeroLiveChartsHud />
           <div className="overlay">
             <h1>When You Need Answers Now<br />ASK HENRY</h1>
             <p>Get real-time insights, reduce downtime, and make smarter business decisions instantly.</p>
@@ -1497,20 +1499,6 @@ function App() {
             >
               {AUTH_BYPASS ? 'Open workspace' : 'Get Started'}
             </button>
-          </div>
-          <div className="hero-mini-snapshots" aria-label="Example live metrics (demo)">
-            <div className="hero-mini-snap">
-              <span className="hero-mini-snap-val">94.2%</span>
-              <span className="hero-mini-snap-lbl">OEE</span>
-            </div>
-            <div className="hero-mini-snap">
-              <span className="hero-mini-snap-val">512</span>
-              <span className="hero-mini-snap-lbl">units / hr</span>
-            </div>
-            <div className="hero-mini-snap">
-              <span className="hero-mini-snap-val">3</span>
-              <span className="hero-mini-snap-lbl">open alerts</span>
-            </div>
           </div>
         </div>
       </section>
