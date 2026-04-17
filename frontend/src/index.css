@@ -37,10 +37,10 @@ h3 {
   position: sticky;
   top: 0;
   z-index: 40;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.75rem 1rem;
+  column-gap: 0.65rem;
   min-height: 78px;
   padding: 0.65rem max(2.3rem, env(safe-area-inset-right, 0px)) 0.65rem max(2.3rem, env(safe-area-inset-left, 0px));
   padding-top: max(0.65rem, env(safe-area-inset-top, 0px));
@@ -49,30 +49,30 @@ h3 {
   box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
 }
 
-/* Logo + primary nav grouped on the left; actions use margin-left: auto */
+/* Logo stays in the first column; nav uses the middle column so links sit centered in the bar */
 .topbar-start {
   display: flex;
   align-items: center;
-  gap: 0.5rem 1.25rem;
-  flex-wrap: wrap;
+  justify-self: start;
   min-width: 0;
-  flex: 0 1 auto;
 }
 
 .topbar-left {
   display: flex;
   align-items: center;
-  flex: 0 1 auto;
+  justify-content: center;
+  justify-self: stretch;
   min-width: 0;
+  padding-inline: 0.35rem;
 }
 
 .topbar-right {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  justify-self: end;
   gap: 0.55rem;
   flex-shrink: 0;
-  margin-left: auto;
   min-width: 0;
 }
 
@@ -210,6 +210,7 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 0.45rem 1.35rem;
   font-family: 'Poppins', 'Open Sans', Arial, sans-serif;
   font-weight: 600;
@@ -5516,19 +5517,17 @@ h3 {
   }
 
   .topbar {
+    display: flex;
     flex-wrap: nowrap;
-    justify-content: flex-start;
+    justify-content: space-between;
+    align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 0.8rem 0.55rem;
     min-height: auto;
-    align-items: center;
   }
 
   .topbar-start {
-    flex: 1 1 auto;
-    min-width: 0;
-    flex-wrap: nowrap;
-    gap: 0.5rem;
+    justify-self: auto;
   }
 
   .topbar-left {
@@ -5539,6 +5538,7 @@ h3 {
     flex: 0 0 auto;
     flex-wrap: nowrap;
     justify-content: flex-end;
+    justify-self: auto;
     gap: 0.4rem;
   }
 

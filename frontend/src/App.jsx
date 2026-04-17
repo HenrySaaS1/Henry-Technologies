@@ -1192,15 +1192,15 @@ function App() {
                 <span className="logo-word">HENRY</span>
               </span>
             </button>
-            <div className="topbar-left">
-              <nav className="menu">
-                <a href="/#products">PRODUCTS</a>
-                <a href="/case-studies">CASE STUDIES</a>
-                <a href="/pricing">PRICING</a>
-                <a href="/#about">ABOUT</a>
-                <a href="/#contact">CONTACT</a>
-              </nav>
-            </div>
+          </div>
+          <div className="topbar-left">
+            <nav className="menu">
+              <a href="/#products">PRODUCTS</a>
+              <a href="/case-studies">CASE STUDIES</a>
+              <a href="/pricing">PRICING</a>
+              <a href="/#about">ABOUT</a>
+              <a href="/#contact">CONTACT</a>
+            </nav>
           </div>
           <div className="topbar-right">
             <div className="topbar-actions">
@@ -1261,15 +1261,15 @@ function App() {
                 <span className="logo-word">HENRY</span>
               </span>
             </button>
-            <div className="topbar-left">
-              <nav className="menu">
-                <a href="/products">PRODUCTS</a>
-                <a href="/case-studies">CASE STUDIES</a>
-                <a href="/pricing">PRICING</a>
-                <a href="/#about">ABOUT</a>
-                <a href="/#contact">CONTACT</a>
-              </nav>
-            </div>
+          </div>
+          <div className="topbar-left">
+            <nav className="menu">
+              <a href="/products">PRODUCTS</a>
+              <a href="/case-studies">CASE STUDIES</a>
+              <a href="/pricing">PRICING</a>
+              <a href="/#about">ABOUT</a>
+              <a href="/#contact">CONTACT</a>
+            </nav>
           </div>
           <div className="topbar-right">
             <div className="topbar-actions">
@@ -1330,15 +1330,15 @@ function App() {
                 <span className="logo-word">HENRY</span>
               </span>
             </button>
-            <div className="topbar-left">
-              <nav className="menu">
-                <a href="/products">PRODUCTS</a>
-                <a href="/case-studies">CASE STUDIES</a>
-                <a href="/pricing">PRICING</a>
-                <a href="/#about">ABOUT</a>
-                <a href="/#contact">CONTACT</a>
-              </nav>
-            </div>
+          </div>
+          <div className="topbar-left">
+            <nav className="menu">
+              <a href="/products">PRODUCTS</a>
+              <a href="/case-studies">CASE STUDIES</a>
+              <a href="/pricing">PRICING</a>
+              <a href="/#about">ABOUT</a>
+              <a href="/#contact">CONTACT</a>
+            </nav>
           </div>
           <div className="topbar-right">
             <div className="topbar-actions">
@@ -1463,15 +1463,15 @@ function App() {
               <span className="logo-word">HENRY</span>
             </span>
           </button>
-          <div className="topbar-left">
-            <nav className="menu">
-              <a href="/products">PRODUCTS</a>
-              <a href="/case-studies">CASE STUDIES</a>
-              <a href="/pricing">PRICING</a>
-              <a href="#about">ABOUT</a>
-              <a href="#contact">CONTACT</a>
-            </nav>
-          </div>
+        </div>
+        <div className="topbar-left">
+          <nav className="menu">
+            <a href="/products">PRODUCTS</a>
+            <a href="/case-studies">CASE STUDIES</a>
+            <a href="/pricing">PRICING</a>
+            <a href="#about">ABOUT</a>
+            <a href="#contact">CONTACT</a>
+          </nav>
         </div>
         <div className="topbar-right">
           <div className="topbar-actions">
