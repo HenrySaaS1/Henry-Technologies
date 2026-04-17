@@ -18,8 +18,8 @@ export function bypassDemoUser() {
   const now = new Date().toISOString()
   return {
     email: 'preview@henry.local',
-    company: 'Preview workspace',
-    slug: 'preview',
+    company: 'Harland Medical Systems',
+    slug: 'harland',
     products: [...DEFAULT_PRODUCT_IDS],
     planId: 'premium',
     createdAt: now,

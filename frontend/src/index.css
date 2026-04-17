@@ -4404,6 +4404,11 @@ h3 {
   gap: 0.45rem;
 }
 
+.client-logo-lockup--tenant {
+  display: flex;
+  align-items: center;
+}
+
 .client-logo-mark {
   display: block;
   height: 40px;
@@ -4411,6 +4416,14 @@ h3 {
   max-width: 160px;
   object-fit: contain;
   flex-shrink: 0;
+}
+
+.client-logo-mark--tenant {
+  height: auto;
+  max-height: 46px;
+  width: auto;
+  max-width: min(260px, 32vw);
+  object-fit: contain;
 }
 
 .client-logo-word {
@@ -5901,6 +5914,11 @@ h3 {
 
   .client-logo-mark {
     height: 34px;
+  }
+
+  .client-logo-mark--tenant {
+    max-height: 36px;
+    max-width: min(200px, 72vw);
   }
 
   .client-logo-word {

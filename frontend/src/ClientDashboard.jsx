@@ -1,6 +1,7 @@
 import { useState, useEffect, useId, useRef } from 'react'
 import { titlesForProductIds } from './productCatalog.js'
 import henryLogo from './assets/henry-logo.png'
+import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
 
 const DASH_KPIS = [
   { label: 'OEE', value: '94.2%', hint: 'vs target 90%', trend: '+1.2%', up: true },
@@ -769,6 +770,11 @@ const WORKSPACE = {
 const TENANT_OVERRIDES = {
   harland: {
     sub: 'Harland Medical Systems operations dashboard — live line performance, quality, and alerts.',
+    clientBrand: {
+      mode: 'tenant-lockup',
+      logoSrc: harlandMedicalSystemsLogo,
+      logoAlt: 'Harland Medical Systems',
+    },
   },
 }
 
@@ -975,6 +981,7 @@ export default function ClientDashboard({ user, onSignOut }) {
         : ''
   const tenantOverride = TENANT_OVERRIDES[tenantKey] || null
   const ctx = tenantOverride ? { ...WORKSPACE, ...tenantOverride } : WORKSPACE
+  const tenantLockup = ctx.clientBrand?.mode === 'tenant-lockup' ? ctx.clientBrand : null
   const activeProductTitles = titlesForProductIds(user.products)
   const greetName = displayNameFromEmail(user.email)
   const heading = TAB_HEADINGS[tab] || TAB_HEADINGS.dashboard
@@ -1068,12 +1075,30 @@ export default function ClientDashboard({ user, onSignOut }) {
         </div>
       ) : null}
       <header className="client-topbar">
-        <div className="client-brand" aria-label="HENRY client workspace">
-          <span className="client-logo-lockup">
-            <img src={henryLogo} alt="" className="client-logo-mark" width={160} height={160} decoding="async" />
-            <span className="client-logo-word">HENRY</span>
-          </span>
-          <span className="client-logo-sub">Client workspace</span>
+        <div
+          className="client-brand"
+          aria-label={tenantLockup ? tenantLockup.logoAlt : 'HENRY client workspace'}
+        >
+          {tenantLockup ? (
+            <span className="client-logo-lockup client-logo-lockup--tenant">
+              <img
+                src={tenantLockup.logoSrc}
+                alt={tenantLockup.logoAlt}
+                className="client-logo-mark client-logo-mark--tenant"
+                width={320}
+                height={120}
+                decoding="async"
+              />
+            </span>
+          ) : (
+            <>
+              <span className="client-logo-lockup">
+                <img src={henryLogo} alt="" className="client-logo-mark" width={160} height={160} decoding="async" />
+                <span className="client-logo-word">HENRY</span>
+              </span>
+              <span className="client-logo-sub">Client workspace</span>
+            </>
+          )}
         </div>
         <div className="client-topbar-search" role="search">
           <label htmlFor="ws-search" className="client-sr-only">
