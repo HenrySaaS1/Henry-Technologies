@@ -127,12 +127,30 @@ h3 {
   text-align: left;
 }
 
+.logo-lockup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.55rem;
+}
+
 .logo-mark {
   display: block;
   height: 52px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
+  flex-shrink: 0;
+}
+
+.logo-word {
+  font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
+  font-weight: 800;
+  font-size: 1.65rem;
+  letter-spacing: 0.04em;
+  color: #0f4580;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .logo-sub {
@@ -3937,12 +3955,29 @@ h3 {
   line-height: 1.15;
 }
 
+.client-logo-lockup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.45rem;
+}
+
 .client-logo-mark {
   display: block;
   height: 40px;
   width: auto;
   max-width: 160px;
   object-fit: contain;
+  flex-shrink: 0;
+}
+
+.client-logo-word {
+  font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
+  font-weight: 800;
+  font-size: 1.12rem;
+  letter-spacing: 0.04em;
+  color: #0f4580;
+  line-height: 1;
 }
 
 .client-logo-sub {
@@ -5041,8 +5076,16 @@ h3 {
     flex-wrap: wrap;
   }
 
+  .logo-lockup {
+    gap: 0.4rem;
+  }
+
   .logo-mark {
     height: 44px;
+  }
+
+  .logo-word {
+    font-size: 1.28rem;
   }
 
   .logo-sub {
@@ -5271,6 +5314,10 @@ h3 {
     height: 34px;
   }
 
+  .client-logo-word {
+    font-size: 1rem;
+  }
+
   .client-signout {
     width: 100%;
     order: 4;
@@ -5324,8 +5371,17 @@ h3 {
     max-width: 42%;
   }
 
+  .logo-lockup {
+    gap: 0.3rem;
+  }
+
   .logo-mark {
     height: 36px;
+  }
+
+  .logo-word {
+    font-size: 1.02rem;
+    letter-spacing: 0.02em;
   }
 
   .logo-sub {

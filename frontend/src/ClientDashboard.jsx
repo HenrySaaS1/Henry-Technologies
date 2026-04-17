@@ -1067,7 +1067,10 @@ export default function ClientDashboard({ user, onSignOut }) {
       ) : null}
       <header className="client-topbar">
         <div className="client-brand" aria-label="HENRY client workspace">
-          <img src={henryLogo} alt="" className="client-logo-mark" width={160} height={160} decoding="async" />
+          <span className="client-logo-lockup">
+            <img src={henryLogo} alt="" className="client-logo-mark" width={160} height={160} decoding="async" />
+            <span className="client-logo-word">HENRY</span>
+          </span>
           <span className="client-logo-sub">Client workspace</span>
         </div>
         <div className="client-topbar-search" role="search">

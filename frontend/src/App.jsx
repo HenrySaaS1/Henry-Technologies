@@ -1185,7 +1185,10 @@ function App() {
               }
             }}
           >
-            <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
+            <span className="logo-lockup">
+              <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
+              <span className="logo-word">HENRY</span>
+            </span>
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
           <nav className="menu">
@@ -1246,7 +1249,10 @@ function App() {
               }
             }}
           >
-            <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
+            <span className="logo-lockup">
+              <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
+              <span className="logo-word">HENRY</span>
+            </span>
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
           <nav className="menu">
@@ -1307,7 +1313,10 @@ function App() {
               }
             }}
           >
-            <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
+            <span className="logo-lockup">
+              <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
+              <span className="logo-word">HENRY</span>
+            </span>
             <span className="logo-sub">SMART BUSINESS TOOLS</span>
           </button>
           <nav className="menu">
@@ -1432,7 +1441,10 @@ function App() {
             }
           }}
         >
-          <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
+          <span className="logo-lockup">
+            <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
+            <span className="logo-word">HENRY</span>
+          </span>
           <span className="logo-sub">SMART BUSINESS TOOLS</span>
         </button>
         <nav className="menu">
