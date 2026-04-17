@@ -31,6 +31,17 @@ function isTrustedAzureFrontend(origin) {
   )
 }
 
+/** Custom production domain(s) for the marketing site (not *.azurestaticapps.net). */
+function isGoAskHenryOrigin(origin) {
+  try {
+    const u = new URL(origin)
+    if (u.protocol !== 'https:') return false
+    return u.hostname === 'goaskhenry.com' || u.hostname.endsWith('.goaskhenry.com')
+  } catch {
+    return false
+  }
+}
+
 const corsOrigins =
   process.env.NODE_ENV === 'production'
     ? parseCorsOrigins(process.env.CORS_ORIGIN)
@@ -42,6 +53,7 @@ app.use(
       // Allow non-browser clients and same-origin requests with no Origin header.
       if (!origin) return callback(null, true)
       if (corsOrigins.includes(origin)) return callback(null, true)
+      if (isGoAskHenryOrigin(origin)) return callback(null, true)
       if (isTrustedAzureFrontend(origin)) return callback(null, true)
       // Reject safely without throwing 500 on preflight.
       return callback(null, false)

@@ -106,7 +106,7 @@ You get a **Static Web App** URL for the React site and an **App Service** URL f
 4. **Static Web App** — connect the **same GitHub repo**; framework “Custom”, or rely on the workflow below.
    - After creation, note the site URL (e.g. `https://<name>.azurestaticapps.net`).
 
-5. **CORS** — set `CORS_ORIGIN` on the Web App to exactly that Static Web App URL (including `https://`). Redeploy backend after changing it.
+5. **CORS** — set `CORS_ORIGIN` to comma-separated `https://` origins (no trailing slash), e.g. your Static Web App URL **and** any custom domain users open (such as `https://goaskhenry.com`). Production requires at least one valid `https://` origin. The API also allows `https://goaskhenry.com` and `*.goaskhenry.com` in Express once that build is deployed. If the Web App has **Configuration → CORS** entries in the Azure portal, add the same origins there or clear them so the Node app’s CORS rules apply. Redeploy the backend after changes.
 
 ### 2. GitHub Actions secrets
 
@@ -136,7 +136,7 @@ Push to `main` (or use **Actions → Run workflow**) to deploy. The frontend wor
 ### 4. Troubleshooting
 
 - **API 500 / Prisma errors** — check `DATABASE_URL` and firewall; Flexible Server often needs `sslmode=require`.
-- **Browser CORS** — `CORS_ORIGIN` must match the exact frontend origin (scheme + host, no path).
+- **Browser CORS / “Cannot reach API” on the live site while localhost works** — the browser blocks cross-origin calls if the API does not allow `https://goaskhenry.com`. Fix: deploy the latest backend (Express allows that host) and/or add `https://goaskhenry.com` to App Service `CORS_ORIGIN`; align Azure Portal **CORS** with your origins or leave it empty. Then hard-refresh the site.
 - **Frontend calls wrong API** — rebuild frontend after changing `VITE_API_URL` (it is baked in at build time).
 
 Link GitHub to Azure using **Deployment Center** on each resource, or use only these workflows once the secrets above are set.
