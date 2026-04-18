@@ -2086,6 +2086,91 @@ h3 {
   font-weight: 700;
 }
 
+/* Optional build-time preview gate (see VITE_SITE_GATE_PASSWORD) */
+.site-gate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(30, 58, 138, 0.35), rgba(4, 9, 22, 0.92));
+}
+
+.site-gate-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 1.75rem 1.65rem 1.85rem;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.35);
+}
+
+.site-gate-card h1 {
+  margin: 0 0 0.65rem;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.site-gate-note {
+  margin: 0 0 1.25rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.site-gate-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.site-gate-label input {
+  border: 1px solid #94a3b8;
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.site-gate-label input:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+  border-color: #2563eb;
+}
+
+.site-gate-error {
+  margin: 0.65rem 0 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #b91c1c;
+}
+
+.site-gate-submit {
+  margin-top: 1.15rem;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(180deg, #1a74e8 0%, #0b63d1 100%);
+  box-shadow: 0 4px 14px rgba(11, 99, 209, 0.35);
+}
+
+.site-gate-submit:hover {
+  filter: brightness(1.04);
+}
+
 .signup-overlay {
   position: fixed;
   inset: 0;

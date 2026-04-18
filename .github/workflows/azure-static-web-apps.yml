@@ -2,6 +2,7 @@
 # Secrets (GitHub → Settings → Secrets):
 #   AZURE_STATIC_WEB_APPS_API_TOKEN — from Azure Portal → your Static Web App → Manage deployment token
 #   VITE_API_URL — your backend base URL, e.g. https://henry-api.azurewebsites.net (no trailing slash)
+#   VITE_SITE_GATE_PASSWORD (optional) — if set at build time, shows a password screen before the SPA (preview only; not secure).
 
 name: Azure Static Web Apps CI/CD
 
@@ -39,6 +40,7 @@ jobs:
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
+          VITE_SITE_GATE_PASSWORD: ${{ secrets.VITE_SITE_GATE_PASSWORD }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

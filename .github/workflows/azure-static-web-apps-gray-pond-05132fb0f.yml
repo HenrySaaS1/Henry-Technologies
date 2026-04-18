@@ -29,6 +29,8 @@ jobs:
           ###### End of Repository/Build Configurations ######
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
+          VITE_SITE_GATE_PASSWORD: ${{ secrets.VITE_SITE_GATE_PASSWORD }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

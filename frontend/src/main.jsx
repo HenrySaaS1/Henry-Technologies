@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+import SiteGate from './SiteGate.jsx'
 
 /** PWA assets must follow Vite base path (e.g. /hms1/) so manifest resolves on mobile installs. */
 const base = import.meta.env.BASE_URL || '/'
@@ -12,6 +13,8 @@ document.getElementById('henry-pwa-icon')?.setAttribute('href', logoHref)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <SiteGate>
+      <App />
+    </SiteGate>
   </StrictMode>,
 )
