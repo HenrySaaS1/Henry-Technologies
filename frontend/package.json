@@ -25,6 +25,8 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
     "jimp": "^0.22.12",
+    "mupdf": "^1.27.0",
+    "sharp": "^0.34.5",
     "vite": "^8.0.4"
   }
 }

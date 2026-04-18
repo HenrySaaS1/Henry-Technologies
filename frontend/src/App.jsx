@@ -1212,11 +1212,11 @@ function App() {
               </a>
               {!AUTH_BYPASS ? (
                 <>
-                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
-                    Sign In
-                  </button>
                   <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signup')}>
                     Sign Up
+                  </button>
+                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
+                    Sign In
                   </button>
                 </>
               ) : null}
@@ -1281,11 +1281,11 @@ function App() {
               </a>
               {!AUTH_BYPASS ? (
                 <>
-                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
-                    Sign In
-                  </button>
                   <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signup')}>
                     Sign Up
+                  </button>
+                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
+                    Sign In
                   </button>
                 </>
               ) : null}
@@ -1350,11 +1350,11 @@ function App() {
               </a>
               {!AUTH_BYPASS ? (
                 <>
-                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
-                    Sign In
-                  </button>
                   <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signup')}>
                     Sign Up
+                  </button>
+                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
+                    Sign In
                   </button>
                 </>
               ) : null}
@@ -1488,11 +1488,11 @@ function App() {
             </a>
             {!AUTH_BYPASS ? (
               <>
-                <button type="button" className="btn-dark" onClick={() => openAuthModal('signin')}>
-                  Sign In
-                </button>
                 <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signup')}>
                   Sign Up
+                </button>
+                <button type="button" className="btn-dark" onClick={() => openAuthModal('signin')}>
+                  Sign In
                 </button>
               </>
             ) : null}
