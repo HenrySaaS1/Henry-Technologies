@@ -39,6 +39,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    # Serialize deploys to this Web App to reduce OneDeploy 409 Conflict from overlapping runs.
+    concurrency:
+      group: azure-webapp-henry-frontend-deploy
+      cancel-in-progress: false
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout

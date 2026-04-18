@@ -26,6 +26,10 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+    # Avoid overlapping OneDeploy runs to the same Web App (often surfaces as HTTP 409 Conflict).
+    concurrency:
+      group: azure-app-service-backend-deploy
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v5
 
