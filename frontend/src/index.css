@@ -272,6 +272,16 @@ h3 {
   align-items: stretch;
 }
 
+/* Laptop / desktop: first screen is hero only — fill viewport below sticky topbar (~5.5rem). */
+@media (min-width: 901px) {
+  .hero {
+    min-height: max(480px, calc(100vh - 5.5rem));
+    min-height: max(480px, calc(100dvh - 5.5rem));
+    background-size: cover, cover;
+    background-position: center, center 22%;
+  }
+}
+
 .hero-inner {
   position: relative;
   width: 100%;
@@ -497,7 +507,6 @@ h3 {
   scroll-margin-top: 84px;
 }
 
-.solutions,
 .products,
 .case-studies,
 .pricing-section,
@@ -507,10 +516,22 @@ h3 {
   margin: 2rem auto;
 }
 
+/* Full-bleed band: background spans the viewport; inner content stays aligned to page max width */
 .solutions {
+  width: 100%;
+  max-width: none;
+  margin: 2rem 0;
+  box-sizing: border-box;
+  padding: 2rem max(1.25rem, env(safe-area-inset-left, 0px)) 2.25rem max(1.25rem, env(safe-area-inset-right, 0px));
   background: #d5edf1;
-  border-radius: 6px;
-  padding: 2rem;
+  border-radius: 0;
+}
+
+.solutions h2,
+.solutions .card-grid {
+  max-width: min(1200px, 100%);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Landing: mobile-style horizontal snapshot carousel (HENRY Snapshot) */
@@ -2618,6 +2639,46 @@ h3 {
 
 .signup-field input::placeholder {
   color: rgba(200, 210, 240, 0.45);
+}
+
+.signup-forgot-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: -0.2rem 0 0;
+}
+
+.signup-forgot-password {
+  border: none;
+  background: none;
+  padding: 0.15rem 0.1rem;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(147, 197, 253, 0.95);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.signup-forgot-password:hover {
+  color: #e0f2fe;
+}
+
+.signup-forgot-help {
+  margin: 0;
+  padding: 0 0.1rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(200, 210, 240, 0.78);
+}
+
+.signup-forgot-help a {
+  color: rgba(147, 197, 253, 1);
+  font-weight: 600;
+}
+
+.signup-forgot-help a:hover {
+  color: #e0f2fe;
 }
 
 .btn-start-monitoring {

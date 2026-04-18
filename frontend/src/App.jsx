@@ -184,9 +184,9 @@ const productDetails = [
     bullets: [
       'Live Operational Updates: Get real-time data refreshed at defined intervals',
       'Quick KPI Overview: Track critical metrics without deep dives',
-      'Multi-Unit Visibility: Monitor multiple business units from one place.',
-      'Trend Indicators: Spot patterns and anomalies instantly.',
-      'Action-Ready Insights: Make faster decisions with concise data.',
+      'Multi-Unit Visibility: Monitor multiple business units from one place',
+      'Trend Indicators: Spot patterns and anomalies instantly',
+      'Action-Ready Insights: Make faster decisions with concise data',
     ],
     benefits: [
       'Improve operational efficiency',
@@ -204,11 +204,11 @@ const productDetails = [
     body:
       'Designed for modern manufacturing, Systems brings clarity and control to complex operations.',
     bullets: [
-      'Machine Monitoring: Track equipment performance in real time.',
-      'IIoT Integration: Seamlessly connect sensors, PLCs, and devices.',
-      'Downtime Analysis: Identify and reduce operational inefficiencies.',
-      'Centralised Dashboard: View all systems in one unified interface.',
-      'Performance Optimisation: Improve output with data-driven insights.',
+      'Machine Monitoring: Track equipment performance in real time',
+      'IIoT Integration: Seamlessly connect sensors, PLCs, and devices',
+      'Downtime Analysis: Identify and reduce operational inefficiencies',
+      'Centralised Dashboard: View all systems in one unified interface',
+      'Performance Optimisation: Improve output with data-driven insights',
     ],
     benefits: [
       'Increase production efficiency',
@@ -226,11 +226,11 @@ const productDetails = [
     body:
       'From compliance to prevention, safety helps protect both people and operations.',
     bullets: [
-      'Boundary Violation Detection: Identify safety line breaches instantly.',
-      'Unsafe Behaviour Alerts: Monitor and flag risky actions.',
-      'Real-time Notifications: Get immediate alerts for safety issues.',
-      'Compliance Monitoring: Ensure adherence to safety standards.',
-      'Incident Prevention: Reduce risks before they escalate.',
+      'Boundary Violation Detection: Identify safety line breaches instantly',
+      'Unsafe Behaviour Alerts: Monitor and flag risky actions',
+      'Real-time Notifications: Get immediate alerts for safety issues',
+      'Compliance Monitoring: Ensure adherence to safety standards',
+      'Incident Prevention: Reduce risks before they escalate',
     ],
     benefits: [
       'Save time and resources',
@@ -248,11 +248,11 @@ const productDetails = [
     body:
       'Built for modern industrial environments, Security keeps your operations protected 24/7.',
     bullets: [
-      'Access Monitoring: Detect unauthorised entry in real time.',
-      'Anomaly Detection: Identify unusual activities instantly.',
-      'Smart Surveillance Integration: Connect cameras and sensors seamlessly.',
-      'Alert System: Get notified of security breaches immediately.',
-      '24/7 Protection: Continuous monitoring for complete peace of mind.',
+      'Access Monitoring: Detect unauthorised entry in real time',
+      'Anomaly Detection: Identify unusual activities instantly',
+      'Smart Surveillance Integration: Connect cameras and sensors seamlessly',
+      'Alert System: Get notified of security breaches immediately',
+      '24/7 Protection: Continuous monitoring for complete peace of mind',
     ],
     benefits: [
       'Improve operational efficiency',
@@ -270,11 +270,11 @@ const productDetails = [
     body:
       'From operations to strategy, MyHenry becomes your intelligent decision-making partner.',
     bullets: [
-      'AI-Powered Assistance: Get instant answers to business queries.',
-      'Custom Knowledge Base: Trained on your workflows, data, and processes.',
-      'Cross-Functional Support: Covers HR, finance, operations, and more.',
-      'Smart Recommendations: Receive actionable insights in real time.',
-      'Continuous Learning: Improves over time with usage and data.',
+      'AI-Powered Assistance: Get instant answers to business queries',
+      'Custom Knowledge Base: Trained on your workflows, data, and processes',
+      'Cross-Functional Support: Covers HR, finance, operations, and more',
+      'Smart Recommendations: Receive actionable insights in real time',
+      'Continuous Learning: Improves over time with usage and data',
     ],
     benefits: [
       'Improve operational efficiency',
@@ -548,6 +548,7 @@ function App() {
   const [signupStatus, setSignupStatus] = useState('')
   const [activeCaseStudy, setActiveCaseStudy] = useState(null)
   const [authMode, setAuthMode] = useState('signup')
+  const [forgotPasswordHelpOpen, setForgotPasswordHelpOpen] = useState(false)
   const [signupFromPlan, setSignupFromPlan] = useState(null)
   const [currentUser, setCurrentUser] = useState(() => (AUTH_BYPASS ? bypassDemoUser() : null))
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -636,6 +637,7 @@ function App() {
     setShowSignup(false)
     setSignupStatus('')
     setSignupFromPlan(null)
+    setForgotPasswordHelpOpen(false)
     setSignupForm({ email: '', password: '', confirmPassword: '' })
   }
 
@@ -677,6 +679,7 @@ function App() {
   const openAuthModal = (mode = 'signup', options = {}) => {
     setAuthMode(mode)
     setSignupStatus('')
+    setForgotPasswordHelpOpen(false)
     const planKey = options.planId
     const validPlan = planKey && PLAN_REGISTRATION_DEFAULTS[planKey] ? planKey : null
     if (mode === 'signup') {
@@ -737,7 +740,7 @@ function App() {
       setToken(data.token)
       const u = mapUserFromApi(data.user)
       if (!u) {
-        setSignupStatus('Account created but profile could not be loaded. Try Sign in.')
+        setSignupStatus('Account created but profile could not be loaded. Try Sign In.')
         setAuthMode('signin')
         return
       }
@@ -778,7 +781,7 @@ function App() {
     } catch (e) {
       setSignupStatus(
         e?.message?.trim() ||
-          'Email or password does not match. Try again or use Create account.',
+          'Email or password does not match. Try again or create an account.',
       )
     }
   }
@@ -1209,11 +1212,11 @@ function App() {
               </a>
               {!AUTH_BYPASS ? (
                 <>
-                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
-                    Sign in
+                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
+                    Sign In
                   </button>
-                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
-                    Sign up
+                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signup')}>
+                    Sign Up
                   </button>
                 </>
               ) : null}
@@ -1278,11 +1281,11 @@ function App() {
               </a>
               {!AUTH_BYPASS ? (
                 <>
-                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
-                    Sign in
+                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
+                    Sign In
                   </button>
-                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
-                    Sign up
+                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signup')}>
+                    Sign Up
                   </button>
                 </>
               ) : null}
@@ -1347,11 +1350,11 @@ function App() {
               </a>
               {!AUTH_BYPASS ? (
                 <>
-                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signin')}>
-                    Sign in
+                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
+                    Sign In
                   </button>
-                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signup')}>
-                    Sign up
+                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signup')}>
+                    Sign Up
                   </button>
                 </>
               ) : null}
@@ -1485,11 +1488,11 @@ function App() {
             </a>
             {!AUTH_BYPASS ? (
               <>
-                <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signin')}>
-                  Sign in
+                <button type="button" className="btn-dark" onClick={() => openAuthModal('signin')}>
+                  Sign In
                 </button>
-                <button type="button" className="btn-dark" onClick={() => openAuthModal('signup')}>
-                  Sign up
+                <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signup')}>
+                  Sign Up
                 </button>
               </>
             ) : null}
@@ -1511,8 +1514,10 @@ function App() {
         <div className="hero-inner">
           <HeroLiveChartsHud />
           <div className="overlay">
-            <h1>When You Need Answers Now<br />ASK HENRY</h1>
-            <p>Get real-time insights, reduce downtime, and make smarter business decisions instantly.</p>
+            <h1>When You Need Answers Now</h1>
+            <p>
+              With HENRY, you can have real-time insights, reduce downtime, and make smarter business decisions.
+            </p>
             <button
               className="btn-primary"
               onClick={() => (AUTH_BYPASS ? enterBypassWorkspace() : openAuthModal('signup'))}
@@ -1555,10 +1560,11 @@ function App() {
                         setAuthMode('signup')
                         setSignupStatus('')
                         setSignupFromPlan(null)
+                        setForgotPasswordHelpOpen(false)
                         setSignupForm({ email: '', password: '', confirmPassword: '' })
                       }}
                     >
-                      Sign up
+                      Sign Up
                     </button>
                     <button
                       type="button"
@@ -1567,9 +1573,10 @@ function App() {
                         setAuthMode('signin')
                         setSignupStatus('')
                         setSignupFromPlan(null)
+                        setForgotPasswordHelpOpen(false)
                       }}
                     >
-                      Sign in
+                      Sign In
                     </button>
                   </div>
                   {authMode === 'signup' ? (
@@ -1581,7 +1588,7 @@ function App() {
                           <span className="signup-pricing-context-price">{PLAN_DISPLAY[signupFromPlan].price}</span>
                         </p>
                       ) : null}
-                      <h3 id="onboarding-title">Account</h3>
+                      <h3 id="onboarding-title">Create An Account</h3>
                       <p className="signup-glass-hint">
                         Use your work email — it becomes your login. Enter your password twice to confirm, then create
                         your workspace.
@@ -1645,7 +1652,7 @@ function App() {
                           />
                         </label>
                         <button type="submit" className="btn-start-monitoring">
-                          Create account
+                          Create An Account
                         </button>
                         <div className="signup-or">
                           <span>or</span>
@@ -1682,7 +1689,7 @@ function App() {
                   ) : (
                     <>
                       <div className="signup-signin-badge">Secure sign in</div>
-                      <h3 id="signin-title">Welcome back</h3>
+                      <h3 id="signin-title">Welcome Back</h3>
                       <p className="signup-glass-hint">
                         Enter the same email and password you used when you created your HENRY account.
                       </p>
@@ -1725,6 +1732,27 @@ function App() {
                             placeholder="Password"
                           />
                         </label>
+                        <div className="signup-forgot-row">
+                          <button
+                            type="button"
+                            className="signup-forgot-password"
+                            onClick={() => {
+                              setForgotPasswordHelpOpen(true)
+                              setSignupStatus('')
+                            }}
+                          >
+                            Forgot Password?
+                          </button>
+                        </div>
+                        {forgotPasswordHelpOpen ? (
+                          <p className="signup-forgot-help" role="status">
+                            Self-service password reset is not enabled yet. Email{' '}
+                            <a href="mailto:info@goaskhenry.com?subject=HENRY%20password%20help">
+                              info@goaskhenry.com
+                            </a>{' '}
+                            from your work address and we will help you regain access.
+                          </p>
+                        ) : null}
                         <button type="submit" className="btn-start-monitoring">
                           Sign In
                         </button>
@@ -1842,11 +1870,14 @@ function App() {
         </div>
         <div className="about-content">
           <h2>ABOUT HENRY</h2>
-          <h3>Smarter Business Starts Here</h3>
+          <h3>
+            Smarter Business
+            <br />
+            Starts Here
+          </h3>
           <p>
-            HENRY is built to help your business make faster, smarter decisions using
-            real-time data and AI-powered insights. From monitoring operations to
-            optimizing performance, everything you need is in one powerful platform.
+            HENRY helps your business make faster, smarter decisions using real-time data and AI-powered insights.
+            From monitoring operations to optimizing performance, everything you need is in one powerful platform.
           </p>
           <ul>
             <li>Real-Time Factory Visibility</li>
