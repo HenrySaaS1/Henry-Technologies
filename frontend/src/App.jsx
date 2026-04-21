@@ -1142,8 +1142,6 @@ function App() {
               <dt>Email</dt>
               <dd>
                 <a href="mailto:info@goaskhenry.com">info@goaskhenry.com</a>
-                {' \u00b7 '}
-                <a href="mailto:larrya@goaskhenry.com">larrya@goaskhenry.com</a>
               </dd>
             </div>
             <div className="contact-info-row">
