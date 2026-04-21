@@ -7,7 +7,7 @@ const DEFAULT_PRODUCT_IDS = ['core', 'factory-analytics', 'automation', 'myhenry
 const prisma = new PrismaClient()
 
 async function main() {
-  const email = 'ops@harlandmedical.com'
+  const email = 'landerson@harlandmedical.com'
   const password = 'Harland@123'
   const passwordHash = await bcrypt.hash(password, 10)
   const user = await prisma.user.upsert({
