@@ -1132,7 +1132,7 @@ function App() {
       </p>
       <div className="contact-info-wrap">
         <aside className="contact-info-panel" aria-labelledby="contact-info-heading">
-          <h3 id="contact-info-heading">HENRY SaaS</h3>
+          <h3 id="contact-info-heading">HENRY Technologies</h3>
           <p className="contact-info-lead">
             Cloud manufacturing intelligence — onboarding, billing questions, and technical evaluations all start
             here.
@@ -1238,7 +1238,7 @@ function App() {
         {requestDemoSection}
         {contactSection}
         <footer className="site-footer" aria-label="Site footer">
-          <p>@2026 Henry , Inc. All rights reserved</p>
+          <p>@2026 HENRY Technologies, Inc. All rights reserved</p>
         </footer>
       </div>
     )
@@ -1307,7 +1307,7 @@ function App() {
         {requestDemoSection}
         {contactSection}
         <footer className="site-footer" aria-label="Site footer">
-          <p>@2026 Henry , Inc. All rights reserved</p>
+          <p>@2026 HENRY Technologies, Inc. All rights reserved</p>
         </footer>
       </div>
     )
@@ -1379,7 +1379,7 @@ function App() {
         {requestDemoSection}
         {contactSection}
         <footer className="site-footer" aria-label="Site footer">
-          <p>@2026 Henry , Inc. All rights reserved</p>
+          <p>@2026 HENRY Technologies, Inc. All rights reserved</p>
         </footer>
         {showCaseDemo ? (
           <section
@@ -1869,14 +1869,14 @@ function App() {
           <img src={aboutHenryImage} alt="About Henry" />
         </div>
         <div className="about-content">
-          <h2>ABOUT HENRY</h2>
+          <h2>ABOUT HENRY TECHNOLOGIES</h2>
           <h3>
             Smarter Business
             <br />
             Starts Here
           </h3>
           <p>
-            HENRY helps your business make faster, smarter decisions using real-time data and AI-powered insights.
+            HENRY Technologies helps your business make faster, smarter decisions using real-time data and AI-powered insights.
             From monitoring operations to optimizing performance, everything you need is in one powerful platform.
           </p>
           <ul>
@@ -1892,7 +1892,7 @@ function App() {
       {contactSection}
 
       <footer className="site-footer" aria-label="Site footer">
-        <p>@2026 Henry , Inc. All rights reserved</p>
+        <p>@2026 HENRY Technologies, Inc. All rights reserved</p>
       </footer>
     </div>
   )

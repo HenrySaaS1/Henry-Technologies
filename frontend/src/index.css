@@ -5740,12 +5740,13 @@ h3 {
 
   /* Landing hero: keep subject’s face visible; copy + demo metrics sit in lower third */
   .hero {
-    min-height: min(72vh, 600px);
+    min-height: max(540px, calc(100vh - 4.75rem));
+    min-height: max(540px, calc(100dvh - 4.75rem));
     background-image:
       linear-gradient(180deg, rgba(4, 10, 24, 0.1) 0%, rgba(4, 10, 24, 0.02) 24%, rgba(4, 10, 24, 0.38) 48%, rgba(4, 10, 24, 0.9) 100%),
       var(--hero-url);
     background-size: cover, cover;
-    background-position: center, center 16%;
+    background-position: center, center 18%;
   }
 
   .hero-inner {
@@ -6154,8 +6155,9 @@ h3 {
   }
 
   .hero {
-    min-height: min(62vh, 480px);
-    background-position: center, center 10%;
+    min-height: max(520px, calc(100vh - 4.5rem));
+    min-height: max(520px, calc(100dvh - 4.5rem));
+    background-position: center, center 14%;
   }
 
   .hero-live-charts {
