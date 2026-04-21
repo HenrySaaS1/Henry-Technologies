@@ -5,9 +5,13 @@ export function assertProductionEnv() {
   if (process.env.NODE_ENV !== 'production') return
 
   const errors = []
-  const db = process.env.DATABASE_URL || ''
-  if (!db.startsWith('postgresql:')) {
-    errors.push('DATABASE_URL must be a PostgreSQL URL (postgresql://...) with sslmode=require on Azure.')
+  const rawDb = String(process.env.DATABASE_URL || '').trim()
+  const isPostgresUrl = /^postgres(ql)?:\/\//i.test(rawDb)
+  if (!isPostgresUrl) {
+    errors.push('DATABASE_URL must be a PostgreSQL URL (postgres://... or postgresql://...).')
+  } else if (/^postgres:\/\//i.test(rawDb)) {
+    // Normalize common provider URLs so Prisma gets the expected scheme.
+    process.env.DATABASE_URL = rawDb.replace(/^postgres:\/\//i, 'postgresql://')
   }
   const secret = process.env.JWT_SECRET || ''
   if (!secret || secret === 'dev-only-change-me' || secret.length < 16) {
@@ -23,8 +27,8 @@ export function assertProductionEnv() {
     )
   }
 
-  if (errors.length) {
-    console.error('[henry] Refusing to start — fix Application settings:\n', errors.map((e) => `  • ${e}`).join('\n'))
-    process.exit(1)
+  if (errors.length > 0) {
+    // Keep the API booting so /api/health and runtime logs are available during recovery.
+    console.error('[henry] Invalid Application settings (startup continues in degraded mode):\n', errors.map((e) => `  • ${e}`).join('\n'))
   }
 }
