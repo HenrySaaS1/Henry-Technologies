@@ -885,6 +885,11 @@ const SUBSCRIPTION_PLAN_LABEL = {
 /** Same layout and demo content for every tenant; only the top bar shows company + email. */
 const WORKSPACE = {
   sub: 'Real-time production monitoring — shared HENRY workspace for all clients.',
+  /** Productized layout name — “Dashboard #1” is the multi-site / multi-location client experience. */
+  dashboardTemplate: {
+    name: 'Dashboard #1',
+    sub: 'Multi-location & multi-site clients',
+  },
   pills: [
     { className: 'green', label: 'Running 12' },
     { className: 'yellow', label: 'Idle 4' },
@@ -1514,8 +1519,23 @@ export default function ClientDashboard({ user, onSignOut }) {
         </button>
       </header>
 
-      {(user.planId && SUBSCRIPTION_PLAN_LABEL[user.planId]) || activeProductTitles.length ? (
+      {ctx.dashboardTemplate ||
+      (user.planId && SUBSCRIPTION_PLAN_LABEL[user.planId]) ||
+      activeProductTitles.length ? (
         <div className="client-meta-strip" role="status">
+          {ctx.dashboardTemplate ? (
+            <div
+              className="client-template-pill"
+              title={`${ctx.dashboardTemplate.name} — ${ctx.dashboardTemplate.sub}`}
+            >
+              <span className="client-product-strip-label">Layout</span>
+              <span className="client-template-name">{ctx.dashboardTemplate.name}</span>
+              <span className="client-template-sep" aria-hidden="true">
+                ·
+              </span>
+              <span className="client-template-sub">{ctx.dashboardTemplate.sub}</span>
+            </div>
+          ) : null}
           {user.planId && SUBSCRIPTION_PLAN_LABEL[user.planId] ? (
             <div className="client-plan-pill">
               <span className="client-product-strip-label">Plan</span>
