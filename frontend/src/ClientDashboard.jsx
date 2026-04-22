@@ -1,4 +1,4 @@
-import { useState, useEffect, useId, useRef } from 'react'
+import { useState, useEffect, useId, useRef, useMemo } from 'react'
 import { titlesForProductIds } from './productCatalog.js'
 import henryLogo from './assets/henry-logo.png'
 import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
@@ -496,6 +496,172 @@ function SnapshotWordmark({ compact = false }) {
   )
 }
 
+/** Power BI–style chart strip for the Activities tab (demo SVGs — wire to your warehouse). */
+function ActivitiesAnalyticsPanel({ actId, reportRange, onReportRange, leadText }) {
+  const siteEff = GLOBAL_SITES.map((s) => ({
+    id: s.id,
+    code: s.flagCode,
+    label: s.id.toUpperCase(),
+    v: Math.min(100, Math.max(0, Number(s.efficiency) || 0)),
+  }))
+
+  return (
+    <div className="client-activities-bi">
+      <div className="client-activities-toolbar">
+        <span className="client-activities-toolbar-label">Time range</span>
+        <div className="client-filter-row" role="toolbar" aria-label="Activity time range">
+          {REPORT_RANGE_PRESETS.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              className={`client-filter-chip${reportRange === p.id ? ' active' : ''}`}
+              onClick={() => onReportRange(p.id)}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+        <span className="client-activities-toolbar-hint">Demo visuals · connect Power BI or your lake for live data</span>
+      </div>
+      {leadText ? <p className="client-text-lead client-activities-bi-lead">{leadText}</p> : null}
+      <div className="client-activities-kpis" aria-label="Key metrics">
+        <div className="client-activities-kpi">
+          <span className="client-activities-kpi-v">91.2%</span>
+          <span className="client-activities-kpi-l">Blended OEE</span>
+        </div>
+        <div className="client-activities-kpi">
+          <span className="client-activities-kpi-v">512</span>
+          <span className="client-activities-kpi-l">Units / hr (peak)</span>
+        </div>
+        <div className="client-activities-kpi">
+          <span className="client-activities-kpi-v">99.1%</span>
+          <span className="client-activities-kpi-l">First-pass yield</span>
+        </div>
+        <div className="client-activities-kpi">
+          <span className="client-activities-kpi-v">186</span>
+          <span className="client-activities-kpi-l">Downtime min (shift)</span>
+        </div>
+      </div>
+      <div className="client-activities-charts">
+        <article className="client-activities-chart-card">
+          <h3 className="client-activities-chart-title">Operational efficiency by site</h3>
+          <div className="client-activities-chart-body">
+            <svg className="client-activities-svg" viewBox="0 0 100 48" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <linearGradient id={`${actId}-bar1`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#7c3aed" />
+                  <stop offset="100%" stopColor="#4c1d95" />
+                </linearGradient>
+              </defs>
+              {siteEff.map((row, i) => {
+                const w = 12
+                const gap = 1.2
+                const x = 4 + i * (w + gap)
+                const h = (row.v / 100) * 36
+                const y = 40 - h
+                return (
+                  <g key={row.id}>
+                    <rect x={x} y={y} width={w} height={h} rx="1" fill={`url(#${actId}-bar1)`} opacity="0.92" />
+                    <text x={x + w / 2} y="46" textAnchor="middle" fontSize="3.2" fill="#64748b" fontFamily="system-ui, sans-serif">
+                      {row.code}
+                    </text>
+                  </g>
+                )
+              })}
+            </svg>
+            <p className="client-activities-chart-foot">
+              Hotter bars = better efficiency. US pilot metrics may run lower until steady state.
+            </p>
+          </div>
+        </article>
+        <article className="client-activities-chart-card">
+          <h3 className="client-activities-chart-title">Line output trend</h3>
+          <div className="client-activities-chart-body">
+            <svg className="client-activities-svg" viewBox="0 0 100 48" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <linearGradient id={`${actId}-trend`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#6366f1" stopOpacity="0.08" />
+                </linearGradient>
+                <linearGradient id={`${actId}-line`} x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#8b5cf6" />
+                  <stop offset="100%" stopColor="#22d3ee" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M 4 38 L 18 32 L 32 35 L 46 24 L 60 28 L 74 16 L 88 20 L 96 14 L 96 44 L 4 44 Z"
+                fill={`url(#${actId}-trend)`}
+              />
+              <path
+                d="M 4 38 L 18 32 L 32 35 L 46 24 L 60 28 L 74 16 L 88 20 L 96 14"
+                fill="none"
+                stroke={`url(#${actId}-line)`}
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <p className="client-activities-chart-foot">
+              Correlation view: output dips track with Line 02 cold starts (same as narrative insight).
+            </p>
+          </div>
+        </article>
+        <article className="client-activities-chart-card">
+          <h3 className="client-activities-chart-title">Scrap &amp; yield mix</h3>
+          <div className="client-activities-chart-body client-activities-chart-body--split">
+            <svg className="client-activities-svg" viewBox="0 0 100 22" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <rect x="4" y="8" width="92" height="8" rx="1" fill="#e2e8f0" />
+              <rect x="4" y="8" width="68" height="8" rx="1" fill="#6d28d9" />
+              <rect x="72" y="8" width="17" height="8" fill="#f59e0b" />
+              <rect x="89" y="8" width="7" height="8" rx="0 1 1 0" fill="#ef4444" />
+            </svg>
+            <ul className="client-activities-legend">
+              <li>
+                <span className="client-activities-legend-swatch client-activities-legend-swatch--fp" /> First-pass 74%
+              </li>
+              <li>
+                <span className="client-activities-legend-swatch client-activities-legend-swatch--rw" /> Rework 18%
+              </li>
+              <li>
+                <span className="client-activities-legend-swatch client-activities-legend-swatch--sc" /> Scrap 8%
+              </li>
+            </ul>
+            <p className="client-activities-chart-foot client-activities-chart-foot--full">
+              Pareto drill-down links machine, lot, and shift in production.
+            </p>
+          </div>
+        </article>
+        <article className="client-activities-chart-card">
+          <h3 className="client-activities-chart-title">Ship window vs plan</h3>
+          <div className="client-activities-chart-body">
+            <svg className="client-activities-svg" viewBox="0 0 100 48" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <line x1="4" y1="10" x2="96" y2="10" stroke="#c4b5fd" strokeWidth="0.4" strokeDasharray="2 2" />
+              <text x="6" y="8" fontSize="2.5" fill="#6d28d9" fontFamily="system-ui, sans-serif">
+                Plan
+              </text>
+              <rect x="8" y="20" width="20" height="16" rx="1" fill="#94a3b8" opacity="0.5" />
+              <rect x="32" y="16" width="20" height="20" rx="1" fill="#7c3aed" />
+              <rect x="56" y="18" width="20" height="18" rx="1" fill="#a78bfa" />
+              <text x="18" y="46" textAnchor="middle" fontSize="2.5" fill="#64748b" fontFamily="system-ui, sans-serif">
+                Mon
+              </text>
+              <text x="42" y="46" textAnchor="middle" fontSize="2.5" fill="#64748b" fontFamily="system-ui, sans-serif">
+                Wed
+              </text>
+              <text x="66" y="46" textAnchor="middle" fontSize="2.5" fill="#64748b" fontFamily="system-ui, sans-serif">
+                Fri
+              </text>
+            </svg>
+            <p className="client-activities-chart-foot">
+              Forecast: Cell C at risk of missing Friday target without overtime (demo scenario).
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
+  )
+}
+
 function SitePhoneIcon() {
   return (
     <svg className="client-site-phone-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
@@ -816,25 +982,16 @@ const TENANT_OVERRIDES = {
 const NAV_ITEMS = [
   {
     id: 'dashboard',
-    label: 'Dashboard',
+    label: 'Overview',
     icon: (
       <path d="M4 14h6V4H4v10zm0 6h6v-4H4v4zm8 0h10V10H12v10zm0-16v6h10V4H12z" />
     ),
   },
   {
-    id: 'lines',
-    label: 'Lines',
+    id: 'locations',
+    label: 'Locations',
     icon: (
-      <path d="M4 6h4v12H4V6zm6-2h4v14h-4V4zm6 4h4v10h-4V8zm6-4h4v14h-4V4z" />
-    ),
-  },
-  {
-    id: 'alerts',
-    label: 'AI Alerts',
-    /** Shorter label for the mobile bottom dock only */
-    dockLabel: 'Alerts',
-    icon: (
-      <path d="M12 22a2.5 2.5 0 002.45-2h-4.9A2.5 2.5 0 0012 22zm8-4v-6a8 8 0 00-6-7.74V4a2 2 0 10-4 0v.26A8 8 0 004 12v6l-2 2v1h20v-1l-2-2z" />
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
     ),
   },
   {
@@ -845,28 +1002,77 @@ const NAV_ITEMS = [
     ),
   },
   {
+    id: 'alerts',
+    label: 'Alerts',
+    dockLabel: 'Alerts',
+    icon: (
+      <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+    ),
+  },
+  {
+    id: 'lines',
+    label: 'Machine activity',
+    dockLabel: 'Lines',
+    icon: (
+      <path d="M4 6h4v12H4V6zm6-2h4v14h-4V4zm6 4h4v10h-4V8zm6-4h4v14h-4V4z" />
+    ),
+  },
+  {
     id: 'insights',
-    label: 'Insights',
+    label: 'Activities',
+    dockLabel: 'Activity',
     icon: (
       <path d="M9 21v-8H5v8h4zm6 0V3H11v18h4zm6 0v-5h-4v5h4z" />
     ),
   },
   {
-    id: 'account',
-    label: 'Account',
+    id: 'maintenance',
+    label: 'Maintenance',
+    hideInDock: true,
     icon: (
-      <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z" />
+      <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z" />
+    ),
+  },
+  {
+    id: 'users',
+    label: 'Users',
+    hideInDock: true,
+    icon: (
+      <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.84 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+    ),
+  },
+  {
+    id: 'account',
+    label: 'Settings',
+    dockLabel: 'Settings',
+    icon: (
+      <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.48.4l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.07.64-.07.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.4l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z" />
     ),
   },
 ]
 
 const TAB_HEADINGS = {
-  dashboard: { title: null, sub: null },
-  lines: { title: 'Production lines', sub: 'Live status, OEE vs target, and operator context per asset.' },
-  alerts: { title: 'AI Alerts', sub: 'Unacknowledged items and escalation status for your lines.' },
+  dashboard: { title: 'Overview', sub: null },
+  locations: {
+    title: 'Locations',
+    sub: 'Global footprint — site leadership, local time, headcount, and efficiency by region.',
+  },
+  lines: {
+    title: 'Machine activity',
+    sub: 'Live status, OEE vs target, and operator context per asset.',
+  },
+  alerts: { title: 'Alerts', sub: 'Unacknowledged items and escalation status for your lines.' },
   reports: { title: 'Reports', sub: 'Shift summaries, quality, and labor rollups — export or schedule digests.' },
-  insights: { title: 'Insights', sub: 'Correlations, forecasts, and what changed — with citations to the floor.' },
-  account: { title: 'Account', sub: 'Your workspace profile and subscription context.' },
+  insights: {
+    title: 'Activities',
+    sub: 'BI-style views: efficiency, trend, and ship risk — with citations to the floor when data is live.',
+  },
+  maintenance: {
+    title: 'Maintenance',
+    sub: 'Work orders, PM schedules, and asset history — connect your CMMS when ready.',
+  },
+  users: { title: 'Users', sub: 'Team access, roles, and site assignments — wire to your IdP in production.' },
+  account: { title: 'Settings', sub: 'Your workspace profile and subscription context.' },
 }
 
 const ONBOARD_KEY = (email) => `henry_onboard_${String(email).toLowerCase()}`
@@ -918,7 +1124,7 @@ const ONBOARD_STEPS = [
   },
   {
     id: 'insights',
-    title: 'Read one insight',
+    title: 'Open Activities',
     body: 'Correlations and forecasts show how metrics connect across cells.',
     tab: 'insights',
   },
@@ -948,6 +1154,7 @@ export default function ClientDashboard({ user, onSignOut }) {
   const [buildingPanelTab, setBuildingPanelTab] = useState('status')
   const notifWrapRef = useRef(null)
   const chartUid = useId().replace(/:/g, '')
+  const activitiesVisId = useId().replace(/:/g, '')
 
   const buildingSite = buildingSiteId ? GLOBAL_SITES.find((s) => s.id === buildingSiteId) : null
 
@@ -1069,8 +1276,13 @@ export default function ClientDashboard({ user, onSignOut }) {
 
   const visibleAlerts = ctx.alerts.filter((a) => {
     if (ackedIds.has(a.id)) return false
-    if (alertFilter === 'all') return true
-    return a.severity === alertFilter
+    if (alertFilter !== 'all' && a.severity !== alertFilter) return false
+    const q = searchQ.trim().toLowerCase()
+    if (q) {
+      const blob = `${a.title} ${a.detail} ${a.when}`.toLowerCase()
+      if (!blob.includes(q)) return false
+    }
+    return true
   })
 
   const acknowledgeAlert = (id) => {
@@ -1101,6 +1313,88 @@ export default function ClientDashboard({ user, onSignOut }) {
       line.id.toLowerCase().includes(q)
     )
   })
+
+  const filteredGlobalSites = useMemo(() => {
+    const q = searchQ.trim().toLowerCase()
+    if (!q) return GLOBAL_SITES
+    return GLOBAL_SITES.filter((site) => {
+      const snap = SITE_SNAPSHOT[site.id]
+      if (site.country.toLowerCase().includes(q)) return true
+      if (site.id.toLowerCase().includes(q)) return true
+      if (site.flagCode && site.flagCode.toLowerCase().includes(q)) return true
+      if (site.leadName.toLowerCase().includes(q)) return true
+      if (site.leadRole.toLowerCase().includes(q)) return true
+      if (site.address.toLowerCase().includes(q)) return true
+      if (snap?.status && snap.status.toLowerCase().includes(q)) return true
+      return false
+    })
+  }, [searchQ])
+
+  const runWorkspaceSearch = () => {
+    const raw = searchQ.trim()
+    const q = raw.toLowerCase()
+    if (!raw) {
+      setToast('Search sites, lines, SKUs, or try: locations, alerts, activities, settings.')
+      return
+    }
+    if (/\b(alert|alerts)\b/i.test(raw)) {
+      setTab('alerts')
+      setToast('Switched to Alerts — results match your search below.')
+      return
+    }
+    if (/\b(locations?|sites?|countries|footprint)\b/i.test(raw)) {
+      setTab('locations')
+      setToast('Switched to Locations.')
+      return
+    }
+    if (/\b(lines?|sku|skus|lot|lots)\b/i.test(raw) || /^l\d/i.test(q)) {
+      setTab('lines')
+      setToast('Switched to machine activity — list filters as you type.')
+      return
+    }
+    if (/\breports?\b/i.test(raw)) {
+      setTab('reports')
+      setToast('Switched to Reports.')
+      return
+    }
+    if (/\b(maintenance|pm|work\s*orders?)\b/i.test(raw)) {
+      setTab('maintenance')
+      setToast('Switched to Maintenance.')
+      return
+    }
+    if (/\b(users?|team|people|roles?)\b/i.test(raw)) {
+      setTab('users')
+      setToast('Switched to Users.')
+      return
+    }
+    if (/\b(activities?|activity|insights?)\b/i.test(raw)) {
+      setTab('insights')
+      setToast('Switched to Activities.')
+      return
+    }
+    if (/\b(settings?|account|profile)\b/i.test(raw)) {
+      setTab('account')
+      setToast('Switched to Settings.')
+      return
+    }
+    if ((tab === 'dashboard' || tab === 'locations') && filteredGlobalSites.length === 0) {
+      setToast(`No sites match “${raw}”. Try another term or clear search.`)
+      return
+    }
+    if (tab === 'lines' && filteredLines.length === 0) {
+      setToast(`No lines match “${raw}”.`)
+      return
+    }
+    if (tab === 'alerts' && visibleAlerts.length === 0) {
+      setToast(`No alerts match “${raw}”. Try another word or clear search.`)
+      return
+    }
+    setToast(
+      tab === 'dashboard' || tab === 'locations'
+        ? `${filteredGlobalSites.length} site(s) match in the grid below.`
+        : `Showing matches for “${raw}”.`,
+    )
+  }
 
   return (
     <div className={`client-app${buildingSiteId ? ' client-app--modal-open' : ''}`}>
@@ -1148,11 +1442,8 @@ export default function ClientDashboard({ user, onSignOut }) {
             onChange={(e) => setSearchQ(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                setToast(
-                  searchQ.trim()
-                    ? `Search “${searchQ.trim()}” → index your MES / historian in production.`
-                    : 'Type a term to search (demo).',
-                )
+                e.preventDefault()
+                runWorkspaceSearch()
               }
             }}
           />
@@ -1268,7 +1559,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             <p className="client-main-sub">{mainSub}</p>
           </div>
 
-          {tab === 'dashboard' ? (
+          {tab === 'dashboard' || tab === 'locations' ? (
             <section className="client-sites-section client-sites-section--top" aria-labelledby="global-sites-title">
               <div className="client-sites-section-head">
                 <div className="client-sites-snapshot client-sites-snapshot--left" aria-hidden="true">
@@ -1287,7 +1578,12 @@ export default function ClientDashboard({ user, onSignOut }) {
                 </div>
               </div>
               <div className="client-sites-grid">
-                {GLOBAL_SITES.map((site) => (
+                {filteredGlobalSites.length === 0 && searchQ.trim() ? (
+                  <p className="client-sites-empty" role="status">
+                    No sites match &ldquo;{searchQ.trim()}&rdquo;. Clear the search bar to see all regions.
+                  </p>
+                ) : null}
+                {filteredGlobalSites.map((site) => (
                   <article key={site.id} className="client-site-card">
                     <div className="client-site-topline">
                       <span
@@ -1824,7 +2120,7 @@ export default function ClientDashboard({ user, onSignOut }) {
           ) : null}
 
           {tab === 'insights' ? (
-            <div className="client-text-panel">
+            <div className="client-text-panel client-activities-page">
               <section className="client-insight-ask" aria-label="Ask HENRY">
                 <label htmlFor="insight-q" className="client-insight-ask-label">
                   Ask in plain language
@@ -1849,18 +2145,54 @@ export default function ClientDashboard({ user, onSignOut }) {
                   Answers will cite machines, lots, and timestamps when your data lake is connected.
                 </p>
               </section>
-              <p className="client-text-lead">{ctx.insightsLead}</p>
-              <div className="client-dossier-grid">
-                {ctx.insights.map((r) => (
-                  <article key={r.title} className="client-dossier-card client-dossier-card--insight">
-                    <h3 className="client-dossier-card-title">{r.title}</h3>
-                    <p className="client-dossier-card-body">{r.text}</p>
-                  </article>
-                ))}
-              </div>
+              <ActivitiesAnalyticsPanel
+                actId={activitiesVisId}
+                reportRange={reportRange}
+                onReportRange={setReportRange}
+                leadText={ctx.insightsLead}
+              />
               <p className="client-text-foot">
-                Ask in plain language — answers cite machines, lots, and timestamps.
+                Demo charts mirror a Power BI–style canvas — replace with live measures from your warehouse or embed
+                reports.
               </p>
+            </div>
+          ) : null}
+
+          {tab === 'maintenance' ? (
+            <div className="client-text-panel client-text-panel--placeholder" aria-labelledby="maintenance-h">
+              <h2 id="maintenance-h" className="client-panel-title">
+                Maintenance
+              </h2>
+              <p className="client-text-lead">
+                Preventive maintenance, work orders, and spare-parts context will appear here. Connect HENRY to your
+                CMMS or EAM in production.
+              </p>
+              <button
+                type="button"
+                className="client-help-link"
+                onClick={() => setToast('CMMS integration — link tickets, assets, and downtime codes (demo).')}
+              >
+                Plan integration
+              </button>
+            </div>
+          ) : null}
+
+          {tab === 'users' ? (
+            <div className="client-text-panel client-text-panel--placeholder" aria-labelledby="users-h">
+              <h2 id="users-h" className="client-panel-title">
+                Users
+              </h2>
+              <p className="client-text-lead">
+                Invite operators, site leads, and corporate viewers; assign roles per site. Wire to your identity
+                provider and SCIM in production.
+              </p>
+              <button
+                type="button"
+                className="client-help-link"
+                onClick={() => setToast('User provisioning — SSO groups map to HENRY roles (demo).')}
+              >
+                View access model
+              </button>
             </div>
           ) : null}
 
@@ -1995,7 +2327,7 @@ export default function ClientDashboard({ user, onSignOut }) {
       </div>
 
       <nav className="client-mobile-dock" aria-label="Workspace tabs">
-        {NAV_ITEMS.map((item) => (
+        {NAV_ITEMS.filter((item) => !item.hideInDock).map((item) => (
           <button
             key={`dock-${item.id}`}
             type="button"
