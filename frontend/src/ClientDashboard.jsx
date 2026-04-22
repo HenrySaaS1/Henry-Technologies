@@ -475,7 +475,7 @@ const SITE_SNAPSHOT = {
   cr: { status: 'Watch', light: 'amber', tone: 'warn', quality: 97.8, onTime: 92, downtimeMins: 65, escalations: 2 },
   il: { status: 'Stable', light: 'green', tone: 'good', quality: 99.0, onTime: 95, downtimeMins: 29, escalations: 0 },
   in: { status: 'Pilot', light: 'amber', tone: 'idle', quality: 98.1, onTime: 90, downtimeMins: 58, escalations: 1 },
-  my: { status: 'Planned', light: 'off', tone: 'idle', quality: null, onTime: null, downtimeMins: null, escalations: 0 },
+  my: { status: 'Planned', light: 'red', tone: 'warn', quality: null, onTime: null, downtimeMins: null, escalations: 0 },
 }
 
 /**
