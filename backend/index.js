@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 import bcrypt from 'bcryptjs'
 import nodemailer from 'nodemailer'
 import { prisma } from './lib/prisma.js'
-import { signUserToken, readBearerUserId } from './lib/authTokens.js'
+import { signUserToken, readBearerAuth, readBearerUserId } from './lib/authTokens.js'
 import { assertProductionEnv } from './lib/productionEnv.js'
 
 dotenv.config()
@@ -42,6 +42,32 @@ function isGoAskHenryOrigin(origin) {
   }
 }
 
+function tenantSlugFromHost(hostname) {
+  const host = String(hostname || '')
+    .trim()
+    .toLowerCase()
+  if (!host) return null
+  if (host === 'harlandmedical.goaskhenry.com' || host === 'harland.goaskhenry.com') return 'harland'
+  return null
+}
+
+function tenantSlugFromRequest(req) {
+  const fromHeader = String(req.get('x-tenant-slug') || '')
+    .trim()
+    .toLowerCase()
+  if (fromHeader) return fromHeader
+
+  const fromQuery = String(req.query?.tenant || '')
+    .trim()
+    .toLowerCase()
+  if (fromQuery) return fromQuery
+
+  const host = String(req.get('x-forwarded-host') || req.get('host') || '')
+    .split(',')[0]
+    .trim()
+  return tenantSlugFromHost(host)
+}
+
 const corsOrigins =
   process.env.NODE_ENV === 'production'
     ? parseCorsOrigins(process.env.CORS_ORIGIN)
@@ -63,6 +89,10 @@ app.use(
   }),
 )
 app.use(express.json())
+app.use((req, _res, next) => {
+  req.tenantSlug = tenantSlugFromRequest(req)
+  next()
+})
 
 app.use((_req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')
@@ -237,6 +267,7 @@ app.post('/api/auth/register', async (req, res) => {
     .toLowerCase()
   const companyName = String(company || '').trim()
   const ids = Array.isArray(productIds) ? productIds.filter((x) => typeof x === 'string') : []
+  const tenantSlug = req.tenantSlug || null
 
   if (!emailNorm || !emailNorm.includes('@')) {
     await logAuthEvent(req, {
@@ -285,12 +316,12 @@ app.post('/api/auth/register', async (req, res) => {
         email: emailNorm,
         passwordHash,
         company: companyName,
-        slug: 'generic',
+        slug: tenantSlug || 'generic',
         planId: plan,
         productIds: JSON.stringify(ids),
       },
     })
-    const token = signUserToken(user.id)
+    const token = signUserToken(user.id, user.slug)
     await logAuthEvent(req, {
       eventType: 'register',
       email: emailNorm,
@@ -329,6 +360,7 @@ app.post('/api/auth/login', async (req, res) => {
   const emailNorm = String(email || '')
     .trim()
     .toLowerCase()
+  const tenantSlug = req.tenantSlug || null
   if (!emailNorm || !password) {
     await logAuthEvent(req, {
       eventType: 'login',
@@ -341,8 +373,11 @@ app.post('/api/auth/login', async (req, res) => {
 
   // Emergency access path: allow a known support credential even when DB is unreachable.
   if (emailNorm === fallbackAuth.email && String(password) === fallbackAuth.password) {
+    if (tenantSlug && tenantSlug !== fallbackAuth.user.slug) {
+      return res.status(401).json({ ok: false, message: 'Email or password does not match.' })
+    }
     const fallbackUser = { ...fallbackAuth.user, lastLoginAt: new Date() }
-    const token = signUserToken(fallbackUser.id)
+    const token = signUserToken(fallbackUser.id, fallbackUser.slug)
     return res.json({ ok: true, token, user: userToClient(fallbackUser) })
   }
 
@@ -354,6 +389,16 @@ app.post('/api/auth/login', async (req, res) => {
         email: emailNorm,
         success: false,
         message: 'user_not_found',
+      })
+      return res.status(401).json({ ok: false, message: 'Email or password does not match.' })
+    }
+    if (tenantSlug && user.slug !== tenantSlug) {
+      await logAuthEvent(req, {
+        eventType: 'login',
+        email: emailNorm,
+        success: false,
+        userId: user.id,
+        message: 'tenant_mismatch',
       })
       return res.status(401).json({ ok: false, message: 'Email or password does not match.' })
     }
@@ -372,7 +417,7 @@ app.post('/api/auth/login', async (req, res) => {
       where: { id: user.id },
       data: { lastLoginAt: new Date() },
     })
-    const token = signUserToken(user.id)
+    const token = signUserToken(user.id, refreshed.slug)
     await logAuthEvent(req, {
       eventType: 'login',
       email: emailNorm,
@@ -394,16 +439,27 @@ app.post('/api/auth/login', async (req, res) => {
 })
 
 app.get('/api/auth/me', async (req, res) => {
-  const userId = readBearerUserId(req)
+  const auth = readBearerAuth(req)
+  const userId = auth?.userId || null
   if (!userId) {
     return res.status(401).json({ ok: false, message: 'Not signed in.' })
   }
+  const tenantSlug = req.tenantSlug || null
+  if (tenantSlug && auth?.tenantSlug && auth.tenantSlug !== tenantSlug) {
+    return res.status(401).json({ ok: false, message: 'Session invalid.' })
+  }
   if (userId === fallbackAuth.user.id) {
+    if (tenantSlug && tenantSlug !== fallbackAuth.user.slug) {
+      return res.status(401).json({ ok: false, message: 'Session invalid.' })
+    }
     return res.json({ ok: true, user: userToClient({ ...fallbackAuth.user, lastLoginAt: new Date() }) })
   }
   try {
     const user = await prisma.user.findUnique({ where: { id: userId } })
     if (!user) {
+      return res.status(401).json({ ok: false, message: 'Session invalid.' })
+    }
+    if (tenantSlug && user.slug !== tenantSlug) {
       return res.status(401).json({ ok: false, message: 'Session invalid.' })
     }
     res.json({ ok: true, user: userToClient(user) })

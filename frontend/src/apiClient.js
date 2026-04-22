@@ -31,6 +31,22 @@ export function getApiBase() {
   return normalizeApiBase(fromEnv || 'http://localhost:5000')
 }
 
+function tenantSlugFromHost(hostname) {
+  const host = String(hostname || '')
+    .trim()
+    .toLowerCase()
+  if (!host) return null
+  if (host === 'harlandmedical.goaskhenry.com' || host === 'harland.goaskhenry.com') return 'harland'
+  return null
+}
+
+export function getTenantSlug() {
+  if (typeof window === 'undefined') return null
+  const byQuery = new URLSearchParams(window.location.search).get('tenant')
+  if (byQuery) return String(byQuery).trim().toLowerCase()
+  return tenantSlugFromHost(window.location.hostname)
+}
+
 export function getToken() {
   if (typeof window === 'undefined') return null
   return localStorage.getItem(TOKEN_KEY)
@@ -58,6 +74,8 @@ async function requestJson(url, { method, headers, body, signal }) {
 
 export async function apiJson(path, { method = 'GET', body, token, signal } = {}) {
   const headers = { 'Content-Type': 'application/json' }
+  const tenantSlug = getTenantSlug()
+  if (tenantSlug) headers['X-Tenant-Slug'] = tenantSlug
   const t = token === undefined ? getToken() : token
   if (t) headers.Authorization = `Bearer ${t}`
   const base = getApiBase()

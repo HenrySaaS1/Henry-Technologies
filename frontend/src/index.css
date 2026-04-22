@@ -2931,6 +2931,18 @@ h3 {
   margin-bottom: 0.65rem;
 }
 
+.signup-tenant-context {
+  margin: 0 0 0.5rem;
+  width: fit-content;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.14);
+  border: 1px solid rgba(147, 197, 253, 0.4);
+  border-radius: 6px;
+  padding: 0.25rem 0.48rem;
+}
+
 .btn-cancel {
   border: 1px solid #9aa8c2;
   background: #fff;
@@ -3784,8 +3796,8 @@ h3 {
   margin: 0 0 1.35rem;
   padding: 1.35rem 1.15rem 1.45rem;
   border-radius: 18px;
-  background: linear-gradient(155deg, #c2410c 0%, #ea580c 42%, #f97316 100%);
-  box-shadow: 0 14px 44px rgba(194, 65, 12, 0.28);
+  background: linear-gradient(155deg, #4c1d95 0%, #6d28d9 38%, #7c3aed 68%, #8b5cf6 100%);
+  box-shadow: 0 14px 44px rgba(91, 33, 182, 0.32);
 }
 
 .client-sites-section--top {
@@ -3794,7 +3806,48 @@ h3 {
 
 .client-sites-section-head {
   margin-bottom: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  flex-wrap: wrap;
+}
+
+.client-sites-section-head-copy {
+  flex: 1 1 12rem;
+  min-width: 0;
   text-align: center;
+  order: 1;
+}
+
+.client-sites-snapshot {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.client-sites-snapshot--left {
+  order: 0;
+}
+
+.client-sites-snapshot--right {
+  order: 2;
+}
+
+.client-sites-snapshot-img {
+  display: block;
+  width: auto;
+  height: 3.5rem;
+  max-width: 7.5rem;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+}
+
+.client-sites-snapshot-img--sm {
+  height: 2.4rem;
+  max-width: 5rem;
+  opacity: 0.95;
 }
 
 .client-sites-section-title {
@@ -3834,6 +3887,51 @@ h3 {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+.client-site-topline {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.client-site-health {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.24rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.client-site-health--good {
+  color: #065f46;
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+
+.client-site-health--warn {
+  color: #9a3412;
+  background: #fff7ed;
+  border-color: #fdba74;
+}
+
+.client-site-health--idle {
+  color: #334155;
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.client-site-kpi-chip {
+  font-size: 0.63rem;
+  font-weight: 700;
+  color: #475569;
+}
+
 .client-site-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 32px rgba(0, 0, 0, 0.14);
@@ -3852,17 +3950,20 @@ h3 {
   height: 3.25rem;
   margin-bottom: 0.55rem;
   border-radius: 50%;
-  background: linear-gradient(145deg, #f8fafc, #e2e8f0);
-  border: 2px solid #e2e8f0;
+  overflow: hidden;
+  background: #e2e8f0;
+  border: 2px solid #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
 }
 
-.client-site-flag-emoji {
-  font-size: 1.65rem;
-  line-height: 1;
+.client-site-flag-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .client-site-lead {
@@ -3936,6 +4037,34 @@ h3 {
   margin-bottom: 0.2rem;
 }
 
+.client-site-ops {
+  width: 100%;
+  margin: 0 0 0.55rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+}
+
+.client-site-ops-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.66rem;
+  color: #475569;
+  padding: 0.2rem 0;
+}
+
+.client-site-ops-row + .client-site-ops-row {
+  border-top: 1px dashed #dbeafe;
+}
+
+.client-site-ops-row strong {
+  font-size: 0.72rem;
+  color: #0f172a;
+}
+
 .client-site-phone {
   display: inline-flex;
   align-items: center;
@@ -3993,7 +4122,7 @@ h3 {
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #c2410c;
+  color: #5b21b6;
 }
 
 /* Building view (per-site floor plan + machinery drill-down) */
@@ -6203,6 +6332,26 @@ h3 {
 
   .client-sites-grid {
     grid-template-columns: 1fr;
+  }
+
+  .client-sites-section-head {
+    flex-direction: column;
+  }
+
+  .client-sites-snapshot--left {
+    display: none;
+  }
+
+  .client-sites-snapshot--right {
+    order: -1;
+  }
+
+  .client-sites-section-head-copy {
+    order: 0;
+  }
+
+  .client-sites-snapshot-img {
+    height: 2.8rem;
   }
 
   .client-sites-section-title {

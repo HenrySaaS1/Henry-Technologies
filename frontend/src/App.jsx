@@ -3,7 +3,7 @@ import ClientDashboard from './ClientDashboard.jsx'
 import { DEFAULT_PRODUCT_IDS } from './productCatalog.js'
 import { mapUserFromApi } from './mapUserFromApi.js'
 import { AUTH_BYPASS, bypassDemoUser } from './authBypass.js'
-import { apiJson, getToken, setToken, clearAuth } from './apiClient.js'
+import { apiJson, getToken, setToken, clearAuth, getTenantSlug } from './apiClient.js'
 import heroMainImage from './assets/hero-main.png'
 import aiIconImage from './assets/uploads/img-1.png'
 import securityIconImage from './assets/uploads/img-3.png'
@@ -552,6 +552,8 @@ function App() {
   const [signupFromPlan, setSignupFromPlan] = useState(null)
   const [currentUser, setCurrentUser] = useState(() => (AUTH_BYPASS ? bypassDemoUser() : null))
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const tenantSlug = getTenantSlug()
+  const tenantLabel = tenantSlug === 'harland' ? 'Harland Medical Systems' : null
 
   useEffect(() => {
     if (!isProductsPage || typeof window === 'undefined') return
@@ -728,7 +730,7 @@ function App() {
       const body = {
         email: emailKey,
         password: signupForm.password,
-        company: defaultOrganizationFromEmail(emailKey),
+        company: tenantSlug === 'harland' ? 'Harland Medical Systems' : defaultOrganizationFromEmail(emailKey),
         productIds,
       }
       if (signupFromPlan) body.planId = signupFromPlan
@@ -1579,6 +1581,9 @@ function App() {
                   </div>
                   {authMode === 'signup' ? (
                     <>
+                      {tenantLabel ? (
+                        <p className="signup-tenant-context">Tenant workspace: {tenantLabel}</p>
+                      ) : null}
                       {signupFromPlan ? (
                         <p className="signup-pricing-context">
                           <span className="signup-pricing-context-label">Pricing</span>
@@ -1686,6 +1691,9 @@ function App() {
                     </>
                   ) : (
                     <>
+                      {tenantLabel ? (
+                        <p className="signup-tenant-context">Tenant workspace: {tenantLabel}</p>
+                      ) : null}
                       <div className="signup-signin-badge">Secure sign in</div>
                       <h3 id="signin-title">Welcome Back</h3>
                       <p className="signup-glass-hint">

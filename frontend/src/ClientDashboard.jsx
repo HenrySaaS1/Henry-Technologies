@@ -2,6 +2,7 @@ import { useState, useEffect, useId, useRef } from 'react'
 import { titlesForProductIds } from './productCatalog.js'
 import henryLogo from './assets/henry-logo.png'
 import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
+import snapshotProductImage from './assets/uploads/product-snapshot-new.png'
 
 const DASH_KPIS = [
   { label: 'OEE', value: '94.2%', hint: 'vs target 90%', trend: '+1.2%', up: true },
@@ -139,6 +140,7 @@ const GLOBAL_SITES = [
   {
     id: 'us',
     country: 'United States',
+    flagCode: 'US',
     flagEmoji: '🇺🇸',
     leadRole: 'Site Director',
     leadName: 'Mark Stockhowe',
@@ -253,6 +255,7 @@ const GLOBAL_SITES = [
   {
     id: 'ie',
     country: 'Ireland',
+    flagCode: 'IE',
     flagEmoji: '🇮🇪',
     leadRole: 'Site Lead',
     leadName: 'Kevin Conlon',
@@ -307,6 +310,7 @@ const GLOBAL_SITES = [
   {
     id: 'cr',
     country: 'Costa Rica',
+    flagCode: 'CR',
     flagEmoji: '🇨🇷',
     leadRole: 'Site Lead',
     leadName: 'Miguel Zaballa',
@@ -346,6 +350,7 @@ const GLOBAL_SITES = [
   {
     id: 'il',
     country: 'Israel',
+    flagCode: 'IL',
     flagEmoji: '🇮🇱',
     leadRole: 'Site Lead',
     leadName: 'Itamar Haran',
@@ -385,6 +390,7 @@ const GLOBAL_SITES = [
   {
     id: 'in',
     country: 'India',
+    flagCode: 'IN',
     flagEmoji: '🇮🇳',
     leadRole: 'Site Lead',
     leadName: 'Deepak Teja',
@@ -424,6 +430,7 @@ const GLOBAL_SITES = [
   {
     id: 'my',
     country: 'Malaysia',
+    flagCode: 'MY',
     flagEmoji: '🇲🇾',
     leadRole: 'Site Lead',
     leadName: 'KS',
@@ -460,6 +467,15 @@ const GLOBAL_SITES = [
     },
   },
 ]
+
+const SITE_SNAPSHOT = {
+  us: { status: 'Stable', tone: 'good', quality: 99.2, onTime: 97, downtimeMins: 42, escalations: 1 },
+  ie: { status: 'Strong', tone: 'good', quality: 98.9, onTime: 96, downtimeMins: 37, escalations: 0 },
+  cr: { status: 'Watch', tone: 'warn', quality: 97.8, onTime: 92, downtimeMins: 65, escalations: 2 },
+  il: { status: 'Pilot', tone: 'idle', quality: 98.1, onTime: 90, downtimeMins: 58, escalations: 1 },
+  in: { status: 'Stable', tone: 'good', quality: 99.0, onTime: 95, downtimeMins: 29, escalations: 0 },
+  my: { status: 'Planned', tone: 'idle', quality: null, onTime: null, downtimeMins: null, escalations: 0 },
+}
 
 function SitePhoneIcon() {
   return (
@@ -1236,16 +1252,50 @@ export default function ClientDashboard({ user, onSignOut }) {
           {tab === 'dashboard' ? (
             <section className="client-sites-section client-sites-section--top" aria-labelledby="global-sites-title">
               <div className="client-sites-section-head">
-                <h2 id="global-sites-title" className="client-sites-section-title">
-                  {user.company}
-                </h2>
-                <p className="client-sites-section-sub">
-                  Global footprint — site leadership, local time, headcount, and efficiency by region.
-                </p>
+                <div className="client-sites-snapshot client-sites-snapshot--left" aria-hidden="true">
+                  <img
+                    src={snapshotProductImage}
+                    alt=""
+                    className="client-sites-snapshot-img client-sites-snapshot-img--sm"
+                    width={88}
+                    height={88}
+                    decoding="async"
+                  />
+                </div>
+                <div className="client-sites-section-head-copy">
+                  <h2 id="global-sites-title" className="client-sites-section-title">
+                    {user.company}
+                  </h2>
+                  <p className="client-sites-section-sub">
+                    Global footprint — site leadership, local time, headcount, and efficiency by region.
+                  </p>
+                </div>
+                <div className="client-sites-snapshot client-sites-snapshot--right">
+                  <img
+                    src={snapshotProductImage}
+                    alt="HENRY Snapshot"
+                    className="client-sites-snapshot-img"
+                    width={120}
+                    height={120}
+                    decoding="async"
+                  />
+                </div>
               </div>
               <div className="client-sites-grid">
                 {GLOBAL_SITES.map((site) => (
                   <article key={site.id} className="client-site-card">
+                    <div className="client-site-topline">
+                      <span
+                        className={`client-site-health client-site-health--${SITE_SNAPSHOT[site.id]?.tone || 'idle'}`}
+                      >
+                        {SITE_SNAPSHOT[site.id]?.status || '—'}
+                      </span>
+                      <span className="client-site-kpi-chip">
+                        {SITE_SNAPSHOT[site.id]?.downtimeMins != null
+                          ? `${SITE_SNAPSHOT[site.id].downtimeMins}m downtime`
+                          : 'No active assets'}
+                      </span>
+                    </div>
                     <button
                       type="button"
                       className="client-site-card-main"
@@ -1253,8 +1303,17 @@ export default function ClientDashboard({ user, onSignOut }) {
                       aria-label={`Open building view for ${site.country}`}
                     >
                       <h3 className="client-site-country">{site.country}</h3>
-                      <div className="client-site-flag" aria-hidden="true" title={site.country}>
-                        <span className="client-site-flag-emoji">{site.flagEmoji}</span>
+                      <div className="client-site-flag" title={site.country}>
+                        <img
+                          className="client-site-flag-img"
+                          src={`https://flagcdn.com/w40/${String(site.flagCode).toLowerCase()}.png`}
+                          srcSet={`https://flagcdn.com/w80/${String(site.flagCode).toLowerCase()}.png 2x`}
+                          alt={`${site.country} flag`}
+                          width={40}
+                          height={30}
+                          loading="lazy"
+                          decoding="async"
+                        />
                       </div>
                       <p className="client-site-lead">
                         {site.leadRole} — <strong>{site.leadName}</strong>
@@ -1273,6 +1332,24 @@ export default function ClientDashboard({ user, onSignOut }) {
                           <dd>{site.efficiency != null ? `${site.efficiency}%` : '—'}</dd>
                         </div>
                       </dl>
+                      <div className="client-site-ops">
+                        <div className="client-site-ops-row">
+                          <span>Quality</span>
+                          <strong>
+                            {SITE_SNAPSHOT[site.id]?.quality != null ? `${SITE_SNAPSHOT[site.id].quality}%` : '—'}
+                          </strong>
+                        </div>
+                        <div className="client-site-ops-row">
+                          <span>On-time shipments</span>
+                          <strong>
+                            {SITE_SNAPSHOT[site.id]?.onTime != null ? `${SITE_SNAPSHOT[site.id].onTime}%` : '—'}
+                          </strong>
+                        </div>
+                        <div className="client-site-ops-row">
+                          <span>Escalations (24h)</span>
+                          <strong>{SITE_SNAPSHOT[site.id]?.escalations ?? '—'}</strong>
+                        </div>
+                      </div>
                       <p className="client-site-address">
                         <span className="client-site-address-label">Address</span>
                         {site.address}
