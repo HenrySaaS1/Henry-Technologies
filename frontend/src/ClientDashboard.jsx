@@ -2,7 +2,7 @@ import { useState, useEffect, useId, useRef } from 'react'
 import { titlesForProductIds } from './productCatalog.js'
 import henryLogo from './assets/henry-logo.png'
 import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
-import snapshotProductImage from './assets/uploads/product-snapshot-new.png'
+import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
 
 const DASH_KPIS = [
   { label: 'OEE', value: '94.2%', hint: 'vs target 90%', trend: '+1.2%', up: true },
@@ -472,9 +472,28 @@ const SITE_SNAPSHOT = {
   us: { status: 'Stable', tone: 'good', quality: 99.2, onTime: 97, downtimeMins: 42, escalations: 1 },
   ie: { status: 'Strong', tone: 'good', quality: 98.9, onTime: 96, downtimeMins: 37, escalations: 0 },
   cr: { status: 'Watch', tone: 'warn', quality: 97.8, onTime: 92, downtimeMins: 65, escalations: 2 },
-  il: { status: 'Pilot', tone: 'idle', quality: 98.1, onTime: 90, downtimeMins: 58, escalations: 1 },
-  in: { status: 'Stable', tone: 'good', quality: 99.0, onTime: 95, downtimeMins: 29, escalations: 0 },
+  il: { status: 'Stable', tone: 'good', quality: 99.0, onTime: 95, downtimeMins: 29, escalations: 0 },
+  in: { status: 'Pilot', tone: 'idle', quality: 98.1, onTime: 90, downtimeMins: 58, escalations: 1 },
   my: { status: 'Planned', tone: 'idle', quality: null, onTime: null, downtimeMins: null, escalations: 0 },
+}
+
+/** White SnapShot mark for the global footprint ribbon (imported asset, includes TM in artwork). */
+function SnapshotWordmark({ compact = false }) {
+  return (
+    <span
+      className={compact ? 'client-snapshot-wordmark client-snapshot-wordmark--sm' : 'client-snapshot-wordmark'}
+    >
+      <img
+        src={snapshotWordmarkWhite}
+        alt="SnapShot"
+        className="client-snapshot-wordmark__img"
+        width={1000}
+        height={140}
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
+  )
 }
 
 function SitePhoneIcon() {
@@ -1253,14 +1272,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             <section className="client-sites-section client-sites-section--top" aria-labelledby="global-sites-title">
               <div className="client-sites-section-head">
                 <div className="client-sites-snapshot client-sites-snapshot--left" aria-hidden="true">
-                  <img
-                    src={snapshotProductImage}
-                    alt=""
-                    className="client-sites-snapshot-img client-sites-snapshot-img--sm"
-                    width={88}
-                    height={88}
-                    decoding="async"
-                  />
+                  <SnapshotWordmark compact />
                 </div>
                 <div className="client-sites-section-head-copy">
                   <h2 id="global-sites-title" className="client-sites-section-title">
@@ -1271,14 +1283,7 @@ export default function ClientDashboard({ user, onSignOut }) {
                   </p>
                 </div>
                 <div className="client-sites-snapshot client-sites-snapshot--right">
-                  <img
-                    src={snapshotProductImage}
-                    alt="HENRY Snapshot"
-                    className="client-sites-snapshot-img"
-                    width={120}
-                    height={120}
-                    decoding="async"
-                  />
+                  <SnapshotWordmark />
                 </div>
               </div>
               <div className="client-sites-grid">
@@ -1302,18 +1307,21 @@ export default function ClientDashboard({ user, onSignOut }) {
                       onClick={() => openBuilding(site)}
                       aria-label={`Open building view for ${site.country}`}
                     >
-                      <h3 className="client-site-country">{site.country}</h3>
-                      <div className="client-site-flag" title={site.country}>
-                        <img
-                          className="client-site-flag-img"
-                          src={`https://flagcdn.com/w40/${String(site.flagCode).toLowerCase()}.png`}
-                          srcSet={`https://flagcdn.com/w80/${String(site.flagCode).toLowerCase()}.png 2x`}
-                          alt={`${site.country} flag`}
-                          width={40}
-                          height={30}
-                          loading="lazy"
-                          decoding="async"
-                        />
+                      <div className="client-site-title-row">
+                        <h3 className="client-site-country">{site.country}</h3>
+                        <div className="client-site-flag" title={site.country}>
+                          {/* flagcdn.com only supports specific widths (w40, w80, w160, …) — w64 404s */}
+                          <img
+                            className="client-site-flag-img"
+                            src={`https://flagcdn.com/w80/${String(site.flagCode).toLowerCase()}.png`}
+                            srcSet={`https://flagcdn.com/w160/${String(site.flagCode).toLowerCase()}.png 2x`}
+                            alt={`${site.country} flag`}
+                            width={80}
+                            height={60}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </div>
                       </div>
                       <p className="client-site-lead">
                         {site.leadRole} — <strong>{site.leadName}</strong>
