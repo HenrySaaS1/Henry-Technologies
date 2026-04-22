@@ -468,13 +468,50 @@ const GLOBAL_SITES = [
   },
 ]
 
+/** Site health for global cards: one lit lamp — green ok, amber attention, red critical, all dim = not live. */
 const SITE_SNAPSHOT = {
-  us: { status: 'Stable', tone: 'good', quality: 99.2, onTime: 97, downtimeMins: 42, escalations: 1 },
-  ie: { status: 'Strong', tone: 'good', quality: 98.9, onTime: 96, downtimeMins: 37, escalations: 0 },
-  cr: { status: 'Watch', tone: 'warn', quality: 97.8, onTime: 92, downtimeMins: 65, escalations: 2 },
-  il: { status: 'Stable', tone: 'good', quality: 99.0, onTime: 95, downtimeMins: 29, escalations: 0 },
-  in: { status: 'Pilot', tone: 'idle', quality: 98.1, onTime: 90, downtimeMins: 58, escalations: 1 },
-  my: { status: 'Planned', tone: 'idle', quality: null, onTime: null, downtimeMins: null, escalations: 0 },
+  us: { status: 'Stable', light: 'green', tone: 'good', quality: 99.2, onTime: 97, downtimeMins: 42, escalations: 1 },
+  ie: { status: 'Strong', light: 'green', tone: 'good', quality: 98.9, onTime: 96, downtimeMins: 37, escalations: 0 },
+  cr: { status: 'Watch', light: 'amber', tone: 'warn', quality: 97.8, onTime: 92, downtimeMins: 65, escalations: 2 },
+  il: { status: 'Stable', light: 'green', tone: 'good', quality: 99.0, onTime: 95, downtimeMins: 29, escalations: 0 },
+  in: { status: 'Pilot', light: 'amber', tone: 'idle', quality: 98.1, onTime: 90, downtimeMins: 58, escalations: 1 },
+  my: { status: 'Planned', light: 'off', tone: 'idle', quality: null, onTime: null, downtimeMins: null, escalations: 0 },
+}
+
+/**
+ * Horizontal traffic light (R–A–G). `active` is which lamp is “on” for demo; `label` is for a11y + search.
+ * Green uses Harland web lime; red/amber are standard signal colors.
+ */
+function SiteTrafficLight({ active, label }) {
+  const safe = ['red', 'amber', 'green'].includes(active) ? active : null
+  const signal =
+    safe === 'red'
+      ? 'Red light on — critical attention.'
+      : safe === 'amber'
+        ? 'Amber light on — watch or rollout.'
+        : safe === 'green'
+          ? 'Green light on — operating within target.'
+          : 'All lights dim — not live or awaiting data.'
+  const aria = [label ? `Status: ${label}.` : null, signal].filter(Boolean).join(' ')
+  return (
+    <span className="client-site-tl" role="img" aria-label={aria}>
+      <span className="client-site-tl__track">
+        <span
+          className={`client-site-tl__lamp client-site-tl__lamp--red${safe === 'red' ? ' is-on' : ''}`}
+          aria-hidden="true"
+        />
+        <span
+          className={`client-site-tl__lamp client-site-tl__lamp--amber${safe === 'amber' ? ' is-on' : ''}`}
+          aria-hidden="true"
+        />
+        <span
+          className={`client-site-tl__lamp client-site-tl__lamp--green${safe === 'green' ? ' is-on' : ''}`}
+          aria-hidden="true"
+        />
+      </span>
+      {label ? <span className="client-sr-only">{label}</span> : null}
+    </span>
+  )
 }
 
 /** White SnapShot mark for the global footprint ribbon (imported asset, includes TM in artwork). */
@@ -1331,6 +1368,11 @@ export default function ClientDashboard({ user, onSignOut }) {
       if (site.leadRole.toLowerCase().includes(q)) return true
       if (site.address.toLowerCase().includes(q)) return true
       if (snap?.status && snap.status.toLowerCase().includes(q)) return true
+      if (q === 'green' && snap?.light === 'green') return true
+      if ((q === 'amber' || q === 'yellow') && snap?.light === 'amber') return true
+      if (q === 'red' && snap?.light === 'red') return true
+      if ((q === 'planned' || q === 'off') && snap?.light === 'off') return true
+      if (q === 'pilot' && snap?.status?.toLowerCase() === 'pilot') return true
       return false
     })
   }, [searchQ])
@@ -1606,11 +1648,10 @@ export default function ClientDashboard({ user, onSignOut }) {
                 {filteredGlobalSites.map((site) => (
                   <article key={site.id} className="client-site-card">
                     <div className="client-site-topline">
-                      <span
-                        className={`client-site-health client-site-health--${SITE_SNAPSHOT[site.id]?.tone || 'idle'}`}
-                      >
-                        {SITE_SNAPSHOT[site.id]?.status || '—'}
-                      </span>
+                      <SiteTrafficLight
+                        active={SITE_SNAPSHOT[site.id]?.light ?? 'off'}
+                        label={SITE_SNAPSHOT[site.id]?.status}
+                      />
                       <span className="client-site-kpi-chip">
                         {SITE_SNAPSHOT[site.id]?.downtimeMins != null
                           ? `${SITE_SNAPSHOT[site.id].downtimeMins}m downtime`
