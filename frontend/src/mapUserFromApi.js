@@ -17,5 +17,7 @@ export function mapUserFromApi(user) {
         : null,
     createdAt: typeof user.createdAt === 'string' ? user.createdAt : null,
     lastLoginAt: typeof user.lastLoginAt === 'string' ? user.lastLoginAt : null,
+    onboardingComplete: user.onboardingComplete === true,
+    onboarding: user.onboarding && typeof user.onboarding === 'object' ? user.onboarding : null,
   }
 }

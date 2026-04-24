@@ -19,6 +19,7 @@ async function main() {
       slug: 'harland',
       planId: 'premium',
       productIds: JSON.stringify([...DEFAULT_PRODUCT_IDS]),
+      onboardingCompletedAt: new Date(),
     },
     update: {
       passwordHash,
@@ -26,6 +27,7 @@ async function main() {
       slug: 'harland',
       planId: 'premium',
       productIds: JSON.stringify([...DEFAULT_PRODUCT_IDS]),
+      onboardingCompletedAt: new Date(),
     },
   })
   console.log('Harland client user ready:', user.email)

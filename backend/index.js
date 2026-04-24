@@ -109,6 +109,10 @@ function userToClient(u) {
   } catch {
     products = []
   }
+  let onboarding = null
+  if (u.onboardingData && typeof u.onboardingData === 'object' && !Array.isArray(u.onboardingData)) {
+    onboarding = u.onboardingData
+  }
   return {
     email: u.email,
     company: u.company,
@@ -118,6 +122,8 @@ function userToClient(u) {
     createdAt: u.createdAt instanceof Date ? u.createdAt.toISOString() : u.createdAt,
     lastLoginAt:
       u.lastLoginAt instanceof Date ? u.lastLoginAt.toISOString() : u.lastLoginAt ?? null,
+    onboardingComplete: Boolean(u.onboardingCompletedAt),
+    onboarding,
   }
 }
 
@@ -157,6 +163,8 @@ const fallbackAuth = {
     productIds: JSON.stringify(['core', 'factory-analytics', 'automation', 'myhenry']),
     createdAt: new Date(0),
     lastLoginAt: new Date(),
+    onboardingData: null,
+    onboardingCompletedAt: new Date(),
   },
 }
 
@@ -466,6 +474,84 @@ app.get('/api/auth/me', async (req, res) => {
   } catch (e) {
     console.error(e)
     res.status(500).json({ ok: false, message: 'Could not load profile.' })
+  }
+})
+
+app.get('/api/client/onboarding', async (req, res) => {
+  const auth = readBearerAuth(req)
+  if (!auth?.userId) {
+    return res.status(401).json({ ok: false, message: 'Not signed in.' })
+  }
+  if (auth.userId === fallbackAuth.user.id) {
+    return res.json({ ok: true, completed: true, data: null })
+  }
+  try {
+    const user = await prisma.user.findUnique({ where: { id: auth.userId } })
+    if (!user) {
+      return res.status(401).json({ ok: false, message: 'Session invalid.' })
+    }
+    const data =
+      user.onboardingData && typeof user.onboardingData === 'object' && !Array.isArray(user.onboardingData)
+        ? user.onboardingData
+        : null
+    return res.json({
+      ok: true,
+      completed: Boolean(user.onboardingCompletedAt),
+      data,
+    })
+  } catch (e) {
+    console.error(e)
+    res.status(500).json({ ok: false, message: 'Could not load workspace setup.' })
+  }
+})
+
+app.put('/api/client/onboarding', async (req, res) => {
+  const auth = readBearerAuth(req)
+  if (!auth?.userId) {
+    return res.status(401).json({ ok: false, message: 'Not signed in.' })
+  }
+  if (auth.userId === fallbackAuth.user.id) {
+    return res.status(403).json({ ok: false, message: 'Workspace setup is not available in fallback mode.' })
+  }
+  const { data, complete } = req.body || {}
+  try {
+    const user = await prisma.user.findUnique({ where: { id: auth.userId } })
+    if (!user) {
+      return res.status(401).json({ ok: false, message: 'Session invalid.' })
+    }
+    const tenantSlug = req.tenantSlug || null
+    if (tenantSlug && user.slug !== tenantSlug) {
+      return res.status(401).json({ ok: false, message: 'Session invalid.' })
+    }
+    const nextData =
+      data && typeof data === 'object' && !Array.isArray(data)
+        ? data
+        : (user.onboardingData && typeof user.onboardingData === 'object' && !Array.isArray(user.onboardingData)
+            ? user.onboardingData
+            : {})
+    const update = {
+      onboardingData: nextData,
+    }
+    if (complete === true) {
+      update.onboardingCompletedAt = new Date()
+    }
+    if (nextData && typeof nextData === 'object' && !Array.isArray(nextData)) {
+      const displayName = nextData.organization?.displayName
+      if (typeof displayName === 'string' && displayName.trim()) {
+        update.company = displayName.trim().slice(0, 240)
+      }
+    }
+    const next = await prisma.user.update({
+      where: { id: user.id },
+      data: update,
+    })
+    return res.json({
+      ok: true,
+      user: userToClient(next),
+    })
+  } catch (e) {
+    console.error(e)
+    res.status(500).json({ ok: false, message: 'Could not save workspace setup.' })
   }
 })
 

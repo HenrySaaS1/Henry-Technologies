@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect } from 'react'
 import ClientDashboard from './ClientDashboard.jsx'
+import ClientOnboarding from './ClientOnboarding.jsx'
 import { DEFAULT_PRODUCT_IDS } from './productCatalog.js'
 import { mapUserFromApi } from './mapUserFromApi.js'
 import { AUTH_BYPASS, bypassDemoUser } from './authBypass.js'
@@ -530,6 +531,8 @@ function App() {
   const isCaseStudiesPage =
     typeof window !== 'undefined' &&
     /\/case-studies\/?$/.test(window.location.pathname)
+  const isOnboardingPage =
+    typeof window !== 'undefined' && /\/onboarding\/?$/.test(window.location.pathname)
 
   const [showSignup, setShowSignup] = useState(false)
   const [showCaseDemo, setShowCaseDemo] = useState(false)
@@ -592,6 +595,15 @@ function App() {
 
     return () => ac.abort()
   }, [])
+
+  useEffect(() => {
+    if (AUTH_BYPASS) return
+    if (!currentUser || currentUser.onboardingComplete) return
+    if (typeof window === 'undefined') return
+    const path = window.location.pathname
+    if (path === '/onboarding' || path === '/onboarding/') return
+    window.location.replace('/onboarding')
+  }, [currentUser])
 
   const signOut = () => {
     clearAuth()
@@ -749,7 +761,7 @@ function App() {
       }
       closeSignupModal()
       if (typeof window !== 'undefined') {
-        window.location.assign('/products')
+        window.location.assign('/onboarding')
       }
     } catch (e) {
       const msg = e.message || ''
@@ -1168,7 +1180,32 @@ function App() {
     </section>
   )
 
-  if (currentUser && !isPricingPage && !isProductsPage && !isCaseStudiesPage) {
+  if (currentUser && isOnboardingPage && !currentUser.onboardingComplete) {
+    return (
+      <div className="page page--onboarding">
+        <ClientOnboarding
+          user={currentUser}
+          onComplete={(u) => {
+            setCurrentUser(u)
+            if (typeof window !== 'undefined') {
+              window.location.replace('/')
+            }
+          }}
+          onSignOut={signOut}
+        />
+      </div>
+    )
+  }
+
+  if (currentUser && !currentUser.onboardingComplete) {
+    return (
+      <div className="page page--onboarding-wait" aria-live="polite">
+        <p className="onboarding-wait-text">Opening workspace setup…</p>
+      </div>
+    )
+  }
+
+  if (currentUser && !isOnboardingPage && !isPricingPage && !isProductsPage && !isCaseStudiesPage) {
     return (
       <div className="page page--client">
         <ClientDashboard user={currentUser} onSignOut={signOut} />

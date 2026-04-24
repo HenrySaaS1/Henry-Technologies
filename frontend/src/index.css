@@ -6859,3 +6859,340 @@ h3 {
     transition: none;
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Client onboarding wizard → SnapTile / dashboard inputs                     */
+/* -------------------------------------------------------------------------- */
+
+.page--onboarding,
+.page--onboarding-wait {
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #f0f5fb 0%, #e8eff8 100%);
+}
+
+.onboarding-wait-text {
+  margin: 2rem;
+  text-align: center;
+  color: #334155;
+  font-size: 1rem;
+}
+
+.onboarding-page {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2.5rem;
+  box-sizing: border-box;
+}
+
+.onboarding-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.onboarding-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.onboarding-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.onboarding-title {
+  font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
+  font-weight: 800;
+  font-size: 1.35rem;
+  color: #0f4580;
+  line-height: 1.2;
+}
+
+.onboarding-sub {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin-top: 0.2rem;
+}
+
+.onboarding-signout {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #0d2f73;
+  background: rgba(11, 99, 209, 0.08);
+  border: 1px solid rgba(15, 47, 115, 0.18);
+  border-radius: 8px;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.onboarding-lead {
+  text-align: center;
+  color: #475569;
+  margin-top: 2rem;
+}
+
+.onboarding-progress {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.65rem;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.onboarding-step-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 0.32rem 0.6rem 0.32rem 0.35rem;
+}
+
+.onboarding-step-pill.is-active {
+  color: #0b63d1;
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.onboarding-step-pill.is-done {
+  color: #15803d;
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.onboarding-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: #e2e8f0;
+  font-size: 0.72rem;
+}
+
+.onboarding-step-pill.is-active .onboarding-step-num {
+  background: #0b63d1;
+  color: #fff;
+}
+
+.onboarding-step-pill.is-done .onboarding-step-num {
+  background: #22c55e;
+  color: #fff;
+}
+
+.onboarding-step-label {
+  max-width: 6.2rem;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+.onboarding-card {
+  background: #fff;
+  border: 1px solid #d6e0ef;
+  border-radius: 16px;
+  box-shadow: 0 6px 28px rgba(15, 23, 42, 0.06);
+  padding: 1.25rem 1.35rem 1.1rem;
+}
+
+.onboarding-panel h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f1f3d;
+}
+
+.onboarding-h3 {
+  margin: 1.1rem 0 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+}
+
+.onboarding-hint {
+  margin: 0 0 1.1rem;
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.onboarding-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+  margin-bottom: 0.65rem;
+}
+
+.onboarding-input {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.95rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #0f172a;
+  box-sizing: border-box;
+}
+
+.onboarding-input:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+}
+
+.onboarding-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.onboarding-fieldset {
+  border: none;
+  margin: 0 0 1.2rem;
+  padding: 0;
+}
+
+.onboarding-fieldset legend {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.onboarding-radios {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.onboarding-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #0f172a;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.onboarding-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.onboarding-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #0f2b5c;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.onboarding-review {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.onboarding-review-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  color: #334155;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.onboarding-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+  gap: 0.75rem;
+}
+
+.onboarding-btn-primary,
+.onboarding-btn-secondary {
+  font-family: 'Montserrat', 'Open Sans', Arial, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: 9px;
+  padding: 0.58rem 1.1rem;
+  cursor: pointer;
+  border: none;
+  touch-action: manipulation;
+}
+
+.onboarding-btn-primary {
+  color: #fff;
+  background: linear-gradient(180deg, #1a74e8 0%, #0b63d1 100%);
+  box-shadow: 0 2px 6px rgba(11, 99, 209, 0.22);
+  margin-left: auto;
+}
+
+.onboarding-btn-primary:disabled,
+.onboarding-btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.onboarding-btn-secondary {
+  color: #0d2f73;
+  background: #fff;
+  border: 1px solid rgba(15, 47, 115, 0.22);
+}
+
+.onboarding-error {
+  color: #b91c1c;
+  font-size: 0.9rem;
+  margin: 0.75rem 0 0;
+  font-weight: 600;
+}
+
+.client-onboarding-capsule {
+  display: block;
+  margin-top: 0.22rem;
+  max-width: 20rem;
+  font-size: 0.6rem;
+  line-height: 1.2;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}

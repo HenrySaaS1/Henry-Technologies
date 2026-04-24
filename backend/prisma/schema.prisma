@@ -8,18 +8,20 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  passwordHash String
-  company      String
-  slug         String    @default("generic")
-  planId       String?
-  productIds   String // JSON array of product id strings
-  lastLoginAt  DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  contacts     Contact[]
-  authEvents   AuthEvent[]
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  passwordHash          String
+  company               String
+  slug                  String    @default("generic")
+  planId                String?
+  productIds            String // JSON array of product id strings
+  lastLoginAt           DateTime?
+  onboardingData        Json?
+  onboardingCompletedAt DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  contacts              Contact[]
+  authEvents            AuthEvent[]
 }
 
 model Contact {

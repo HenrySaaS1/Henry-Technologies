@@ -24,5 +24,7 @@ export function bypassDemoUser() {
     planId: 'premium',
     createdAt: now,
     lastLoginAt: now,
+    onboardingComplete: true,
+    onboarding: null,
   }
 }

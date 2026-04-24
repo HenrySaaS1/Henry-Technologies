@@ -1477,6 +1477,18 @@ export default function ClientDashboard({ user, onSignOut }) {
                 </span>
               </span>
               <span className="client-logo-sub">Client workspace</span>
+              {user?.onboarding?.scale?.employeeBand ? (
+                <span className="client-onboarding-capsule" title="From your setup questionnaire">
+                  {user.onboarding.organization?.displayName || user.company} ·{' '}
+                  {user.onboarding.scale.employeeBand === '1000+'
+                    ? '1,000+ employees'
+                    : user.onboarding.scale.employeeBand.replace(/-/g, '–')}{' '}
+                  employees
+                  {user.onboarding.scale.siteCount
+                    ? ` · ${user.onboarding.scale.siteCount === '1' ? '1 site' : `${user.onboarding.scale.siteCount} sites`}`
+                    : null}
+                </span>
+              ) : null}
             </>
           )}
         </div>
