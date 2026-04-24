@@ -13,7 +13,8 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:setup": "powershell -ExecutionPolicy Bypass -File ../scripts/setup-local-db.ps1",
-    "db:sqlite": "prisma migrate deploy --config prisma.config.sqlite.mjs"
+    "db:sqlite": "prisma migrate deploy --config prisma.config.sqlite.mjs",
+    "db:deploy:postgres": "prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
