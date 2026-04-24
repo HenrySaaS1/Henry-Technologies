@@ -226,13 +226,21 @@ The API expects PostgreSQL to match `backend/prisma/migrations/`. If migrations 
 
 **Apply migrations to the live database (pick one):**
 
-**A — GitHub Actions (one click, no local install)**  
-1. In the repo, add an Actions secret: **`PRODUCTION_DATABASE_URL`** — copy the same connection string as App Service `DATABASE_URL` (must be `postgresql://` with `sslmode=require` for Azure).  
-2. **Actions** → **Prisma migrate deploy (production)** → **Run workflow**.  
-This runs `npx prisma migrate deploy` on Ubuntu against that URL (see `.github/workflows/prisma-migrate-production.yml`).
+**A — Fast path (inside Azure, usually no long wait) — *recommended***  
+1. **Deploy** the latest `main` backend to your App Service (so `prisma/migrations` in the app matches the repo).  
+2. Azure Portal → your **App Service (API)** → **Restart** (or **Stop** then **Start**).  
+3. On boot, `npm start` runs `prisma migrate deploy` on the same network as PostgreSQL, so the **PostgreSQL firewall** usually only needs to allow this app — not your laptop or GitHub.  
+4. Open **Log stream** and confirm the container starts, or that Prisma does not log a migration error.  
+5. Retry sign-up on the site.  
 
-**B — Rely on startup (default)**  
-`npm start` runs `npx prisma migrate deploy` before `index.js`. If migrations fail, the process should exit in production and **Log stream** in App Service will show Prisma errors. Fix `DATABASE_URL` and firewall, then **Restart** the web app.
+**If a GitHub Action sits “in progress” for 10+ minutes, cancel it** — PostgreSQL is often **blocking GitHub’s outbound IPs**, so the run never reaches the server. Use path **A** (restart the API in Azure) or **C** (run `migrate` from your laptop with your IP in the firewall) instead.
+
+**B — GitHub Actions (runs on the public internet, often blocked or slow)**  
+1. Add secret **`PRODUCTION_DATABASE_URL`** (same as App Service `DATABASE_URL`).  
+2. **Actions** → **Prisma migrate deploy (production)** → **Run workflow**.  
+3. **Networking:** if this hangs or times out, use path **A** (recommended), a **self-hosted** runner, or temporarily open PostgreSQL wider for testing. GitHub-hosted runners have **no fixed IP list** for firewall rules.  
+
+(Every **restart** or **deploy** of the web app also runs the same `prisma migrate deploy` via `npm start` before the API process — that is the “remote in Azure” path that does not depend on GitHub.)
 
 **C — One-off from your machine** (Node 22; **add your public IP** to the PostgreSQL server **Firewall rules** in Azure, or the connection will fail with `P1001`)
 
@@ -247,7 +255,7 @@ $env:DATABASE_URL = "postgresql://YOUR_USER:YOUR_PASSWORD@your-server-name.postg
 npx prisma migrate deploy
 ```
 
-If `npx prisma generate` fails on Windows with **`EPERM` / `rename` / `query_engine-windows.dll`**: some other process is locking Prisma (often `npm run dev` in another terminal, Cursor, or real-time antivirus on `node_modules`). **Stop** the backend/frontend dev servers, close extra terminals, then run `npx prisma generate` again, or use **path A (GitHub Actions)** so nothing runs on your PC. In many cases you can still run **`npx prisma migrate deploy`** (above) even if `generate` failed, if the project already has a working generated client from `npm install`.
+If `npx prisma generate` fails on Windows with **`EPERM` / `rename` / `query_engine-windows.dll`**: some other process is locking Prisma (often `npm run dev` in another terminal, Cursor, or real-time antivirus on `node_modules`). **Stop** the backend/frontend dev servers, close extra terminals, then run `npx prisma generate` again, or use **path B (GitHub Actions)** or **path A (Azure restart — no `generate` on your PC)**. In many cases you can still run **`npx prisma migrate deploy`** (above) even if `generate` failed, if the project already has a working generated client from `npm install`.
 
 **Command Prompt (cmd.exe):**
 
@@ -265,7 +273,7 @@ export DATABASE_URL="postgresql://YOUR_USER:YOUR_PASSWORD@your-server-name.postg
 npx prisma migrate deploy
 ```
 
-**D — One-off in App Service SSH** (if enabled)  
+**D — In App Service SSH** (if enabled)  
 `cd` to the deployed site root (for example `site/wwwroot`), set `DATABASE_URL` if not inherited, then:
 
 ```bash

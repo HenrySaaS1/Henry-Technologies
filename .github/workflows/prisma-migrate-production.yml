@@ -5,6 +5,10 @@
 #   PRODUCTION_DATABASE_URL  — same value as App Service "DATABASE_URL" (postgresql://...?sslmode=require)
 #
 # Run: Actions → "Prisma migrate deploy (production)" → Run workflow
+#
+# If this run hangs, Azure PostgreSQL is probably blocking GitHub’s IPs. Prefer: Azure Portal →
+# your App Service → Restart (migrations run on container start, inside Azure, no GitHub).
+# See docs/azure-new-account-fresh-setup.md §7.1
 
 name: Prisma migrate deploy (production)
 
@@ -18,6 +22,7 @@ concurrency:
 jobs:
   migrate:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v5
 
@@ -40,5 +45,5 @@ jobs:
             echo "::error::Set repository secret PRODUCTION_DATABASE_URL (Azure PostgreSQL connection string with sslmode=require)."
             exit 1
           fi
-          npx prisma generate
+          echo "Applying migrations from ubuntu-latest. If this hangs, cancel and use Azure Portal → App Service → Restart (see docs §7.1 path A)."
           npx prisma migrate deploy
