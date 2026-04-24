@@ -1516,7 +1516,7 @@ function App() {
           <div className="overlay">
             <h1>When You Need Answers Now</h1>
             <p>
-              With HENRY, you can have real-time insights, reduce downtime, and make smarter business decisions.
+              With HENRY SnapShot, you can have real-time insights, reduce downtime, and make smarter business decisions.
             </p>
             <button
               className="btn-primary"
