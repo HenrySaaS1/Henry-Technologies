@@ -212,6 +212,52 @@ Smoke test checklist:
 
 ---
 
+## 7.1) Production database: run Prisma migrations (required)
+
+The API expects PostgreSQL to match `backend/prisma/migrations/`. If migrations were never applied, or `DATABASE_URL` / firewall is wrong, sign-up and other writes can return:
+
+- `Database is missing required tables or columns. On the server, run: npx prisma migrate deploy (in the backend folder) against DATABASE_URL, then try again.`
+
+**Before anything else, confirm:**
+
+1. **App Service** has `DATABASE_URL` set to your **Azure PostgreSQL** connection string, including **`?sslmode=require`**.
+2. **PostgreSQL** → **Networking** allows the App Service to connect (e.g. **Allow public access** with App Service **outgoing IP addresses** added, and/or other rules your org uses).
+3. The backend deployment includes the **`prisma/migrations`** folder (this repo’s GitHub App Service workflow deploys the `backend/` app as-is; do not remove migrations from the artifact).
+
+**Apply migrations to the live database (pick one):**
+
+**A — GitHub Actions (one click, no local install)**  
+1. In the repo, add an Actions secret: **`PRODUCTION_DATABASE_URL`** — copy the same connection string as App Service `DATABASE_URL` (must be `postgresql://` with `sslmode=require` for Azure).  
+2. **Actions** → **Prisma migrate deploy (production)** → **Run workflow**.  
+This runs `npx prisma migrate deploy` on Ubuntu against that URL (see `.github/workflows/prisma-migrate-production.yml`).
+
+**B — Rely on startup (default)**  
+`npm start` runs `npx prisma migrate deploy` before `index.js`. If migrations fail, the process should exit in production and **Log stream** in App Service will show Prisma errors. Fix `DATABASE_URL` and firewall, then **Restart** the web app.
+
+**C — One-off from your machine** (repo + Node 22, network path to the server; add your public IP to PostgreSQL firewall if required):
+
+```bash
+cd backend
+set DATABASE_URL=postgresql://USER:PASSWORD@HOST.postgres.database.azure.com:5432/DATABASE?sslmode=require
+npx prisma generate
+npx prisma migrate deploy
+```
+
+Use `set` on Windows; on macOS/Linux use `export DATABASE_URL=...`.
+
+**D — One-off in App Service SSH** (if enabled)  
+`cd` to the deployed site root (for example `site/wwwroot`), set `DATABASE_URL` if not inherited, then:
+
+```bash
+npx prisma migrate deploy
+```
+
+After migrations succeed, **Restart** the web app and retry sign-up on your `.com` site.
+
+**Verify schema (optional):** connect with `psql` and list tables: `User` should have columns such as `onboardingData` and `onboardingCompletedAt` after the latest migrations.
+
+---
+
 ## 8) Configure new custom domain
 
 For frontend domain on Static Web Apps:

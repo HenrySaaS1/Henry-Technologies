@@ -1,0 +1,44 @@
+# One-off: apply `backend/prisma/migrations` to the live PostgreSQL used by the API.
+# Use when App Service start failed migrations or the DB was created before the latest schema.
+#
+# GitHub → Settings → Secrets and variables → Actions → add:
+#   PRODUCTION_DATABASE_URL  — same value as App Service "DATABASE_URL" (postgresql://...?sslmode=require)
+#
+# Run: Actions → "Prisma migrate deploy (production)" → Run workflow
+
+name: Prisma migrate deploy (production)
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: prisma-migrate-production
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Prisma migrate deploy
+        working-directory: backend
+        env:
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::Set repository secret PRODUCTION_DATABASE_URL (Azure PostgreSQL connection string with sslmode=require)."
+            exit 1
+          fi
+          npx prisma generate
+          npx prisma migrate deploy
