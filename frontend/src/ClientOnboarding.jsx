@@ -6,7 +6,6 @@ import henryLogo from './assets/henry-logo.png'
 const STEPS = [
   'Organization',
   'Size & locations',
-  'Primary address',
   'Key people',
   'Focus & finish',
 ]
@@ -45,6 +44,9 @@ function defaultForm(user) {
       displayName: user?.company || '',
       industry: '',
       timeZone: tz,
+      phone: '',
+      website: '',
+      siteManager: '',
     },
     scale: {
       employeeBand: '',
@@ -140,17 +142,16 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
   const validate = (n) => {
     if (n === 0) {
       if (!form.organization.displayName?.trim()) return 'Enter your organization name.'
+      if (!form.primaryAddress.line1?.trim()) return 'Street address is required.'
+      if (!form.primaryAddress.city?.trim()) return 'City is required.'
+      if (!form.primaryAddress.country?.trim()) return 'Country is required.'
+      if (!form.organization.siteManager?.trim()) return 'Enter the site manager’s name.'
     }
     if (n === 1) {
       if (!form.scale.employeeBand) return 'Select an approximate company size.'
       if (!form.scale.siteCount) return 'Select how many physical locations you operate.'
     }
     if (n === 2) {
-      if (!form.primaryAddress.line1?.trim()) return 'Street address is required.'
-      if (!form.primaryAddress.city?.trim()) return 'City is required.'
-      if (!form.primaryAddress.country?.trim()) return 'Country is required.'
-    }
-    if (n === 3) {
       if (!form.people.primary.name?.trim()) return 'Primary contact name is required.'
       if (!form.people.primary.email?.trim()) return 'Primary contact email is required.'
     }
@@ -197,7 +198,7 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
   }
 
   const finish = async () => {
-    const err = validate(3) || validate(2) || validate(1) || validate(0)
+    const err = validate(2) || validate(1) || validate(0)
     if (err) {
       setStatus(err)
       return
@@ -247,9 +248,11 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
         {step === 0 && (
           <section className="onboarding-panel" aria-labelledby="onb-org">
             <h2 id="onb-org">Organization</h2>
-            <p className="onboarding-hint">This label appears in your client workspace and drives SnapTile defaults.</p>
+            <p className="onboarding-hint">
+              Your site details appear in the client workspace and help tune SnapTile defaults.
+            </p>
             <label className="onboarding-label">
-              Organization name
+              Name
               <input
                 className="onboarding-input"
                 value={form.organization.displayName}
@@ -258,69 +261,7 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
                 required
               />
             </label>
-            <label className="onboarding-label">
-              Industry (optional)
-              <input
-                className="onboarding-input"
-                value={form.organization.industry}
-                onChange={(e) => setField('organization', 'industry', e.target.value)}
-                placeholder="e.g. medical devices, automotive"
-              />
-            </label>
-            <label className="onboarding-label">
-              Time zone
-              <input
-                className="onboarding-input"
-                value={form.organization.timeZone}
-                onChange={(e) => setField('organization', 'timeZone', e.target.value)}
-              />
-            </label>
-          </section>
-        )}
-
-        {step === 1 && (
-          <section className="onboarding-panel" aria-labelledby="onb-scale">
-            <h2 id="onb-scale">Company size & footprint</h2>
-            <fieldset className="onboarding-fieldset">
-              <legend>Approximate employees</legend>
-              <div className="onboarding-radios">
-                {EMPLOYEE_OPTIONS.map((o) => (
-                  <label key={o.value} className="onboarding-radio">
-                    <input
-                      type="radio"
-                      name="emp"
-                      value={o.value}
-                      checked={form.scale.employeeBand === o.value}
-                      onChange={() => setField('scale', 'employeeBand', o.value)}
-                    />
-                    {o.label}
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-            <fieldset className="onboarding-fieldset">
-              <legend>Manufacturing or operations sites</legend>
-              <div className="onboarding-radios">
-                {SITE_OPTIONS.map((o) => (
-                  <label key={o.value} className="onboarding-radio">
-                    <input
-                      type="radio"
-                      name="sites"
-                      value={o.value}
-                      checked={form.scale.siteCount === o.value}
-                      onChange={() => setField('scale', 'siteCount', o.value)}
-                    />
-                    {o.label}
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-          </section>
-        )}
-
-        {step === 2 && (
-          <section className="onboarding-panel" aria-labelledby="onb-addr">
-            <h2 id="onb-addr">Primary site address</h2>
+            <h3 className="onboarding-h3">Address</h3>
             <label className="onboarding-label">
               Street line 1
               <input
@@ -389,10 +330,101 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
                 />
               </label>
             </div>
+            <div className="onboarding-row">
+              <label className="onboarding-label">
+                Phone
+                <input
+                  className="onboarding-input"
+                  type="tel"
+                  value={form.organization.phone}
+                  onChange={(e) => setField('organization', 'phone', e.target.value)}
+                  autoComplete="tel"
+                />
+              </label>
+              <label className="onboarding-label">
+                Website
+                <input
+                  className="onboarding-input"
+                  type="url"
+                  value={form.organization.website}
+                  onChange={(e) => setField('organization', 'website', e.target.value)}
+                  placeholder="https://"
+                  autoComplete="url"
+                />
+              </label>
+            </div>
+            <label className="onboarding-label">
+              Site manager
+              <input
+                className="onboarding-input"
+                value={form.organization.siteManager}
+                onChange={(e) => setField('organization', 'siteManager', e.target.value)}
+                autoComplete="name"
+                placeholder="Main on-site contact"
+              />
+            </label>
+            <h3 className="onboarding-h3">More about your org (optional)</h3>
+            <label className="onboarding-label">
+              Industry (optional)
+              <input
+                className="onboarding-input"
+                value={form.organization.industry}
+                onChange={(e) => setField('organization', 'industry', e.target.value)}
+                placeholder="e.g. medical devices, automotive"
+              />
+            </label>
+            <label className="onboarding-label">
+              Time zone
+              <input
+                className="onboarding-input"
+                value={form.organization.timeZone}
+                onChange={(e) => setField('organization', 'timeZone', e.target.value)}
+              />
+            </label>
           </section>
         )}
 
-        {step === 3 && (
+        {step === 1 && (
+          <section className="onboarding-panel" aria-labelledby="onb-scale">
+            <h2 id="onb-scale">Company size & footprint</h2>
+            <fieldset className="onboarding-fieldset">
+              <legend>Approximate employees</legend>
+              <div className="onboarding-radios">
+                {EMPLOYEE_OPTIONS.map((o) => (
+                  <label key={o.value} className="onboarding-radio">
+                    <input
+                      type="radio"
+                      name="emp"
+                      value={o.value}
+                      checked={form.scale.employeeBand === o.value}
+                      onChange={() => setField('scale', 'employeeBand', o.value)}
+                    />
+                    {o.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset className="onboarding-fieldset">
+              <legend>Manufacturing or operations sites</legend>
+              <div className="onboarding-radios">
+                {SITE_OPTIONS.map((o) => (
+                  <label key={o.value} className="onboarding-radio">
+                    <input
+                      type="radio"
+                      name="sites"
+                      value={o.value}
+                      checked={form.scale.siteCount === o.value}
+                      onChange={() => setField('scale', 'siteCount', o.value)}
+                    />
+                    {o.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          </section>
+        )}
+
+        {step === 2 && (
           <section className="onboarding-panel" aria-labelledby="onb-people">
             <h2 id="onb-people">Key people</h2>
             <p className="onboarding-hint">We use this for roll-out contacts and admin alerts. You can add more later.</p>
@@ -485,7 +517,7 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
           </section>
         )}
 
-        {step === 4 && (
+        {step === 3 && (
           <section className="onboarding-panel" aria-labelledby="onb-focus">
             <h2 id="onb-focus">Initial focus & review</h2>
             <p className="onboarding-hint">We tune your SnapTile defaults from these areas (you can change anytime).</p>
@@ -507,7 +539,10 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
                 <li>
                   <strong>{form.organization.displayName || '—'}</strong>
                   {form.organization.industry ? ` · ${form.organization.industry}` : null}
+                  {form.organization.phone ? ` · ${form.organization.phone}` : null}
+                  {form.organization.website ? ` · ${form.organization.website}` : null}
                 </li>
+                <li>Site manager: {form.organization.siteManager || '—'}</li>
                 <li>
                   {EMPLOYEE_OPTIONS.find((e) => e.value === form.scale.employeeBand)?.label || '—'} employees ·{' '}
                   {SITE_OPTIONS.find((s) => s.value === form.scale.siteCount)?.label || '—'}
