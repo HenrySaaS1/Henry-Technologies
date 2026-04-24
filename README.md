@@ -2,6 +2,8 @@
 
 React frontend and Node.js backend scaffold that matches your demo landing page sections.
 
+Use **Node.js 22 LTS** locally (see repository `.nvmrc` and `engines` in `backend/package.json` / `frontend/package.json`). Azure App Service and GitHub Actions in this repo are aligned to Node 22.
+
 ## Run locally
 
 1. **Database** — **No PostgreSQL?** Use **SQLite** locally (file only, nothing to install):
@@ -88,7 +90,7 @@ You get a **Static Web App** URL for the React site and an **App Service** URL f
 
      `postgresql://USER:PASSWORD@HOST:5432/DATABASE?sslmode=require`
 
-3. **App Service (Linux, Node 20)** — e.g. name `henry-api` → URL `https://henry-api.azurewebsites.net`
+3. **App Service (Linux, Node 22 LTS)** — e.g. name `henry-api` → URL `https://henry-api.azurewebsites.net`
    - **Configuration → Application settings** (add as **Application settings**, not only Connection strings):
 
      | Name | Example |

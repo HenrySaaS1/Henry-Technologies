@@ -7,6 +7,8 @@ Use this target architecture:
 - Backend API: Azure App Service (Linux)
 - Database: Azure Database for PostgreSQL Flexible Server
 
+**Node version:** This project targets **Node.js 22 LTS** (see `backend/package.json` `engines` and repository `.nvmrc`). Node 20 LTS is past Microsoft’s support window for new deployments; use 22 for App Service, CI, and local dev.
+
 ---
 
 ## 1) Prerequisites
@@ -81,7 +83,7 @@ az webapp create \
   --name henry-api \
   --resource-group henry-prod-rg \
   --plan henry-api-plan \
-  --runtime "NODE:20-lts"
+  --runtime "NODE:22-lts"
 ```
 
 ### 2.4 Static Web App (frontend)
@@ -115,6 +117,24 @@ In Azure Portal -> `henry-api` -> Configuration -> Application settings:
 Notes:
 - Do not set `PORT` manually in App Service Linux.
 - This backend uses Prisma migrations during startup (`npm start` path in project docs/workflow comments).
+
+### 3.1 Optional: move an **existing** Web App from Node 20 to Node 22
+
+If the app was created with Node 20, update the stack and restart (pick one: CLI or portal).
+
+**Azure CLI (Linux App Service):**
+
+```bash
+az webapp config set \
+  --resource-group henry-prod-rg \
+  --name henry-api \
+  --linux-fx-version "NODE|22-lts"
+az webapp restart --resource-group henry-prod-rg --name henry-api
+```
+
+**Azure Portal:** App Service → **Configuration** → **General settings** → **Stack** / **Node** version → **22 LTS** → Save → **Restart** the app.
+
+Redeploy your latest code (GitHub Actions or manual) after the runtime change so `npm start` and Prisma run on Node 22.
 
 ---
 
