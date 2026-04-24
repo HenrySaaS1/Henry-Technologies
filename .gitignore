@@ -9,3 +9,7 @@ backend/dev.db
 backend/dev.db-journal
 backend/prisma/dev.db
 backend/prisma/dev.db-journal
+
+# Local / machine-specific (nested clone, MCP with project URLs)
+Henry-SaaS/
+.cursor/mcp.json
