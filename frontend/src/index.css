@@ -194,10 +194,26 @@ h3 {
 .logo-text-col {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: center;
   gap: 0.1em;
   line-height: 1.05;
+  width: 7.35rem;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.logo-text-col .logo-word,
+.logo-text-col .logo-sub {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  letter-spacing: 0;
+  box-sizing: border-box;
+}
+
+.logo-spread-char {
+  flex: 0 0 auto;
 }
 
 .logo-word {
@@ -215,7 +231,7 @@ h3 {
   font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
   font-weight: 600;
   font-size: 0.88rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0;
   color: #0f4580;
   line-height: 1;
   text-transform: uppercase;
@@ -4831,10 +4847,22 @@ h3 {
 .client-logo-text-col {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: center;
   gap: 0.08em;
   line-height: 1.05;
+  width: 4.15rem;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.client-logo-text-col .client-logo-word,
+.client-logo-text-col .client-logo-word-sub {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  letter-spacing: 0;
+  box-sizing: border-box;
 }
 
 .client-logo-word {
@@ -4850,7 +4878,7 @@ h3 {
   font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
   font-weight: 600;
   font-size: 0.58rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0;
   color: #0f4580;
   line-height: 1;
   text-transform: uppercase;
@@ -6165,6 +6193,10 @@ h3 {
     font-size: 0.72rem;
   }
 
+  .logo-text-col {
+    width: 6.1rem;
+  }
+
   .topbar-actions {
     gap: 0.4rem;
     flex-wrap: wrap;
@@ -6529,6 +6561,10 @@ h3 {
     font-size: 0.52rem;
   }
 
+  .client-logo-text-col {
+    width: 3.75rem;
+  }
+
   .client-signout {
     width: 100%;
     order: 4;
@@ -6593,6 +6629,10 @@ h3 {
 
   .logo-sub {
     font-size: 0.62rem;
+  }
+
+  .logo-text-col {
+    width: 5.35rem;
   }
 
   .topbar-actions {

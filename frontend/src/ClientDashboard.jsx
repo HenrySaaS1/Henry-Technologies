@@ -1,6 +1,7 @@
 import { useState, useEffect, useId, useRef, useMemo } from 'react'
 import { titlesForProductIds } from './productCatalog.js'
 import henryLogo from './assets/henry-logo.png'
+import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
 
@@ -1471,8 +1472,8 @@ export default function ClientDashboard({ user, onSignOut }) {
               <span className="client-logo-lockup">
                 <img src={henryLogo} alt="" className="client-logo-mark" width={160} height={160} decoding="async" />
                 <span className="client-logo-text-col">
-                  <span className="client-logo-word">HENRY</span>
-                  <span className="client-logo-word-sub">TECHNOLOGIES</span>
+                  <LogoSpreadLine className="client-logo-word" text="HENRY" />
+                  <LogoSpreadLine className="client-logo-word-sub" text="TECHNOLOGIES" />
                 </span>
               </span>
               <span className="client-logo-sub">Client workspace</span>

@@ -18,6 +18,7 @@ import securityProductImage from './assets/uploads/product-security-new.png'
 import myhenryProductImage from './assets/uploads/product-myhenry-new.png'
 import aboutHenryImage from './assets/about-henry.png'
 import henryLogo from './assets/henry-logo.png'
+import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import HeroLiveChartsHud from './HeroLiveCharts.jsx'
 
 const PRODUCT_IMAGES = {
@@ -1193,8 +1194,8 @@ function App() {
               <span className="logo-lockup">
                 <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
                 <span className="logo-text-col">
-                  <span className="logo-word">HENRY</span>
-                  <span className="logo-sub">TECHNOLOGIES</span>
+                  <LogoSpreadLine className="logo-word" text="HENRY" />
+                  <LogoSpreadLine className="logo-sub" text="TECHNOLOGIES" />
                 </span>
               </span>
             </button>
@@ -1265,8 +1266,8 @@ function App() {
               <span className="logo-lockup">
                 <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
                 <span className="logo-text-col">
-                  <span className="logo-word">HENRY</span>
-                  <span className="logo-sub">TECHNOLOGIES</span>
+                  <LogoSpreadLine className="logo-word" text="HENRY" />
+                  <LogoSpreadLine className="logo-sub" text="TECHNOLOGIES" />
                 </span>
               </span>
             </button>
@@ -1337,8 +1338,8 @@ function App() {
               <span className="logo-lockup">
                 <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
                 <span className="logo-text-col">
-                  <span className="logo-word">HENRY</span>
-                  <span className="logo-sub">TECHNOLOGIES</span>
+                  <LogoSpreadLine className="logo-word" text="HENRY" />
+                  <LogoSpreadLine className="logo-sub" text="TECHNOLOGIES" />
                 </span>
               </span>
             </button>
@@ -1473,8 +1474,8 @@ function App() {
             <span className="logo-lockup">
               <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
               <span className="logo-text-col">
-                <span className="logo-word">HENRY</span>
-                <span className="logo-sub">TECHNOLOGIES</span>
+                <LogoSpreadLine className="logo-word" text="HENRY" />
+                <LogoSpreadLine className="logo-sub" text="TECHNOLOGIES" />
               </span>
             </span>
           </button>
