@@ -1470,7 +1470,10 @@ export default function ClientDashboard({ user, onSignOut }) {
             <>
               <span className="client-logo-lockup">
                 <img src={henryLogo} alt="" className="client-logo-mark" width={160} height={160} decoding="async" />
-                <span className="client-logo-word">HENRY</span>
+                <span className="client-logo-text-col">
+                  <span className="client-logo-word">HENRY</span>
+                  <span className="client-logo-word-sub">technologies</span>
+                </span>
               </span>
               <span className="client-logo-sub">Client workspace</span>
             </>

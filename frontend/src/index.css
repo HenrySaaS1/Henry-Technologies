@@ -191,6 +191,15 @@ h3 {
   flex-shrink: 0;
 }
 
+.logo-text-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.1em;
+  line-height: 1.05;
+}
+
 .logo-word {
   font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
   font-weight: 800;
@@ -202,7 +211,19 @@ h3 {
   transition: color 0.18s ease;
 }
 
-.logo:hover .logo-word {
+.logo-sub {
+  font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  letter-spacing: 0.05em;
+  color: #0f4580;
+  line-height: 1;
+  text-transform: none;
+  transition: color 0.18s ease;
+}
+
+.logo:hover .logo-word,
+.logo:hover .logo-sub {
   color: #0b63d1;
 }
 
@@ -4807,6 +4828,15 @@ h3 {
   object-fit: contain;
 }
 
+.client-logo-text-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.08em;
+  line-height: 1.05;
+}
+
 .client-logo-word {
   font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
   font-weight: 800;
@@ -4814,6 +4844,16 @@ h3 {
   letter-spacing: 0.04em;
   color: #0f4580;
   line-height: 1;
+}
+
+.client-logo-word-sub {
+  font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+  color: #0f4580;
+  line-height: 1;
+  text-transform: none;
 }
 
 .client-logo-sub {
@@ -6121,6 +6161,10 @@ h3 {
     font-size: 1.62rem;
   }
 
+  .logo-sub {
+    font-size: 0.72rem;
+  }
+
   .topbar-actions {
     gap: 0.4rem;
     flex-wrap: wrap;
@@ -6481,6 +6525,10 @@ h3 {
     font-size: 1rem;
   }
 
+  .client-logo-word-sub {
+    font-size: 0.52rem;
+  }
+
   .client-signout {
     width: 100%;
     order: 4;
@@ -6541,6 +6589,10 @@ h3 {
   .logo-word {
     font-size: 1.38rem;
     letter-spacing: 0.03em;
+  }
+
+  .logo-sub {
+    font-size: 0.62rem;
   }
 
   .topbar-actions {

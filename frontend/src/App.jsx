@@ -1192,7 +1192,10 @@ function App() {
             >
               <span className="logo-lockup">
                 <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
-                <span className="logo-word">HENRY</span>
+                <span className="logo-text-col">
+                  <span className="logo-word">HENRY</span>
+                  <span className="logo-sub">technologies</span>
+                </span>
               </span>
             </button>
           </div>
@@ -1261,7 +1264,10 @@ function App() {
             >
               <span className="logo-lockup">
                 <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
-                <span className="logo-word">HENRY</span>
+                <span className="logo-text-col">
+                  <span className="logo-word">HENRY</span>
+                  <span className="logo-sub">technologies</span>
+                </span>
               </span>
             </button>
           </div>
@@ -1330,7 +1336,10 @@ function App() {
             >
               <span className="logo-lockup">
                 <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
-                <span className="logo-word">HENRY</span>
+                <span className="logo-text-col">
+                  <span className="logo-word">HENRY</span>
+                  <span className="logo-sub">technologies</span>
+                </span>
               </span>
             </button>
           </div>
@@ -1463,7 +1472,10 @@ function App() {
           >
             <span className="logo-lockup">
               <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
-              <span className="logo-word">HENRY</span>
+              <span className="logo-text-col">
+                <span className="logo-word">HENRY</span>
+                <span className="logo-sub">technologies</span>
+              </span>
             </span>
           </button>
         </div>
