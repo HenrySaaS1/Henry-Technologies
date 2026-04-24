@@ -42,6 +42,18 @@ function isGoAskHenryOrigin(origin) {
   }
 }
 
+/** Any http:// localhost / 127.0.0.1 / ::1 port — Vite may use 5173, 5174, 4173, etc. */
+function isLocalHttpDevOrigin(origin) {
+  if (process.env.NODE_ENV === 'production') return false
+  try {
+    const u = new URL(origin)
+    if (u.protocol !== 'http:') return false
+    return u.hostname === 'localhost' || u.hostname === '127.0.0.1' || u.hostname === '[::1]'
+  } catch {
+    return false
+  }
+}
+
 function tenantSlugFromHost(hostname) {
   const host = String(hostname || '')
     .trim()
@@ -79,13 +91,15 @@ app.use(
       // Allow non-browser clients and same-origin requests with no Origin header.
       if (!origin) return callback(null, true)
       if (corsOrigins.includes(origin)) return callback(null, true)
+      if (isLocalHttpDevOrigin(origin)) return callback(null, true)
       if (isGoAskHenryOrigin(origin)) return callback(null, true)
       if (isTrustedAzureFrontend(origin)) return callback(null, true)
       // Reject safely without throwing 500 on preflight.
       return callback(null, false)
     },
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    // Browsers preflight when the client sends `X-Tenant-Slug` (Harland and other white-label hosts).
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Tenant-Slug'],
   }),
 )
 app.use(express.json())
@@ -413,7 +427,12 @@ app.post('/api/auth/login', async (req, res) => {
   // Emergency access path: allow a known support credential even when DB is unreachable.
   if (emailNorm === fallbackAuth.email && String(password) === fallbackAuth.password) {
     if (tenantSlug && tenantSlug !== fallbackAuth.user.slug) {
-      return res.status(401).json({ ok: false, message: 'Email or password does not match.' })
+      return res.status(401).json({
+        ok: false,
+        code: 'tenant_mismatch',
+        message:
+          'This account is not in the selected workspace. On localhost, remove VITE_TENANT_SLUG from frontend/.env and any ?tenant= in the URL, then try again.',
+      })
     }
     const fallbackUser = { ...fallbackAuth.user, lastLoginAt: new Date() }
     const token = signUserToken(fallbackUser.id, fallbackUser.slug)
@@ -439,7 +458,12 @@ app.post('/api/auth/login', async (req, res) => {
         userId: user.id,
         message: 'tenant_mismatch',
       })
-      return res.status(401).json({ ok: false, message: 'Email or password does not match.' })
+      return res.status(401).json({
+        ok: false,
+        code: 'tenant_mismatch',
+        message:
+          'This account is not in the selected workspace. On localhost, remove VITE_TENANT_SLUG from frontend/.env and any ?tenant= in the URL, then try again.',
+      })
     }
     const ok = await bcrypt.compare(String(password), user.passwordHash)
     if (!ok) {

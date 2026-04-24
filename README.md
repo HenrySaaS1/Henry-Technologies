@@ -55,7 +55,7 @@ Use **Node.js 22 LTS** locally (see repository `.nvmrc` and `engines` in `backen
    - `copy .env.example .env` — set `DATABASE_URL` (see `.env.example`) and a strong `JWT_SECRET`
    - `npm install` (generates Prisma client via `postinstall`; if Windows reports EPERM on Prisma engine files, stop any running `npm run dev`, then run `npm install` again)
    - Create tables: if `DATABASE_URL` starts with `file:` run `npm run db:sqlite`; if PostgreSQL run `npx prisma migrate deploy`
-   - `npm run db:seed` (optional — demo tenant `ops@harlandmedical.com`; see `prisma/seed.js`)
+   - `npm run db:seed` (optional — Harland demo user; see `prisma/seed.js` for email/password)
    - `npm run dev`
 
 3. **Frontend** (new terminal)
@@ -66,7 +66,7 @@ Use **Node.js 22 LTS** locally (see repository `.nvmrc` and `engines` in `backen
 
 Frontend runs at `http://localhost:5173` and API runs at `http://localhost:5000`.
 
-**Dev shortcut:** `npm run dev` opens the **client workspace immediately** without sign-in (preview user). To test real login in dev, add `VITE_BYPASS_AUTH=false` to `frontend/.env`. Production builds do **not** use bypass unless you set `VITE_BYPASS_AUTH=true` at build time.
+**Dev shortcut:** `npm run dev` opens the **client workspace immediately** without sign-in (preview user). To test real sign-in: copy `frontend/.env.example` to `frontend/.env`, set `VITE_BYPASS_AUTH=false`, keep the default dev **Vite → backend proxy** (same-origin `/api` to `http://127.0.0.1:5000` — start the API first). Do **not** set `VITE_TENANT_SLUG` for localhost (it is ignored; use `?tenant=...` in the URL only if you need workspace filtering). Run `cd backend` and `npm run db:seed` so a local user exists (see `prisma/seed.js`). Production builds do **not** use bypass unless you set `VITE_BYPASS_AUTH=true` at build time.
 
 ## API endpoints
 

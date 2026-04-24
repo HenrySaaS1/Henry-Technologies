@@ -23,12 +23,20 @@ function run(command, args, { timeoutMs = 0 } = {}) {
 }
 
 async function start() {
-  const migrateExit = await run('npx', ['prisma', 'migrate', 'deploy'], { timeoutMs: 20_000 })
+  const isProd = process.env.NODE_ENV === 'production'
+  // Azure Postgres on first deploy can be slow; allow enough time for migrate deploy to finish.
+  const migrateExit = await run('npx', ['prisma', 'migrate', 'deploy'], { timeoutMs: 90_000 })
   if (migrateExit !== 0) {
     if (migrateExit === 124) {
-      console.error('[startup] prisma migrate deploy timed out; continuing API startup.')
+      console.error('[startup] prisma migrate deploy timed out after 90s.')
     } else {
-      console.error('[startup] prisma migrate deploy failed; continuing API startup.')
+      console.error('[startup] prisma migrate deploy failed (exit ' + migrateExit + ').')
+    }
+    if (isProd) {
+      console.error(
+        '[startup] Refusing to start the API: database schema is not up to date. Fix DATABASE_URL / firewall, then run: cd backend && npx prisma migrate deploy. See docs/azure-new-account-fresh-setup.md (database migrations / troubleshooting).',
+      )
+      process.exit(1)
     }
   }
 

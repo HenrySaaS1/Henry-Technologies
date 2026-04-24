@@ -480,33 +480,33 @@ const SITE_SNAPSHOT = {
 }
 
 /**
- * Horizontal traffic light (R–A–G). `active` is which lamp is “on” for demo; `label` is for a11y + search.
- * Green uses Harland web lime; red/amber are standard signal colors.
+ * Single status lamp. `active` is which color to show; `label` is for a11y + search.
+ * Green uses Harland web lime; red/amber are standard signal colors; off = dim grey.
  */
 function SiteTrafficLight({ active, label }) {
   const safe = ['red', 'amber', 'green'].includes(active) ? active : null
   const signal =
     safe === 'red'
-      ? 'Red light on — critical attention.'
+      ? 'Red — critical attention.'
       : safe === 'amber'
-        ? 'Amber light on — watch or rollout.'
+        ? 'Amber — watch or rollout.'
         : safe === 'green'
-          ? 'Green light on — operating within target.'
-          : 'All lights dim — not live or awaiting data.'
+          ? 'Green — operating within target.'
+          : 'Status dim — not live or awaiting data.'
   const aria = [label ? `Status: ${label}.` : null, signal].filter(Boolean).join(' ')
+  const colorClass =
+    safe === 'red'
+      ? 'client-site-tl__lamp--red'
+      : safe === 'amber'
+        ? 'client-site-tl__lamp--amber'
+        : safe === 'green'
+          ? 'client-site-tl__lamp--green'
+          : 'client-site-tl__lamp--off'
   return (
     <span className="client-site-tl" role="img" aria-label={aria}>
       <span className="client-site-tl__track">
         <span
-          className={`client-site-tl__lamp client-site-tl__lamp--red${safe === 'red' ? ' is-on' : ''}`}
-          aria-hidden="true"
-        />
-        <span
-          className={`client-site-tl__lamp client-site-tl__lamp--amber${safe === 'amber' ? ' is-on' : ''}`}
-          aria-hidden="true"
-        />
-        <span
-          className={`client-site-tl__lamp client-site-tl__lamp--green${safe === 'green' ? ' is-on' : ''}`}
+          className={`client-site-tl__lamp client-site-tl__lamp--single ${colorClass}${safe ? ' is-on' : ''}`}
           aria-hidden="true"
         />
       </span>

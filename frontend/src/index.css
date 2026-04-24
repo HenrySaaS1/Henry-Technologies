@@ -3953,7 +3953,7 @@ h3 {
   margin-bottom: 0.5rem;
 }
 
-/* Horizontal R–A–G traffic light (replaces text status chip on site cards) */
+/* Single large status lamp on site cards (replaces 3-bulb traffic light) */
 .client-site-tl {
   display: inline-flex;
   align-items: center;
@@ -3964,8 +3964,7 @@ h3 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.8rem;
+  padding: 0.35rem 0.5rem;
   border-radius: 999px;
   background: #f1f5f9;
   border: 1px solid #e2e8f0;
@@ -3982,10 +3981,25 @@ h3 {
   transition: opacity 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
 }
 
+/* One prominent lamp per site (was three small bulbs) */
+.client-site-tl__lamp--single {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
 .client-site-tl__lamp.is-on {
   opacity: 1;
   filter: none;
-  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.12), 0 0 14px currentColor;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.12), 0 0 16px currentColor;
+}
+
+/* Inactive / not-live: single dim grey (no is-on) */
+.client-site-tl__lamp--off {
+  color: #94a3b8;
+  background: linear-gradient(145deg, #cbd5e1 0%, #e2e8f0 100%);
+  opacity: 0.55;
+  filter: saturate(0.5);
+  box-shadow: none;
 }
 
 /* Dim / lit colors */

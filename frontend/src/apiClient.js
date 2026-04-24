@@ -21,6 +21,10 @@ export function getApiBase() {
       }
       return ''
     }
+    // Local dev: same-origin `/api/...` — Vite proxies to the backend (see `vite.config.js`) to avoid CORS.
+    if (import.meta.env.DEV && import.meta.env.VITE_API_DIRECT !== 'true') {
+      return ''
+    }
   }
 
   if (import.meta.env.PROD && (!fromEnv || !String(fromEnv).trim())) {
@@ -44,7 +48,21 @@ export function getTenantSlug() {
   if (typeof window === 'undefined') return null
   const byQuery = new URLSearchParams(window.location.search).get('tenant')
   if (byQuery) return String(byQuery).trim().toLowerCase()
-  return tenantSlugFromHost(window.location.hostname)
+
+  const host = window.location.hostname
+  const isLocal =
+    host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host.endsWith('.local')
+  if (isLocal) {
+    // `VITE_TENANT_SLUG` was causing sign-in 401s on localhost (user slug in DB != harland). Use
+    // `?tenant=...` when you need to test workspace filtering locally.
+    return null
+  }
+
+  const fromEnv = String(import.meta.env.VITE_TENANT_SLUG || '')
+    .trim()
+    .toLowerCase()
+  if (fromEnv) return fromEnv
+  return tenantSlugFromHost(host)
 }
 
 export function getToken() {

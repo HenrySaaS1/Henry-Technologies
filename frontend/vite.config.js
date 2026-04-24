@@ -8,9 +8,16 @@ export default defineConfig(({ mode }) => {
   let base = (env.VITE_BASE_PATH || '/').trim() || '/'
   if (base !== '/' && !base.endsWith('/')) base = `${base}/`
 
+  const apiTarget = (env.VITE_DEV_API_PROXY_TARGET || 'http://127.0.0.1:5000').trim() || 'http://127.0.0.1:5000'
+
   return {
     plugins: [react()],
     base,
+    server: {
+      proxy: {
+        '/api': { target: apiTarget, changeOrigin: true },
+      },
+    },
     build: {
       outDir: 'dist',
       sourcemap: false,
