@@ -358,8 +358,39 @@ app.post('/api/auth/register', async (req, res) => {
       success: false,
       message: 'register_error',
     })
-    console.error(e)
-    res.status(500).json({ ok: false, message: 'Registration failed.' })
+    const errMsg = e && typeof e.message === 'string' ? e.message : String(e)
+    const looksLikePrismaDatasourceMismatch =
+      /the URL must start with the protocol|Error validating datasource|schema\.prisma:7|Validation Error Count:/i.test(
+        errMsg,
+      )
+    if (looksLikePrismaDatasourceMismatch) {
+      console.error('[register] Prisma client does not match DATABASE_URL:', errMsg)
+      return res.status(503).json({
+        ok: false,
+        message:
+          'Database configuration mismatch. If .env uses SQLite (file:./dev.db), run: cd backend && npm run db:generate && npm run db:sqlite — then restart the API. If you use PostgreSQL, set DATABASE_URL to a postgresql:// URL and run: npm run db:generate && npx prisma migrate deploy',
+      })
+    }
+    const looksLikeMissingOnboardingColumn =
+      /onboardingData|onboardingCompletedAt|does not exist|Unknown column|no such column/i.test(
+        errMsg,
+      ) || (e && e.code === 'P2021')
+    if (looksLikeMissingOnboardingColumn) {
+      console.error('[register] database schema is behind migrations:', errMsg)
+      return res.status(503).json({
+        ok: false,
+        message:
+          'Database is missing required tables or columns. On the server, run: npx prisma migrate deploy (in the backend folder) against DATABASE_URL, then try again.',
+      })
+    }
+    console.error('[register]', e)
+    const isProd = process.env.NODE_ENV === 'production'
+    res.status(500).json({
+      ok: false,
+      message: isProd
+        ? 'Registration failed. Please try again later or contact support.'
+        : `Registration failed: ${errMsg}`,
+    })
   }
 })
 
