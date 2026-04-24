@@ -1194,7 +1194,7 @@ function App() {
                 <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
                 <span className="logo-text-col">
                   <span className="logo-word">HENRY</span>
-                  <span className="logo-sub">technologies</span>
+                  <span className="logo-sub">TECHNOLOGIES</span>
                 </span>
               </span>
             </button>
@@ -1266,7 +1266,7 @@ function App() {
                 <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
                 <span className="logo-text-col">
                   <span className="logo-word">HENRY</span>
-                  <span className="logo-sub">technologies</span>
+                  <span className="logo-sub">TECHNOLOGIES</span>
                 </span>
               </span>
             </button>
@@ -1338,7 +1338,7 @@ function App() {
                 <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
                 <span className="logo-text-col">
                   <span className="logo-word">HENRY</span>
-                  <span className="logo-sub">technologies</span>
+                  <span className="logo-sub">TECHNOLOGIES</span>
                 </span>
               </span>
             </button>
@@ -1474,7 +1474,7 @@ function App() {
               <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
               <span className="logo-text-col">
                 <span className="logo-word">HENRY</span>
-                <span className="logo-sub">technologies</span>
+                <span className="logo-sub">TECHNOLOGIES</span>
               </span>
             </span>
           </button>
