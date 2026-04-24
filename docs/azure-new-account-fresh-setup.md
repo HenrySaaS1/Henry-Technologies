@@ -234,16 +234,36 @@ This runs `npx prisma migrate deploy` on Ubuntu against that URL (see `.github/w
 **B — Rely on startup (default)**  
 `npm start` runs `npx prisma migrate deploy` before `index.js`. If migrations fail, the process should exit in production and **Log stream** in App Service will show Prisma errors. Fix `DATABASE_URL` and firewall, then **Restart** the web app.
 
-**C — One-off from your machine** (repo + Node 22, network path to the server; add your public IP to PostgreSQL firewall if required):
+**C — One-off from your machine** (Node 22; **add your public IP** to the PostgreSQL server **Firewall rules** in Azure, or the connection will fail with `P1001`)
 
-```bash
-cd backend
-set DATABASE_URL=postgresql://USER:PASSWORD@HOST.postgres.database.azure.com:5432/DATABASE?sslmode=require
-npx prisma generate
+**Do not** paste the *words* `HOST`, `USER`, `PASSWORD`, or `DATABASE` from examples. The hostname must be your real Azure Flexible Server name, e.g. `henry-postgres` → `henry-postgres.postgres.database.azure.com` (copy from: Azure → PostgreSQL → **Overview** or **Connection strings**). User, password, and database name must be real as well.
+
+**Windows PowerShell (recommended):**
+
+```powershell
+cd C:\HENRY\backend
+# Paste your real connection string in quotes (from App Service "DATABASE_URL" or Azure connection strings):
+$env:DATABASE_URL = "postgresql://YOUR_USER:YOUR_PASSWORD@your-server-name.postgres.database.azure.com:5432/your_database?sslmode=require"
 npx prisma migrate deploy
 ```
 
-Use `set` on Windows; on macOS/Linux use `export DATABASE_URL=...`.
+If `npx prisma generate` fails on Windows with **`EPERM` / `rename` / `query_engine-windows.dll`**: some other process is locking Prisma (often `npm run dev` in another terminal, Cursor, or real-time antivirus on `node_modules`). **Stop** the backend/frontend dev servers, close extra terminals, then run `npx prisma generate` again, or use **path A (GitHub Actions)** so nothing runs on your PC. In many cases you can still run **`npx prisma migrate deploy`** (above) even if `generate` failed, if the project already has a working generated client from `npm install`.
+
+**Command Prompt (cmd.exe):**
+
+```bat
+cd C:\HENRY\backend
+set DATABASE_URL=postgresql://YOUR_USER:YOUR_PASSWORD@your-server-name.postgres.database.azure.com:5432/your_database?sslmode=require
+npx prisma migrate deploy
+```
+
+**macOS / Linux (bash):**
+
+```bash
+cd backend
+export DATABASE_URL="postgresql://YOUR_USER:YOUR_PASSWORD@your-server-name.postgres.database.azure.com:5432/your_database?sslmode=require"
+npx prisma migrate deploy
+```
 
 **D — One-off in App Service SSH** (if enabled)  
 `cd` to the deployed site root (for example `site/wwwroot`), set `DATABASE_URL` if not inherited, then:
