@@ -4,32 +4,49 @@ import { mapUserFromApi } from './mapUserFromApi.js'
 import henryLogo from './assets/henry-logo.png'
 
 const STEPS = [
-  'Organization',
-  'Size & locations',
-  'Key people',
-  'Focus & finish',
+  'Personal information',
+  'Sign up questions',
 ]
 
-const EMPLOYEE_OPTIONS = [
-  { value: '1-50', label: '1 – 50' },
-  { value: '51-200', label: '51 – 200' },
-  { value: '201-1000', label: '201 – 1,000' },
-  { value: '1000+', label: '1,000+' },
+const INDUSTRY_OPTIONS = [
+  { value: '', label: 'Select your industry' },
+  { value: 'manufacturing', label: 'Manufacturing' },
+  { value: 'medical-devices', label: 'Medical devices' },
+  { value: 'pharmaceuticals', label: 'Pharmaceuticals' },
+  { value: 'food-beverage', label: 'Food & beverage' },
+  { value: 'automotive', label: 'Automotive' },
+  { value: 'electronics', label: 'Electronics' },
+  { value: 'logistics', label: 'Logistics' },
+  { value: 'other', label: 'Other' },
 ]
 
-const SITE_OPTIONS = [
-  { value: '1', label: 'One site' },
-  { value: '2-5', label: '2 – 5 sites' },
-  { value: '6+', label: '6+ sites' },
+const FACILITY_OPTIONS = [
+  { value: 'factory', label: 'Factory / Production Plant' },
+  { value: 'warehouse', label: 'Warehouse / Distribution Center' },
+  { value: 'office', label: 'Office / Corporate Site' },
+  { value: 'mixed', label: 'Mixed' },
 ]
 
-const FOCUS_OPTIONS = [
-  { id: 'production', label: 'Production & OEE' },
-  { id: 'quality', label: 'Quality & compliance' },
-  { id: 'safety', label: 'Safety' },
-  { id: 'energy', label: 'Energy & utilities' },
-  { id: 'esg', label: 'ESG / sustainability' },
-  { id: 'supply', label: 'Supply chain' },
+const MONITOR_OPTIONS = [
+  { id: 'production-output', label: 'Production / Output' },
+  { id: 'machine-performance', label: 'Machine Performance' },
+  { id: 'safety-compliance', label: 'Safety & Compliance' },
+  { id: 'security-access', label: 'Security / Access' },
+  { id: 'workforce-activity', label: 'Workforce Activity' },
+]
+
+const SETUP_OPTIONS = [
+  { value: 'multi-units-lines', label: 'Multiple business units / production lines' },
+  { value: 'single-line', label: 'Single production line' },
+  { value: 'departments-zones', label: 'Departments / zones' },
+  { value: 'not-sure', label: 'Not sure' },
+]
+
+const OPERATION_SIZE_OPTIONS = [
+  { value: '1-10', label: '1-10 employees' },
+  { value: '11-50', label: '11-50' },
+  { value: '51-200', label: '51-200' },
+  { value: '200+', label: '200+' },
 ]
 
 function defaultForm(user) {
@@ -40,33 +57,28 @@ function defaultForm(user) {
     tz = 'UTC'
   }
   return {
-    organization: {
+    personal: {
       displayName: user?.company || '',
-      industry: '',
-      timeZone: tz,
-      phone: '',
-      website: '',
-      siteManager: '',
-    },
-    scale: {
-      employeeBand: '',
-      siteCount: '1',
-    },
-    primaryAddress: {
       line1: '',
       line2: '',
       city: '',
       region: '',
       postal: '',
       country: 'US',
+      phone: '',
+      website: '',
+      siteManager: '',
+      timeZone: tz,
     },
-    additionalSites: [],
-    people: {
-      primary: { name: '', email: user?.email || '', role: 'Operations' },
-      secondary: { name: '', email: '', role: '' },
+    profile: {
+      industry: '',
+      locationCount: '',
+      facilityType: '',
     },
-    focus: {
-      areas: [],
+    setup: {
+      monitorAreas: [],
+      setupStructure: '',
+      operationSize: '',
     },
   }
 }
@@ -74,17 +86,76 @@ function defaultForm(user) {
 function mergeLoadedForm(fetched, user) {
   const base = defaultForm(user)
   if (!fetched || typeof fetched !== 'object') return base
+
+  // Backward-compatible mapping from older onboarding shapes.
+  const org = fetched.organization || {}
+  const addr = fetched.primaryAddress || {}
+  const oldIndustry = org.industry || ''
+  const oldLocationCount = fetched.scale?.siteCount || ''
+  const oldMonitorAreas = Array.isArray(fetched.focus?.areas) ? fetched.focus.areas : []
+
+  const legacyPersonal = {
+    displayName: org.displayName,
+    line1: addr.line1,
+    line2: addr.line2,
+    city: addr.city,
+    region: addr.region,
+    postal: addr.postal,
+    country: addr.country,
+    phone: org.phone,
+    website: org.website,
+    siteManager: org.siteManager,
+    timeZone: org.timeZone,
+  }
+
+  const legacyDefined = Object.fromEntries(
+    Object.entries(legacyPersonal).filter(([, v]) => v != null),
+  )
+
   return {
-    organization: { ...base.organization, ...(fetched.organization || {}) },
-    scale: { ...base.scale, ...(fetched.scale || {}) },
-    primaryAddress: { ...base.primaryAddress, ...(fetched.primaryAddress || {}) },
-    additionalSites: Array.isArray(fetched.additionalSites) ? fetched.additionalSites : base.additionalSites,
-    people: {
-      primary: { ...base.people.primary, ...(fetched.people?.primary || {}) },
-      secondary: { ...base.people.secondary, ...(fetched.people?.secondary || {}) },
+    personal: {
+      ...base.personal,
+      ...legacyDefined,
+      ...(fetched.personal || {}),
     },
-    focus: {
-      areas: Array.isArray(fetched.focus?.areas) ? [...fetched.focus.areas] : base.focus.areas,
+    profile: {
+      ...base.profile,
+      ...(fetched.profile || {}),
+      industry: fetched.profile?.industry || oldIndustry,
+      locationCount: fetched.profile?.locationCount || oldLocationCount,
+    },
+    setup: {
+      ...base.setup,
+      ...(fetched.setup || {}),
+      monitorAreas: Array.isArray(fetched.setup?.monitorAreas)
+        ? [...fetched.setup.monitorAreas]
+        : oldMonitorAreas,
+    },
+  }
+}
+
+/** Mirrors personal → legacy keys so the API can update `user.company` from organization.displayName. */
+function formToOnboardingPayload(form) {
+  const { personal, profile, setup } = form
+  return {
+    personal,
+    profile,
+    setup,
+    organization: {
+      displayName: personal.displayName,
+      industry: profile.industry,
+      timeZone: personal.timeZone,
+      phone: personal.phone,
+      website: personal.website,
+      siteManager: personal.siteManager,
+    },
+    primaryAddress: {
+      line1: personal.line1,
+      line2: personal.line2,
+      city: personal.city,
+      region: personal.region,
+      postal: personal.postal,
+      country: personal.country,
     },
   }
 }
@@ -130,30 +201,30 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
     }))
   }, [])
 
-  const toggleFocus = (id) => {
+  const toggleMonitorArea = (id) => {
     setForm((f) => {
-      const set = new Set(f.focus.areas)
+      const set = new Set(f.setup.monitorAreas)
       if (set.has(id)) set.delete(id)
       else set.add(id)
-      return { ...f, focus: { areas: [...set] } }
+      return { ...f, setup: { ...f.setup, monitorAreas: [...set] } }
     })
   }
 
   const validate = (n) => {
     if (n === 0) {
-      if (!form.organization.displayName?.trim()) return 'Enter your organization name.'
-      if (!form.primaryAddress.line1?.trim()) return 'Street address is required.'
-      if (!form.primaryAddress.city?.trim()) return 'City is required.'
-      if (!form.primaryAddress.country?.trim()) return 'Country is required.'
-      if (!form.organization.siteManager?.trim()) return 'Enter the site manager’s name.'
+      if (!form.personal.displayName?.trim()) return 'Enter your organization name.'
+      if (!form.personal.line1?.trim()) return 'Street address is required.'
+      if (!form.personal.city?.trim()) return 'City is required.'
+      if (!form.personal.country?.trim()) return 'Country is required.'
+      if (!form.personal.siteManager?.trim()) return 'Enter the site manager’s name.'
     }
     if (n === 1) {
-      if (!form.scale.employeeBand) return 'Select an approximate company size.'
-      if (!form.scale.siteCount) return 'Select how many physical locations you operate.'
-    }
-    if (n === 2) {
-      if (!form.people.primary.name?.trim()) return 'Primary contact name is required.'
-      if (!form.people.primary.email?.trim()) return 'Primary contact email is required.'
+      if (!form.profile.industry) return 'Select your industry.'
+      if (!String(form.profile.locationCount).trim()) return 'Enter number of locations.'
+      if (!form.profile.facilityType) return 'Select what best describes your facility.'
+      if (!form.setup.monitorAreas.length) return 'Select at least one monitoring focus.'
+      if (!form.setup.setupStructure) return 'Select how your setup is structured.'
+      if (!form.setup.operationSize) return 'Select your operation size.'
     }
     return ''
   }
@@ -164,7 +235,7 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
     try {
       const res = await apiJson('/api/client/onboarding', {
         method: 'PUT',
-        body: { data: form, complete },
+        body: { data: formToOnboardingPayload(form), complete },
         token: getToken(),
       })
       const u = mapUserFromApi(res.user)
@@ -198,7 +269,7 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
   }
 
   const finish = async () => {
-    const err = validate(2) || validate(1) || validate(0)
+    const err = validate(1) || validate(0)
     if (err) {
       setStatus(err)
       return
@@ -246,17 +317,17 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
 
       <div className="onboarding-card">
         {step === 0 && (
-          <section className="onboarding-panel" aria-labelledby="onb-org">
-            <h2 id="onb-org">Organization</h2>
+          <section className="onboarding-panel" aria-labelledby="onb-personal">
+            <h2 id="onb-personal">Personal information</h2>
             <p className="onboarding-hint">
-              Your site details appear in the client workspace and help tune SnapTile defaults.
+              Step 1 of 2 — Your site details appear in the client workspace and help tune HENRY defaults.
             </p>
             <label className="onboarding-label">
-              Name
+              Organization name
               <input
                 className="onboarding-input"
-                value={form.organization.displayName}
-                onChange={(e) => setField('organization', 'displayName', e.target.value)}
+                value={form.personal.displayName}
+                onChange={(e) => setField('personal', 'displayName', e.target.value)}
                 autoComplete="organization"
                 required
               />
@@ -266,10 +337,8 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
               Street line 1
               <input
                 className="onboarding-input"
-                value={form.primaryAddress.line1}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, primaryAddress: { ...f.primaryAddress, line1: e.target.value } }))
-                }
+                value={form.personal.line1}
+                onChange={(e) => setField('personal', 'line1', e.target.value)}
                 autoComplete="address-line1"
               />
             </label>
@@ -277,10 +346,8 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
               Street line 2 (optional)
               <input
                 className="onboarding-input"
-                value={form.primaryAddress.line2}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, primaryAddress: { ...f.primaryAddress, line2: e.target.value } }))
-                }
+                value={form.personal.line2}
+                onChange={(e) => setField('personal', 'line2', e.target.value)}
                 autoComplete="address-line2"
               />
             </label>
@@ -289,10 +356,8 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
                 City
                 <input
                   className="onboarding-input"
-                  value={form.primaryAddress.city}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, primaryAddress: { ...f.primaryAddress, city: e.target.value } }))
-                  }
+                  value={form.personal.city}
+                  onChange={(e) => setField('personal', 'city', e.target.value)}
                   autoComplete="address-level2"
                 />
               </label>
@@ -300,10 +365,8 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
                 State / region
                 <input
                   className="onboarding-input"
-                  value={form.primaryAddress.region}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, primaryAddress: { ...f.primaryAddress, region: e.target.value } }))
-                  }
+                  value={form.personal.region}
+                  onChange={(e) => setField('personal', 'region', e.target.value)}
                 />
               </label>
             </div>
@@ -312,20 +375,16 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
                 Postal code
                 <input
                   className="onboarding-input"
-                  value={form.primaryAddress.postal}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, primaryAddress: { ...f.primaryAddress, postal: e.target.value } }))
-                  }
+                  value={form.personal.postal}
+                  onChange={(e) => setField('personal', 'postal', e.target.value)}
                 />
               </label>
               <label className="onboarding-label">
                 Country
                 <input
                   className="onboarding-input"
-                  value={form.primaryAddress.country}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, primaryAddress: { ...f.primaryAddress, country: e.target.value } }))
-                  }
+                  value={form.personal.country}
+                  onChange={(e) => setField('personal', 'country', e.target.value)}
                   autoComplete="country"
                 />
               </label>
@@ -336,8 +395,8 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
                 <input
                   className="onboarding-input"
                   type="tel"
-                  value={form.organization.phone}
-                  onChange={(e) => setField('organization', 'phone', e.target.value)}
+                  value={form.personal.phone}
+                  onChange={(e) => setField('personal', 'phone', e.target.value)}
                   autoComplete="tel"
                 />
               </label>
@@ -346,8 +405,8 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
                 <input
                   className="onboarding-input"
                   type="url"
-                  value={form.organization.website}
-                  onChange={(e) => setField('organization', 'website', e.target.value)}
+                  value={form.personal.website}
+                  onChange={(e) => setField('personal', 'website', e.target.value)}
                   placeholder="https://"
                   autoComplete="url"
                 />
@@ -357,47 +416,63 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
               Site manager
               <input
                 className="onboarding-input"
-                value={form.organization.siteManager}
-                onChange={(e) => setField('organization', 'siteManager', e.target.value)}
+                value={form.personal.siteManager}
+                onChange={(e) => setField('personal', 'siteManager', e.target.value)}
                 autoComplete="name"
                 placeholder="Main on-site contact"
-              />
-            </label>
-            <h3 className="onboarding-h3">More about your org (optional)</h3>
-            <label className="onboarding-label">
-              Industry (optional)
-              <input
-                className="onboarding-input"
-                value={form.organization.industry}
-                onChange={(e) => setField('organization', 'industry', e.target.value)}
-                placeholder="e.g. medical devices, automotive"
               />
             </label>
             <label className="onboarding-label">
               Time zone
               <input
                 className="onboarding-input"
-                value={form.organization.timeZone}
-                onChange={(e) => setField('organization', 'timeZone', e.target.value)}
+                value={form.personal.timeZone}
+                onChange={(e) => setField('personal', 'timeZone', e.target.value)}
               />
             </label>
           </section>
         )}
 
         {step === 1 && (
-          <section className="onboarding-panel" aria-labelledby="onb-scale">
-            <h2 id="onb-scale">Company size & footprint</h2>
+          <section className="onboarding-panel" aria-labelledby="onb-questions">
+            <h2 id="onb-questions">Sign up questions</h2>
+            <p className="onboarding-hint">Step 2 of 2 — Tell us about your operation.</p>
+            <label className="onboarding-label">
+              1. What industry are you in?
+              <select
+                className="onboarding-input"
+                value={form.profile.industry}
+                onChange={(e) => setField('profile', 'industry', e.target.value)}
+              >
+                {INDUSTRY_OPTIONS.map((opt) => (
+                  <option key={opt.value || 'none'} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="onboarding-label">
+              2. Number of Locations?
+              <input
+                className="onboarding-input"
+                type="number"
+                min="1"
+                value={form.profile.locationCount}
+                onChange={(e) => setField('profile', 'locationCount', e.target.value)}
+                placeholder="Enter number of locations"
+              />
+            </label>
             <fieldset className="onboarding-fieldset">
-              <legend>Approximate employees</legend>
+              <legend>3. What best describes your facility?</legend>
               <div className="onboarding-radios">
-                {EMPLOYEE_OPTIONS.map((o) => (
+                {FACILITY_OPTIONS.map((o) => (
                   <label key={o.value} className="onboarding-radio">
                     <input
                       type="radio"
-                      name="emp"
+                      name="facilityType"
                       value={o.value}
-                      checked={form.scale.employeeBand === o.value}
-                      onChange={() => setField('scale', 'employeeBand', o.value)}
+                      checked={form.profile.facilityType === o.value}
+                      onChange={() => setField('profile', 'facilityType', o.value)}
                     />
                     {o.label}
                   </label>
@@ -405,167 +480,96 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
               </div>
             </fieldset>
             <fieldset className="onboarding-fieldset">
-              <legend>Manufacturing or operations sites</legend>
-              <div className="onboarding-radios">
-                {SITE_OPTIONS.map((o) => (
-                  <label key={o.value} className="onboarding-radio">
+              <legend>4. What Do You Want to Monitor?</legend>
+              <div className="onboarding-chips">
+                {MONITOR_OPTIONS.map((o) => (
+                  <label key={o.id} className="onboarding-chip">
                     <input
-                      type="radio"
-                      name="sites"
-                      value={o.value}
-                      checked={form.scale.siteCount === o.value}
-                      onChange={() => setField('scale', 'siteCount', o.value)}
+                      type="checkbox"
+                      checked={form.setup.monitorAreas.includes(o.id)}
+                      onChange={() => toggleMonitorArea(o.id)}
                     />
                     {o.label}
                   </label>
                 ))}
               </div>
             </fieldset>
-          </section>
-        )}
-
-        {step === 2 && (
-          <section className="onboarding-panel" aria-labelledby="onb-people">
-            <h2 id="onb-people">Key people</h2>
-            <p className="onboarding-hint">We use this for roll-out contacts and admin alerts. You can add more later.</p>
-            <h3 className="onboarding-h3">Primary</h3>
-            <div className="onboarding-row">
-              <label className="onboarding-label">
-                Name
-                <input
-                  className="onboarding-input"
-                  value={form.people.primary.name}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      people: { ...f.people, primary: { ...f.people.primary, name: e.target.value } },
-                    }))
-                  }
-                />
-              </label>
-              <label className="onboarding-label">
-                Role
-                <input
-                  className="onboarding-input"
-                  value={form.people.primary.role}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      people: { ...f.people, primary: { ...f.people.primary, role: e.target.value } },
-                    }))
-                  }
-                />
-              </label>
-            </div>
-            <label className="onboarding-label">
-              Email
-              <input
-                className="onboarding-input"
-                type="email"
-                value={form.people.primary.email}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    people: { ...f.people, primary: { ...f.people.primary, email: e.target.value } },
-                  }))
-                }
-              />
-            </label>
-            <h3 className="onboarding-h3">Secondary (optional)</h3>
-            <div className="onboarding-row">
-              <label className="onboarding-label">
-                Name
-                <input
-                  className="onboarding-input"
-                  value={form.people.secondary.name}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      people: { ...f.people, secondary: { ...f.people.secondary, name: e.target.value } },
-                    }))
-                  }
-                />
-              </label>
-              <label className="onboarding-label">
-                Role
-                <input
-                  className="onboarding-input"
-                  value={form.people.secondary.role}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      people: { ...f.people, secondary: { ...f.people.secondary, role: e.target.value } },
-                    }))
-                  }
-                />
-              </label>
-            </div>
-            <label className="onboarding-label">
-              Email
-              <input
-                className="onboarding-input"
-                type="email"
-                value={form.people.secondary.email}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    people: { ...f.people, secondary: { ...f.people.secondary, email: e.target.value } },
-                  }))
-                }
-              />
-            </label>
-          </section>
-        )}
-
-        {step === 3 && (
-          <section className="onboarding-panel" aria-labelledby="onb-focus">
-            <h2 id="onb-focus">Initial focus & review</h2>
-            <p className="onboarding-hint">We tune your SnapTile defaults from these areas (you can change anytime).</p>
-            <div className="onboarding-chips">
-              {FOCUS_OPTIONS.map((o) => (
-                <label key={o.id} className="onboarding-chip">
-                  <input
-                    type="checkbox"
-                    checked={form.focus.areas.includes(o.id)}
-                    onChange={() => toggleFocus(o.id)}
-                  />
-                  {o.label}
-                </label>
-              ))}
-            </div>
+            <fieldset className="onboarding-fieldset">
+              <legend>5. How Is Your Setup Structured?</legend>
+              <div className="onboarding-radios">
+                {SETUP_OPTIONS.map((o) => (
+                  <label key={o.value} className="onboarding-radio">
+                    <input
+                      type="radio"
+                      name="setupStructure"
+                      value={o.value}
+                      checked={form.setup.setupStructure === o.value}
+                      onChange={() => setField('setup', 'setupStructure', o.value)}
+                    />
+                    {o.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset className="onboarding-fieldset">
+              <legend>6. Roughly how large is your operation?</legend>
+              <div className="onboarding-radios">
+                {OPERATION_SIZE_OPTIONS.map((o) => (
+                  <label key={o.value} className="onboarding-radio">
+                    <input
+                      type="radio"
+                      name="operationSize"
+                      value={o.value}
+                      checked={form.setup.operationSize === o.value}
+                      onChange={() => setField('setup', 'operationSize', o.value)}
+                    />
+                    {o.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
             <div className="onboarding-review" role="status">
               <h3 className="onboarding-h3">Summary</h3>
               <ul className="onboarding-review-list">
                 <li>
-                  <strong>{form.organization.displayName || '—'}</strong>
-                  {form.organization.industry ? ` · ${form.organization.industry}` : null}
-                  {form.organization.phone ? ` · ${form.organization.phone}` : null}
-                  {form.organization.website ? ` · ${form.organization.website}` : null}
+                  <strong>{form.personal.displayName || '—'}</strong>
+                  {form.personal.phone ? ` · ${form.personal.phone}` : null}
+                  {form.personal.website ? ` · ${form.personal.website}` : null}
                 </li>
-                <li>Site manager: {form.organization.siteManager || '—'}</li>
+                <li>Site manager: {form.personal.siteManager || '—'}</li>
                 <li>
-                  {EMPLOYEE_OPTIONS.find((e) => e.value === form.scale.employeeBand)?.label || '—'} employees ·{' '}
-                  {SITE_OPTIONS.find((s) => s.value === form.scale.siteCount)?.label || '—'}
-                </li>
-                <li>
-                  {form.primaryAddress.city ? (
+                  {form.personal.city ? (
                     <>
-                      {form.primaryAddress.line1}, {form.primaryAddress.city}
-                      {form.primaryAddress.region ? `, ${form.primaryAddress.region}` : null}
+                      {form.personal.line1}, {form.personal.city}
+                      {form.personal.region ? `, ${form.personal.region}` : null} · {form.personal.country}
                     </>
                   ) : (
                     '—'
                   )}
                 </li>
-                <li>Primary: {form.people.primary.name || '—'}</li>
                 <li>
-                  Focus:{' '}
-                  {form.focus.areas.length
-                    ? form.focus.areas
-                        .map((id) => FOCUS_OPTIONS.find((f) => f.id === id)?.label)
+                  Industry:{' '}
+                  {INDUSTRY_OPTIONS.find((opt) => opt.value === form.profile.industry)?.label || '—'}
+                </li>
+                <li>Locations: {form.profile.locationCount || '—'}</li>
+                <li>
+                  Facility:{' '}
+                  {FACILITY_OPTIONS.find((opt) => opt.value === form.profile.facilityType)?.label || '—'}
+                </li>
+                <li>
+                  Monitor:{' '}
+                  {form.setup.monitorAreas.length
+                    ? form.setup.monitorAreas
+                        .map((id) => MONITOR_OPTIONS.find((opt) => opt.id === id)?.label)
                         .filter(Boolean)
                         .join(', ')
-                    : 'General'}
+                    : '—'}
+                </li>
+                <li>
+                  Setup: {SETUP_OPTIONS.find((opt) => opt.value === form.setup.setupStructure)?.label || '—'}
+                </li>
+                <li>
+                  Size: {OPERATION_SIZE_OPTIONS.find((opt) => opt.value === form.setup.operationSize)?.label || '—'}
                 </li>
               </ul>
             </div>
