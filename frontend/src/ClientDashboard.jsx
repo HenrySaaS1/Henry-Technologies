@@ -1,7 +1,9 @@
-import { useState, useEffect, useId, useRef, useMemo } from 'react'
+import { useCallback, useState, useEffect, useId, useRef, useMemo } from 'react'
+import { matchPath, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { titlesForProductIds } from './productCatalog.js'
 import henryLogo from './assets/henry-logo.png'
 import { LogoSpreadLine } from './LogoSpreadLine.jsx'
+import FactoryPulseChartsPanel from './FactoryPulseChartsPanel.jsx'
 import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
 
@@ -118,6 +120,18 @@ const BUILDING_FOOTER_TABS = [
   { id: 'settings', label: 'Settings' },
 ]
 
+const FACTORY_PULSE_REPORT_URL =
+  typeof import.meta.env.VITE_POWERBI_FACTORY_PULSE_URL === 'string' &&
+  import.meta.env.VITE_POWERBI_FACTORY_PULSE_URL.trim()
+    ? import.meta.env.VITE_POWERBI_FACTORY_PULSE_URL.trim()
+    : 'https://app.powerbi.com/groups/e404cc31-4af3-4c05-9633-5e21eb2f9afc/reports/c8bb3fe2-c9d5-440d-a803-048a3682ea8f/bdab7bb7e177ab11e652?experience=power-bi'
+
+/** Inline chart panel + “Open in Power BI” for every US HQ business unit with a full unit panel. */
+const FACTORY_PULSE_UNIT_LINK = {
+  title: 'Factory Pulse',
+  reportUrl: FACTORY_PULSE_REPORT_URL,
+}
+
 /** Live clock in the site’s zone (IANA). Falls back if the runtime lacks the zone. */
 function formatSiteLocalTime(date, timeZone) {
   if (!timeZone) return date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
@@ -183,6 +197,7 @@ const GLOBAL_SITES = [
               cycleTime: '42 sec',
               throughput: '106 units/hr',
               focus: { x: 24, y: 44 },
+              powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
             },
             lines: [
               { k: 'Line status', v: 'Running' },
@@ -212,6 +227,7 @@ const GLOBAL_SITES = [
               cycleTime: '48 sec',
               throughput: '92 units/hr',
               focus: { x: 54, y: 50 },
+              powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
             },
             lines: [
               { k: 'Line status', v: 'Running' },
@@ -241,6 +257,7 @@ const GLOBAL_SITES = [
               cycleTime: '51 sec',
               throughput: '84 units/hr',
               focus: { x: 74, y: 46 },
+              powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
             },
             lines: [
               { k: 'Line status', v: 'Attention required' },
@@ -1155,7 +1172,7 @@ function buildingMachineryToneClass(status) {
   return 'client-building-machinery-badge--idle'
 }
 
-function BuildingSiteOverlay({ site, zoneId, panelTab, now, onClose, onSelectZone, onSelectTab }) {
+function BuildingSitePageView({ site, zoneId, panelTab, now, onClose, onSelectZone, onSelectTab }) {
   const b = site?.building
   if (!b) return null
   const activeZone = zoneId ? b.zones.find((z) => z.id === zoneId) : null
@@ -1163,17 +1180,10 @@ function BuildingSiteOverlay({ site, zoneId, panelTab, now, onClose, onSelectZon
   const localLine = formatSiteLocalTime(now, site.timeZone)
 
   return (
-    <div
-      className="client-building-overlay"
-      role="presentation"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose()
-      }}
-    >
+    <div className="client-building-page-root">
       <div
-        className="client-building-dialog"
-        role="dialog"
-        aria-modal="true"
+        className="client-building-dialog client-building-dialog--route-page"
+        role="region"
         aria-labelledby="client-building-title"
         aria-describedby="client-building-local"
       >
@@ -1186,7 +1196,7 @@ function BuildingSiteOverlay({ site, zoneId, panelTab, now, onClose, onSelectZon
               {localLine}
             </p>
           </div>
-          <button type="button" className="client-building-close" onClick={onClose} aria-label="Close building view">
+          <button type="button" className="client-building-close" onClick={onClose} aria-label="Back to workspace overview">
             ×
           </button>
         </div>
@@ -1230,20 +1240,29 @@ function BuildingSiteOverlay({ site, zoneId, panelTab, now, onClose, onSelectZon
                 </div>
                 <div className="client-bu-local">Local Time: {localLine}</div>
                 <div className="client-bu-actions">
+                  <span>Status</span>
                   <span>Safety</span>
                   <span>Security</span>
-                  <span>Performance</span>
                 </div>
               </aside>
-              <div className="client-bu-image-wrap">
-                <img
-                  className="client-bu-image"
-                  src={b.floorPlanSrc}
-                  alt={`${activeZone.machinery.unitPanel.unit} detail`}
-                  style={{
-                    objectPosition: `${activeZone.machinery.unitPanel.focus.x}% ${activeZone.machinery.unitPanel.focus.y}%`,
-                  }}
-                />
+              <div
+                className={`client-bu-image-wrap${activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? ' client-bu-image-wrap--analytics' : ''}`}
+              >
+                {activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? (
+                  <FactoryPulseChartsPanel
+                    reportUrl={activeZone.machinery.unitPanel.powerBiEmbed.reportUrl}
+                    heading={activeZone.machinery.unitPanel.powerBiEmbed.title || 'Factory pulse'}
+                  />
+                ) : (
+                  <img
+                    className="client-bu-image"
+                    src={b.floorPlanSrc}
+                    alt={`${activeZone.machinery.unitPanel.unit} detail`}
+                    style={{
+                      objectPosition: `${activeZone.machinery.unitPanel.focus.x}% ${activeZone.machinery.unitPanel.focus.y}%`,
+                    }}
+                  />
+                )}
               </div>
             </div>
           ) : (
@@ -1329,6 +1348,34 @@ function BuildingSiteOverlay({ site, zoneId, panelTab, now, onClose, onSelectZon
         ) : null}
       </div>
     </div>
+  )
+}
+
+function BuildingSiteRouteShell({ site, now, onClose }) {
+  const [buildingZoneId, setBuildingZoneId] = useState(null)
+  const [buildingPanelTab, setBuildingPanelTab] = useState('status')
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return
+      e.preventDefault()
+      if (buildingZoneId) setBuildingZoneId(null)
+      else onClose()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [buildingZoneId, onClose])
+
+  return (
+    <BuildingSitePageView
+      site={site}
+      zoneId={buildingZoneId}
+      panelTab={buildingPanelTab}
+      now={now}
+      onClose={onClose}
+      onSelectZone={setBuildingZoneId}
+      onSelectTab={setBuildingPanelTab}
+    />
   )
 }
 
@@ -1905,6 +1952,9 @@ function OverviewAiAlertsAside({
 }
 
 export default function ClientDashboard({ user, onSignOut }) {
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const [tab, setTab] = useState('dashboard')
   const [toast, setToast] = useState('')
   const [nowTick, setNowTick] = useState(() => new Date())
@@ -1916,9 +1966,6 @@ export default function ClientDashboard({ user, onSignOut }) {
   const [insightQuestion, setInsightQuestion] = useState('')
   const [searchQ, setSearchQ] = useState('')
   const [notifOpen, setNotifOpen] = useState(false)
-  const [buildingSiteId, setBuildingSiteId] = useState(null)
-  const [buildingZoneId, setBuildingZoneId] = useState(null)
-  const [buildingPanelTab, setBuildingPanelTab] = useState('status')
   const notifWrapRef = useRef(null)
   const chartUid = useId().replace(/:/g, '')
   const activitiesVisId = useId().replace(/:/g, '')
@@ -1927,18 +1974,25 @@ export default function ClientDashboard({ user, onSignOut }) {
     [user.email, user.slug],
   )
 
-  const buildingSite = buildingSiteId ? workspaceSites.find((s) => s.id === buildingSiteId) : null
+  const routeBuildingSiteId =
+    matchPath({ path: '/building/:siteId', end: true }, location.pathname)?.params?.siteId ??
+    matchPath({ path: 'building/:siteId', end: true }, location.pathname)?.params?.siteId ??
+    null
+
+  const buildingSiteOnRoute =
+    routeBuildingSiteId != null ? workspaceSites.find((s) => s.id === routeBuildingSiteId) ?? null : null
+
+  const buildingRouteRequested = Boolean(routeBuildingSiteId)
+  const invalidBuildingRoute = buildingRouteRequested && !buildingSiteOnRoute?.building
+  const buildingPageActive = Boolean(buildingRouteRequested && buildingSiteOnRoute?.building)
 
   const openBuilding = (site) => {
-    setBuildingSiteId(site.id)
-    setBuildingZoneId(null)
-    setBuildingPanelTab('status')
+    navigate(`/building/${encodeURIComponent(site.id)}`)
   }
 
-  const closeBuilding = () => {
-    setBuildingSiteId(null)
-    setBuildingZoneId(null)
-  }
+  const closeBuilding = useCallback(() => {
+    navigate('/')
+  }, [navigate])
 
   useEffect(() => {
     if (!notifOpen) return
@@ -1961,26 +2015,6 @@ export default function ClientDashboard({ user, onSignOut }) {
     const t = setTimeout(() => setToast(''), 3200)
     return () => clearTimeout(t)
   }, [toast])
-
-  useEffect(() => {
-    if (!buildingSiteId) return undefined
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    const onKey = (e) => {
-      if (e.key !== 'Escape') return
-      e.preventDefault()
-      if (buildingZoneId) setBuildingZoneId(null)
-      else {
-        setBuildingSiteId(null)
-        setBuildingZoneId(null)
-      }
-    }
-    document.addEventListener('keydown', onKey)
-    return () => {
-      document.body.style.overflow = prevOverflow
-      document.removeEventListener('keydown', onKey)
-    }
-  }, [buildingSiteId, buildingZoneId])
 
   const emailLower = String(user.email || '').trim().toLowerCase()
   const tenantKey =
@@ -2183,7 +2217,7 @@ export default function ClientDashboard({ user, onSignOut }) {
   }
 
   return (
-    <div className={`client-app${buildingSiteId ? ' client-app--modal-open' : ''}`}>
+    <div className="client-app">
       {toast ? (
         <div className="client-toast" role="status">
           {toast}
@@ -2359,7 +2393,10 @@ export default function ClientDashboard({ user, onSignOut }) {
               key={item.id}
               type="button"
               className={`client-nav-item${tab === item.id ? ' active' : ''}`}
-              onClick={() => setTab(item.id)}
+              onClick={() => {
+                if (routeBuildingSiteId) navigate('/')
+                setTab(item.id)
+              }}
             >
               <svg className="client-nav-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
                 {item.icon}
@@ -2369,7 +2406,18 @@ export default function ClientDashboard({ user, onSignOut }) {
           ))}
         </aside>
 
-        <main className="client-main">
+        <main className={`client-main${buildingPageActive ? ' client-main--building-route' : ''}`}>
+          {invalidBuildingRoute ? (
+            <Navigate to="/" replace />
+          ) : buildingPageActive ? (
+            <BuildingSiteRouteShell
+              key={`${routeBuildingSiteId}:${location.key}`}
+              site={buildingSiteOnRoute}
+              now={nowTick}
+              onClose={closeBuilding}
+            />
+          ) : (
+            <>
           <div className="client-main-header">
             <h1 className="client-main-title">{mainTitle}</h1>
             <p className="client-main-sub">{mainSub}</p>
@@ -3091,6 +3139,8 @@ export default function ClientDashboard({ user, onSignOut }) {
               </button>
             </div>
           </footer>
+            </>
+          )}
         </main>
       </div>
 
@@ -3100,7 +3150,10 @@ export default function ClientDashboard({ user, onSignOut }) {
             key={`dock-${item.id}`}
             type="button"
             className={`client-dock-item${tab === item.id ? ' is-active' : ''}`}
-            onClick={() => setTab(item.id)}
+            onClick={() => {
+              if (routeBuildingSiteId) navigate('/')
+              setTab(item.id)
+            }}
           >
             <svg className="client-dock-icon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
               {item.icon}
@@ -3109,18 +3162,6 @@ export default function ClientDashboard({ user, onSignOut }) {
           </button>
         ))}
       </nav>
-
-      {buildingSite?.building ? (
-        <BuildingSiteOverlay
-          site={buildingSite}
-          zoneId={buildingZoneId}
-          panelTab={buildingPanelTab}
-          now={nowTick}
-          onClose={closeBuilding}
-          onSelectZone={setBuildingZoneId}
-          onSelectTab={setBuildingPanelTab}
-        />
-      ) : null}
     </div>
   )
 }

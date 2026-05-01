@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react'
+import { BrowserRouter } from 'react-router-dom'
 import ClientDashboard from './ClientDashboard.jsx'
 import ClientOnboarding from './ClientOnboarding.jsx'
 import { DEFAULT_PRODUCT_IDS } from './productCatalog.js'
@@ -43,6 +44,14 @@ const PLAN_DISPLAY = {
   premium: { label: 'Premium', price: '$300 / month' },
 }
 const BOOK_DEMO_URL = 'https://larrya-dostiglobal61.zohobookings.com/#/yourbusinessname'
+
+/** Align client-app routing with Vite `base` (SPA subdirectory deploy). */
+function clientDashboardBasename() {
+  const raw = import.meta.env.BASE_URL
+  if (typeof raw !== 'string' || raw === '/') return undefined
+  const trimmed = raw.replace(/\/$/, '')
+  return trimmed || undefined
+}
 
 function defaultOrganizationFromEmail(email) {
   const norm = String(email).trim().toLowerCase()
@@ -1216,9 +1225,11 @@ function App() {
 
   if (currentUser && !isOnboardingPage && !isPricingPage && !isProductsPage && !isCaseStudiesPage) {
     return (
-      <div className="page page--client">
-        <ClientDashboard key={currentUser.email} user={currentUser} onSignOut={signOut} />
-      </div>
+      <BrowserRouter basename={clientDashboardBasename()}>
+        <div className="page page--client">
+          <ClientDashboard key={currentUser.email} user={currentUser} onSignOut={signOut} />
+        </div>
+      </BrowserRouter>
     )
   }
 

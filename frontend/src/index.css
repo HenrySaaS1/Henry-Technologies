@@ -4504,6 +4504,28 @@ h3 {
   overflow-x: hidden;
 }
 
+.client-building-page-root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.client-building-dialog--route-page {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  min-height: min(75vh, 52rem);
+  flex: 1;
+}
+
+.client-main.client-main--building-route {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .client-building-topbar {
   position: relative;
   display: flex;
@@ -4949,6 +4971,104 @@ h3 {
   overflow: hidden;
   background: #e2e8f0;
   min-height: 23rem;
+}
+
+.client-bu-image-wrap--analytics {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: min(72vh, 38rem);
+  padding: 0.5rem 0.6rem 0.65rem;
+  background: #f8fafc;
+  overflow: auto;
+}
+
+.client-fpulse-root {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.client-fpulse-heading {
+  margin: 0 0 0.4rem;
+  padding-right: 7rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.client-fpulse-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  align-content: start;
+}
+
+.client-fpulse-card {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  padding: 0.35rem 0.45rem 0.5rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  min-width: 0;
+}
+
+.client-fpulse-card-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: center;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.client-fpulse-card-chart {
+  width: 100%;
+  min-height: 200px;
+}
+
+@media (max-width: 1100px) {
+  .client-fpulse-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .client-fpulse-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .client-bu-view {
+    grid-template-columns: 1fr;
+  }
+}
+
+.client-bu-pbi-open {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  padding: 0.3rem 0.55rem;
+  border-radius: 8px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.1);
+}
+
+.client-bu-pbi-open:hover {
+  background: #fff;
+  color: #1d4ed8;
 }
 
 .client-bu-image {
