@@ -144,13 +144,13 @@ const GLOBAL_SITES = [
     flagCode: 'US',
     flagEmoji: '🇺🇸',
     leadRole: 'Site Director',
-    leadName: 'Mark Stockhowe',
+    leadName: 'Sofia Navarro-Reyes',
     timeZone: 'America/Chicago',
-    employees: 125,
-    efficiency: 12,
-    address: '7418 Washington Ave S, Eden Prairie, MN 55344 USA',
-    phoneDisplay: '+1 (952) 941-0475',
-    phoneTel: '+19529410475',
+    employees: 118,
+    efficiency: 89,
+    address: '4820 Nicollet Ave S, Minneapolis, MN 55419 USA',
+    phoneDisplay: '+1 (612) 555-0142',
+    phoneTel: '+16125550142',
     building: {
       name: 'US Headquarters',
       // Client-approved US building visual
@@ -159,7 +159,7 @@ const GLOBAL_SITES = [
         status:
           'Production cells mostly green. Rack hall B within spec; weld East in planned maintenance.',
         safety: 'Last floor walkthrough 06:00 local · 0 open near-miss actions for this building.',
-        security: 'Perimeter logged · 14 badged entries in the last 4 hours.',
+        security: 'Perimeter logged · 22 badged entries in the last 4 hours.',
         settings: 'Map layers and zone labels are demo data — swap in your CAD or BIM exports.',
       },
       zones: [
@@ -173,23 +173,23 @@ const GLOBAL_SITES = [
             unitPanel: {
               unit: 'BU125',
               description: 'Machines Commercialization',
-              manager: 'Alex Anderson',
-              assistant: 'Clayton Wilmes',
-              activeMachines: '8/10',
-              activeOperators: '12',
+              manager: 'Dana Okonkwo',
+              assistant: 'Priya Mehta',
+              activeMachines: '9/10',
+              activeOperators: '14',
               updatedAt: 'Timestamp',
-              todaysOutput: '1,250 units',
-              targetVsActual: '1,500 vs 1,250',
-              cycleTime: '45 sec',
-              throughput: '100 units/hr',
+              todaysOutput: '1,180 units',
+              targetVsActual: '1,440 vs 1,180',
+              cycleTime: '42 sec',
+              throughput: '106 units/hr',
               focus: { x: 24, y: 44 },
             },
             lines: [
               { k: 'Line status', v: 'Running' },
-              { k: 'Operational efficiency', v: '88%' },
-              { k: 'Assigned team', v: 'US Day Shift' },
+              { k: 'Operational efficiency', v: '91%' },
+              { k: 'Assigned team', v: 'Day shift — Team A' },
             ],
-            foot: 'BU 125 monitoring view for Harland US Headquarters.',
+            foot: 'BU 125 monitoring view — Henry US production campus.',
           },
         },
         {
@@ -202,23 +202,23 @@ const GLOBAL_SITES = [
             unitPanel: {
               unit: 'BU120',
               description: 'Machines Commercialization',
-              manager: 'Kevin Langeberg',
-              assistant: 'Mikhail Shimko',
-              activeMachines: '8/10',
-              activeOperators: '12',
+              manager: 'Leo Brennan',
+              assistant: 'Hannah Cole',
+              activeMachines: '7/10',
+              activeOperators: '11',
               updatedAt: 'Timestamp',
-              todaysOutput: '1,250 units',
-              targetVsActual: '1,500 vs 1,250',
-              cycleTime: '45 sec',
-              throughput: '100 units/hr',
+              todaysOutput: '985 units',
+              targetVsActual: '1,200 vs 985',
+              cycleTime: '48 sec',
+              throughput: '92 units/hr',
               focus: { x: 54, y: 50 },
             },
             lines: [
               { k: 'Line status', v: 'Running' },
-              { k: 'Operational efficiency', v: '84%' },
-              { k: 'Assigned team', v: 'US Swing Shift' },
+              { k: 'Operational efficiency', v: '86%' },
+              { k: 'Assigned team', v: 'Swing shift — Team B' },
             ],
-            foot: 'BU 120 monitoring view for Harland US Headquarters.',
+            foot: 'BU 120 monitoring view — Henry US production campus.',
           },
         },
         {
@@ -231,23 +231,23 @@ const GLOBAL_SITES = [
             unitPanel: {
               unit: 'BU140',
               description: 'Production',
-              manager: 'Mark Stockhowe',
-              assistant: 'Clayton Wilmes',
-              activeMachines: '8/10',
-              activeOperators: '12',
+              manager: 'Ravi Deshpande',
+              assistant: 'Tessa Brooks',
+              activeMachines: '6/10',
+              activeOperators: '10',
               updatedAt: 'Timestamp',
-              todaysOutput: '1,250 units',
-              targetVsActual: '1,500 vs 1,250',
-              cycleTime: '45 sec',
-              throughput: '100 units/hr',
+              todaysOutput: '902 units',
+              targetVsActual: '1,100 vs 902',
+              cycleTime: '51 sec',
+              throughput: '84 units/hr',
               focus: { x: 74, y: 46 },
             },
             lines: [
               { k: 'Line status', v: 'Attention required' },
-              { k: 'Operational efficiency', v: '81%' },
-              { k: 'Assigned team', v: 'US Night Shift' },
+              { k: 'Operational efficiency', v: '79%' },
+              { k: 'Assigned team', v: 'Night shift — Team C' },
             ],
-            foot: 'BU 140 monitoring view for Harland US Headquarters.',
+            foot: 'BU 140 monitoring view — Henry US production campus.',
           },
         },
       ],
@@ -259,20 +259,20 @@ const GLOBAL_SITES = [
     flagCode: 'IE',
     flagEmoji: '🇮🇪',
     leadRole: 'Site Lead',
-    leadName: 'Kevin Conlon',
+    leadName: 'Fiona O’Brien',
     timeZone: 'Europe/Dublin',
-    employees: 78,
-    efficiency: 84,
-    address: 'Unit 1 Cherrywood Business Park, Little Island, Cork, Ireland T45 XP70',
-    phoneDisplay: '+353 (0) 21 242 7228',
-    phoneTel: '+353212427228',
+    employees: 64,
+    efficiency: 87,
+    address: 'Ringmahon Industrial Estate, Block C, Cork, Ireland T23 V6F2',
+    phoneDisplay: '+353 (0) 21 555 0173',
+    phoneTel: '+353215550173',
     building: {
       name: 'Dublin Manufacturing Center',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
         status: 'Fill line holding steady; packaging lane C trending above target takt.',
         safety: 'Chemical store inspection due tomorrow · eyewash tested today.',
-        security: 'Visitor escort policy active · 3 contractors on floor.',
+        security: 'Visitor escort policy active · 5 contractors on floor.',
         settings: 'EU data residency profile (demo) — align retention with DPA.',
       },
       zones: [
@@ -284,8 +284,8 @@ const GLOBAL_SITES = [
             title: 'Sterile fill suite — Lines F1–F2',
             status: 'running',
             lines: [
-              { k: 'Batch', v: 'S-12 (QA hold lifted)' },
-              { k: 'Room pressure', v: '+12 Pa vs corridor' },
+              { k: 'Batch', v: 'S-18 (release pending)' },
+              { k: 'Room pressure', v: '+14 Pa vs corridor' },
               { k: 'Particle count', v: 'Class ISO 7 · OK' },
             ],
             foot: 'Environmental logs roll to batch record automatically in production.',
@@ -299,10 +299,10 @@ const GLOBAL_SITES = [
             title: 'Packaging lane C',
             status: 'running',
             lines: [
-              { k: 'Throughput', v: '412 units / hr' },
-              { k: 'Label verifier', v: '100% read rate (shift)' },
+              { k: 'Throughput', v: '438 units / hr' },
+              { k: 'Label verifier', v: '99.6% read rate (shift)' },
             ],
-            foot: 'HENRY is correlating slower cycles with new hire shadowing at station 4.',
+            foot: 'HENRY is flagging a 3% takt drift vs yesterday on lane C during handover.',
           },
         },
       ],
@@ -314,13 +314,13 @@ const GLOBAL_SITES = [
     flagCode: 'CR',
     flagEmoji: '🇨🇷',
     leadRole: 'Site Lead',
-    leadName: 'Miguel Zaballa',
+    leadName: 'Andrés Vega-Mora',
     timeZone: 'America/Costa_Rica',
-    employees: 56,
-    efficiency: 78,
-    address: 'The Greenpark Free Zone, San Antonio, Alajuela, Costa Rica',
-    phoneDisplay: '+1 (952) 941-0475',
-    phoneTel: '+19529410475',
+    employees: 71,
+    efficiency: 82,
+    address: 'La Aurora Free Zone, Heredia 40105, Costa Rica',
+    phoneDisplay: '+506 4002 8840',
+    phoneTel: '+50640028840',
     building: {
       name: 'San José Assembly Hub',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
@@ -339,10 +339,10 @@ const GLOBAL_SITES = [
             title: 'Press cell 2 — tonnage & stroke',
             status: 'alert',
             lines: [
-              { k: 'Peak force', v: '4% below recipe (8 cycles)' },
-              { k: 'Ticket', v: 'ENG-4412 opened' },
+              { k: 'Peak force', v: '2% below recipe (5 cycles)' },
+              { k: 'Ticket', v: 'ENG-6201 opened' },
             ],
-            foot: 'Similar signature last month — worn die set suspected.',
+            foot: 'Die maintenance window scheduled — compare tonnage curve to last service.',
           },
         },
       ],
@@ -469,14 +469,452 @@ const GLOBAL_SITES = [
   },
 ]
 
+/** Henry10-only footprint — omitted from GLOBAL_SITES so Harland stays six regions. */
+const HENRY10_ONLY_SITES = [
+  {
+    id: 'atl',
+    country: 'Atlanta · USA',
+    flagCode: 'US',
+    flagEmoji: '🇺🇸',
+    leadRole: 'VP Operations',
+    leadName: 'Camille Rowe',
+    timeZone: 'America/New_York',
+    employees: 203,
+    efficiency: 93,
+    address: '1200 West Peachtree St NW Suite 440, Atlanta GA 30309 USA',
+    phoneDisplay: '+1 (470) 555-2104',
+    phoneTel: '+14705552104',
+    building: {
+      name: 'Atlanta Fulton Assembly Campus',
+      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      footerBlurb: {
+        status: 'Three lines at rate; robotics bay B in preventative maintenance window tonight.',
+        safety: 'LOTO audit passed · 2 open ergonomic actions tracked to completion Friday.',
+        security: 'Keycard anomalies 0 · visitor escorts 6 since 06:00.',
+        settings: 'Demo floor plan · replace with your Atlanta CAD export.',
+      },
+      zones: [
+        {
+          id: 'atl-robot-a',
+          label: 'Robotics lane A',
+          pct: { left: 42, top: 30, width: 24, height: 28 },
+          machinery: {
+            title: 'Robotics lane A — pallet builds',
+            status: 'running',
+            lines: [
+              { k: 'Cycle variance', v: '-1.2% vs nominal' },
+              { k: 'Pick accuracy', v: '99.88% (rolling 8 hr)' },
+            ],
+            foot: 'Throughput aligned with APS window; spare gripper staged on cart 12.',
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'mia',
+    country: 'Miami · USA',
+    flagCode: 'US',
+    flagEmoji: '🇺🇸',
+    leadRole: 'Plant Manager',
+    leadName: 'Jordan Pascal',
+    timeZone: 'America/New_York',
+    employees: 141,
+    efficiency: 88,
+    address: '8800 NW 119th Terrace, Miami FL 33178 USA',
+    phoneDisplay: '+1 (786) 555-0931',
+    phoneTel: '+17865550931',
+    building: {
+      name: 'Miami Dade Components',
+      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      footerBlurb: {
+        status: 'Hurricane season checklist green · humidity envelopes within spec on clean lines.',
+        safety: 'Heat stress protocol active for yard crew · rest cycles logged.',
+        security: 'Guard tour 4/4 complete · gate 2 camera verified.',
+        settings: 'Demo floor plan — Spanish UI labels available in production.',
+      },
+      zones: [
+        {
+          id: 'mia-coat',
+          label: 'Coating line 3',
+          pct: { left: 55, top: 24, width: 28, height: 32 },
+          machinery: {
+            title: 'Coating line 3 — film thickness',
+            status: 'alert',
+            lines: [
+              { k: 'Film μm', v: '2.1σ high on panel B' },
+              { k: 'Hold', v: 'Lots H-902x quarantined' },
+            ],
+            foot: 'HENRY correlated drift with viscosity batch change at 03:40 local.',
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'den',
+    country: 'Denver · USA',
+    flagCode: 'US',
+    flagEmoji: '🇺🇸',
+    leadRole: 'Site Director',
+    leadName: 'Riley Thornton',
+    timeZone: 'America/Denver',
+    employees: 96,
+    efficiency: 90,
+    address: '5600 Greenwood Plaza Blvd, Greenwood Village CO 80111 USA',
+    phoneDisplay: '+1 (303) 555-4481',
+    phoneTel: '+13035554481',
+    building: {
+      name: 'Front Range Packaging Center',
+      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      footerBlurb: {
+        status: 'High-altitude compressor tuned; carton erectors within SPC bands.',
+        safety: 'Near-miss from fork truck corner posted · coaching scheduled.',
+        security: 'Perimeter RFID sync OK.',
+        settings: 'Demo zoning — uplink redundancy shown in telemetry rail.',
+      },
+      zones: [
+        {
+          id: 'den-pkg',
+          label: 'Ergo pack island',
+          pct: { left: 62, top: 36, width: 22, height: 26 },
+          machinery: {
+            title: 'Ergo pack island',
+            status: 'running',
+            lines: [
+              { k: 'Units / hr', v: '286 vs target 274' },
+              { k: 'RSI watches', v: '0 open' },
+            ],
+            foot: 'Shift handoff noted faster changeovers after jig swap yesterday.',
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'scl',
+    country: 'Santiago · Chile',
+    flagCode: 'CL',
+    flagEmoji: '🇨🇱',
+    leadRole: 'Gerente planta',
+    leadName: 'Valentina Soto',
+    timeZone: 'America/Santiago',
+    employees: 118,
+    efficiency: 86,
+    address: 'Av. Chicureo 445, Huechuraba Región Metropolitana, Chile',
+    phoneDisplay: '+56 9 7442 1105',
+    phoneTel: '+56974421105',
+    building: {
+      name: 'Planta Norte Maipú',
+      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      footerBlurb: {
+        status: 'Calidad ISO recertificación en auditoría paralela demo.',
+        safety: 'Charla extintores registrada ayer.',
+        security: 'Ronda nocturna completa.',
+        settings: 'Mapa demo — cargar BIM real por API admin.',
+      },
+      zones: [
+        {
+          id: 'scl-extrusion',
+          label: 'Extrusión norte',
+          pct: { left: 48, top: 28, width: 26, height: 34 },
+          machinery: {
+            title: 'Extrusión norte — temperatura zonas',
+            status: 'running',
+            lines: [
+              { k: 'Barril Z3', v: '+2.3°C sobre setpoint (15 min)' },
+              { k: 'Scrap rolling', v: '0.7% objetivo ≤1%' },
+            ],
+            foot: 'Ajuste menor en ventilador de baranda planificado tras turno C.',
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'tpe',
+    country: 'Taipei · Taiwan',
+    flagCode: 'TW',
+    flagEmoji: '🇹🇼',
+    leadRole: 'Facility Lead',
+    leadName: 'Mei-Ling Chao',
+    timeZone: 'Asia/Taipei',
+    employees: 172,
+    efficiency: 94,
+    address: 'No. 221, Guangfu S. Rd., Xinyi District, Taipei 110, Taiwan',
+    phoneDisplay: '+886 2 555 8820',
+    phoneTel: '+88625558820',
+    building: {
+      name: 'Xinyi EMS Floor',
+      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      footerBlurb: {
+        status: 'Reflow ovens balanced; AOI catch rate trending best-in-footprint demo.',
+        safety: 'ESD audit score 96 · minor findings closed same day.',
+        security: 'Cage access 18 events · all matched badges.',
+        settings: 'ESD map overlay simulated on this JPEG placeholder.',
+      },
+      zones: [
+        {
+          id: 'tpe-reflow',
+          label: 'Reflow line 02',
+          pct: { left: 50, top: 32, width: 30, height: 30 },
+          machinery: {
+            title: 'Reflow line 02 — thermal profile',
+            status: 'running',
+            lines: [
+              { k: 'Δ peak', v: 'Within ±1.8°C envelope' },
+              { k: 'Pass yield', v: '99.3% shifts A+B' },
+            ],
+            foot: 'SPI upstream stable; carousel buffer at 82% fullness.',
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'cpt',
+    country: 'Cape Town · South Africa',
+    flagCode: 'ZA',
+    flagEmoji: '🇿🇦',
+    leadRole: 'Technical Director',
+    leadName: 'Thabo Ndlovu',
+    timeZone: 'Africa/Johannesburg',
+    employees: 84,
+    efficiency: 83,
+    address: '10 Brackengate Business Park, Cape Town 7560 South Africa',
+    phoneDisplay: '+27 21 555 7740',
+    phoneTel: '+27215557740',
+    building: {
+      name: 'Brackengate Modular Line',
+      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      footerBlurb: {
+        status: 'Load-shed mitigation on UPS test passed · diesel gen exercise Sunday.',
+        safety: 'Hydration checkpoints · heat index monitored.',
+        security: 'Perimeter intrusion 0 · patrol log signed.',
+        settings: 'Grid stability widget is demo KPI only.',
+      },
+      zones: [
+        {
+          id: 'cpt-test',
+          label: 'EOL test bays',
+          pct: { left: 54, top: 26, width: 28, height: 36 },
+          machinery: {
+            title: 'EOL test bay cluster',
+            status: 'running',
+            lines: [
+              { k: 'First-pass yield', v: '97.4%' },
+              { k: 'Retest queue', v: '14 units (< SLA)' },
+            ],
+            foot: 'False fails down 38% vs last week after fixture pin replacement.',
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'mex',
+    country: 'Mexico City · Mexico',
+    flagCode: 'MX',
+    flagEmoji: '🇲🇽',
+    leadRole: 'Director de Operaciones',
+    leadName: 'Esteban Aguilar-Vega',
+    timeZone: 'America/Mexico_City',
+    employees: 156,
+    efficiency: 89,
+    address: 'Parque Industrial Tlalpan, Miguel Hidalgo, Ciudad de México CP 02630',
+    phoneDisplay: '+52 55 5555 6612',
+    phoneTel: '+525555556612',
+    building: {
+      name: 'Tlapan Stamping & Weld',
+      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      footerBlurb: {
+        status: 'Two transfer presses synchronized; weld spatter VOC within permit.',
+        safety: 'Monthly confined-space tabletop completed.',
+        security: 'Contractor onboarding 11 cleared.',
+        settings: 'NOM compliance narrative is illustrative — wire your permits.',
+      },
+      zones: [
+        {
+          id: 'mex-weld',
+          label: 'Weld arc cell 05',
+          pct: { left: 56, top: 30, width: 26, height: 34 },
+          machinery: {
+            title: 'Weld arc cell 05',
+            status: 'idle',
+            lines: [
+              { k: 'Reason', v: 'Tip dress & rework tip bank' },
+              { k: 'ETA', v: '~35 min post sign-off' },
+            ],
+            foot: 'Henry suggests mirroring Tucson recipe offset on torch angle.',
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'waw',
+    country: 'Warsaw · Poland',
+    flagCode: 'PL',
+    flagEmoji: '🇵🇱',
+    leadRole: 'Dyrektor Produkcji',
+    leadName: 'Katarzyna Zielinski',
+    timeZone: 'Europe/Warsaw',
+    employees: 132,
+    efficiency: 91,
+    address: 'ul. Prosta 125, 00-834 Warszawa, Poland',
+    phoneDisplay: '+48 22 555 0491',
+    phoneTel: '+48225550491',
+    building: {
+      name: 'Warsaw Prosta Campus',
+      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      footerBlurb: {
+        status: 'Assembly heijunka leveling — feeder supermarket restocked nightly.',
+        safety: 'PPE vending compliance 98%.',
+        security: 'GDPR data residency posture shown in footer API stub.',
+        settings: 'Euro pallet lane metric is demo.',
+      },
+      zones: [
+        {
+          id: 'waw-assembly',
+          label: 'Heijunka assembly',
+          pct: { left: 44, top: 34, width: 32, height: 28 },
+          machinery: {
+            title: 'Heijunka assembly — sequence board',
+            status: 'running',
+            lines: [
+              { k: 'Sequence adherence', v: '97.9%' },
+              { k: 'FIFO violations', v: '0 shifts A/B' },
+            ],
+            foot: 'Kaizen carousel tag #WAW-048 still open for jig shadow board.',
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'bne',
+    country: 'Brisbane · Australia',
+    flagCode: 'AU',
+    flagEmoji: '🇦🇺',
+    leadRole: 'Operations Manager',
+    leadName: 'Harriet Bowen',
+    timeZone: 'Australia/Brisbane',
+    employees: 107,
+    efficiency: 87,
+    address: '7 Murarrie Rd, Murarrie QLD 4172 Australia',
+    phoneDisplay: '+61 7 5551 9930',
+    phoneTel: '+61755519930',
+    building: {
+      name: 'Murarrie Distribution Annex',
+      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      footerBlurb: {
+        status: 'Cyclone season bundle staged; dock doors calibrated after humidity spike.',
+        safety: 'Site medic hours extended on heat watch.',
+        security: 'Yard CCTV failover test passed.',
+        settings: 'Timezone shown as Brisbane local for demo.',
+      },
+      zones: [
+        {
+          id: 'bne-dock',
+          label: 'Cross-dock scanners',
+          pct: { left: 58, top: 30, width: 28, height: 32 },
+          machinery: {
+            title: 'Cross-dock scanner bank',
+            status: 'running',
+            lines: [
+              { k: 'Reads / hr', v: '612 vs target 585' },
+              { k: 'No-read', v: '0.06%' },
+            ],
+            foot: 'RFID choke point upgrade shadowed overnight window.',
+          },
+        },
+      ],
+    },
+  },
+  {
+    id: 'yul',
+    country: 'Montréal · Canada',
+    flagCode: 'CA',
+    flagEmoji: '🇨🇦',
+    leadRole: 'Directeur Technique',
+    leadName: 'Luc Moreau-Gagnon',
+    timeZone: 'America/Toronto',
+    employees: 124,
+    efficiency: 90,
+    address: '3000 Rue Marie-Curie, Saint-Laurent QC H4S 2C2 Canada',
+    phoneDisplay: '+1 (514) 555-7720',
+    phoneTel: '+15145557720',
+    building: {
+      name: 'Saint-Laurent Pharma-grade Suite',
+      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      footerBlurb: {
+        status: 'Clean suite differential pressure trending nominal post filter swap.',
+        safety: 'Bilingual evacuation drill scheduled Thursday.',
+        security: 'Gowning throughput within capacity · no tailbacks.',
+        settings: 'Annex layout uses generic photo until your GMP CAD imports.',
+      },
+      zones: [
+        {
+          id: 'yul-pressure',
+          label: 'Suite airlocks',
+          pct: { left: 52, top: 28, width: 26, height: 38 },
+          machinery: {
+            title: 'Suite airlocks — ΔP cascade',
+            status: 'running',
+            lines: [
+              { k: 'Lock A→B', v: '+18 Pa nominal' },
+              { k: 'Alarm history', v: '0 spikes (72h)' },
+            ],
+            foot: 'Environmental batch export queued for QA batch record appendix.',
+          },
+        },
+      ],
+    },
+  },
+]
+
 /** Site health for global cards: one lit lamp — green ok, amber attention, red critical, all dim = not live. */
 const SITE_SNAPSHOT = {
-  us: { status: 'Stable', light: 'green', tone: 'good', quality: 99.2, onTime: 97, downtimeMins: 42, escalations: 1 },
-  ie: { status: 'Strong', light: 'green', tone: 'good', quality: 98.9, onTime: 96, downtimeMins: 37, escalations: 0 },
-  cr: { status: 'Watch', light: 'amber', tone: 'warn', quality: 97.8, onTime: 92, downtimeMins: 65, escalations: 2 },
+  us: { status: 'Stable', light: 'green', tone: 'good', quality: 98.7, onTime: 94, downtimeMins: 28, escalations: 2 },
+  ie: { status: 'Strong', light: 'green', tone: 'good', quality: 99.1, onTime: 98, downtimeMins: 19, escalations: 0 },
+  cr: { status: 'Stable', light: 'green', tone: 'good', quality: 98.4, onTime: 95, downtimeMins: 51, escalations: 1 },
   il: { status: 'Stable', light: 'green', tone: 'good', quality: 99.0, onTime: 95, downtimeMins: 29, escalations: 0 },
   in: { status: 'Pilot', light: 'amber', tone: 'idle', quality: 98.1, onTime: 90, downtimeMins: 58, escalations: 1 },
   my: { status: 'Planned', light: 'red', tone: 'warn', quality: null, onTime: null, downtimeMins: null, escalations: 0 },
+  atl: { status: 'Strong', light: 'green', tone: 'good', quality: 99.4, onTime: 97, downtimeMins: 18, escalations: 1 },
+  mia: { status: 'Watch', light: 'amber', tone: 'warn', quality: 97.9, onTime: 91, downtimeMins: 49, escalations: 3 },
+  den: { status: 'Stable', light: 'green', tone: 'good', quality: 98.8, onTime: 95, downtimeMins: 33, escalations: 0 },
+  scl: { status: 'Stable', light: 'green', tone: 'good', quality: 98.2, onTime: 93, downtimeMins: 41, escalations: 1 },
+  tpe: { status: 'Strong', light: 'green', tone: 'good', quality: 99.6, onTime: 98, downtimeMins: 12, escalations: 0 },
+  cpt: { status: 'Stable', light: 'green', tone: 'good', quality: 97.8, onTime: 92, downtimeMins: 55, escalations: 2 },
+  mex: { status: 'Ready', light: 'amber', tone: 'idle', quality: 98.9, onTime: 94, downtimeMins: 38, escalations: 1 },
+  waw: { status: 'Strong', light: 'green', tone: 'good', quality: 99.2, onTime: 96, downtimeMins: 22, escalations: 0 },
+  bne: { status: 'Stable', light: 'green', tone: 'good', quality: 98.0, onTime: 93, downtimeMins: 44, escalations: 1 },
+  yul: { status: 'Stable', light: 'green', tone: 'good', quality: 99.5, onTime: 97, downtimeMins: 16, escalations: 0 },
+}
+
+/** Seeded Henry1/Henry3 workspaces use ids from `GLOBAL_SITES`; Henry10 uses `HENRY10_ONLY_SITES` (see prisma/seed.js). */
+const HENRY_DEMO_ACCOUNT_EMAIL = 'henry1@gmail.com'
+const HENRY_DEMO_SITE_IDS = new Set(['us'])
+
+const HENRY3_DEMO_ACCOUNT_EMAIL = 'henry3@gmail.com'
+const HENRY3_DEMO_SITE_IDS = new Set(['us', 'ie', 'cr'])
+
+const HENRY10_DEMO_ACCOUNT_EMAIL = 'henry10@gmail.com'
+
+function workspaceSitesForUser(email, slug) {
+  const norm = String(email || '').trim().toLowerCase()
+  const slugKey = String(slug || '').trim().toLowerCase()
+  if (norm === HENRY_DEMO_ACCOUNT_EMAIL || slugKey === 'henry1') {
+    return GLOBAL_SITES.filter((s) => HENRY_DEMO_SITE_IDS.has(s.id))
+  }
+  if (norm === HENRY3_DEMO_ACCOUNT_EMAIL || slugKey === 'henry3') {
+    return GLOBAL_SITES.filter((s) => HENRY3_DEMO_SITE_IDS.has(s.id))
+  }
+  if (norm === HENRY10_DEMO_ACCOUNT_EMAIL || slugKey === 'henry10') {
+    return HENRY10_ONLY_SITES
+  }
+  return GLOBAL_SITES
 }
 
 /**
@@ -535,8 +973,8 @@ function SnapshotWordmark({ compact = false }) {
 }
 
 /** Power BI–style chart strip for the Activities tab (demo SVGs — wire to your warehouse). */
-function ActivitiesAnalyticsPanel({ actId, reportRange, onReportRange, leadText }) {
-  const siteEff = GLOBAL_SITES.map((s) => ({
+function ActivitiesAnalyticsPanel({ actId, reportRange, onReportRange, leadText, sites = GLOBAL_SITES }) {
+  const siteEff = sites.map((s) => ({
     id: s.id,
     code: s.flagCode,
     label: s.id.toUpperCase(),
@@ -1020,6 +1458,54 @@ const TENANT_OVERRIDES = {
       logoAlt: 'Harland Medical Systems',
     },
   },
+  henry1: {
+    sub: 'Single-site Henry dashboard — United States HQ and production snapshot.',
+    clientBrand: {
+      mode: 'tenant-lockup',
+      logoSrc: henryLogo,
+      logoAlt: 'HENRY',
+    },
+    dashboardTemplate: {
+      name: 'Dashboard #2',
+      sub: 'Single-location workspace',
+    },
+    footprintSub:
+      'United States site — leadership, local time, headcount, and efficiency for this footprint.',
+    locationsLeadSub:
+      'United States headquarters — open the building map for zone-level monitoring.',
+  },
+  henry3: {
+    sub: 'Three-site Henry dashboard — Americas and Ireland production snapshot.',
+    clientBrand: {
+      mode: 'tenant-lockup',
+      logoSrc: henryLogo,
+      logoAlt: 'HENRY',
+    },
+    dashboardTemplate: {
+      name: 'Dashboard #3',
+      sub: 'Three-location workspace',
+    },
+    footprintSub:
+      'United States, Ireland, and Costa Rica — leadership, local time, headcount, and efficiency by site.',
+    locationsLeadSub:
+      'Three production sites — open a building map for zone-level monitoring.',
+  },
+  henry10: {
+    sub: 'Ten-site Henry footprint — Americas, EU, and Asia-Pacific production snapshot.',
+    clientBrand: {
+      mode: 'tenant-lockup',
+      logoSrc: henryLogo,
+      logoAlt: 'HENRY',
+    },
+    dashboardTemplate: {
+      name: 'Dashboard #10',
+      sub: 'Ten-location workspace',
+    },
+    footprintSub:
+      'Atlanta · Miami · Denver · Santiago · Taipei · Cape Town · Mexico City · Warsaw · Brisbane · Montréal — directors, shift health, headcount, and efficiency by hub.',
+    locationsLeadSub:
+      'Ten hubs across regions — choose a location to open the building-level map.',
+  },
 }
 
 const NAV_ITEMS = [
@@ -1180,6 +1666,244 @@ const ONBOARD_STEPS = [
   },
 ]
 
+function FootprintSitesSection({
+  workspaceSites,
+  filteredGlobalSites,
+  company,
+  footprintBlurb,
+  searchQ,
+  nowTick,
+  onOpenBuilding,
+  topAlerts,
+}) {
+  const isWorkspaceSingle = workspaceSites.length === 1
+  const useDashHero = Boolean(topAlerts) && isWorkspaceSingle
+
+  const siteList = (
+    <>
+      {filteredGlobalSites.length === 0 && searchQ.trim() ? (
+        <p className="client-sites-empty" role="status">
+          No sites match &ldquo;{searchQ.trim()}&rdquo;. Clear the search bar to see all regions.
+        </p>
+      ) : null}
+      {filteredGlobalSites.map((site) => (
+        <article key={site.id} className="client-site-card">
+          <div className="client-site-topline">
+            <SiteTrafficLight
+              active={SITE_SNAPSHOT[site.id]?.light ?? 'off'}
+              label={SITE_SNAPSHOT[site.id]?.status}
+            />
+            <span className="client-site-kpi-chip">
+              {SITE_SNAPSHOT[site.id]?.downtimeMins != null
+                ? `${SITE_SNAPSHOT[site.id].downtimeMins}m downtime`
+                : 'No active assets'}
+            </span>
+          </div>
+          <button
+            type="button"
+            className="client-site-card-main"
+            onClick={() => onOpenBuilding(site)}
+            aria-label={`Open building view for ${site.country}`}
+          >
+            <div className="client-site-title-row">
+              <h3 className="client-site-country">{site.country}</h3>
+              <div className="client-site-flag" title={site.country}>
+                <img
+                  className="client-site-flag-img"
+                  src={`https://flagcdn.com/w80/${String(site.flagCode).toLowerCase()}.png`}
+                  srcSet={`https://flagcdn.com/w160/${String(site.flagCode).toLowerCase()}.png 2x`}
+                  alt={`${site.country} flag`}
+                  width={80}
+                  height={60}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </div>
+            <p className="client-site-lead">
+              {site.leadRole} — <strong>{site.leadName}</strong>
+            </p>
+            <dl className="client-site-metrics">
+              <div>
+                <dt>Local time</dt>
+                <dd>{formatSiteLocalTime(nowTick, site.timeZone)}</dd>
+              </div>
+              <div>
+                <dt>No. of active employees</dt>
+                <dd>{site.employees != null ? site.employees : '—'}</dd>
+              </div>
+              <div>
+                <dt>Operational efficiency</dt>
+                <dd>{site.efficiency != null ? `${site.efficiency}%` : '—'}</dd>
+              </div>
+            </dl>
+            <div className="client-site-ops">
+              <div className="client-site-ops-row">
+                <span>Quality</span>
+                <strong>
+                  {SITE_SNAPSHOT[site.id]?.quality != null ? `${SITE_SNAPSHOT[site.id].quality}%` : '—'}
+                </strong>
+              </div>
+              <div className="client-site-ops-row">
+                <span>On-time shipments</span>
+                <strong>
+                  {SITE_SNAPSHOT[site.id]?.onTime != null ? `${SITE_SNAPSHOT[site.id].onTime}%` : '—'}
+                </strong>
+              </div>
+              <div className="client-site-ops-row">
+                <span>Escalations (24h)</span>
+                <strong>{SITE_SNAPSHOT[site.id]?.escalations ?? '—'}</strong>
+              </div>
+            </div>
+            <p className="client-site-address">
+              <span className="client-site-address-label">Address</span>
+              {site.address}
+            </p>
+            <span className="client-site-open-hint">Building view →</span>
+          </button>
+          <a className="client-site-phone" href={`tel:${site.phoneTel}`}>
+            <SitePhoneIcon />
+            <span>{site.phoneDisplay}</span>
+          </a>
+        </article>
+      ))}
+    </>
+  )
+
+  if (useDashHero) {
+    return (
+      <section
+        className="client-sites-section client-sites-section--top client-sites-section--single-site client-sites-section--single-dash"
+        aria-labelledby="global-sites-title"
+      >
+        <div className="client-sites-dash-hero">
+          <div className="client-sites-dash-hero-strip">
+            <div className="client-sites-dash-hero-intro">
+              <div className="client-sites-snapshot-solo" aria-hidden="true">
+                <SnapshotWordmark compact />
+              </div>
+              <div className="client-sites-section-head-copy client-sites-dash-hero-copy">
+                <h2 id="global-sites-title" className="client-sites-section-title">
+                  {company}
+                </h2>
+                <p className="client-sites-section-sub">{footprintBlurb}</p>
+              </div>
+            </div>
+          </div>
+          <div className="client-sites-dash-hero-body">
+            <div className="client-sites-dash-hero-alerts">{topAlerts}</div>
+            <div className="client-sites-dash-hero-cards">
+              <div className="client-sites-grid">{siteList}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  const sectionMods = [`client-sites-section`, `client-sites-section--top`]
+  if (isWorkspaceSingle) sectionMods.push(`client-sites-section--single-site`)
+
+  return (
+    <section className={sectionMods.join(' ')} aria-labelledby="global-sites-title">
+      <div
+        className={`client-sites-section-head${
+          isWorkspaceSingle ? ' client-sites-section-head--single' : ''
+        }`}
+      >
+        {isWorkspaceSingle ? (
+          <div className="client-sites-snapshot-solo" aria-hidden="true">
+            <SnapshotWordmark compact />
+          </div>
+        ) : (
+          <div className="client-sites-snapshot client-sites-snapshot--left" aria-hidden="true">
+            <SnapshotWordmark />
+          </div>
+        )}
+        <div className="client-sites-section-head-copy">
+          <h2 id="global-sites-title" className="client-sites-section-title">
+            {company}
+          </h2>
+          <p className="client-sites-section-sub">{footprintBlurb}</p>
+        </div>
+        {isWorkspaceSingle ? null : (
+          <div className="client-sites-snapshot client-sites-snapshot--right" aria-hidden="true">
+            <SnapshotWordmark />
+          </div>
+        )}
+      </div>
+      <div className="client-sites-grid">{siteList}</div>
+    </section>
+  )
+}
+
+function OverviewAiAlertsAside({
+  ctx,
+  visibleAlerts,
+  alertFilter,
+  onFilterChange,
+  onAcknowledge,
+  ackedIds,
+  onViewAllAlerts,
+  variant = 'ribbon',
+}) {
+  const asideClass =
+    variant === 'inset'
+      ? 'client-overview-ai-alerts client-overview-ai-alerts--inset'
+      : 'client-overview-ai-alerts client-overview-ai-alerts--ribbon'
+
+  return (
+    <aside className={asideClass} aria-labelledby="overview-ai-alerts-h">
+      <div className="client-overview-ai-alerts-top">
+        <h2 id="overview-ai-alerts-h" className="client-overview-ai-title">
+          AI alerts
+        </h2>
+        <button type="button" className="client-overview-ai-see-all" onClick={onViewAllAlerts}>
+          All alerts →
+        </button>
+      </div>
+      <p className="client-overview-ai-lead">{ctx.alertsLead}</p>
+      <div className="client-filter-row client-filter-row--compact" role="toolbar" aria-label="Filter alerts">
+        {(['all', 'high', 'med', 'low']).map((f) => (
+          <button
+            key={f}
+            type="button"
+            className={`client-filter-chip${alertFilter === f ? ' active' : ''}`}
+            onClick={() => onFilterChange(f)}
+          >
+            {f === 'all' ? 'All' : f === 'high' ? 'High' : f === 'med' ? 'Med' : 'Low'}
+          </button>
+        ))}
+      </div>
+      <ul className="client-alert-list client-alert-list--overview">
+        {visibleAlerts.map((a) => (
+          <li key={a.id} className="client-alert-row client-alert-row--overview">
+            <span className={`client-sev client-sev--${a.severity}`}>
+              {a.severity === 'high' ? 'High' : a.severity === 'med' ? 'Med' : 'Low'}
+            </span>
+            <div className="client-alert-body">
+              <strong>{a.title}</strong>
+              <p>{a.detail}</p>
+              <span className="client-alert-when">{a.when}</span>
+            </div>
+            <button type="button" className="client-alert-ack" onClick={() => onAcknowledge(a.id)}>
+              Ack
+            </button>
+          </li>
+        ))}
+      </ul>
+      {visibleAlerts.length === 0 ? (
+        <p className="client-alerts-empty client-alerts-empty--overview">
+          {ackedIds.size > 0
+            ? 'Nothing in this filter — try another severity or open Alerts for the full list.'
+            : 'No alerts match this filter.'}
+        </p>
+      ) : null}
+      <p className="client-overview-ai-foot">{ctx.alertsFoot}</p>
+    </aside>
+  )
+}
+
 export default function ClientDashboard({ user, onSignOut }) {
   const [tab, setTab] = useState('dashboard')
   const [toast, setToast] = useState('')
@@ -1198,8 +1922,12 @@ export default function ClientDashboard({ user, onSignOut }) {
   const notifWrapRef = useRef(null)
   const chartUid = useId().replace(/:/g, '')
   const activitiesVisId = useId().replace(/:/g, '')
+  const workspaceSites = useMemo(
+    () => workspaceSitesForUser(user.email, user.slug),
+    [user.email, user.slug],
+  )
 
-  const buildingSite = buildingSiteId ? GLOBAL_SITES.find((s) => s.id === buildingSiteId) : null
+  const buildingSite = buildingSiteId ? workspaceSites.find((s) => s.id === buildingSiteId) : null
 
   const openBuilding = (site) => {
     setBuildingSiteId(site.id)
@@ -1211,10 +1939,6 @@ export default function ClientDashboard({ user, onSignOut }) {
     setBuildingSiteId(null)
     setBuildingZoneId(null)
   }
-
-  useEffect(() => {
-    setOnboard(loadOnboard(user.email))
-  }, [user.email])
 
   useEffect(() => {
     if (!notifOpen) return
@@ -1258,12 +1982,22 @@ export default function ClientDashboard({ user, onSignOut }) {
     }
   }, [buildingSiteId, buildingZoneId])
 
+  const emailLower = String(user.email || '').trim().toLowerCase()
   const tenantKey =
-    typeof user.slug === 'string' && user.slug.trim()
-      ? user.slug.trim().toLowerCase()
-      : typeof user.company === 'string' && user.company.toLowerCase().includes('harland')
-        ? 'harland'
-        : ''
+    emailLower === HENRY_DEMO_ACCOUNT_EMAIL
+      ? 'henry1'
+      : emailLower === HENRY3_DEMO_ACCOUNT_EMAIL
+        ? 'henry3'
+        : emailLower === HENRY10_DEMO_ACCOUNT_EMAIL
+          ? 'henry10'
+          : typeof user.slug === 'string' && user.slug.trim()
+            ? user.slug.trim().toLowerCase()
+            : typeof user.company === 'string' && user.company.toLowerCase().includes('harland')
+              ? 'harland'
+              : ''
+  const useHenry1InsetAiAlerts =
+    emailLower === HENRY_DEMO_ACCOUNT_EMAIL ||
+    String(user.slug || '').trim().toLowerCase() === 'henry1'
   const tenantOverride = TENANT_OVERRIDES[tenantKey] || null
   const ctx = tenantOverride ? { ...WORKSPACE, ...tenantOverride } : WORKSPACE
   const tenantLockup = ctx.clientBrand?.mode === 'tenant-lockup' ? ctx.clientBrand : null
@@ -1271,7 +2005,11 @@ export default function ClientDashboard({ user, onSignOut }) {
   const greetName = displayNameFromEmail(user.email)
   const heading = TAB_HEADINGS[tab] || TAB_HEADINGS.dashboard
   const mainTitle = heading.title ?? user.company
-  const mainSub = heading.sub ?? ctx.sub
+  const mainSub =
+    tab === 'locations' && ctx.locationsLeadSub ? ctx.locationsLeadSub : heading.sub ?? ctx.sub
+  const footprintBlurb =
+    ctx.footprintSub ||
+    'Global footprint — site leadership, local time, headcount, and efficiency by region.'
   const clockLine = nowTick.toLocaleString(undefined, {
     weekday: 'short',
     month: 'short',
@@ -1359,8 +2097,8 @@ export default function ClientDashboard({ user, onSignOut }) {
 
   const filteredGlobalSites = useMemo(() => {
     const q = searchQ.trim().toLowerCase()
-    if (!q) return GLOBAL_SITES
-    return GLOBAL_SITES.filter((site) => {
+    if (!q) return workspaceSites
+    return workspaceSites.filter((site) => {
       const snap = SITE_SNAPSHOT[site.id]
       if (site.country.toLowerCase().includes(q)) return true
       if (site.id.toLowerCase().includes(q)) return true
@@ -1376,7 +2114,7 @@ export default function ClientDashboard({ user, onSignOut }) {
       if (q === 'pilot' && snap?.status?.toLowerCase() === 'pilot') return true
       return false
     })
-  }, [searchQ])
+  }, [searchQ, workspaceSites])
 
   const runWorkspaceSearch = () => {
     const raw = searchQ.trim()
@@ -1638,117 +2376,69 @@ export default function ClientDashboard({ user, onSignOut }) {
           </div>
 
           {tab === 'dashboard' || tab === 'locations' ? (
-            <section className="client-sites-section client-sites-section--top" aria-labelledby="global-sites-title">
-              <div className="client-sites-section-head">
-                <div className="client-sites-snapshot client-sites-snapshot--left" aria-hidden="true">
-                  <SnapshotWordmark />
-                </div>
-                <div className="client-sites-section-head-copy">
-                  <h2 id="global-sites-title" className="client-sites-section-title">
-                    {user.company}
-                  </h2>
-                  <p className="client-sites-section-sub">
-                    Global footprint — site leadership, local time, headcount, and efficiency by region.
-                  </p>
-                </div>
-                <div className="client-sites-snapshot client-sites-snapshot--right">
-                  <SnapshotWordmark />
-                </div>
+            tab === 'dashboard' && useHenry1InsetAiAlerts && workspaceSites.length === 1 ? (
+              <FootprintSitesSection
+                workspaceSites={workspaceSites}
+                filteredGlobalSites={filteredGlobalSites}
+                company={user.company}
+                footprintBlurb={footprintBlurb}
+                searchQ={searchQ}
+                nowTick={nowTick}
+                onOpenBuilding={openBuilding}
+                topAlerts={
+                  <OverviewAiAlertsAside
+                    variant="inset"
+                    ctx={ctx}
+                    visibleAlerts={visibleAlerts}
+                    alertFilter={alertFilter}
+                    onFilterChange={setAlertFilter}
+                    onAcknowledge={acknowledgeAlert}
+                    ackedIds={ackedIds}
+                    onViewAllAlerts={() => setTab('alerts')}
+                  />
+                }
+              />
+            ) : tab === 'dashboard' ? (
+              <div className="client-sites-ribbon-wrap">
+                <FootprintSitesSection
+                  workspaceSites={workspaceSites}
+                  filteredGlobalSites={filteredGlobalSites}
+                  company={user.company}
+                  footprintBlurb={footprintBlurb}
+                  searchQ={searchQ}
+                  nowTick={nowTick}
+                  onOpenBuilding={openBuilding}
+                />
+                {/* Full-width AI alerts below footprint; Henry1 uses inset alerts inside purple band */}
+                <OverviewAiAlertsAside
+                  variant="ribbon"
+                  ctx={ctx}
+                  visibleAlerts={visibleAlerts}
+                  alertFilter={alertFilter}
+                  onFilterChange={setAlertFilter}
+                  onAcknowledge={acknowledgeAlert}
+                  ackedIds={ackedIds}
+                  onViewAllAlerts={() => setTab('alerts')}
+                />
               </div>
-              <div className="client-sites-grid">
-                {filteredGlobalSites.length === 0 && searchQ.trim() ? (
-                  <p className="client-sites-empty" role="status">
-                    No sites match &ldquo;{searchQ.trim()}&rdquo;. Clear the search bar to see all regions.
-                  </p>
-                ) : null}
-                {filteredGlobalSites.map((site) => (
-                  <article key={site.id} className="client-site-card">
-                    <div className="client-site-topline">
-                      <SiteTrafficLight
-                        active={SITE_SNAPSHOT[site.id]?.light ?? 'off'}
-                        label={SITE_SNAPSHOT[site.id]?.status}
-                      />
-                      <span className="client-site-kpi-chip">
-                        {SITE_SNAPSHOT[site.id]?.downtimeMins != null
-                          ? `${SITE_SNAPSHOT[site.id].downtimeMins}m downtime`
-                          : 'No active assets'}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      className="client-site-card-main"
-                      onClick={() => openBuilding(site)}
-                      aria-label={`Open building view for ${site.country}`}
-                    >
-                      <div className="client-site-title-row">
-                        <h3 className="client-site-country">{site.country}</h3>
-                        <div className="client-site-flag" title={site.country}>
-                          {/* flagcdn.com only supports specific widths (w40, w80, w160, …) — w64 404s */}
-                          <img
-                            className="client-site-flag-img"
-                            src={`https://flagcdn.com/w80/${String(site.flagCode).toLowerCase()}.png`}
-                            srcSet={`https://flagcdn.com/w160/${String(site.flagCode).toLowerCase()}.png 2x`}
-                            alt={`${site.country} flag`}
-                            width={80}
-                            height={60}
-                            loading="lazy"
-                            decoding="async"
-                          />
-                        </div>
-                      </div>
-                      <p className="client-site-lead">
-                        {site.leadRole} — <strong>{site.leadName}</strong>
-                      </p>
-                      <dl className="client-site-metrics">
-                        <div>
-                          <dt>Local time</dt>
-                          <dd>{formatSiteLocalTime(nowTick, site.timeZone)}</dd>
-                        </div>
-                        <div>
-                          <dt>No. of active employees</dt>
-                          <dd>{site.employees != null ? site.employees : '—'}</dd>
-                        </div>
-                        <div>
-                          <dt>Operational efficiency</dt>
-                          <dd>{site.efficiency != null ? `${site.efficiency}%` : '—'}</dd>
-                        </div>
-                      </dl>
-                      <div className="client-site-ops">
-                        <div className="client-site-ops-row">
-                          <span>Quality</span>
-                          <strong>
-                            {SITE_SNAPSHOT[site.id]?.quality != null ? `${SITE_SNAPSHOT[site.id].quality}%` : '—'}
-                          </strong>
-                        </div>
-                        <div className="client-site-ops-row">
-                          <span>On-time shipments</span>
-                          <strong>
-                            {SITE_SNAPSHOT[site.id]?.onTime != null ? `${SITE_SNAPSHOT[site.id].onTime}%` : '—'}
-                          </strong>
-                        </div>
-                        <div className="client-site-ops-row">
-                          <span>Escalations (24h)</span>
-                          <strong>{SITE_SNAPSHOT[site.id]?.escalations ?? '—'}</strong>
-                        </div>
-                      </div>
-                      <p className="client-site-address">
-                        <span className="client-site-address-label">Address</span>
-                        {site.address}
-                      </p>
-                      <span className="client-site-open-hint">Building view →</span>
-                    </button>
-                    <a className="client-site-phone" href={`tel:${site.phoneTel}`}>
-                      <SitePhoneIcon />
-                      <span>{site.phoneDisplay}</span>
-                    </a>
-                  </article>
-                ))}
-              </div>
-            </section>
+            ) : (
+              <FootprintSitesSection
+                workspaceSites={workspaceSites}
+                filteredGlobalSites={filteredGlobalSites}
+                company={user.company}
+                footprintBlurb={footprintBlurb}
+                searchQ={searchQ}
+                nowTick={nowTick}
+                onOpenBuilding={openBuilding}
+              />
+            )
           ) : null}
 
           {tab === 'dashboard' ? (
-            <div className="client-welcome" role="status">
+            <div
+              className={`client-welcome${workspaceSites.length === 1 ? ' client-welcome--narrow' : ''}`}
+              role="status"
+            >
               <div className="client-welcome-inner">
                 <p className="client-welcome-greet">Welcome back, {greetName}</p>
                 <p className="client-welcome-meta">
@@ -2227,6 +2917,7 @@ export default function ClientDashboard({ user, onSignOut }) {
                 reportRange={reportRange}
                 onReportRange={setReportRange}
                 leadText={ctx.insightsLead}
+                sites={workspaceSites}
               />
               <p className="client-text-foot">
                 Demo charts mirror a Power BI–style canvas — replace with live measures from your warehouse or embed

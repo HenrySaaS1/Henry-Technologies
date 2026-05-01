@@ -6,31 +6,72 @@ const DEFAULT_PRODUCT_IDS = ['core', 'factory-analytics', 'automation', 'myhenry
 
 const prisma = new PrismaClient()
 
-async function main() {
-  const email = 'landerson@harlandmedical.com'
-  const password = 'Harland@123'
+async function upsertUser({
+  email,
+  password,
+  company,
+  slug,
+  planId = 'premium',
+}) {
   const passwordHash = await bcrypt.hash(password, 10)
-  const user = await prisma.user.upsert({
+  return prisma.user.upsert({
     where: { email },
     create: {
       email,
       passwordHash,
-      company: 'Harland Medical Systems',
-      slug: 'harland',
-      planId: 'premium',
+      company,
+      slug,
+      planId,
       productIds: JSON.stringify([...DEFAULT_PRODUCT_IDS]),
       onboardingCompletedAt: new Date(),
     },
     update: {
       passwordHash,
-      company: 'Harland Medical Systems',
-      slug: 'harland',
-      planId: 'premium',
+      company,
+      slug,
+      planId,
       productIds: JSON.stringify([...DEFAULT_PRODUCT_IDS]),
       onboardingCompletedAt: new Date(),
     },
   })
-  console.log('Harland client user ready:', user.email)
+}
+
+async function main() {
+  await upsertUser({
+    email: 'landerson@harlandmedical.com',
+    password: 'Harland@123',
+    company: 'Harland Medical Systems',
+    slug: 'harland',
+    planId: 'premium',
+  })
+  console.log('Harland client user ready:', 'landerson@harlandmedical.com')
+
+  const henryDemo = await upsertUser({
+    email: 'henry1@gmail.com',
+    password: 'Henry@123',
+    company: 'Henry Workspace',
+    slug: 'henry1',
+    planId: 'plus',
+  })
+  console.log('Henry single-site demo ready:', henryDemo.email)
+
+  const henry3Demo = await upsertUser({
+    email: 'henry3@gmail.com',
+    password: 'Henry@123',
+    company: 'Henry Workspace — 3 sites',
+    slug: 'henry3',
+    planId: 'plus',
+  })
+  console.log('Henry three-site demo ready:', henry3Demo.email)
+
+  const henry10Demo = await upsertUser({
+    email: 'henry10@gmail.com',
+    password: 'Henry@123',
+    company: 'Henry Workspace — 10 sites',
+    slug: 'henry10',
+    planId: 'plus',
+  })
+  console.log('Henry ten-site demo ready:', henry10Demo.email)
 }
 
 main()

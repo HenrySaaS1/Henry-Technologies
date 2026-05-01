@@ -61,7 +61,8 @@ function signupStatusTone(message) {
     message.includes('does not match') ||
     message.includes('do not match') ||
     message.includes('incorrect') ||
-    message.includes('Select at least')
+    message.includes('Select at least') ||
+    message.includes('Cannot reach the API')
   ) {
     return 'signup-status-error'
   }
@@ -73,6 +74,14 @@ function signupStatusTone(message) {
     return 'signup-status-success'
   }
   return ''
+}
+
+function authNetworkHint(err) {
+  const msg = String(err?.message || '').trim()
+  if (msg === 'Failed to fetch' || msg.includes('NetworkError') || msg.includes('Load failed')) {
+    return 'Cannot reach the API. In a terminal run: cd backend then npm run dev (port 5000), keep it running, then try again.'
+  }
+  return msg
 }
 
 /** Demo tiles for the landing-page mobile snapshot carousel (marketing). */
@@ -764,7 +773,7 @@ function App() {
         window.location.assign('/onboarding')
       }
     } catch (e) {
-      const msg = e.message || ''
+      const msg = authNetworkHint(e)
       if (msg.includes('already registered')) {
         setAuthMode('signin')
       }
@@ -795,7 +804,7 @@ function App() {
       closeSignupModal()
     } catch (e) {
       setSignupStatus(
-        e?.message?.trim() ||
+        authNetworkHint(e) ||
           'Email or password does not match. Try again or create an account.',
       )
     }
@@ -1208,7 +1217,7 @@ function App() {
   if (currentUser && !isOnboardingPage && !isPricingPage && !isProductsPage && !isCaseStudiesPage) {
     return (
       <div className="page page--client">
-        <ClientDashboard user={currentUser} onSignOut={signOut} />
+        <ClientDashboard key={currentUser.email} user={currentUser} onSignOut={signOut} />
       </div>
     )
   }
