@@ -262,7 +262,28 @@ async function logAuthEvent(req, { eventType, email, success, userId = null, mes
 }
 
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, message: 'HENRY backend is running' })
+  res.json({
+    ok: true,
+    service: 'henry-api',
+    message: 'HENRY backend is running',
+    time: new Date().toISOString(),
+  })
+})
+
+/** Returns 503 if the database cannot be reached — use for probes and ops dashboards. */
+app.get('/api/health/ready', async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`
+    res.json({ ok: true, db: true, time: new Date().toISOString() })
+  } catch (err) {
+    console.error('[health/ready] db check failed:', err)
+    res.status(503).json({
+      ok: false,
+      code: 'DB_UNAVAILABLE',
+      db: false,
+      message: 'Database check failed.',
+    })
+  }
 })
 
 app.get('/api/auth/check-email', async (req, res) => {
@@ -490,14 +511,23 @@ app.post('/api/auth/login', async (req, res) => {
     })
     res.json({ ok: true, token, user: userToClient(refreshed) })
   } catch (e) {
+    const errName = e instanceof Error ? e.name : 'Unknown'
+    const errMsg = e instanceof Error ? e.message : String(e)
     await logAuthEvent(req, {
       eventType: 'login',
       email: emailNorm,
       success: false,
-      message: 'login_error',
+      message: `login_error:${errName}`,
     })
-    console.error(e)
-    res.status(500).json({ ok: false, message: 'Sign in failed.' })
+    console.error('[auth/login] LOGIN_SERVER_ERROR', { errName, errMsg, stack: e instanceof Error ? e.stack : null })
+
+    const isProd = process.env.NODE_ENV === 'production'
+    res.status(500).json({
+      ok: false,
+      code: 'LOGIN_SERVER_ERROR',
+      message: 'Sign in failed.',
+      ...(!isProd && { debug: `${errName}: ${errMsg}` }),
+    })
   }
 })
 

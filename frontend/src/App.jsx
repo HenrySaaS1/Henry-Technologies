@@ -5,7 +5,7 @@ import ClientOnboarding from './ClientOnboarding.jsx'
 import { DEFAULT_PRODUCT_IDS } from './productCatalog.js'
 import { mapUserFromApi } from './mapUserFromApi.js'
 import { AUTH_BYPASS, bypassDemoUser } from './authBypass.js'
-import { apiJson, getToken, setToken, clearAuth, getTenantSlug } from './apiClient.js'
+import { ApiError, apiJson, getToken, setToken, clearAuth, getTenantSlug } from './apiClient.js'
 import heroMainImage from './assets/hero-main.png'
 import aiIconImage from './assets/uploads/img-1.png'
 import securityIconImage from './assets/uploads/img-3.png'
@@ -814,12 +814,15 @@ function App() {
     } catch (e) {
       const hint = authNetworkHint(e)
       const msgRaw = String(hint || e?.message || '').trim()
-      // Backend returns plain "Sign in failed." only from the login catch-all (usually DB/update errors).
-      const msg =
-        msgRaw === 'Sign in failed.'
-          ? 'Sign-in did not finish on our servers—often a temporary outage or configuration issue, not necessarily a wrong password. Try again in a few minutes. If this keeps happening, contact support.'
-          : hint ||
-            'Email or password does not match. Try again or create an account.'
+      const serverLoginFailure =
+        (e instanceof ApiError && e.code === 'LOGIN_SERVER_ERROR') || msgRaw === 'Sign in failed.'
+      let msg = serverLoginFailure
+        ? 'Sign-in did not finish on our servers—often a temporary outage or configuration issue, not necessarily a wrong password. Try again in a few minutes. If this keeps happening, contact support.'
+        : hint ||
+          'Email or password does not match. Try again or create an account.'
+      if (import.meta.env.DEV && serverLoginFailure && e instanceof ApiError && e.detail) {
+        msg = `${msg}\n\nDev: ${e.detail}`
+      }
       setSignupStatus(msg)
     }
   }

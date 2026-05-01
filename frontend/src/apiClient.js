@@ -1,5 +1,16 @@
 const TOKEN_KEY = 'henry_auth_token_v1'
 
+/** Thrown when the API responds with a non-OK status; preserves `status` and optional `code` from JSON. */
+export class ApiError extends Error {
+  constructor(message, { status = 0, code = null, detail = null } = {}) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+    this.code = code ?? null
+    this.detail = detail ?? null
+  }
+}
+
 function normalizeApiBase(raw) {
   const trimmed = String(raw || '').trim().replace(/\/$/, '')
   // Common Azure hostname typo seen in deployment secrets.
@@ -110,7 +121,11 @@ export async function apiJson(path, { method = 'GET', body, token, signal } = {}
         const fallback = await requestJson(path, { method, headers, body, signal })
         if (!fallback.res.ok) {
           const msg = fallback.data.message || `Request failed (${fallback.res.status})`
-          throw new Error(msg)
+          throw new ApiError(msg, {
+            status: fallback.res.status,
+            code: fallback.data.code ?? null,
+            detail: fallback.data.debug ?? null,
+          })
         }
         return fallback.data
       } catch {
@@ -123,7 +138,11 @@ export async function apiJson(path, { method = 'GET', body, token, signal } = {}
         const fallback = await requestJson(`${directBase}${path}`, { method, headers, body, signal })
         if (!fallback.res.ok) {
           const msg = fallback.data.message || `Request failed (${fallback.res.status})`
-          throw new Error(msg)
+          throw new ApiError(msg, {
+            status: fallback.res.status,
+            code: fallback.data.code ?? null,
+            detail: fallback.data.debug ?? null,
+          })
         }
         return fallback.data
       } catch {
@@ -155,7 +174,11 @@ export async function apiJson(path, { method = 'GET', body, token, signal } = {}
 
   if (!res.ok) {
     const msg = data.message || `Request failed (${res.status})`
-    throw new Error(msg)
+    throw new ApiError(msg, {
+      status: res.status,
+      code: data.code ?? null,
+      detail: data.debug ?? null,
+    })
   }
   return data
 }
