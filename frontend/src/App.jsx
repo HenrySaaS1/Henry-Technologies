@@ -814,13 +814,29 @@ function App() {
     } catch (e) {
       const hint = authNetworkHint(e)
       const msgRaw = String(hint || e?.message || '').trim()
+      const dbUnavailable =
+        e instanceof ApiError && e.code === 'LOGIN_DATABASE_UNAVAILABLE'
       const serverLoginFailure =
-        (e instanceof ApiError && e.code === 'LOGIN_SERVER_ERROR') || msgRaw === 'Sign in failed.'
-      let msg = serverLoginFailure
-        ? 'Sign-in did not finish on our servers—often a temporary outage or configuration issue, not necessarily a wrong password. Try again in a few minutes. If this keeps happening, contact support.'
-        : hint ||
-          'Email or password does not match. Try again or create an account.'
-      if (import.meta.env.DEV && serverLoginFailure && e instanceof ApiError && e.detail) {
+        (e instanceof ApiError &&
+          (e.code === 'LOGIN_SERVER_ERROR' || e.code === 'LOGIN_DATABASE_UNAVAILABLE')) ||
+        msgRaw === 'Sign in failed.'
+      let msg =
+        dbUnavailable && e instanceof ApiError
+          ? (e.message || '').trim()
+          : serverLoginFailure
+            ? 'Sign-in did not finish on our servers—often a temporary outage or configuration issue, not necessarily a wrong password. Try again in a few minutes. If this keeps happening, contact support.'
+            : hint ||
+              'Email or password does not match. Try again or create an account.'
+      if (
+        import.meta.env.DEV &&
+        serverLoginFailure &&
+        e instanceof ApiError &&
+        e.detail &&
+        !dbUnavailable
+      ) {
+        msg = `${msg}\n\nDev: ${e.detail}`
+      }
+      if (import.meta.env.DEV && dbUnavailable && e instanceof ApiError && e.detail) {
         msg = `${msg}\n\nDev: ${e.detail}`
       }
       setSignupStatus(msg)

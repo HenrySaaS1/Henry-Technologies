@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import bcrypt from 'bcryptjs'
 import nodemailer from 'nodemailer'
+import { Prisma } from '@prisma/client'
 import { prisma } from './lib/prisma.js'
 import { signUserToken, readBearerAuth, readBearerUserId } from './lib/authTokens.js'
 import { assertProductionEnv } from './lib/productionEnv.js'
@@ -542,20 +543,55 @@ app.post('/api/auth/login', async (req, res) => {
   } catch (e) {
     const errName = e instanceof Error ? e.name : 'Unknown'
     const errMsg = e instanceof Error ? e.message : String(e)
+    const prismaCode =
+      e instanceof Prisma.PrismaClientKnownRequestError ? e.code : ''
+    const dbUnreachable =
+      prismaCode === 'P1000' ||
+      prismaCode === 'P1001' ||
+      prismaCode === 'P1012' ||
+      prismaCode === 'P1017' ||
+      /Can't reach database server|Server has closed the connection|Timed out fetching|Connection refused|ECONNREFUSED|ETIMEDOUT|ENOTFOUND|P100[01]|P1012|P1017/i.test(
+        errMsg,
+      )
     await logAuthEvent(req, {
       eventType: 'login',
       email: emailNorm,
       success: false,
-      message: `login_error:${errName}`,
+      message: dbUnreachable
+        ? `login_db_unavailable:${prismaCode || errName}`
+        : `login_error:${errName}`,
     })
-    console.error('[auth/login] LOGIN_SERVER_ERROR', { errName, errMsg, stack: e instanceof Error ? e.stack : null })
-
     const isProd = process.env.NODE_ENV === 'production'
+    const debug = !isProd
+      ? { debug: prismaCode ? `${prismaCode}: ${errMsg}` : `${errName}: ${errMsg}` }
+      : {}
+
+    if (dbUnreachable) {
+      console.error('[auth/login] LOGIN_DATABASE_UNAVAILABLE', {
+        prismaCode,
+        errName,
+        errMsg,
+        stack: e instanceof Error ? e.stack : null,
+      })
+      return res.status(503).json({
+        ok: false,
+        code: 'LOGIN_DATABASE_UNAVAILABLE',
+        message:
+          'Sign-in is temporarily unavailable because our database cannot be reached. This is usually a hosting or DATABASE_URL issue (often the API cannot connect to Postgres). Try again in a few minutes; if this persists, check App Service logs and database connectivity.',
+        ...debug,
+      })
+    }
+
+    console.error('[auth/login] LOGIN_SERVER_ERROR', {
+      errName,
+      errMsg,
+      stack: e instanceof Error ? e.stack : null,
+    })
     res.status(500).json({
       ok: false,
       code: 'LOGIN_SERVER_ERROR',
       message: 'Sign in failed.',
-      ...(!isProd && { debug: `${errName}: ${errMsg}` }),
+      ...debug,
     })
   }
 })
