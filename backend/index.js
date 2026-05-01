@@ -486,8 +486,32 @@ app.post('/api/auth/login', async (req, res) => {
           'This account is not in the selected workspace. On localhost, remove VITE_TENANT_SLUG from frontend/.env and any ?tenant= in the URL, then try again.',
       })
     }
-    const ok = await bcrypt.compare(String(password), user.passwordHash)
-    if (!ok) {
+    const pwHash = user.passwordHash
+    if (!pwHash || typeof pwHash !== 'string') {
+      await logAuthEvent(req, {
+        eventType: 'login',
+        email: emailNorm,
+        success: false,
+        userId: user.id,
+        message: 'missing_password_hash',
+      })
+      return res.status(401).json({ ok: false, message: 'Email or password does not match.' })
+    }
+    let passwordOk = false
+    try {
+      passwordOk = await bcrypt.compare(String(password), pwHash)
+    } catch (bcErr) {
+      console.error('[auth/login] bcrypt compare error', bcErr)
+      await logAuthEvent(req, {
+        eventType: 'login',
+        email: emailNorm,
+        success: false,
+        userId: user.id,
+        message: 'bcrypt_error',
+      })
+      return res.status(401).json({ ok: false, message: 'Email or password does not match.' })
+    }
+    if (!passwordOk) {
       await logAuthEvent(req, {
         eventType: 'login',
         email: emailNorm,
@@ -497,10 +521,15 @@ app.post('/api/auth/login', async (req, res) => {
       })
       return res.status(401).json({ ok: false, message: 'Email or password does not match.' })
     }
-    const refreshed = await prisma.user.update({
-      where: { id: user.id },
-      data: { lastLoginAt: new Date() },
-    })
+    let refreshed = user
+    try {
+      refreshed = await prisma.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date() },
+      })
+    } catch (updErr) {
+      console.error('[auth/login] lastLoginAt update failed; issuing session anyway', updErr)
+    }
     const token = signUserToken(user.id, refreshed.slug)
     await logAuthEvent(req, {
       eventType: 'login',
