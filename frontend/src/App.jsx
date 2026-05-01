@@ -812,10 +812,15 @@ function App() {
       setCurrentUser(u)
       closeSignupModal()
     } catch (e) {
-      setSignupStatus(
-        authNetworkHint(e) ||
-          'Email or password does not match. Try again or create an account.',
-      )
+      const hint = authNetworkHint(e)
+      const msgRaw = String(hint || e?.message || '').trim()
+      // Backend returns plain "Sign in failed." only from the login catch-all (usually DB/update errors).
+      const msg =
+        msgRaw === 'Sign in failed.'
+          ? 'Sign-in did not finish on our servers—often a temporary outage or configuration issue, not necessarily a wrong password. Try again in a few minutes. If this keeps happening, contact support.'
+          : hint ||
+            'Email or password does not match. Try again or create an account.'
+      setSignupStatus(msg)
     }
   }
 
