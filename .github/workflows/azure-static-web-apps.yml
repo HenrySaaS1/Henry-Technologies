@@ -1,8 +1,13 @@
 # Frontend → Azure Static Web Apps.
-# Secrets (GitHub → Settings → Secrets):
-#   AZURE_STATIC_WEB_APPS_API_TOKEN — from Azure Portal → your Static Web App → Manage deployment token
-#   VITE_API_URL — your backend base URL, e.g. https://henry-api.azurewebsites.net (no trailing slash)
-#   VITE_SITE_GATE_PASSWORD (optional) — if set at build time, shows a password screen before the SPA (preview only; not secure).
+#
+# Repo OR environment secrets (GitHub → Settings → Secrets → Actions — and Environment "prod"/"dev" if used):
+#   AZURE_STATIC_WEB_APPS_API_TOKEN — Portal → Static Web App → Manage deployment token
+#   OR AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_POND_05132FB0F — alternate SWA token (fallback)
+#
+# Missing token error: ensure at least one is set everywhere this workflow runs (for `environment: prod`, add the same secrets on the prod environment tab).
+#
+#   VITE_API_URL — backend base URL, e.g. https://henry-api.azurewebsites.net (no slash)
+#   VITE_SITE_GATE_PASSWORD (optional) — build-time preview gate only
 
 name: Azure Static Web Apps CI/CD
 
@@ -26,12 +31,25 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # Fork PR workflows do not receive repository secrets — skip requirement below for those only.
+      - name: Require deployment token for push / same-repo PR
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          SWA_A: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          SWA_B: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_POND_05132FB0F }}
+        run: |
+          if [ -n "$SWA_A" ] || [ -n "$SWA_B" ]; then
+            exit 0
+          fi
+          echo '::error::AZURE_STATIC_WEB_APPS deployment token missing. Create one secret: AZURE_STATIC_WEB_APPS_API_TOKEN (or fallback AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_POND_05132FB0F). Azure Portal → Static Web App → Manage deployment token. GitHub → repo Settings → Secrets and variables → Actions (and duplicate on Environment prod/dev if this job uses environments).'
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN || secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_POND_05132FB0F }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
+          skip_deploy_on_missing_secrets: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
           action: upload
           app_location: /frontend
           app_build_command: 'npm ci && npm run build'
@@ -51,4 +69,5 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN || secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GRAY_POND_05132FB0F }}
+          skip_deploy_on_missing_secrets: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
           action: close
