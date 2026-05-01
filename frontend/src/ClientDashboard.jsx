@@ -1641,7 +1641,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             <section className="client-sites-section client-sites-section--top" aria-labelledby="global-sites-title">
               <div className="client-sites-section-head">
                 <div className="client-sites-snapshot client-sites-snapshot--left" aria-hidden="true">
-                  <SnapshotWordmark compact />
+                  <SnapshotWordmark />
                 </div>
                 <div className="client-sites-section-head-copy">
                   <h2 id="global-sites-title" className="client-sites-section-title">

@@ -3843,33 +3843,33 @@ h3 {
 
 .client-sites-section-head {
   margin-bottom: 1.1rem;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(min-content, 2.75fr) minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem 1rem;
-  flex-wrap: wrap;
+  column-gap: 0.75rem;
+  row-gap: 0.65rem;
 }
 
 .client-sites-section-head-copy {
-  flex: 1 1 12rem;
+  grid-column: 2;
   min-width: 0;
   text-align: center;
-  order: 1;
 }
 
 .client-sites-snapshot {
-  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .client-sites-snapshot--left {
-  order: 0;
+  grid-column: 1;
+  justify-self: start;
 }
 
 .client-sites-snapshot--right {
-  order: 2;
+  grid-column: 3;
+  justify-self: end;
 }
 
 .client-snapshot-wordmark {
@@ -6720,7 +6720,9 @@ h3 {
   }
 
   .client-sites-section-head {
+    display: flex;
     flex-direction: column;
+    align-items: stretch;
   }
 
   .client-sites-snapshot--left {
@@ -6729,10 +6731,13 @@ h3 {
 
   .client-sites-snapshot--right {
     order: -1;
+    justify-self: center;
+    align-self: center;
   }
 
   .client-sites-section-head-copy {
     order: 0;
+    grid-column: auto;
   }
 
   .client-snapshot-wordmark__img {
