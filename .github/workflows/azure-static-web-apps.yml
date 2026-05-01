@@ -6,7 +6,7 @@
 #
 # Missing token error: ensure at least one is set everywhere this workflow runs (for `environment: prod`, add the same secrets on the prod environment tab).
 #
-#   VITE_API_URL — backend base URL, e.g. https://henry-api.azurewebsites.net (no slash)
+#   VITE_API_URL — REQUIRED on main/develop CI — backend base URL (https, no slash). prebuild injects /api/* proxy into staticwebapp.config.json; without it, login calls fail on the live site.
 #   VITE_SITE_GATE_PASSWORD (optional) — build-time preview gate only
 
 name: Azure Static Web Apps CI/CD

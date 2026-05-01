@@ -10,7 +10,21 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const configPath = join(__dirname, '..', 'public', 'staticwebapp.config.json')
 
 let raw = (process.env.VITE_API_URL || '').trim()
+
+const ci = String(process.env.GITHUB_ACTIONS || '').trim() === 'true'
+const branch = String(process.env.GITHUB_REF_NAME || process.env.GITHUB_HEAD_REF || '').trim()
+const requireApiUrlInCi =
+  ci && branch && ['main', 'develop'].includes(branch.toLowerCase())
+
 if (!raw) {
+  if (requireApiUrlInCi) {
+    console.error(
+      '[inject-swa-api-proxy] VITE_API_URL is required for Static Web Apps on branch',
+      `"${branch}": builds without it ship with no same-origin /api proxy, so login breaks. `,
+      'Set Actions secret VITE_API_URL (HTTPS backend URL, no trailing slash) on repo and Environment prod/dev.',
+    )
+    process.exit(1)
+  }
   console.warn('[inject-swa-api-proxy] VITE_API_URL is empty; skipping /api proxy (local or misconfigured CI).')
   process.exit(0)
 }
