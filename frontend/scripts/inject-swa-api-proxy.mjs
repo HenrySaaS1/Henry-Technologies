@@ -44,9 +44,15 @@ const proxyRoute = {
   rewrite: `${backend}/api/*`,
 }
 
+/** Hard refresh / deep link to client-only routes (React Router) — some SWA edge cases rely on an explicit rewrite. */
+const buildingSpaRoute = {
+  route: '/building/*',
+  rewrite: '/index.html',
+}
+
 const existing = Array.isArray(cfg.routes) ? cfg.routes : []
-const withoutDup = existing.filter((r) => r?.route !== '/api/*')
-cfg.routes = [proxyRoute, ...withoutDup]
+const withoutDup = existing.filter((r) => r?.route !== '/api/*' && r?.route !== '/building/*')
+cfg.routes = [proxyRoute, buildingSpaRoute, ...withoutDup]
 
 cfg.navigationFallback = cfg.navigationFallback || {}
 const ex = Array.isArray(cfg.navigationFallback.exclude) ? cfg.navigationFallback.exclude : []

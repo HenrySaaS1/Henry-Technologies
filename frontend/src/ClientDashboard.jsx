@@ -1974,9 +1974,14 @@ export default function ClientDashboard({ user, onSignOut }) {
     [user.email, user.slug],
   )
 
+  const pathnameForMatch =
+    typeof location.pathname === 'string'
+      ? location.pathname.replace(/\/+$/, '') || '/'
+      : '/'
+
   const routeBuildingSiteId =
-    matchPath({ path: '/building/:siteId', end: true }, location.pathname)?.params?.siteId ??
-    matchPath({ path: 'building/:siteId', end: true }, location.pathname)?.params?.siteId ??
+    matchPath({ path: '/building/:siteId', end: true }, pathnameForMatch)?.params?.siteId ??
+    matchPath({ path: 'building/:siteId', end: true }, pathnameForMatch)?.params?.siteId ??
     null
 
   const buildingSiteOnRoute =
@@ -2024,11 +2029,13 @@ export default function ClientDashboard({ user, onSignOut }) {
         ? 'henry3'
         : emailLower === HENRY10_DEMO_ACCOUNT_EMAIL
           ? 'henry10'
-          : typeof user.slug === 'string' && user.slug.trim()
-            ? user.slug.trim().toLowerCase()
-            : typeof user.company === 'string' && user.company.toLowerCase().includes('harland')
-              ? 'harland'
-              : ''
+          : /@harlandmedical\.com$/.test(emailLower)
+            ? 'harland'
+            : typeof user.slug === 'string' && user.slug.trim()
+              ? user.slug.trim().toLowerCase()
+              : typeof user.company === 'string' && user.company.toLowerCase().includes('harland')
+                ? 'harland'
+                : ''
   const useHenry1InsetAiAlerts =
     emailLower === HENRY_DEMO_ACCOUNT_EMAIL ||
     String(user.slug || '').trim().toLowerCase() === 'henry1'
