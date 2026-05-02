@@ -4,6 +4,8 @@
 # GitHub → Settings → Secrets and variables → Actions:
 #   AZURE_WEBAPP_NAME              — e.g. henry-api (name of the Web App)
 #   AZURE_WEBAPP_BACKEND_PUBLISH_PROFILE — download from Azure Portal → Web App → Download publish profile
+#   PRODUCTION_DATABASE_URL (optional, main only) — applies Prisma migrations from CI before deploy (Supabase/Azure Postgres)
+#   PRODUCTION_DIRECT_URL (optional) — required if PRODUCTION_DATABASE_URL is a pooler; Supabase direct db.*:5432 URI
 #
 # App Service → Configuration → Application settings (examples):
 #   DATABASE_URL, JWT_SECRET, CORS_ORIGIN (your Static Web App URL), NODE_ENV=production
@@ -42,6 +44,14 @@ jobs:
       - name: Install dependencies and generate Prisma Client
         working-directory: backend
         run: npm ci
+
+      - name: Prisma migrate deploy (production DB, optional)
+        if: github.ref == 'refs/heads/main'
+        working-directory: backend
+        env:
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.PRODUCTION_DIRECT_URL }}
+        run: npm run db:deploy:ci
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3

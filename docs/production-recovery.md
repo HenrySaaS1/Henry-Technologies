@@ -23,7 +23,12 @@ Use this if the app shows **“Cannot reach API”** or sign-up returns database
 
 ## 3) Database (PostgreSQL / Supabase)
 
-If sign-in mentions **migrate** or tables are missing: apply migrations against the same Postgres project (`DATABASE_URL` / `DIRECT_URL`). Preferred path: **Restart the App Service** so `npm start` runs `prisma migrate deploy`. On **Supabase**, set **`DIRECT_URL`** if `DATABASE_URL` uses the pooler; otherwise migrations may never finish and startup logs may show **`[prisma-migrate-env]`** or migrate failures.
+**Prisma migrations (Henry schema):** Henry uses Prisma (`backend/prisma/migrations/`), not Supabase Dashboard “Migrations”. Apply with either:
+
+- **GitHub:** add secrets **`PRODUCTION_DATABASE_URL`** (+ **`PRODUCTION_DIRECT_URL`** if using a Supabase pooler), then run workflow **“Prisma migrate deploy (production)”** or push to **`main`** (optional migrate step in **Azure App Service — backend API**).
+- **Local:** `backend/.env.postgres` → `npm run db:deploy:remote` in `backend/`.
+
+If sign-in still mentions **migrate**: confirm **App Service → Log stream** has no **`[startup] prisma migrate deploy failed`**, and **`DIRECT_URL`** is set when using a Supabase pooler (`[prisma-migrate-env]`).
 
 ## 4) Quick tests
 

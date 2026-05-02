@@ -1,13 +1,12 @@
-# One-off: apply `backend/prisma/migrations` to the live PostgreSQL used by the API.
-# Use when App Service start failed migrations or the DB was created before the latest schema.
+# Apply `backend/prisma/migrations` to the live Postgres used by the API (Prisma — not Supabase CLI).
 #
-# GitHub → Settings → Secrets and variables → Actions → add:
-#   PRODUCTION_DATABASE_URL  — same value as App Service "DATABASE_URL" (postgresql://...?sslmode=require)
+# GitHub → Settings → Secrets and variables → Actions:
+#   PRODUCTION_DATABASE_URL — same as App Service DATABASE_URL (Supabase pooler or direct).
+#   PRODUCTION_DIRECT_URL   — required if DATABASE_URL uses Supabase pooler (:6543); use direct db.*.supabase.co:5432 URI.
 #
 # Run: Actions → "Prisma migrate deploy (production)" → Run workflow
 #
-# If this run hangs, Azure PostgreSQL is probably blocking GitHub’s IPs. Prefer: Azure Portal →
-# your App Service → Restart (migrations run on container start, inside Azure, no GitHub).
+# If this hangs, Supabase may be blocking GitHub runners — use `npm run db:deploy:remote` locally with backend/.env.postgres instead.
 # See docs/azure-new-account-fresh-setup.md §7.1
 
 name: Prisma migrate deploy (production)
@@ -40,10 +39,11 @@ jobs:
         working-directory: backend
         env:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.PRODUCTION_DIRECT_URL }}
         run: |
           if [ -z "$DATABASE_URL" ]; then
-            echo "::error::Set repository secret PRODUCTION_DATABASE_URL (Azure PostgreSQL connection string with sslmode=require)."
+            echo "::error::Set repository secret PRODUCTION_DATABASE_URL (same as App Service DATABASE_URL)."
             exit 1
           fi
-          echo "Applying migrations from ubuntu-latest. If this hangs, cancel and use Azure Portal → App Service → Restart (see docs §7.1 path A)."
-          npx prisma migrate deploy
+          echo "Applying Prisma migrations (uses DIRECT_URL when set for Supabase pooler)."
+          npm run db:deploy:ci
