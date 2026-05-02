@@ -33,4 +33,5 @@ If sign-in still mentions **migrate**: confirm **App Service → Log stream** ha
 ## 4) Quick tests
 
 - API: `GET /api/health` on the App Service default URL.
+- API: `GET /api/health/ready` — must be **200** with **`"schema":true`**. If **`503`** and **`code":"SCHEMA_INCOMPLETE"`**, Postgres is up but **Prisma migrations were not applied** (`User` table missing), which matches the live sign-in migrate error.
 - Site: open DevTools **Network** tab → try sign-in → the request should go to the **same host** as `VITE_API_URL`.

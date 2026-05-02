@@ -321,18 +321,29 @@ app.get('/api/health', (_req, res) => {
   })
 })
 
-/** Returns 503 if the database cannot be reached — use for probes and ops dashboards. */
+/** Returns 503 if Postgres is down or Henry tables are missing (migrations not applied). */
 app.get('/api/health/ready', async (_req, res) => {
+  const time = new Date().toISOString()
+  let connected = false
   try {
     await prisma.$queryRaw`SELECT 1`
-    res.json({ ok: true, db: true, time: new Date().toISOString() })
+    connected = true
+    await prisma.user.findFirst({ select: { id: true } })
+    return res.json({ ok: true, db: true, schema: true, time })
   } catch (err) {
-    console.error('[health/ready] db check failed:', err)
-    res.status(503).json({
+    console.error('[health/ready] check failed:', err)
+    const prismaCode = err instanceof Prisma.PrismaClientKnownRequestError ? err.code : ''
+    const schemaCodes = new Set(['P2021', 'P2010', 'P2022', 'P2025'])
+    const schemaMissing = connected && schemaCodes.has(prismaCode)
+    return res.status(503).json({
       ok: false,
-      code: 'DB_UNAVAILABLE',
-      db: false,
-      message: 'Database check failed.',
+      code: schemaMissing ? 'SCHEMA_INCOMPLETE' : 'DB_UNAVAILABLE',
+      db: connected,
+      schema: false,
+      message: schemaMissing
+        ? 'Database is reachable but required tables are missing. Run: cd backend && npx prisma migrate deploy (use DIRECT_URL on Supabase pooler).'
+        : 'Database check failed.',
+      time,
     })
   }
 })
