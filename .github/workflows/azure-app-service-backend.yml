@@ -45,13 +45,21 @@ jobs:
         working-directory: backend
         run: npm ci
 
+      # Non-blocking: migrate can fail if secrets/network differ from App Service — deploy must still ship.
+      # Migrations still run on container start (`npm run start`).
       - name: Prisma migrate deploy (production DB, optional)
+        id: prisma_migrate
         if: github.ref == 'refs/heads/main'
+        continue-on-error: true
         working-directory: backend
         env:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
           DIRECT_URL: ${{ secrets.PRODUCTION_DIRECT_URL }}
         run: npm run db:deploy:ci
+
+      - name: Migrate step failed (FYI)
+        if: github.ref == 'refs/heads/main' && steps.prisma_migrate.outcome == 'failure'
+        run: echo "::warning::CI migrate failed — fix PRODUCTION_DATABASE_URL / PRODUCTION_DIRECT_URL (Supabase pooler needs DIRECT), or run workflow \"Prisma migrate deploy (production)\". Continuing with deploy."
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
