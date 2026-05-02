@@ -27,6 +27,7 @@ Use this if the app shows **“Cannot reach API”** or sign-up returns database
 
 - **GitHub:** add secrets **`PRODUCTION_DATABASE_URL`** (+ **`PRODUCTION_DIRECT_URL`** if using a Supabase pooler), then run workflow **“Prisma migrate deploy (production)”** or push to **`main`** (optional migrate step in **Azure App Service — backend API**).
 - **Local:** `backend/.env.postgres` → `npm run db:deploy:remote` in `backend/`.
+- **Supabase SQL Editor (fallback):** `docs/supabase-apply-henry-schema.sql` — run once, then **`prisma migrate resolve --applied`** for each migration folder (instructions in file header).
 
 If sign-in still mentions **migrate**: confirm **App Service → Log stream** has no **`[startup] prisma migrate deploy failed`**, and **`DIRECT_URL`** is set when using a Supabase pooler (`[prisma-migrate-env]`).
 
