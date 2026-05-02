@@ -116,6 +116,58 @@ app.use((_req, res, next) => {
   next()
 })
 
+/** Avoid RangeError from Invalid Date (would surface as HTTP 500 after successful login). */
+function safeIsoDate(value) {
+  if (value == null) return null
+  if (value instanceof Date) {
+    const t = value.getTime()
+    return Number.isNaN(t) ? null : value.toISOString()
+  }
+  return typeof value === 'string' ? value : null
+}
+
+/** Map Prisma/network failures so login returns 503 + actionable codes instead of opaque 500s. */
+function classifyLoginPrismaFailure(e) {
+  const errMsg = e instanceof Error ? e.message : String(e)
+  const prismaCode =
+    e instanceof Prisma.PrismaClientKnownRequestError ? e.code : ''
+  const Init = Prisma.PrismaClientInitializationError
+  const initErr =
+    (typeof Init === 'function' && e instanceof Init) ||
+    String(e?.name) === 'PrismaClientInitializationError'
+
+  if (initErr) return { bucket: 'db', prismaCode: prismaCode || 'INIT' }
+
+  if (
+    prismaCode === 'P1000' ||
+    prismaCode === 'P1001' ||
+    prismaCode === 'P1012' ||
+    prismaCode === 'P1013' ||
+    prismaCode === 'P1017'
+  ) {
+    return { bucket: 'db', prismaCode }
+  }
+
+  if (
+    prismaCode === 'P2021' ||
+    prismaCode === 'P2010' ||
+    prismaCode === 'P2022' ||
+    prismaCode === 'P2025'
+  ) {
+    return { bucket: 'schema', prismaCode }
+  }
+
+  if (
+    /Can't reach database server|Server has closed the connection|Timed out fetching|Connection refused|ECONNREFUSED|ETIMEDOUT|ENOTFOUND|Opening a TLS connection|database SSL connection/i.test(
+      errMsg,
+    )
+  ) {
+    return { bucket: 'db', prismaCode: prismaCode || 'CONN' }
+  }
+
+  return { bucket: 'server', prismaCode }
+}
+
 function userToClient(u) {
   let products = []
   try {
@@ -128,15 +180,21 @@ function userToClient(u) {
   if (u.onboardingData && typeof u.onboardingData === 'object' && !Array.isArray(u.onboardingData)) {
     onboarding = u.onboardingData
   }
+  const createdRaw = u.createdAt instanceof Date ? safeIsoDate(u.createdAt) : u.createdAt
+  const lastRaw =
+    u.lastLoginAt == null
+      ? null
+      : u.lastLoginAt instanceof Date
+        ? safeIsoDate(u.lastLoginAt)
+        : u.lastLoginAt
   return {
     email: u.email,
     company: u.company,
     slug: u.slug,
     products,
     planId: u.planId,
-    createdAt: u.createdAt instanceof Date ? u.createdAt.toISOString() : u.createdAt,
-    lastLoginAt:
-      u.lastLoginAt instanceof Date ? u.lastLoginAt.toISOString() : u.lastLoginAt ?? null,
+    createdAt: createdRaw ?? undefined,
+    lastLoginAt: lastRaw,
     onboardingComplete: Boolean(u.onboardingCompletedAt),
     onboarding,
   }
@@ -543,35 +601,30 @@ app.post('/api/auth/login', async (req, res) => {
   } catch (e) {
     const errName = e instanceof Error ? e.name : 'Unknown'
     const errMsg = e instanceof Error ? e.message : String(e)
-    const prismaCode =
-      e instanceof Prisma.PrismaClientKnownRequestError ? e.code : ''
-    const dbUnreachable =
-      prismaCode === 'P1000' ||
-      prismaCode === 'P1001' ||
-      prismaCode === 'P1012' ||
-      prismaCode === 'P1017' ||
-      /Can't reach database server|Server has closed the connection|Timed out fetching|Connection refused|ECONNREFUSED|ETIMEDOUT|ENOTFOUND|P100[01]|P1012|P1017/i.test(
-        errMsg,
-      )
+    const { bucket, prismaCode } = classifyLoginPrismaFailure(e)
     await logAuthEvent(req, {
       eventType: 'login',
       email: emailNorm,
       success: false,
-      message: dbUnreachable
-        ? `login_db_unavailable:${prismaCode || errName}`
-        : `login_error:${errName}`,
+      message:
+        bucket === 'db'
+          ? `login_db_unavailable:${prismaCode || errName}`
+          : bucket === 'schema'
+            ? `login_schema:${prismaCode || errName}`
+            : `login_error:${errName}`,
     })
     const isProd = process.env.NODE_ENV === 'production'
     const debug = !isProd
       ? { debug: prismaCode ? `${prismaCode}: ${errMsg}` : `${errName}: ${errMsg}` }
       : {}
+    const stack = e instanceof Error ? e.stack : null
 
-    if (dbUnreachable) {
+    if (bucket === 'db') {
       console.error('[auth/login] LOGIN_DATABASE_UNAVAILABLE', {
         prismaCode,
         errName,
         errMsg,
-        stack: e instanceof Error ? e.stack : null,
+        stack,
       })
       return res.status(503).json({
         ok: false,
@@ -582,11 +635,18 @@ app.post('/api/auth/login', async (req, res) => {
       })
     }
 
-    console.error('[auth/login] LOGIN_SERVER_ERROR', {
-      errName,
-      errMsg,
-      stack: e instanceof Error ? e.stack : null,
-    })
+    if (bucket === 'schema') {
+      console.error('[auth/login] LOGIN_SCHEMA_MISMATCH', { prismaCode, errName, errMsg, stack })
+      return res.status(503).json({
+        ok: false,
+        code: 'LOGIN_SCHEMA_MISMATCH',
+        message:
+          'Sign-in is unavailable until the database is migrated. On the API host, run: cd backend && npx prisma migrate deploy (with DATABASE_URL set), then try again.',
+        ...debug,
+      })
+    }
+
+    console.error('[auth/login] LOGIN_SERVER_ERROR', { errName, errMsg, stack })
     res.status(500).json({
       ok: false,
       code: 'LOGIN_SERVER_ERROR',
