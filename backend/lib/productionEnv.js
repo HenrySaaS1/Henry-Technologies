@@ -13,6 +13,10 @@ export function assertProductionEnv() {
     // Normalize common provider URLs so Prisma gets the expected scheme.
     process.env.DATABASE_URL = rawDb.replace(/^postgres:\/\//i, 'postgresql://')
   }
+  const rawDirect = String(process.env.DIRECT_URL || '').trim()
+  if (rawDirect && /^postgres:\/\//i.test(rawDirect)) {
+    process.env.DIRECT_URL = rawDirect.replace(/^postgres:\/\//i, 'postgresql://')
+  }
   const secret = process.env.JWT_SECRET || ''
   if (!secret || secret === 'dev-only-change-me' || secret.length < 16) {
     errors.push('JWT_SECRET must be set to a strong secret (at least 16 characters) in production.')

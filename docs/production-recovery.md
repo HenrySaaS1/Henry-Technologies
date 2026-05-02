@@ -8,7 +8,8 @@ Use this if the app shows **“Cannot reach API”** or sign-up returns database
 2. **Start** the app if it is stopped.
 3. **Configuration** → **Application settings** (must be present):
    - `NODE_ENV` = `production`
-   - `DATABASE_URL` = your Azure PostgreSQL URL with `?sslmode=require`
+   - `DATABASE_URL` = Postgres URL (`?sslmode=require` as provider requires): **Azure Postgres** Flexible Server URI, **or Supabase pooled** (“Session pooler” / `:6543`) for runtime queries
+   - `DIRECT_URL` = (**Supabase only**, recommended): the **direct** Postgres URI (`db.*.supabase.co`, `:5432`) copied from Dashboard → Database. `npm start` uses this URL only while running **`prisma migrate deploy`** so migrations succeed; API traffic keeps using pooled `DATABASE_URL`.
    - `JWT_SECRET` = long random string (16+ characters)
    - `CORS_ORIGIN` = `https://goaskhenry.com,https://www.goaskhenry.com` (no trailing slash; add your real SWA URL if different)
 4. **Save**, then **Restart** the web app.
@@ -20,9 +21,9 @@ Use this if the app shows **“Cannot reach API”** or sign-up returns database
    - `VITE_API_URL` = **exact** API base, e.g. `https://henry-api-new-xxxxx.centralus-01.azurewebsites.net` (from the Web App **Overview** → **Default domain**), **no** trailing slash.
 2. `VITE_API_URL` is **baked in at `npm run build`**. After changing the secret, **re-run the “Azure Static Web Apps CI/CD” workflow** (or push a small commit) so a new `dist` is published.
 
-## 3) Database (PostgreSQL)
+## 3) Database (PostgreSQL / Supabase)
 
-If sign-up still says **missing tables or columns**: apply migrations to the same database as `DATABASE_URL` (see `azure-new-account-fresh-setup.md` §7.1). The preferred low-friction path is **Restart the App Service** so `npm start` runs `prisma migrate deploy` from inside Azure.
+If sign-in mentions **migrate** or tables are missing: apply migrations against the same Postgres project (`DATABASE_URL` / `DIRECT_URL`). Preferred path: **Restart the App Service** so `npm start` runs `prisma migrate deploy`. On **Supabase**, set **`DIRECT_URL`** if `DATABASE_URL` uses the pooler; otherwise migrations may never finish and startup logs may show **`[prisma-migrate-env]`** or migrate failures.
 
 ## 4) Quick tests
 

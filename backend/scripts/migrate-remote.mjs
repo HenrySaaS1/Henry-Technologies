@@ -3,6 +3,7 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
 import { parse } from 'dotenv'
+import { prismaMigrateDatabaseUrl } from './lib/prismaPostgresEnv.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = resolve(__dirname, '..')
@@ -33,12 +34,20 @@ if (!url || !/^postgres(ql)?:\/\//i.test(url)) {
   process.exit(1)
 }
 
-const env = { ...process.env, DATABASE_URL: url }
+let directRaw = String(entries.DIRECT_URL || '')
+  .trim()
+  .replace(/^['"]|['"]$/g, '')
+
+const { migrateUrl } = prismaMigrateDatabaseUrl({
+  DATABASE_URL: url,
+  DIRECT_URL: directRaw,
+})
+
 const proc = spawn('npx', ['prisma', 'migrate', 'deploy'], {
   cwd: root,
   stdio: 'inherit',
   shell: process.platform === 'win32',
-  env,
+  env: { ...process.env, DATABASE_URL: migrateUrl },
 })
 
 proc.on('close', (code) => process.exit(code === null ? 1 : code))

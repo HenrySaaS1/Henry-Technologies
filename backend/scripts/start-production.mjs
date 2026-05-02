@@ -1,8 +1,14 @@
 import { spawn } from 'node:child_process'
+import { prismaMigrateDatabaseUrl } from './lib/prismaPostgresEnv.mjs'
 
-function run(command, args, { timeoutMs = 0 } = {}) {
+function run(command, args, { timeoutMs = 0, env = undefined } = {}) {
+  const childEnv = env ? { ...process.env, ...env } : { ...process.env }
   return new Promise((resolve) => {
-    const child = spawn(command, args, { stdio: 'inherit', shell: process.platform === 'win32' })
+    const child = spawn(command, args, {
+      stdio: 'inherit',
+      shell: process.platform === 'win32',
+      env: childEnv,
+    })
     let timedOut = false
     let timeout
     if (timeoutMs > 0) {
@@ -23,11 +29,17 @@ function run(command, args, { timeoutMs = 0 } = {}) {
 }
 
 async function start() {
+  const { migrateUrl } = prismaMigrateDatabaseUrl(process.env)
+
   // Run migrations before the API. If this fails, we still start the process so the site does not
   // go completely offline; fix the DB in Azure, then restart the Web App. (Exiting the whole
   // process on migrate failure can leave the Static Web App showing “Cannot reach API” with no
   // running container.)
-  const migrateExit = await run('npx', ['prisma', 'migrate', 'deploy'], { timeoutMs: 90_000 })
+  const migrateExit = await run(
+    'npx',
+    ['prisma', 'migrate', 'deploy'],
+    { timeoutMs: 120_000, env: { DATABASE_URL: migrateUrl } },
+  )
   if (migrateExit !== 0) {
     if (migrateExit === 124) {
       console.error(
