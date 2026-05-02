@@ -71,7 +71,11 @@ function signupStatusTone(message) {
     message.includes('do not match') ||
     message.includes('incorrect') ||
     message.includes('Select at least') ||
-    message.includes('Cannot reach the API')
+    message.includes('Cannot reach the API') ||
+    message.includes('not in the selected workspace') ||
+    message.includes('Sign-in is unavailable') ||
+    message.includes('Sign-in is temporarily unavailable') ||
+    message.includes('Sign-in did not finish')
   ) {
     return 'signup-status-error'
   }

@@ -69,11 +69,16 @@ export function getTenantSlug() {
     return null
   }
 
+  // Hostname beats build-time VITE_TENANT_SLUG so one SWA build works for goaskhenry.com (no tenant)
+  // and harland*.goaskhenry.com (Harland) without sending the wrong X-Tenant-Slug on the apex domain.
+  const fromHost = tenantSlugFromHost(host)
+  if (fromHost) return fromHost
+
   const fromEnv = String(import.meta.env.VITE_TENANT_SLUG || '')
     .trim()
     .toLowerCase()
   if (fromEnv) return fromEnv
-  return tenantSlugFromHost(host)
+  return null
 }
 
 export function getToken() {
