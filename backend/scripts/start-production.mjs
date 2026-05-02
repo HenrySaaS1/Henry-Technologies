@@ -43,7 +43,7 @@ async function start() {
   if (migrateExit !== 0) {
     if (migrateExit === 124) {
       console.error(
-        '[startup] prisma migrate deploy timed out after 90s — starting API anyway. Check DATABASE_URL, firewall, and run migrations, then restart.',
+        '[startup] prisma migrate deploy timed out after 120s — starting API anyway. Check DATABASE_URL, DIRECT_URL, firewall, and run migrations, then restart.',
       )
     } else {
       console.error(
