@@ -7,6 +7,7 @@ import { Prisma } from '@prisma/client'
 import { prisma } from './lib/prisma.js'
 import { signUserToken, readBearerAuth, readBearerUserId } from './lib/authTokens.js'
 import { assertProductionEnv } from './lib/productionEnv.js'
+import { tenantSlugFromHost } from './lib/tenantSlugFromHost.js'
 
 dotenv.config()
 assertProductionEnv()
@@ -53,15 +54,6 @@ function isLocalHttpDevOrigin(origin) {
   } catch {
     return false
   }
-}
-
-function tenantSlugFromHost(hostname) {
-  const host = String(hostname || '')
-    .trim()
-    .toLowerCase()
-  if (!host) return null
-  if (host === 'harlandmedical.goaskhenry.com' || host === 'harland.goaskhenry.com') return 'harland'
-  return null
 }
 
 function tenantSlugFromRequest(req) {
@@ -663,9 +655,6 @@ app.get('/api/auth/me', async (req, res) => {
     return res.status(401).json({ ok: false, message: 'Not signed in.' })
   }
   const tenantSlug = req.tenantSlug || null
-  if (tenantSlug && auth?.tenantSlug && auth.tenantSlug !== tenantSlug) {
-    return res.status(401).json({ ok: false, message: 'Session invalid.' })
-  }
   if (userId === fallbackAuth.user.id) {
     if (tenantSlug && tenantSlug !== fallbackAuth.user.slug) {
       return res.status(401).json({ ok: false, message: 'Session invalid.' })

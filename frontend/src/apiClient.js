@@ -46,12 +46,20 @@ export function getApiBase() {
   return normalizeApiBase(fromEnv || 'http://localhost:5000')
 }
 
+/** Keep in sync with `backend/lib/tenantSlugFromHost.js`. */
 function tenantSlugFromHost(hostname) {
-  const host = String(hostname || '')
+  let host = String(hostname || '')
     .trim()
     .toLowerCase()
   if (!host) return null
-  if (host === 'harlandmedical.goaskhenry.com' || host === 'harland.goaskhenry.com') return 'harland'
+  while (host.startsWith('www.')) host = host.slice(4)
+  if (host === 'harland.goaskhenry.com' || host === 'harlandmedical.goaskhenry.com') return 'harland'
+  if (
+    (host.startsWith('harland.') || host.startsWith('harlandmedical.')) &&
+    host.endsWith('.goaskhenry.com')
+  ) {
+    return 'harland'
+  }
   return null
 }
 
