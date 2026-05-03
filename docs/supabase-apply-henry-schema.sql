@@ -8,6 +8,7 @@
        npx prisma migrate resolve --applied 20260411180000_init_postgres
        npx prisma migrate resolve --applied 20260413170000_add_auth_events
        npx prisma migrate resolve --applied 20260424120000_add_user_onboarding
+       npx prisma migrate resolve --applied 20260502120000_add_dashboard_preset
 
      That registers migrations in `_prisma_migrations` WITHOUT re-running DDL (tables already exist).
 
@@ -64,6 +65,7 @@ CREATE INDEX IF NOT EXISTS "AuthEvent_email_createdAt_idx" ON "AuthEvent"("email
 
 ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "onboardingData" JSONB;
 ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "onboardingCompletedAt" TIMESTAMP(3);
+ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "dashboardPreset" TEXT;
 UPDATE "User" SET "onboardingCompletedAt" = "createdAt" WHERE "onboardingCompletedAt" IS NULL;
 
 DO $$

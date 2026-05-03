@@ -13,6 +13,7 @@ model User {
   passwordHash          String
   company               String
   slug                  String    @default("generic")
+  dashboardPreset       String?
   planId                String?
   productIds            String // JSON array of product id strings
   lastLoginAt           DateTime?

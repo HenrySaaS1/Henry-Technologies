@@ -5,10 +5,15 @@ export function mapUserFromApi(user) {
   if (!user || typeof user.email !== 'string' || !user.email.trim()) return null
   const company =
     typeof user.company === 'string' && user.company.trim() ? user.company.trim() : 'Workspace'
+  const presetRaw = user.dashboardPreset
+  const dashboardPreset =
+    typeof presetRaw === 'string' && presetRaw.trim() ? presetRaw.trim().toLowerCase() : null
+
   return {
     email: user.email.trim().toLowerCase(),
     company,
     slug: typeof user.slug === 'string' ? user.slug : 'generic',
+    dashboardPreset,
     products:
       Array.isArray(user.products) && user.products.length > 0 ? user.products : DEFAULT_PRODUCT_IDS,
     planId:

@@ -12,6 +12,7 @@ async function upsertUser({
   company,
   slug,
   planId = 'premium',
+  dashboardPreset = null,
 }) {
   const passwordHash = await bcrypt.hash(password, 10)
   return prisma.user.upsert({
@@ -21,6 +22,7 @@ async function upsertUser({
       passwordHash,
       company,
       slug,
+      dashboardPreset,
       planId,
       productIds: JSON.stringify([...DEFAULT_PRODUCT_IDS]),
       onboardingCompletedAt: new Date(),
@@ -29,6 +31,7 @@ async function upsertUser({
       passwordHash,
       company,
       slug,
+      dashboardPreset,
       planId,
       productIds: JSON.stringify([...DEFAULT_PRODUCT_IDS]),
       onboardingCompletedAt: new Date(),
@@ -43,6 +46,7 @@ async function main() {
     company: 'Harland Medical Systems',
     slug: 'harland',
     planId: 'premium',
+    dashboardPreset: 'harland',
   })
   console.log('Harland client user ready:', 'landerson@harlandmedical.com')
 
@@ -52,6 +56,7 @@ async function main() {
     company: 'Henry Workspace',
     slug: 'henry1',
     planId: 'plus',
+    dashboardPreset: 'henry1',
   })
   console.log('Henry single-site demo ready:', henryDemo.email)
 
@@ -61,6 +66,7 @@ async function main() {
     company: 'Henry Workspace — 3 sites',
     slug: 'henry3',
     planId: 'plus',
+    dashboardPreset: 'henry3',
   })
   console.log('Henry three-site demo ready:', henry3Demo.email)
 
@@ -70,6 +76,7 @@ async function main() {
     company: 'Henry Workspace — 10 sites',
     slug: 'henry10',
     planId: 'plus',
+    dashboardPreset: 'henry10',
   })
   console.log('Henry ten-site demo ready:', henry10Demo.email)
 }

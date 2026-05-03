@@ -8,6 +8,7 @@ import { prisma } from './lib/prisma.js'
 import { signUserToken, readBearerAuth, readBearerUserId } from './lib/authTokens.js'
 import { assertProductionEnv } from './lib/productionEnv.js'
 import { tenantSlugFromHost } from './lib/tenantSlugFromHost.js'
+import { inferDashboardPreset, resolveDashboardPresetForCreate } from './lib/dashboardPreset.js'
 
 dotenv.config()
 assertProductionEnv()
@@ -179,10 +180,18 @@ function userToClient(u) {
       : u.lastLoginAt instanceof Date
         ? safeIsoDate(u.lastLoginAt)
         : u.lastLoginAt
+  const dashboardPreset = inferDashboardPreset({
+    email: u.email,
+    slug: u.slug,
+    company: u.company,
+    dashboardPreset: u.dashboardPreset,
+  })
+
   return {
     email: u.email,
     company: u.company,
     slug: u.slug,
+    dashboardPreset,
     products,
     planId: u.planId,
     createdAt: createdRaw ?? undefined,
@@ -230,6 +239,7 @@ const fallbackAuth = {
     lastLoginAt: new Date(),
     onboardingData: null,
     onboardingCompletedAt: new Date(),
+    dashboardPreset: 'harland',
   },
 }
 
@@ -366,7 +376,7 @@ app.get('/api/auth/check-email', async (req, res) => {
 })
 
 app.post('/api/auth/register', async (req, res) => {
-  const { email, password, company, productIds, planId } = req.body || {}
+  const { email, password, company, productIds, planId, dashboardPreset: requestedPreset } = req.body || {}
   const emailNorm = String(email || '')
     .trim()
     .toLowerCase()
@@ -416,12 +426,20 @@ app.post('/api/auth/register', async (req, res) => {
 
   try {
     const passwordHash = await bcrypt.hash(String(password), 10)
+    const slug = tenantSlug || 'generic'
+    const presetResolved = resolveDashboardPresetForCreate({
+      email: emailNorm,
+      slug,
+      company: companyName,
+      requestedPreset,
+    })
     const user = await prisma.user.create({
       data: {
         email: emailNorm,
         passwordHash,
         company: companyName,
-        slug: tenantSlug || 'generic',
+        slug,
+        dashboardPreset: presetResolved,
         planId: plan,
         productIds: JSON.stringify(ids),
       },

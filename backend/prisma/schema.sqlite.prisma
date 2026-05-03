@@ -14,6 +14,7 @@ model User {
   passwordHash          String
   company               String
   slug                  String    @default("generic")
+  dashboardPreset       String?
   planId                String?
   productIds            String
   lastLoginAt           DateTime?
