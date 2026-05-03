@@ -5,7 +5,22 @@ import ClientOnboarding from './ClientOnboarding.jsx'
 import { DEFAULT_PRODUCT_IDS } from './productCatalog.js'
 import { mapUserFromApi } from './mapUserFromApi.js'
 import { AUTH_BYPASS, bypassDemoUser } from './authBypass.js'
-import { ApiError, apiJson, getToken, setToken, clearAuth, getTenantSlug } from './apiClient.js'
+import {
+  ApiError,
+  activateDashboardDemo,
+  apiJson,
+  clearAuth,
+  getTenantSlug,
+  getToken,
+  isDemoDashboardToken,
+  readPersistedDemoPresetKey,
+  setToken,
+} from './apiClient.js'
+import {
+  dashboardDemoShortcutsVisible,
+  dashboardDemoUser,
+  DASHBOARD_DEMO_PRESETS_ORDER,
+} from './dashboard/dashboardDemo.js'
 import heroMainImage from './assets/hero-main.png'
 import aiIconImage from './assets/uploads/img-1.png'
 import securityIconImage from './assets/uploads/img-3.png'
@@ -602,6 +617,11 @@ function App() {
       const tokenSnapshot = getToken()
       if (!tokenSnapshot) return
 
+      if (isDemoDashboardToken(tokenSnapshot)) {
+        setCurrentUser(dashboardDemoUser(readPersistedDemoPresetKey()))
+        return
+      }
+
       try {
         const data = await apiJson('/api/auth/me', { signal: ac.signal })
         if (ac.signal.aborted) return
@@ -677,6 +697,27 @@ function App() {
     setForgotPasswordHelpOpen(false)
     setSignupForm({ email: '', password: '', confirmPassword: '' })
   }
+
+  const enterDashboardDemo = (preset) => {
+    if (!dashboardDemoShortcutsVisible()) return
+    if (!activateDashboardDemo(preset)) return
+    setCurrentUser(dashboardDemoUser(readPersistedDemoPresetKey()))
+    closeSignupModal()
+    setSignupStatus('')
+  }
+
+  const dashboardDemoShortcuts = dashboardDemoShortcutsVisible() ? (
+    <div className="signup-dashboard-demos" role="group" aria-label="Demo workspaces">
+      <p className="signup-dashboard-demos-intro">Browse previews without signing in — data is illustrative only.</p>
+      <div className="signup-dashboard-demos-actions">
+        {DASHBOARD_DEMO_PRESETS_ORDER.map(([preset, label]) => (
+          <button key={preset} type="button" className="signup-demo-dash-btn" onClick={() => enterDashboardDemo(preset)}>
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
+  ) : null
 
   const backToHomeFromSignup = () => {
     closeSignupModal()
@@ -1788,6 +1829,7 @@ function App() {
                         {signupStatus ? (
                           <p className={`signup-status-new ${signupStatusTone(signupStatus)}`}>{signupStatus}</p>
                         ) : null}
+                        {dashboardDemoShortcuts}
                       </form>
                     </>
                   ) : (
@@ -1893,6 +1935,7 @@ function App() {
                         {signupStatus ? (
                           <p className={`signup-status-new ${signupStatusTone(signupStatus)}`}>{signupStatus}</p>
                         ) : null}
+                        {dashboardDemoShortcuts}
                       </form>
                     </>
                   )}

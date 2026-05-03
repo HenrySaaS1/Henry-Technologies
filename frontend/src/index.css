@@ -2910,6 +2910,64 @@ h3 {
   color: rgba(200, 230, 255, 0.62);
 }
 
+.signup-dashboard-demos {
+  margin: 1rem 0 0;
+  padding: 0.65rem 0.55rem 0.85rem;
+  border-radius: 10px;
+  border: 1px dashed rgba(148, 163, 184, 0.45);
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.signup-dashboard-demos-intro {
+  margin: 0 0 0.55rem;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: rgba(203, 213, 225, 0.78);
+}
+
+.signup-dashboard-demos-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.signup-demo-dash-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.32rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgba(224, 242, 254, 0.95);
+  background: rgba(51, 65, 85, 0.6);
+  border: 1px solid rgba(100, 116, 139, 0.6);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.signup-demo-dash-btn:hover {
+  border-color: rgba(34, 211, 238, 0.55);
+  background: rgba(30, 41, 59, 0.85);
+}
+
+.signup-demo-dash-btn:focus-visible {
+  outline: 2px solid rgba(34, 211, 238, 0.7);
+  outline-offset: 2px;
+}
+
+.signup-glass--signin .signup-dashboard-demos {
+  border-color: rgba(34, 211, 238, 0.25);
+}
+
+.signup-glass--signin .signup-dashboard-demos-intro {
+  color: rgba(186, 230, 253, 0.72);
+}
+
 .signup-glass--signin #signin-title {
   color: #f0fdfa;
 }

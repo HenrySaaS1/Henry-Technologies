@@ -1,4 +1,7 @@
+import { DEMO_DASHBOARD_TOKEN, normalizeDashboardDemoPreset } from './dashboard/dashboardDemo.js'
+
 const TOKEN_KEY = 'henry_auth_token_v1'
+const DEMO_PRESET_KEY = 'henry_demo_dashboard_preset_v1'
 
 /** Thrown when the API responds with a non-OK status; preserves `status` and optional `code` from JSON. */
 export class ApiError extends Error {
@@ -101,6 +104,29 @@ export function setToken(token) {
 export function clearAuth() {
   localStorage.removeItem(TOKEN_KEY)
   localStorage.removeItem('henry_session_v1')
+  localStorage.removeItem(DEMO_PRESET_KEY)
+}
+
+export function isDemoDashboardToken(token) {
+  return typeof token === 'string' && token === DEMO_DASHBOARD_TOKEN
+}
+
+/** Local-only dashboard preview (Dashboard #2 / #3 / #10 + Harland). Does not hit `/api/auth/*`. */
+export function activateDashboardDemo(presetRaw) {
+  const k = normalizeDashboardDemoPreset(presetRaw)
+  if (!k) return false
+  localStorage.setItem(TOKEN_KEY, DEMO_DASHBOARD_TOKEN)
+  localStorage.setItem(DEMO_PRESET_KEY, k)
+  return true
+}
+
+export function readPersistedDemoPresetKey() {
+  if (typeof window === 'undefined') return null
+  return normalizeDashboardDemoPreset(localStorage.getItem(DEMO_PRESET_KEY) || '') ?? 'henry1'
+}
+
+function bearerForApi(raw) {
+  return raw && !isDemoDashboardToken(raw) ? raw : undefined
 }
 
 async function requestJson(url, { method, headers, body, signal }) {
@@ -119,7 +145,8 @@ export async function apiJson(path, { method = 'GET', body, token, signal } = {}
   const tenantSlug = getTenantSlug()
   if (tenantSlug) headers['X-Tenant-Slug'] = tenantSlug
   const t = token === undefined ? getToken() : token
-  if (t) headers.Authorization = `Bearer ${t}`
+  const bearer = bearerForApi(t)
+  if (bearer) headers.Authorization = `Bearer ${bearer}`
   const base = getApiBase()
   const directBase = normalizeApiBase(import.meta.env.VITE_API_URL)
   const primaryUrl = `${base}${path}`
