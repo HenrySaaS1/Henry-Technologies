@@ -112,6 +112,34 @@ function authNetworkHint(err) {
   return msg
 }
 
+/** User-facing login error — prefer API `message` when the backend already explains (503); soften generic 500. */
+function signInFailureMessage(apiError, { showDemoShortcutsHint }) {
+  const hintFallback = authNetworkHint(apiError)
+  if (!(apiError instanceof ApiError)) {
+    return hintFallback || 'Email or password does not match. Try again or create an account.'
+  }
+  const raw = String(apiError.message || '').trim()
+  if (apiError.code === 'LOGIN_DATABASE_UNAVAILABLE' || apiError.code === 'LOGIN_SCHEMA_MISMATCH') {
+    return raw || hintFallback || 'Sign-in is unavailable until the database is ready.'
+  }
+  if (
+    apiError.code === 'LOGIN_SERVER_ERROR' ||
+    raw === 'Sign in failed.' ||
+    apiError.status === 500 ||
+    apiError.status === 503
+  ) {
+    const body =
+      raw && raw !== 'Sign in failed.'
+        ? raw
+        : 'Sign-in could not finish on our servers. That is usually a temporary outage or a configuration issue—not that your password was wrong.'
+    const footer = showDemoShortcutsHint
+      ? 'You can use the dashboard preview buttons below without a password.'
+      : 'If you need immediate access while this is fixed, ask your rollout contact for status.'
+    return `${body}\n\n${footer}`
+  }
+  return hintFallback || raw || 'Email or password does not match. Try again or create an account.'
+}
+
 /** Demo tiles for the landing-page mobile snapshot carousel (marketing). */
 const snapshotMobileCards = [
   {
@@ -857,24 +885,20 @@ function App() {
       setCurrentUser(u)
       closeSignupModal()
     } catch (e) {
-      const hint = authNetworkHint(e)
-      const msgRaw = String(hint || e?.message || '').trim()
+      const serverLoginFailure =
+        e instanceof ApiError &&
+        (e.code === 'LOGIN_SERVER_ERROR' ||
+          e.code === 'LOGIN_DATABASE_UNAVAILABLE' ||
+          e.code === 'LOGIN_SCHEMA_MISMATCH' ||
+          e.status === 500 ||
+          e.status === 503)
       const apiExplainsFailure =
         e instanceof ApiError &&
         (e.code === 'LOGIN_DATABASE_UNAVAILABLE' || e.code === 'LOGIN_SCHEMA_MISMATCH')
-      const serverLoginFailure =
-        (e instanceof ApiError &&
-          (e.code === 'LOGIN_SERVER_ERROR' ||
-            e.code === 'LOGIN_DATABASE_UNAVAILABLE' ||
-            e.code === 'LOGIN_SCHEMA_MISMATCH')) ||
-        msgRaw === 'Sign in failed.'
       let msg =
-        apiExplainsFailure && e instanceof ApiError
-          ? (e.message || '').trim()
-          : serverLoginFailure
-            ? 'Sign-in did not finish on our servers—often a temporary outage or configuration issue, not necessarily a wrong password. Try again in a few minutes. If this keeps happening, contact support.'
-            : hint ||
-              'Email or password does not match. Try again or create an account.'
+        e instanceof ApiError
+          ? signInFailureMessage(e, { showDemoShortcutsHint: dashboardDemoShortcutsVisible() })
+          : authNetworkHint(e) || 'Email or password does not match. Try again or create an account.'
       if (
         import.meta.env.DEV &&
         serverLoginFailure &&

@@ -671,7 +671,8 @@ app.post('/api/auth/login', async (req, res) => {
     res.status(500).json({
       ok: false,
       code: 'LOGIN_SERVER_ERROR',
-      message: 'Sign in failed.',
+      message:
+        'Sign-in failed because of an unexpected server error. This is usually not a wrong password. Try again in a few minutes; if it keeps happening, contact support with the time you tried.',
       ...debug,
     })
   }
