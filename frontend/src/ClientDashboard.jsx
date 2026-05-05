@@ -5,6 +5,8 @@ import henryLogo from './assets/henry-logo.png'
 import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/registry.js'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
+import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
+import HarlandJobCardMiniCharts from './HarlandJobCardMiniCharts.jsx'
 
 const DASH_KPIS = [
   { label: 'OEE', value: '94.2%', hint: 'vs target 90%', trend: '+1.2%', up: true },
@@ -1189,16 +1191,44 @@ function locationDrivenCardCount(user) {
   return Math.max(3, Math.min(12, parsed))
 }
 
-function unitJobsForCount(unitLabel, count) {
-  const seed = unitLabel.includes('120') ? ['RDX-195', 'FTS7000', 'CTSI100'] : ['528-COATER', 'TTS1000', 'CUSTOM']
-  const statusCycle = ['Stable', 'Stable', 'Moderate', 'Stable', 'Critical', 'Moderate']
-  return Array.from({ length: count }, (_, idx) => {
-    const n = idx + 1
+/** Matches reference boards: BU 120 / BU 125 job rows (description + status). */
+const EXACT_JOBS_BY_BU = {
+  '120': [
+    { description: 'RDX-195', status: 'Stable' },
+    { description: 'FTS7000', status: 'Moderate' },
+    { description: 'RDX-195', status: 'Stable' },
+    { description: 'CTS1100', status: 'Stable' },
+    { description: 'FTS7000', status: 'Critical' },
+    { description: 'CTS1100', status: 'Moderate' },
+  ],
+  '125': [
+    { description: '528-COATER', status: 'Stable' },
+    { description: '528-COATER', status: 'Stable' },
+    { description: '528-COATER', status: 'Moderate' },
+    { description: 'TTS1000', status: 'Critical' },
+    { description: 'TTS1000', status: 'Moderate' },
+    { description: 'CUSTOM', status: 'Stable' },
+  ],
+}
+
+function digitsFromUnitLabel(unitLabel) {
+  const compact = String(unitLabel || '').replace(/\s/g, '')
+  const match = compact.match(/(\d{2,})/)
+  return match ? match[1] : '125'
+}
+
+function unitJobsForPanel(unitLabel, count) {
+  const digits = digitsFromUnitLabel(unitLabel)
+  const template = EXACT_JOBS_BY_BU[digits] || EXACT_JOBS_BY_BU['125']
+  const n = Math.max(1, Math.min(12, count))
+  return Array.from({ length: n }, (_, idx) => {
+    const row = template[idx % template.length]
+    const jobNum = idx + 1
     return {
-      id: `${unitLabel}-${n}`,
-      title: `Job ${unitLabel}-${n}`,
-      description: seed[idx % seed.length],
-      status: statusCycle[idx % statusCycle.length],
+      id: `${digits}-${jobNum}`,
+      title: `Job ${digits}-${jobNum}`,
+      description: row.description,
+      status: row.status,
     }
   })
 }
@@ -1211,16 +1241,32 @@ function statusTone(status) {
 
 function UnitJobsPanel({ user, unitLabel }) {
   const count = locationDrivenCardCount(user)
-  const cards = unitJobsForCount(unitLabel, count)
+  const digits = digitsFromUnitLabel(unitLabel)
+  const cards = unitJobsForPanel(unitLabel, count)
   return (
-    <section className="client-unit-jobs-panel" aria-label={`${unitLabel} jobs`}>
+    <section className="client-unit-jobs-panel" aria-label={`BU ${digits} jobs`}>
       <header className="client-unit-jobs-head">
-        <span className="client-unit-chip">{`BU ${unitLabel}`}</span>
-        <div className="client-unit-brand">HARLAND MEDICAL SYSTEMS</div>
-        <div className="client-unit-range">
-          <button type="button" className="is-active">Daily</button>
-          <button type="button">Weekly</button>
-          <button type="button">Monthly</button>
+        <div className="client-unit-jobs-head-row1">
+          <span className="client-unit-chip">{`BU ${digits}`}</span>
+          <div className="client-unit-brand">
+            <img
+              src={harlandMedicalSystemsLogo}
+              alt=""
+              className="client-unit-brand-logo"
+              width={36}
+              height={36}
+              decoding="async"
+            />
+            <span className="client-unit-brand-text">HARLAND MEDICAL SYSTEMS</span>
+          </div>
+          <span className="client-unit-jobs-head-spacer" aria-hidden="true" />
+        </div>
+        <div className="client-unit-jobs-head-row2">
+          <div className="client-unit-range" role="group" aria-label="Report range">
+            <button type="button" className="is-active">Daily</button>
+            <button type="button">Weekly</button>
+            <button type="button">Monthly</button>
+          </div>
         </div>
       </header>
       <div className="client-unit-jobs-grid">
@@ -1228,15 +1274,11 @@ function UnitJobsPanel({ user, unitLabel }) {
           <article key={card.id} className="client-unit-job-card">
             <h4>{card.title}</h4>
             <p>{`Description: ${card.description}`}</p>
-            <div className="client-unit-job-mini" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </div>
+            <HarlandJobCardMiniCharts />
             <div className="client-unit-job-meter">
               <span className={`client-unit-job-meter-fill tone-${statusTone(card.status)}`} />
             </div>
-            <div className="client-unit-job-status">{`Status: ${card.status}`}</div>
+            <div className={`client-unit-job-status tone-${statusTone(card.status)}`}>{`Status: ${card.status}`}</div>
           </article>
         ))}
       </div>
