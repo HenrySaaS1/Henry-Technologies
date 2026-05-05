@@ -21,42 +21,84 @@ const COL = {
   axis: '#94a3b8',
 }
 
-const WEEK = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
-
-const TOTAL_PARTS_RAN = WEEK.map((day, i) => ({
-  day,
-  parts: [4100, 5900, 6450, 8200, 7650, 6980, 4950][i],
-}))
-
-const PARTS_DISTRIBUTION = [
-  { name: 'A', value: 80.75 },
-  { name: 'B', value: 19.25 },
-]
-
-const TEST_RESULTS = [
-  { name: 'P', value: 95.28 },
-  { name: 'F', value: 4.72 },
-]
-
-const PARTS_BY_DAY = WEEK.map((day, i) => ({
-  day,
-  partA: [4200, 5100, 5400, 5800, 5600, 5200, 3800][i],
-  partB: [980, 1100, 1050, 1200, 1150, 1080, 900][i],
-}))
-
-const EFFICIENCY = WEEK.map((day, i) => ({
-  day,
-  pct: [68.5, 72, 74, 79, 79.5, 76, 64][i],
-}))
-
-const DAILY_SCRAP = WEEK.map((day, i) => ({
-  day,
-  qty: [118, 132, 125, 140, 128, 175, 200][i],
-  saturday: i === 6,
-}))
-
 const MINI_H = 68
 const M = { top: 2, right: 2, left: -18, bottom: 0 }
+
+/** @typedef {'daily' | 'weekly' | 'monthly'} JobTimeRange */
+
+/** Dummy series per rollup — visibly different shapes per toggle. */
+const RANGE_DATA = {
+  daily: {
+    volumeLabel: 'Total Parts',
+    partsRollupTitle: 'By day',
+    periods: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+    totalParts: [4100, 5900, 6450, 8200, 7650, 6980, 4950],
+    partA: [4200, 5100, 5400, 5800, 5600, 5200, 3800],
+    partB: [980, 1100, 1050, 1200, 1150, 1080, 900],
+    efficiency: [68.5, 72, 74, 79, 79.5, 76, 64],
+    scrap: [118, 132, 125, 140, 128, 175, 200],
+    scrapHighlightIndex: 6,
+    distribution: [
+      { name: 'A', value: 80.75 },
+      { name: 'B', value: 19.25 },
+    ],
+    testResults: [
+      { name: 'P', value: 95.28 },
+      { name: 'F', value: 4.72 },
+    ],
+  },
+  weekly: {
+    volumeLabel: 'Total Parts',
+    partsRollupTitle: 'By week',
+    periods: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'],
+    totalParts: [28800, 31200, 30100, 33500, 31800, 30200],
+    partA: [24500, 26800, 25100, 27900, 26200, 25500],
+    partB: [4300, 4400, 5000, 5600, 5600, 4700],
+    efficiency: [71, 73.5, 72.2, 76.8, 75.1, 74],
+    scrap: [820, 760, 890, 705, 810, 680],
+    scrapHighlightIndex: 2,
+    distribution: [
+      { name: 'A', value: 82.4 },
+      { name: 'B', value: 17.6 },
+    ],
+    testResults: [
+      { name: 'P', value: 96.1 },
+      { name: 'F', value: 3.9 },
+    ],
+  },
+  monthly: {
+    volumeLabel: 'Total Parts',
+    partsRollupTitle: 'By month',
+    periods: ['J', 'F', 'M', 'A', 'M', 'J'],
+    totalParts: [118000, 124500, 121200, 129800, 127000, 131200],
+    partA: [98500, 103200, 100800, 108500, 105400, 109200],
+    partB: [19500, 21300, 20400, 21300, 21600, 22000],
+    efficiency: [74.2, 75.8, 74.9, 77.5, 76.8, 78.1],
+    scrap: [3200, 2980, 3150, 2720, 2890, 2650],
+    scrapHighlightIndex: 2,
+    distribution: [
+      { name: 'A', value: 77.9 },
+      { name: 'B', value: 22.1 },
+    ],
+    testResults: [
+      { name: 'P', value: 97.05 },
+      { name: 'F', value: 2.95 },
+    ],
+  },
+}
+
+function buildRows(rangeKey) {
+  const d = RANGE_DATA[rangeKey] || RANGE_DATA.daily
+  return d.periods.map((period, i) => ({
+    period,
+    parts: d.totalParts[i],
+    partA: d.partA[i],
+    partB: d.partB[i],
+    pct: d.efficiency[i],
+    qty: d.scrap[i],
+    scrapSpike: i === d.scrapHighlightIndex,
+  }))
+}
 
 function MiniWrap({ title, children }) {
   return (
@@ -67,15 +109,22 @@ function MiniWrap({ title, children }) {
   )
 }
 
-/** Six factory-pulse-style charts per job card — matches Harland BU reference layout. */
-export default function HarlandJobCardMiniCharts() {
+/**
+ * Six factory-pulse-style charts — dummy data swaps by Daily / Weekly / Monthly.
+ * @param {{ timeRange?: JobTimeRange }} props
+ */
+export default function HarlandJobCardMiniCharts({ timeRange = 'daily' }) {
+  const key = RANGE_DATA[timeRange] ? timeRange : 'daily'
+  const meta = RANGE_DATA[key]
+  const rows = buildRows(key)
+
   return (
     <div className="client-hjob-mini-grid" aria-hidden="true">
-      <MiniWrap title="Total Parts">
+      <MiniWrap title={meta.volumeLabel}>
         <ResponsiveContainer width="100%" height={MINI_H}>
-          <LineChart data={TOTAL_PARTS_RAN} margin={M}>
+          <LineChart data={rows} margin={M}>
             <CartesianGrid strokeDasharray="2 2" stroke={COL.grid} />
-            <XAxis dataKey="day" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
+            <XAxis dataKey="period" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
             <YAxis hide domain={['auto', 'auto']} />
             <Line type="monotone" dataKey="parts" stroke={COL.partA} strokeWidth={1.5} dot={false} />
           </LineChart>
@@ -85,7 +134,7 @@ export default function HarlandJobCardMiniCharts() {
         <ResponsiveContainer width="100%" height={MINI_H}>
           <PieChart>
             <Pie
-              data={PARTS_DISTRIBUTION}
+              data={meta.distribution}
               cx="50%"
               cy="50%"
               outerRadius={22}
@@ -104,7 +153,7 @@ export default function HarlandJobCardMiniCharts() {
         <ResponsiveContainer width="100%" height={MINI_H}>
           <PieChart>
             <Pie
-              data={TEST_RESULTS}
+              data={meta.testResults}
               cx="50%"
               cy="50%"
               innerRadius={12}
@@ -120,11 +169,11 @@ export default function HarlandJobCardMiniCharts() {
           </PieChart>
         </ResponsiveContainer>
       </MiniWrap>
-      <MiniWrap title="By day">
+      <MiniWrap title={meta.partsRollupTitle}>
         <ResponsiveContainer width="100%" height={MINI_H}>
-          <BarChart data={PARTS_BY_DAY} margin={M}>
+          <BarChart data={rows} margin={M}>
             <CartesianGrid strokeDasharray="2 2" stroke={COL.grid} />
-            <XAxis dataKey="day" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
+            <XAxis dataKey="period" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
             <YAxis hide />
             <Bar dataKey="partA" fill={COL.partA} radius={[1, 1, 0, 0]} />
             <Bar dataKey="partB" fill={COL.partB} radius={[1, 1, 0, 0]} />
@@ -133,9 +182,9 @@ export default function HarlandJobCardMiniCharts() {
       </MiniWrap>
       <MiniWrap title="Efficiency">
         <ResponsiveContainer width="100%" height={MINI_H}>
-          <LineChart data={EFFICIENCY} margin={M}>
+          <LineChart data={rows} margin={M}>
             <CartesianGrid strokeDasharray="2 2" stroke={COL.grid} />
-            <XAxis dataKey="day" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
+            <XAxis dataKey="period" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
             <YAxis hide domain={[60, 'auto']} />
             <Line type="monotone" dataKey="pct" stroke={COL.partB} strokeWidth={1.5} dot={false} />
           </LineChart>
@@ -143,13 +192,13 @@ export default function HarlandJobCardMiniCharts() {
       </MiniWrap>
       <MiniWrap title="Scrap">
         <ResponsiveContainer width="100%" height={MINI_H}>
-          <BarChart data={DAILY_SCRAP} margin={M}>
+          <BarChart data={rows} margin={M}>
             <CartesianGrid strokeDasharray="2 2" stroke={COL.grid} />
-            <XAxis dataKey="day" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
+            <XAxis dataKey="period" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
             <YAxis hide />
             <Bar dataKey="qty" radius={[1, 1, 0, 0]}>
-              {DAILY_SCRAP.map((entry) => (
-                <Cell key={entry.day} fill={entry.saturday ? COL.fail : COL.partA} />
+              {rows.map((entry) => (
+                <Cell key={entry.period} fill={entry.scrapSpike ? COL.fail : COL.partA} />
               ))}
             </Bar>
           </BarChart>

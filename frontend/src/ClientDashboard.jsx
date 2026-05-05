@@ -1240,6 +1240,7 @@ function statusTone(status) {
 }
 
 function UnitJobsPanel({ user, unitLabel }) {
+  const [jobTimeRange, setJobTimeRange] = useState('daily')
   const count = locationDrivenCardCount(user)
   const digits = digitsFromUnitLabel(unitLabel)
   const cards = unitJobsForPanel(unitLabel, count)
@@ -1263,9 +1264,17 @@ function UnitJobsPanel({ user, unitLabel }) {
         </div>
         <div className="client-unit-jobs-head-row2">
           <div className="client-unit-range" role="group" aria-label="Report range">
-            <button type="button" className="is-active">Daily</button>
-            <button type="button">Weekly</button>
-            <button type="button">Monthly</button>
+            {(['daily', 'weekly', 'monthly']).map((r) => (
+              <button
+                key={r}
+                type="button"
+                className={jobTimeRange === r ? 'is-active' : ''}
+                aria-pressed={jobTimeRange === r}
+                onClick={() => setJobTimeRange(r)}
+              >
+                {r === 'daily' ? 'Daily' : r === 'weekly' ? 'Weekly' : 'Monthly'}
+              </button>
+            ))}
           </div>
         </div>
       </header>
@@ -1274,7 +1283,7 @@ function UnitJobsPanel({ user, unitLabel }) {
           <article key={card.id} className="client-unit-job-card">
             <h4>{card.title}</h4>
             <p>{`Description: ${card.description}`}</p>
-            <HarlandJobCardMiniCharts />
+            <HarlandJobCardMiniCharts timeRange={jobTimeRange} />
             <div className="client-unit-job-meter">
               <span className={`client-unit-job-meter-fill tone-${statusTone(card.status)}`} />
             </div>
