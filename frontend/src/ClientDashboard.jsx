@@ -3,7 +3,6 @@ import { matchPath, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { titlesForProductIds } from './productCatalog.js'
 import henryLogo from './assets/henry-logo.png'
 import { LogoSpreadLine } from './LogoSpreadLine.jsx'
-import FactoryPulseChartsPanel from './FactoryPulseChartsPanel.jsx'
 import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/registry.js'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
 
@@ -911,7 +910,14 @@ const SITE_SNAPSHOT = {
 }
 
 /** Henry1/Henry3 use ids from `GLOBAL_SITES`; Henry10 uses `HENRY10_ONLY_SITES` (`dashboard/registry` + prisma seed). */
-function workspaceSitesForUser(user) {
+function parseRequestedLocationCount(user) {
+  const raw = user?.onboarding?.profile?.locationCount
+  const parsed = Number.parseInt(String(raw || '').trim(), 10)
+  if (!Number.isFinite(parsed) || parsed <= 0) return null
+  return parsed
+}
+
+function defaultSitesForPreset(user) {
   const preset = resolveDashboardPresetKey(user)
   if (preset === 'henry1') {
     return GLOBAL_SITES.filter((s) => s.id === 'us')
@@ -923,6 +929,19 @@ function workspaceSitesForUser(user) {
     return HENRY10_ONLY_SITES
   }
   return GLOBAL_SITES
+}
+
+function workspaceSitesForUser(user) {
+  const requestedCount = parseRequestedLocationCount(user)
+  const defaultSites = defaultSitesForPreset(user)
+  if (!requestedCount) return defaultSites
+
+  const uniquePool = [
+    ...defaultSites,
+    ...HENRY10_ONLY_SITES.filter((site) => !defaultSites.some((s) => s.id === site.id)),
+    ...GLOBAL_SITES.filter((site) => !defaultSites.some((s) => s.id === site.id)),
+  ]
+  return uniquePool.slice(0, Math.max(1, requestedCount))
 }
 
 /**
@@ -1163,7 +1182,69 @@ function buildingMachineryToneClass(status) {
   return 'client-building-machinery-badge--idle'
 }
 
-function BuildingSitePageView({ site, zoneId, panelTab, now, onClose, onSelectZone, onSelectTab }) {
+function locationDrivenCardCount(user) {
+  const raw = user?.onboarding?.profile?.locationCount
+  const parsed = Number.parseInt(String(raw || '').trim(), 10)
+  if (!Number.isFinite(parsed) || parsed <= 0) return 6
+  return Math.max(3, Math.min(12, parsed))
+}
+
+function unitJobsForCount(unitLabel, count) {
+  const seed = unitLabel.includes('120') ? ['RDX-195', 'FTS7000', 'CTSI100'] : ['528-COATER', 'TTS1000', 'CUSTOM']
+  const statusCycle = ['Stable', 'Stable', 'Moderate', 'Stable', 'Critical', 'Moderate']
+  return Array.from({ length: count }, (_, idx) => {
+    const n = idx + 1
+    return {
+      id: `${unitLabel}-${n}`,
+      title: `Job ${unitLabel}-${n}`,
+      description: seed[idx % seed.length],
+      status: statusCycle[idx % statusCycle.length],
+    }
+  })
+}
+
+function statusTone(status) {
+  if (status === 'Critical') return 'critical'
+  if (status === 'Moderate') return 'moderate'
+  return 'stable'
+}
+
+function UnitJobsPanel({ user, unitLabel }) {
+  const count = locationDrivenCardCount(user)
+  const cards = unitJobsForCount(unitLabel, count)
+  return (
+    <section className="client-unit-jobs-panel" aria-label={`${unitLabel} jobs`}>
+      <header className="client-unit-jobs-head">
+        <span className="client-unit-chip">{`BU ${unitLabel}`}</span>
+        <div className="client-unit-brand">HARLAND MEDICAL SYSTEMS</div>
+        <div className="client-unit-range">
+          <button type="button" className="is-active">Daily</button>
+          <button type="button">Weekly</button>
+          <button type="button">Monthly</button>
+        </div>
+      </header>
+      <div className="client-unit-jobs-grid">
+        {cards.map((card) => (
+          <article key={card.id} className="client-unit-job-card">
+            <h4>{card.title}</h4>
+            <p>{`Description: ${card.description}`}</p>
+            <div className="client-unit-job-mini" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="client-unit-job-meter">
+              <span className={`client-unit-job-meter-fill tone-${statusTone(card.status)}`} />
+            </div>
+            <div className="client-unit-job-status">{`Status: ${card.status}`}</div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function BuildingSitePageView({ site, zoneId, panelTab, now, onClose, onSelectZone, onSelectTab, user }) {
   const b = site?.building
   if (!b) return null
   const activeZone = zoneId ? b.zones.find((z) => z.id === zoneId) : null
@@ -1239,21 +1320,7 @@ function BuildingSitePageView({ site, zoneId, panelTab, now, onClose, onSelectZo
               <div
                 className={`client-bu-image-wrap${activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? ' client-bu-image-wrap--analytics' : ''}`}
               >
-                {activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? (
-                  <FactoryPulseChartsPanel
-                    reportUrl={activeZone.machinery.unitPanel.powerBiEmbed.reportUrl}
-                    heading={activeZone.machinery.unitPanel.powerBiEmbed.title || 'Factory pulse'}
-                  />
-                ) : (
-                  <img
-                    className="client-bu-image"
-                    src={b.floorPlanSrc}
-                    alt={`${activeZone.machinery.unitPanel.unit} detail`}
-                    style={{
-                      objectPosition: `${activeZone.machinery.unitPanel.focus.x}% ${activeZone.machinery.unitPanel.focus.y}%`,
-                    }}
-                  />
-                )}
+                <UnitJobsPanel user={user} unitLabel={activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, '')} />
               </div>
             </div>
           ) : (
@@ -1342,7 +1409,7 @@ function BuildingSitePageView({ site, zoneId, panelTab, now, onClose, onSelectZo
   )
 }
 
-function BuildingSiteRouteShell({ site, now, onClose }) {
+function BuildingSiteRouteShell({ site, now, onClose, user }) {
   const [buildingZoneId, setBuildingZoneId] = useState(null)
   const [buildingPanelTab, setBuildingPanelTab] = useState('status')
 
@@ -1366,6 +1433,7 @@ function BuildingSiteRouteShell({ site, now, onClose }) {
       onClose={onClose}
       onSelectZone={setBuildingZoneId}
       onSelectTab={setBuildingPanelTab}
+      user={user}
     />
   )
 }
@@ -1553,6 +1621,65 @@ const ONBOARD_STEPS = [
     action: 'export',
   },
 ]
+
+const BOOK_DEMO_URL = 'https://larrya-dostiglobal61.zohobookings.com/#/yourbusinessname'
+
+function onboardingPrimaryGoalLabel(value) {
+  const labels = {
+    'improve-efficiency': 'improve efficiency',
+    'reduce-downtime': 'reduce downtime',
+    'improve-safety': 'improve safety',
+    'increase-visibility': 'increase visibility',
+    'reduce-costs': 'reduce costs',
+  }
+  return labels[value] || null
+}
+
+function onboardingInsightFrequencyLabel(value) {
+  const labels = {
+    'real-time': 'real-time',
+    daily: 'daily',
+    weekly: 'weekly',
+  }
+  return labels[value] || null
+}
+
+function buildMyHenryRecommendations(onboarding) {
+  const profile = onboarding?.profile || {}
+  const setup = onboarding?.setup || {}
+  const outcomes = onboarding?.outcomes || {}
+  const lines = []
+
+  const industry = String(profile.industry || '').trim()
+  const monitorAreas = Array.isArray(setup.monitorAreas) ? setup.monitorAreas : []
+  const setupStructure = String(setup.setupStructure || '').trim()
+  const goalLabel = onboardingPrimaryGoalLabel(outcomes.primaryGoal)
+  const frequencyLabel = onboardingInsightFrequencyLabel(outcomes.insightFrequency)
+
+  if (industry) {
+    lines.push(`Based on your ${industry} profile, teams typically start with uptime and cycle-time tracking.`)
+  } else {
+    lines.push('Companies like yours typically begin with machine uptime and output trend tracking.')
+  }
+
+  if (monitorAreas.length) {
+    lines.push(`Recommended first modules: ${monitorAreas.join(', ')}.`)
+  } else {
+    lines.push('Recommended first modules: production and downtime monitoring.')
+  }
+
+  if (setupStructure === 'multi-units-lines') {
+    lines.push('Your setup suggests a multi-unit operation. Start with plant-level and line-level dashboards.')
+  }
+
+  if (goalLabel) {
+    lines.push(`Your primary goal is to ${goalLabel}; initial KPI tiles will prioritize that outcome.`)
+  }
+  if (frequencyLabel) {
+    lines.push(`Insights cadence is set to ${frequencyLabel}; digest scheduling can follow this preference.`)
+  }
+  return lines.slice(0, 4)
+}
 
 function FootprintSitesSection({
   workspaceSites,
@@ -1810,12 +1937,7 @@ export default function ClientDashboard({ user, onSignOut }) {
   const notifWrapRef = useRef(null)
   const chartUid = useId().replace(/:/g, '')
   const activitiesVisId = useId().replace(/:/g, '')
-  const workspaceSites = useMemo(() => workspaceSitesForUser(user), [
-    user.email,
-    user.slug,
-    user.company,
-    user.dashboardPreset,
-  ])
+  const workspaceSites = useMemo(() => workspaceSitesForUser(user), [user])
 
   const pathnameForMatch =
     typeof location.pathname === 'string'
@@ -1867,6 +1989,7 @@ export default function ClientDashboard({ user, onSignOut }) {
   const presetKey = resolveDashboardPresetKey(user)
   const useHenry1InsetAiAlerts = presetKey === 'henry1'
   const ctx = getDashboardContext(presetKey)
+  const myHenryRecommendations = buildMyHenryRecommendations(user?.onboarding)
   const tenantLockup = ctx.clientBrand?.mode === 'tenant-lockup' ? ctx.clientBrand : null
   const activeProductTitles = titlesForProductIds(user.products)
   const greetName = displayNameFromEmail(user.email)
@@ -2248,6 +2371,7 @@ export default function ClientDashboard({ user, onSignOut }) {
               site={buildingSiteOnRoute}
               now={nowTick}
               onClose={closeBuilding}
+              user={user}
             />
           ) : (
             <>
@@ -2333,6 +2457,41 @@ export default function ClientDashboard({ user, onSignOut }) {
                   . Demo data below — wire to your historians and MES when you go live.
                 </p>
               </div>
+            </div>
+          ) : null}
+
+          {tab === 'dashboard' ? (
+            <div className="client-demo-dashes" aria-label="Demo snapshot: three health signals">
+              <div className="client-demo-dashes-head">
+                <span className="client-demo-dashes-badge">Demo</span>
+                <span className="client-demo-dashes-title">Operational pulse</span>
+                <span className="client-demo-dashes-caption">Synthetic signals · all corridors green</span>
+              </div>
+              <ul className="client-demo-dashes-grid">
+                {[
+                  { id: 'oee', label: 'Throughput & OEE', sub: 'Line blend vs shift target' },
+                  { id: 'q', label: 'Quality & yield', sub: 'SPC checkpoints clear' },
+                  { id: 'u', label: 'Uptime & energy', sub: 'Voltage / load nominal' },
+                ].map((row) => (
+                  <li key={row.id} className="client-demo-dashes-cell">
+                    <div className="client-demo-dashes-bars" aria-hidden="true">
+                      <span className="client-demo-dashes-bar client-demo-dashes-bar--long" />
+                      <span className="client-demo-dashes-bar client-demo-dashes-bar--mid" />
+                      <span className="client-demo-dashes-bar client-demo-dashes-bar--short" />
+                    </div>
+                    <div className="client-demo-dashes-body">
+                      <div className="client-demo-dashes-text">
+                        <strong>{row.label}</strong>
+                        <span>{row.sub}</span>
+                      </div>
+                      <span className="client-demo-dashes-good">
+                        <span className="client-demo-dashes-good-dot" aria-hidden="true" />
+                        Good
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           ) : null}
 
@@ -2769,6 +2928,25 @@ export default function ClientDashboard({ user, onSignOut }) {
 
           {tab === 'insights' ? (
             <div className="client-text-panel client-activities-page">
+              <section className="client-myhenry-panel" aria-label="MyHenry recommendations">
+                <h3 className="client-myhenry-title">AI Insight Panel (MyHenry)</h3>
+                <ul className="client-myhenry-list">
+                  {myHenryRecommendations.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
+                <button
+                  type="button"
+                  className="client-myhenry-cta"
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      window.location.assign(BOOK_DEMO_URL)
+                    }
+                  }}
+                >
+                  Get Started with a Demo
+                </button>
+              </section>
               <section className="client-insight-ask" aria-label="Ask HENRY">
                 <label htmlFor="insight-q" className="client-insight-ask-label">
                   Ask in plain language
