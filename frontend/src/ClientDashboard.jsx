@@ -1194,12 +1194,12 @@ function locationDrivenCardCount(user) {
 /** Matches reference boards: BU 120 / BU 125 job rows (description + status). */
 const EXACT_JOBS_BY_BU = {
   '120': [
-    { description: 'RDX-195', status: 'Stable' },
-    { description: 'FTS7000', status: 'Moderate' },
-    { description: 'RDX-195', status: 'Stable' },
-    { description: 'CTS1100', status: 'Stable' },
-    { description: 'FTS7000', status: 'Critical' },
-    { description: 'CTS1100', status: 'Moderate' },
+    { description: '528-COATER', status: 'Stable' },
+    { description: '528-COATER', status: 'Moderate' },
+    { description: '528-COATER', status: 'Stable' },
+    { description: 'TTS1000', status: 'Stable' },
+    { description: 'TTS1000', status: 'Critical' },
+    { description: 'CUSTOM', status: 'Moderate' },
   ],
   '125': [
     { description: '528-COATER', status: 'Stable' },
