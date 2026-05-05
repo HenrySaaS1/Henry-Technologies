@@ -5122,27 +5122,18 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
   border-radius: 2px;
   background: #fff;
-  color: #4c1d95;
-  padding: 0.35rem 0.75rem;
+  padding: 0.35rem 0.85rem;
   min-width: 0;
 }
 
 .client-unit-brand-logo {
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
+  display: block;
+  max-height: 44px;
+  width: auto;
+  max-width: min(280px, 100%);
   object-fit: contain;
-}
-
-.client-unit-brand-text {
-  font-size: clamp(0.72rem, 1.5vw, 1.05rem);
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  line-height: 1.15;
-  text-align: center;
 }
 
 .client-unit-range {

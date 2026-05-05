@@ -1252,13 +1252,10 @@ function UnitJobsPanel({ user, unitLabel }) {
           <div className="client-unit-brand">
             <img
               src={harlandMedicalSystemsLogo}
-              alt=""
+              alt="Harland Medical Systems"
               className="client-unit-brand-logo"
-              width={36}
-              height={36}
               decoding="async"
             />
-            <span className="client-unit-brand-text">HARLAND MEDICAL SYSTEMS</span>
           </div>
           <span className="client-unit-jobs-head-spacer" aria-hidden="true" />
         </div>
