@@ -1685,6 +1685,7 @@ function onboardingPrimaryGoalLabel(value) {
 
 function onboardingInsightFrequencyLabel(value) {
   const labels = {
+    hourly: 'hourly',
     'real-time': 'real-time',
     daily: 'daily',
     weekly: 'weekly',

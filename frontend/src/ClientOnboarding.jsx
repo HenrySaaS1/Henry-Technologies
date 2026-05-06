@@ -6,6 +6,7 @@ import henryLogo from './assets/henry-logo.png'
 const STEPS = [
   'Personal information',
   'Sign up questions',
+  'Outcome preferences',
 ]
 
 const INDUSTRY_OPTIONS = [
@@ -49,6 +50,21 @@ const OPERATION_SIZE_OPTIONS = [
   { value: '200+', label: '200+' },
 ]
 
+const PRIMARY_GOAL_OPTIONS = [
+  { value: 'improve-efficiency', label: 'Improve efficiency' },
+  { value: 'reduce-downtime', label: 'Reduce downtime' },
+  { value: 'improve-safety', label: 'Improve safety' },
+  { value: 'increase-visibility', label: 'Increase visibility' },
+  { value: 'reduce-costs', label: 'Reduce costs' },
+]
+
+const INSIGHT_FREQUENCY_OPTIONS = [
+  { value: 'hourly', label: 'Hourly' },
+  { value: 'real-time', label: 'Real-time' },
+  { value: 'daily', label: 'Daily' },
+  { value: 'weekly', label: 'Weekly' },
+]
+
 function defaultForm(user) {
   let tz
   try {
@@ -79,6 +95,12 @@ function defaultForm(user) {
       monitorAreas: [],
       setupStructure: '',
       operationSize: '',
+    },
+    outcomes: {
+      primaryGoal: '',
+      insightFrequency: '',
+      sampleUploadNames: [],
+      uploadNotes: '',
     },
   }
 }
@@ -131,16 +153,24 @@ function mergeLoadedForm(fetched, user) {
         ? [...fetched.setup.monitorAreas]
         : oldMonitorAreas,
     },
+    outcomes: {
+      ...base.outcomes,
+      ...(fetched.outcomes || {}),
+      sampleUploadNames: Array.isArray(fetched.outcomes?.sampleUploadNames)
+        ? [...fetched.outcomes.sampleUploadNames]
+        : [],
+    },
   }
 }
 
 /** Mirrors personal → legacy keys so the API can update `user.company` from organization.displayName. */
 function formToOnboardingPayload(form) {
-  const { personal, profile, setup } = form
+  const { personal, profile, setup, outcomes } = form
   return {
     personal,
     profile,
     setup,
+    outcomes,
     organization: {
       displayName: personal.displayName,
       industry: profile.industry,
@@ -226,6 +256,10 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
       if (!form.setup.setupStructure) return 'Select how your setup is structured.'
       if (!form.setup.operationSize) return 'Select your operation size.'
     }
+    if (n === 2) {
+      if (!form.outcomes.primaryGoal) return 'Select your primary goal.'
+      if (!form.outcomes.insightFrequency) return 'Select how often you want insights.'
+    }
     return ''
   }
 
@@ -269,7 +303,7 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
   }
 
   const finish = async () => {
-    const err = validate(1) || validate(0)
+    const err = Array.from({ length: STEPS.length }, (_, idx) => validate(idx)).find(Boolean) || ''
     if (err) {
       setStatus(err)
       return
@@ -570,6 +604,95 @@ export default function ClientOnboarding({ user, onComplete, onSignOut }) {
                 </li>
                 <li>
                   Size: {OPERATION_SIZE_OPTIONS.find((opt) => opt.value === form.setup.operationSize)?.label || '—'}
+                </li>
+              </ul>
+            </div>
+          </section>
+        )}
+
+        {step === 2 && (
+          <section className="onboarding-panel" aria-labelledby="onb-outcomes">
+            <h2 id="onb-outcomes">Outcome-oriented questions</h2>
+            <p className="onboarding-hint">
+              Step 3 of 3 — This helps us personalize your initial dashboard and AI recommendations.
+            </p>
+            <fieldset className="onboarding-fieldset">
+              <legend>1. What is your primary goal?</legend>
+              <div className="onboarding-radios">
+                {PRIMARY_GOAL_OPTIONS.map((o) => (
+                  <label key={o.value} className="onboarding-radio">
+                    <input
+                      type="radio"
+                      name="primaryGoal"
+                      value={o.value}
+                      checked={form.outcomes.primaryGoal === o.value}
+                      onChange={() => setField('outcomes', 'primaryGoal', o.value)}
+                    />
+                    {o.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset className="onboarding-fieldset">
+              <legend>2. How often do you want insights?</legend>
+              <div className="onboarding-radios">
+                {INSIGHT_FREQUENCY_OPTIONS.map((o) => (
+                  <label key={o.value} className="onboarding-radio">
+                    <input
+                      type="radio"
+                      name="insightFrequency"
+                      value={o.value}
+                      checked={form.outcomes.insightFrequency === o.value}
+                      onChange={() => setField('outcomes', 'insightFrequency', o.value)}
+                    />
+                    {o.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <label className="onboarding-label">
+              3. Optional: Upload sample data or images
+              <input
+                className="onboarding-input"
+                type="file"
+                multiple
+                onChange={(e) => {
+                  const names = Array.from(e.target.files || []).map((f) => f.name)
+                  setField('outcomes', 'sampleUploadNames', names)
+                }}
+              />
+            </label>
+            {form.outcomes.sampleUploadNames.length ? (
+              <p className="onboarding-hint">
+                Selected: {form.outcomes.sampleUploadNames.join(', ')}
+              </p>
+            ) : (
+              <p className="onboarding-hint">No files selected yet (you can skip this for now).</p>
+            )}
+            <label className="onboarding-label">
+              Optional notes
+              <textarea
+                className="onboarding-input"
+                rows="4"
+                value={form.outcomes.uploadNotes}
+                onChange={(e) => setField('outcomes', 'uploadNotes', e.target.value)}
+                placeholder="Any context for the sample files or your onboarding priorities"
+              />
+            </label>
+            <div className="onboarding-review" role="status">
+              <h3 className="onboarding-h3">Personalized setup summary</h3>
+              <ul className="onboarding-review-list">
+                <li>
+                  Primary goal:{' '}
+                  {PRIMARY_GOAL_OPTIONS.find((opt) => opt.value === form.outcomes.primaryGoal)?.label || '—'}
+                </li>
+                <li>
+                  Insight cadence:{' '}
+                  {INSIGHT_FREQUENCY_OPTIONS.find((opt) => opt.value === form.outcomes.insightFrequency)?.label || '—'}
+                </li>
+                <li>
+                  Sample uploads:{' '}
+                  {form.outcomes.sampleUploadNames.length ? form.outcomes.sampleUploadNames.join(', ') : 'None yet'}
                 </li>
               </ul>
             </div>
