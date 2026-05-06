@@ -348,7 +348,7 @@ const snapshotMobileCards = [
   },
   {
     id: 'snapshot',
-    title: 'HENRY Snapshot',
+    title: 'HENRY SnapShot',
     value: 'Live',
     unit: 'multi-site',
     hint: 'BU 125 · 120 · 140',
@@ -378,7 +378,7 @@ const solutions = [
 const products = [
   {
     slug: 'snapshot',
-    title: 'Snapshot',
+    title: 'Operations Pulse',
     text: 'Get a real-time pulse of your operations in seconds. Track key updates across business units with insights refreshed every few minutes, so you are always in the loop.',
     image: PRODUCT_IMAGES.snapshot,
   },
@@ -411,11 +411,11 @@ const products = [
 const productDetails = [
   {
     slug: 'snapshot',
-    title: 'Snapshot',
+    title: 'Operations Pulse',
     intro:
-      'HENRY Snapshot gives you a quick, real-time overview of your operations. Stay updated with key metrics across business units within minutes, enabling faster and smarter decision-making.',
+      'HENRY SnapShot gives you a quick, real-time overview of your operations. Stay updated with key metrics across business units within minutes, enabling faster and smarter decision-making.',
     body:
-      'Whether you’re monitoring production or tracking performance, Snapshot ensures you always have the latest insights at a glance.',
+      'Whether you’re monitoring production or tracking performance, Operations Pulse keeps the latest insights at a glance.',
     bullets: [
       'Live Operational Updates: Get real-time data refreshed at defined intervals',
       'Quick KPI Overview: Track critical metrics without deep dives',
@@ -1400,10 +1400,10 @@ function App() {
     >
       <div className="snapshot-mobile-inner">
         <div className="snapshot-mobile-head">
-          <h2 id="snapshot-mobile-heading">Snapshot on mobile</h2>
+          <h2 id="snapshot-mobile-heading">SnapShot on mobile</h2>
           <p>
             Swipe through live-style tiles — the same at-a-glance view teams check between line walks and meetings.
-            HENRY Snapshot keeps metrics readable on a phone.
+            HENRY SnapShot keeps metrics readable on a phone.
           </p>
         </div>
         <div
@@ -1442,7 +1442,7 @@ function App() {
         </div>
         <div className="snapshot-mobile-actions">
           <a className="btn-primary snapshot-mobile-cta" href="/products#snapshot">
-            Learn about Snapshot
+            Learn about Operations Pulse
           </a>
           <span className="snapshot-mobile-hint-scroll" aria-hidden="true">
             ← Swipe for more →
