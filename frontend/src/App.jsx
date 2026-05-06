@@ -377,12 +377,6 @@ const solutions = [
 
 const products = [
   {
-    slug: 'snapshot',
-    title: 'Operations Pulse',
-    text: 'Get a real-time pulse of your operations in seconds. Track key updates across business units with insights refreshed every few minutes, so you are always in the loop.',
-    image: PRODUCT_IMAGES.snapshot,
-  },
-  {
     slug: 'systems',
     title: 'Systems',
     text: 'A unified view of your entire plant, powered by IIoT. Monitor machines, equipment, and workflows in real time to optimize performance and reduce downtime.',
@@ -409,28 +403,6 @@ const products = [
 ]
 
 const productDetails = [
-  {
-    slug: 'snapshot',
-    title: 'Operations Pulse',
-    intro:
-      'HENRY SnapShot gives you a quick, real-time overview of your operations. Stay updated with key metrics across business units within minutes, enabling faster and smarter decision-making.',
-    body:
-      'Whether you’re monitoring production or tracking performance, Operations Pulse keeps the latest insights at a glance.',
-    bullets: [
-      'Live Operational Updates: Get real-time data refreshed at defined intervals',
-      'Quick KPI Overview: Track critical metrics without deep dives',
-      'Multi-Unit Visibility: Monitor multiple business units from one place',
-      'Trend Indicators: Spot patterns and anomalies instantly',
-      'Action-Ready Insights: Make faster decisions with concise data',
-    ],
-    benefits: [
-      'Improve operational efficiency',
-      'Reduce downtime and errors',
-      'Make faster, smarter decisions',
-      'Gain full control over business performance',
-    ],
-    image: PRODUCT_IMAGES.snapshot,
-  },
   {
     slug: 'systems',
     title: 'Systems',
@@ -1441,8 +1413,8 @@ function App() {
           </div>
         </div>
         <div className="snapshot-mobile-actions">
-          <a className="btn-primary snapshot-mobile-cta" href="/products#snapshot">
-            Learn about Operations Pulse
+          <a className="btn-primary snapshot-mobile-cta" href="/products#systems">
+            Explore Systems
           </a>
           <span className="snapshot-mobile-hint-scroll" aria-hidden="true">
             ← Swipe for more →
@@ -1459,7 +1431,7 @@ function App() {
         Streamline your operations with smart automation. From monitoring to predictive maintenance, automate
         processes and save valuable time.
       </p>
-      <div className="card-grid five">
+      <div className="card-grid four">
         {products.map((item) => (
           <article key={item.title} className="card product">
             <img className="product-image" src={item.image} alt={item.title} />
