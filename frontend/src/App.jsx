@@ -2627,7 +2627,9 @@ function App() {
                             <button
                               type="button"
                               className="signup-step3-back-link"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
                                 setSignupStep(1)
                                 setSignupStatus('')
                               }}
