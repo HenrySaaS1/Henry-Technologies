@@ -260,6 +260,14 @@ h3 {
   letter-spacing: 0.2px;
 }
 
+.menu a.menu-nav-snapshot {
+  text-transform: none;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  font-size: clamp(0.72rem, 1.05vw, 0.92rem);
+  white-space: nowrap;
+}
+
 .btn-dark,
 .btn-primary {
   font-family: 'Montserrat', 'Open Sans', Arial, sans-serif;
@@ -1043,9 +1051,9 @@ h3 {
 .products-title {
   margin: 0;
   text-align: center;
-  font-size: 2.15rem;
-  line-height: 1;
-  letter-spacing: 1px;
+  font-size: clamp(1.35rem, 4.6vw, 2.15rem);
+  line-height: 1.12;
+  letter-spacing: 0.08em;
   color: #f1f2f4;
   font-weight: 800;
 }

@@ -1316,7 +1316,7 @@ function App() {
   }
 
   const mobileNavLinks = [
-    { href: '/#products', label: 'PRODUCTS' },
+    { href: '/#products', label: 'HENRY SnapShot' },
     { href: '/case-studies', label: 'CASE STUDIES' },
     { href: '/pricing', label: 'PRICING' },
     { href: '/#about', label: 'ABOUT' },
@@ -1454,7 +1454,7 @@ function App() {
 
   const productsSection = (
     <section id="products" className="products">
-      <h2 className="products-title">PRODUCTS</h2>
+      <h2 className="products-title">HENRY SnapShot</h2>
       <p className="products-subtitle">
         Streamline your operations with smart automation. From monitoring to predictive maintenance, automate
         processes and save valuable time.
@@ -1716,7 +1716,7 @@ function App() {
           </div>
           <div className="topbar-left">
             <nav className="menu">
-              <a href="/#products">PRODUCTS</a>
+              <a href="/#products" className="menu-nav-snapshot">HENRY SnapShot</a>
               <a href="/case-studies">CASE STUDIES</a>
               <a href="/pricing">PRICING</a>
               <a href="/#about">ABOUT</a>
@@ -1788,7 +1788,7 @@ function App() {
           </div>
           <div className="topbar-left">
             <nav className="menu">
-              <a href="/products">PRODUCTS</a>
+              <a href="/products" className="menu-nav-snapshot">HENRY SnapShot</a>
               <a href="/case-studies">CASE STUDIES</a>
               <a href="/pricing">PRICING</a>
               <a href="/#about">ABOUT</a>
@@ -1860,7 +1860,7 @@ function App() {
           </div>
           <div className="topbar-left">
             <nav className="menu">
-              <a href="/products">PRODUCTS</a>
+              <a href="/products" className="menu-nav-snapshot">HENRY SnapShot</a>
               <a href="/case-studies">CASE STUDIES</a>
               <a href="/pricing">PRICING</a>
               <a href="/#about">ABOUT</a>
@@ -1996,7 +1996,7 @@ function App() {
         </div>
         <div className="topbar-left">
           <nav className="menu">
-            <a href="/products">PRODUCTS</a>
+            <a href="/products" className="menu-nav-snapshot">HENRY SnapShot</a>
             <a href="/case-studies">CASE STUDIES</a>
             <a href="/pricing">PRICING</a>
             <a href="#about">ABOUT</a>
