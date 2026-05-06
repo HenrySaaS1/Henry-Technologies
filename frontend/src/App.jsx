@@ -38,6 +38,101 @@ import henryLogo from './assets/henry-logo.png'
 import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import HeroLiveChartsHud from './HeroLiveCharts.jsx'
 
+const INDUSTRY_OPTIONS = [
+  { value: '', label: 'Select your industry' },
+  { value: 'manufacturing', label: 'Manufacturing' },
+  { value: 'medical-devices', label: 'Medical devices' },
+  { value: 'pharmaceuticals', label: 'Pharmaceuticals' },
+  { value: 'food-beverage', label: 'Food & beverage' },
+  { value: 'automotive', label: 'Automotive' },
+  { value: 'electronics', label: 'Electronics' },
+  { value: 'logistics', label: 'Logistics' },
+  { value: 'other', label: 'Other' },
+]
+
+const FACILITY_OPTIONS = [
+  { value: 'factory', label: 'Factory / Production Plant' },
+  { value: 'warehouse', label: 'Warehouse / Distribution Center' },
+  { value: 'office', label: 'Office / Corporate Site' },
+  { value: 'mixed', label: 'Mixed' },
+]
+
+const MONITOR_OPTIONS = [
+  { id: 'production-output', label: 'Production / Output' },
+  { id: 'machine-performance', label: 'Machine Performance' },
+  { id: 'safety-compliance', label: 'Safety & Compliance' },
+  { id: 'security-access', label: 'Security / Access' },
+  { id: 'workforce-activity', label: 'Workforce Activity' },
+]
+
+const SETUP_OPTIONS = [
+  { value: 'multi-units-lines', label: 'Multiple business units / production lines' },
+  { value: 'single-line', label: 'Single production line' },
+  { value: 'departments-zones', label: 'Departments / zones' },
+  { value: 'not-sure', label: 'Not sure' },
+]
+
+const OPERATION_SIZE_OPTIONS = [
+  { value: '1-10', label: '1-10 employees' },
+  { value: '11-50', label: '11-50' },
+  { value: '51-200', label: '51-200' },
+  { value: '200+', label: '200+' },
+]
+
+const PRIMARY_GOAL_OPTIONS = [
+  { value: 'improve-efficiency', label: 'Improve efficiency' },
+  { value: 'reduce-downtime', label: 'Reduce downtime' },
+  { value: 'improve-safety', label: 'Improve safety' },
+  { value: 'increase-visibility', label: 'Increase visibility' },
+  { value: 'reduce-costs', label: 'Reduce costs' },
+]
+
+const INSIGHT_FREQUENCY_OPTIONS = [
+  { value: 'real-time', label: 'Real-time' },
+  { value: 'daily', label: 'Daily' },
+  { value: 'weekly', label: 'Weekly' },
+]
+
+const PHONE_COUNTRY_OPTIONS = [
+  { value: '+1', label: 'US (+1)' },
+  { value: '+44', label: 'UK (+44)' },
+  { value: '+91', label: 'IN (+91)' },
+  { value: '+61', label: 'AU (+61)' },
+  { value: '+49', label: 'DE (+49)' },
+  { value: '+33', label: 'FR (+33)' },
+  { value: '+81', label: 'JP (+81)' },
+  { value: '+971', label: 'UAE (+971)' },
+]
+
+const COUNTRY_OPTIONS = (() => {
+  try {
+    if (typeof Intl !== 'undefined' && typeof Intl.DisplayNames === 'function') {
+      const regions =
+        typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('region') : []
+      const display = new Intl.DisplayNames(['en'], { type: 'region' })
+      const options = regions
+        .map((code) => ({ code, name: display.of(code) || code }))
+        .filter((item) => item.name && item.name !== item.code)
+        .sort((a, b) => a.name.localeCompare(b.name))
+      if (options.length) return options
+    }
+  } catch {
+    // Fall back to a safe baseline list if Intl region enumeration is unavailable.
+  }
+  return [
+    { code: 'US', name: 'United States' },
+    { code: 'CA', name: 'Canada' },
+    { code: 'GB', name: 'United Kingdom' },
+    { code: 'IN', name: 'India' },
+    { code: 'AU', name: 'Australia' },
+    { code: 'DE', name: 'Germany' },
+    { code: 'FR', name: 'France' },
+    { code: 'JP', name: 'Japan' },
+    { code: 'AE', name: 'United Arab Emirates' },
+    { code: 'SG', name: 'Singapore' },
+  ]
+})()
+
 const PRODUCT_IMAGES = {
   snapshot: snapshotProductImage,
   systems: systemsProductImage,
@@ -610,11 +705,26 @@ function App() {
   })
   const [status, setStatus] = useState('')
   const [signupForm, setSignupForm] = useState({
+    name: '',
+    phoneCountryCode: '+1',
+    phone: '',
+    companyName: '',
+    website: '',
+    country: '',
     email: '',
     password: '',
     confirmPassword: '',
+    industry: '',
+    locationCount: '',
+    facilityType: '',
+    monitorAreas: [],
+    setupStructure: '',
+    operationSize: '',
+    primaryGoal: '',
+    insightFrequency: '',
   })
   const [signupStatus, setSignupStatus] = useState('')
+  const [signupStep, setSignupStep] = useState(0)
   const [activeCaseStudy, setActiveCaseStudy] = useState(null)
   const [authMode, setAuthMode] = useState('signup')
   const [forgotPasswordHelpOpen, setForgotPasswordHelpOpen] = useState(false)
@@ -718,12 +828,40 @@ function App() {
     setSignupForm((current) => ({ ...current, [name]: value }))
   }
 
+  const toggleSignupMonitorArea = (id) => {
+    setSignupForm((current) => {
+      const set = new Set(current.monitorAreas || [])
+      if (set.has(id)) set.delete(id)
+      else set.add(id)
+      return { ...current, monitorAreas: [...set] }
+    })
+  }
+
   const closeSignupModal = () => {
     setShowSignup(false)
     setSignupStatus('')
+    setSignupStep(0)
     setSignupFromPlan(null)
     setForgotPasswordHelpOpen(false)
-    setSignupForm({ email: '', password: '', confirmPassword: '' })
+    setSignupForm({
+      name: '',
+      phoneCountryCode: '+1',
+      phone: '',
+      companyName: '',
+      website: '',
+      country: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      industry: '',
+      locationCount: '',
+      facilityType: '',
+      monitorAreas: [],
+      setupStructure: '',
+      operationSize: '',
+      primaryGoal: '',
+      insightFrequency: '',
+    })
   }
 
   const enterDashboardDemo = (preset) => {
@@ -785,15 +923,52 @@ function App() {
   const openAuthModal = (mode = 'signup', options = {}) => {
     setAuthMode(mode)
     setSignupStatus('')
+    setSignupStep(0)
     setForgotPasswordHelpOpen(false)
     const planKey = options.planId
     const validPlan = planKey && PLAN_REGISTRATION_DEFAULTS[planKey] ? planKey : null
     if (mode === 'signup') {
       setSignupFromPlan(validPlan)
-      setSignupForm({ email: '', password: '', confirmPassword: '' })
+      setSignupForm({
+        name: '',
+        phoneCountryCode: '+1',
+        phone: '',
+        companyName: '',
+        website: '',
+        country: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        industry: '',
+        locationCount: '',
+        facilityType: '',
+        monitorAreas: [],
+        setupStructure: '',
+        operationSize: '',
+        primaryGoal: '',
+        insightFrequency: '',
+      })
     } else {
       setSignupFromPlan(null)
-      setSignupForm({ email: '', password: '', confirmPassword: '' })
+      setSignupForm({
+        name: '',
+        phoneCountryCode: '+1',
+        phone: '',
+        companyName: '',
+        website: '',
+        country: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        industry: '',
+        locationCount: '',
+        facilityType: '',
+        monitorAreas: [],
+        setupStructure: '',
+        operationSize: '',
+        primaryGoal: '',
+        insightFrequency: '',
+      })
     }
     setShowSignup(true)
   }
@@ -813,29 +988,108 @@ function App() {
   const submitSignup = async (event) => {
     event.preventDefault()
     setSignupStatus('')
-    if (!signupForm.email?.trim() || !signupForm.password || !signupForm.confirmPassword) {
-      setSignupStatus('Please fill in email, password, and confirm password.')
+    if (signupStep === 0) {
+      if (
+        !signupForm.name?.trim() ||
+        !signupForm.phone?.trim() ||
+        !signupForm.companyName?.trim() ||
+        !signupForm.country?.trim() ||
+        !signupForm.email?.trim() ||
+        !signupForm.password ||
+        !signupForm.confirmPassword
+      ) {
+        setSignupStatus('Please fill all required personal details.')
+        return
+      }
+      if (signupForm.password.length < 8) {
+        setSignupStatus('Password must be at least 8 characters.')
+        return
+      }
+      if (signupForm.password !== signupForm.confirmPassword) {
+        setSignupStatus('Passwords do not match.')
+        return
+      }
+      setSignupStep(1)
       return
     }
-    if (signupForm.password.length < 8) {
-      setSignupStatus('Password must be at least 8 characters.')
-      return
-    }
-    if (signupForm.password !== signupForm.confirmPassword) {
-      setSignupStatus('Passwords do not match.')
-      return
+    if (signupStep === 1) {
+      if (!signupForm.industry || !String(signupForm.locationCount).trim() || !signupForm.facilityType) {
+        setSignupStatus('Please complete operational details (industry, locations, and facility type).')
+        return
+      }
+      if (!signupForm.monitorAreas?.length || !signupForm.setupStructure || !signupForm.operationSize) {
+        setSignupStatus('Please complete monitoring scope, setup structure, and operation size.')
+        return
+      }
+      if (!signupForm.primaryGoal || !signupForm.insightFrequency) {
+        setSignupStatus('Please select your primary goal and insight frequency.')
+        return
+      }
     }
     const emailKey = signupForm.email.trim().toLowerCase()
+    const formattedPhone = `${signupForm.phoneCountryCode || '+1'} ${signupForm.phone.trim()}`.trim()
     const productIds =
       signupFromPlan && PLAN_REGISTRATION_DEFAULTS[signupFromPlan]
         ? [...PLAN_REGISTRATION_DEFAULTS[signupFromPlan].productIds]
         : [...DEFAULT_PRODUCT_IDS]
     try {
+      const onboardingData = {
+        personal: {
+          displayName: signupForm.companyName.trim(),
+          line1: '',
+          line2: '',
+          city: '',
+          region: '',
+          postal: '',
+          country: signupForm.country.trim(),
+          phone: formattedPhone,
+          website: signupForm.website.trim(),
+          siteManager: signupForm.name.trim(),
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+        },
+        profile: {
+          industry: signupForm.industry,
+          locationCount: String(signupForm.locationCount).trim(),
+          facilityType: signupForm.facilityType,
+        },
+        setup: {
+          monitorAreas: [...(signupForm.monitorAreas || [])],
+          setupStructure: signupForm.setupStructure,
+          operationSize: signupForm.operationSize,
+        },
+        outcomes: {
+          primaryGoal: signupForm.primaryGoal,
+          insightFrequency: signupForm.insightFrequency,
+          sampleUploadNames: [],
+          uploadNotes: '',
+        },
+        organization: {
+          displayName: signupForm.companyName.trim(),
+          industry: signupForm.industry,
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+          phone: formattedPhone,
+          website: signupForm.website.trim(),
+          siteManager: signupForm.name.trim(),
+        },
+        primaryAddress: {
+          line1: '',
+          line2: '',
+          city: '',
+          region: '',
+          postal: '',
+          country: signupForm.country.trim(),
+        },
+      }
       const body = {
         email: emailKey,
         password: signupForm.password,
-        company: tenantSlug === 'harland' ? 'Harland Medical Systems' : defaultOrganizationFromEmail(emailKey),
+        company:
+          tenantSlug === 'harland'
+            ? 'Harland Medical Systems'
+            : signupForm.companyName.trim() || defaultOrganizationFromEmail(emailKey),
         productIds,
+        onboardingData,
+        completeOnboarding: true,
       }
       if (signupFromPlan) body.planId = signupFromPlan
       const data = await apiJson('/api/auth/register', {
@@ -850,8 +1104,9 @@ function App() {
         setAuthMode('signin')
         return
       }
+      setCurrentUser(u)
       closeSignupModal()
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && !u.onboardingComplete) {
         window.location.assign('/onboarding')
       }
     } catch (e) {
@@ -1717,7 +1972,9 @@ function App() {
             </button>
             <div className={`signup-modal-grid${authMode === 'signin' ? ' signup-modal-grid--signin' : ''}`}>
               <div className={`signup-panel${authMode === 'signin' ? ' signup-panel--signin' : ''}`}>
-                <div className={`signup-glass${authMode === 'signin' ? ' signup-glass--signin' : ''}`}>
+                <div
+                  className={`signup-glass${authMode === 'signin' ? ' signup-glass--signin' : ' signup-glass--signup'}`}
+                >
                   <div className="signup-auth-switch">
                     <button
                       type="button"
@@ -1727,7 +1984,26 @@ function App() {
                         setSignupStatus('')
                         setSignupFromPlan(null)
                         setForgotPasswordHelpOpen(false)
-                        setSignupForm({ email: '', password: '', confirmPassword: '' })
+                        setSignupStep(0)
+                        setSignupForm({
+                          name: '',
+                          phoneCountryCode: '+1',
+                          phone: '',
+                          companyName: '',
+                          website: '',
+                          country: '',
+                          email: '',
+                          password: '',
+                          confirmPassword: '',
+                          industry: '',
+                          locationCount: '',
+                          facilityType: '',
+                          monitorAreas: [],
+                          setupStructure: '',
+                          operationSize: '',
+                          primaryGoal: '',
+                          insightFrequency: '',
+                        })
                       }}
                     >
                       Sign Up
@@ -1757,13 +2033,87 @@ function App() {
                           <span className="signup-pricing-context-price">{PLAN_DISPLAY[signupFromPlan].price}</span>
                         </p>
                       ) : null}
-                      <h3 id="onboarding-title">Create An Account</h3>
+                      <div className="onboarding-stepper" aria-label="Signup steps">
+                        <span className={`onboarding-step-node ${signupStep >= 0 ? 'done' : ''}`}>
+                          <span className="onboarding-step-dot">1</span>
+                          <span className="onboarding-step-caption">Step 1</span>
+                        </span>
+                        <span className="onboarding-stepper-line" />
+                        <span className={`onboarding-step-node ${signupStep >= 1 ? (signupStep === 1 ? 'active' : 'done') : ''}`}>
+                          <span className="onboarding-step-dot">2</span>
+                          <span className="onboarding-step-caption">Step 2</span>
+                        </span>
+                      </div>
+                      <h3 id="onboarding-title">
+                        {signupStep === 0
+                          ? 'Create Your Account'
+                          : 'Operational & Outcome Questions'}
+                      </h3>
                       <p className="signup-glass-hint">
-                        Use your work email — it becomes your login. Enter your password twice to confirm, then create
-                        your workspace.
+                        {signupStep === 0
+                          ? 'Step 1 of 2 — enter your personal and company details.'
+                          : 'Step 2 of 2 — help us understand operations and personalize insights.'}
                       </p>
                       <form className="signup-form-new" onSubmit={submitSignup}>
-                        <label className="signup-field">
+                        {signupStep === 0 ? (
+                          <>
+                        <label className="signup-field signup-field--stack">
+                          <span className="signup-field-label">Full Name</span>
+                          <span className="signup-field-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                fill="currentColor"
+                                opacity=".85"
+                              />
+                            </svg>
+                          </span>
+                          <input
+                            name="name"
+                            type="text"
+                            autoComplete="name"
+                            value={signupForm.name}
+                            onChange={updateSignupField}
+                            placeholder="Enter your full name"
+                          />
+                        </label>
+                        <label className="signup-field signup-field--stack">
+                          <span className="signup-field-label">Phone Number</span>
+                          <span className="signup-field-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                fill="currentColor"
+                                opacity=".85"
+                              />
+                            </svg>
+                          </span>
+                          <div className="signup-phone-row">
+                            <select
+                              className="signup-phone-code"
+                              name="phoneCountryCode"
+                              aria-label="Phone country code"
+                              value={signupForm.phoneCountryCode}
+                              onChange={updateSignupField}
+                            >
+                              {PHONE_COUNTRY_OPTIONS.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                            <input
+                              name="phone"
+                              type="tel"
+                              autoComplete="tel"
+                              value={signupForm.phone}
+                              onChange={updateSignupField}
+                              placeholder="98765 43210"
+                            />
+                          </div>
+                        </label>
+                        <label className="signup-field signup-field--stack">
+                          <span className="signup-field-label">Company Email</span>
                           <span className="signup-field-icon" aria-hidden="true">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                               <path
@@ -1779,10 +2129,76 @@ function App() {
                             autoComplete="email"
                             value={signupForm.email}
                             onChange={updateSignupField}
-                            placeholder="Work email"
+                            placeholder="name@company.com"
                           />
                         </label>
-                        <label className="signup-field">
+                        <label className="signup-field signup-field--stack">
+                          <span className="signup-field-label">Company Name</span>
+                          <span className="signup-field-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                fill="currentColor"
+                                opacity=".85"
+                              />
+                            </svg>
+                          </span>
+                          <input
+                            name="companyName"
+                            type="text"
+                            autoComplete="organization"
+                            value={signupForm.companyName}
+                            onChange={updateSignupField}
+                            placeholder="Enter your company name"
+                          />
+                        </label>
+                        <label className="signup-field signup-field--stack">
+                          <span className="signup-field-label">Website (Optional)</span>
+                          <span className="signup-field-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                fill="currentColor"
+                                opacity=".85"
+                              />
+                            </svg>
+                          </span>
+                          <input
+                            name="website"
+                            type="url"
+                            autoComplete="url"
+                            value={signupForm.website}
+                            onChange={updateSignupField}
+                            placeholder="Website (optional)"
+                          />
+                        </label>
+                        <label className="signup-field signup-field--stack">
+                          <span className="signup-field-label">Country</span>
+                          <span className="signup-field-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                fill="currentColor"
+                                opacity=".85"
+                              />
+                            </svg>
+                          </span>
+                          <select
+                            name="country"
+                            autoComplete="country-name"
+                            value={signupForm.country}
+                            onChange={updateSignupField}
+                          >
+                            <option value="">Select country</option>
+                            {COUNTRY_OPTIONS.map((country) => (
+                              <option key={country.code} value={country.name}>
+                                {country.name}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label className="signup-field signup-field--stack">
+                          <span className="signup-field-label">Password</span>
                           <span className="signup-field-icon" aria-hidden="true">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                               <path
@@ -1801,7 +2217,8 @@ function App() {
                             placeholder="Password"
                           />
                         </label>
-                        <label className="signup-field">
+                        <label className="signup-field signup-field--stack">
+                          <span className="signup-field-label">Confirm Password</span>
                           <span className="signup-field-icon" aria-hidden="true">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                               <path
@@ -1820,40 +2237,225 @@ function App() {
                             placeholder="Confirm password"
                           />
                         </label>
-                        <button type="submit" className="btn-start-monitoring">
-                          Create An Account
-                        </button>
-                        <div className="signup-or">
-                          <span>or</span>
+                          </>
+                        ) : null}
+                        {signupStep === 1 ? (
+                          <>
+                        <label className="signup-field">
+                          <span className="signup-field-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                fill="currentColor"
+                                opacity=".85"
+                              />
+                            </svg>
+                          </span>
+                          <select name="industry" value={signupForm.industry} onChange={updateSignupField}>
+                            {INDUSTRY_OPTIONS.map((opt) => (
+                              <option key={opt.value || 'none'} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label className="signup-field">
+                          <span className="signup-field-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                fill="currentColor"
+                                opacity=".85"
+                              />
+                            </svg>
+                          </span>
+                          <input
+                            name="locationCount"
+                            type="number"
+                            min="1"
+                            value={signupForm.locationCount}
+                            onChange={updateSignupField}
+                            placeholder="Number of locations"
+                          />
+                        </label>
+                        <label className="signup-field">
+                          <span className="signup-field-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                fill="currentColor"
+                                opacity=".85"
+                              />
+                            </svg>
+                          </span>
+                          <select name="facilityType" value={signupForm.facilityType} onChange={updateSignupField}>
+                            <option value="">Facility type</option>
+                            {FACILITY_OPTIONS.map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label className="signup-field">
+                          <span className="signup-field-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                fill="currentColor"
+                                opacity=".85"
+                              />
+                            </svg>
+                          </span>
+                          <select name="setupStructure" value={signupForm.setupStructure} onChange={updateSignupField}>
+                            <option value="">Setup structure</option>
+                            {SETUP_OPTIONS.map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label className="signup-field">
+                          <span className="signup-field-icon" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                              <path
+                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                fill="currentColor"
+                                opacity=".85"
+                              />
+                            </svg>
+                          </span>
+                          <select name="operationSize" value={signupForm.operationSize} onChange={updateSignupField}>
+                            <option value="">Operation size</option>
+                            {OPERATION_SIZE_OPTIONS.map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <fieldset className="signup-field">
+                          <legend>What do you want to monitor?</legend>
+                          <div>
+                            {MONITOR_OPTIONS.map((o) => (
+                              <label key={o.id} style={{ display: 'block', marginBottom: '0.25rem' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={signupForm.monitorAreas.includes(o.id)}
+                                  onChange={() => toggleSignupMonitorArea(o.id)}
+                                />{' '}
+                                {o.label}
+                              </label>
+                            ))}
+                          </div>
+                        </fieldset>
+                            <label className="signup-field">
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <select name="primaryGoal" value={signupForm.primaryGoal} onChange={updateSignupField}>
+                                <option value="">Primary goal</option>
+                                {PRIMARY_GOAL_OPTIONS.map((opt) => (
+                                  <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label className="signup-field">
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <select
+                                name="insightFrequency"
+                                value={signupForm.insightFrequency}
+                                onChange={updateSignupField}
+                              >
+                                <option value="">Insight frequency</option>
+                                {INSIGHT_FREQUENCY_OPTIONS.map((opt) => (
+                                  <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label className="signup-field">
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <input type="file" multiple />
+                            </label>
+                          </>
+                        ) : null}
+                        <div className="onboarding-actions-row">
+                          {signupStep > 0 ? (
+                            <button
+                              type="button"
+                              className="btn-onboarding-back"
+                              onClick={() => {
+                                setSignupStep((s) => Math.max(0, s - 1))
+                                setSignupStatus('')
+                              }}
+                            >
+                              Back
+                            </button>
+                          ) : (
+                            <span />
+                          )}
+                          <button type="submit" className="btn-start-monitoring onboarding-next">
+                            {signupStep === 0 ? 'Continue' : 'Complete Setup'}
+                          </button>
                         </div>
-                        <button type="button" className="btn-google" onClick={continueWithGoogle}>
-                          <svg className="google-g" width="18" height="18" viewBox="0 0 24 24">
-                            <path
-                              fill="#4285F4"
-                              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                            />
-                            <path
-                              fill="#34A853"
-                              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                            />
-                            <path
-                              fill="#FBBC05"
-                              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                            />
-                            <path
-                              fill="#EA4335"
-                              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                            />
-                          </svg>
-                          Continue with Google
-                        </button>
-                        <button type="button" className="signup-bailout" onClick={backToHomeFromSignup}>
-                          Maybe later — Back to Home
-                        </button>
+                        {signupStep === 0 ? (
+                          <>
+                            <p className="signup-login-inline">
+                              Already have an account?{' '}
+                              <button
+                                type="button"
+                                className="signup-login-inline-link"
+                                onClick={() => {
+                                  setAuthMode('signin')
+                                  setSignupStatus('')
+                                  setSignupFromPlan(null)
+                                }}
+                              >
+                                Log In
+                              </button>
+                            </p>
+                            <div className="signup-trust-row">
+                              <span>SSL Secured</span>
+                              <span>Enterprise Ready</span>
+                              <span>Your data remains private</span>
+                            </div>
+                          </>
+                        ) : (
+                          <button type="button" className="signup-bailout" onClick={backToHomeFromSignup}>
+                            Maybe later — Back to Home
+                          </button>
+                        )}
                         {signupStatus ? (
                           <p className={`signup-status-new ${signupStatusTone(signupStatus)}`}>{signupStatus}</p>
                         ) : null}
-                        {dashboardDemoShortcuts}
+                        {signupStep === 0 ? null : dashboardDemoShortcuts}
                       </form>
                     </>
                   ) : (
