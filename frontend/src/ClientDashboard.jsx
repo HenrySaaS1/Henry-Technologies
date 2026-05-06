@@ -1191,15 +1191,15 @@ function locationDrivenCardCount(user) {
   return Math.max(3, Math.min(12, parsed))
 }
 
-/** Matches reference boards: BU 120 / BU 125 job rows (description + status). */
+/** BU 120 / BU 125 job row templates (description + status) for unit job cards. */
 const EXACT_JOBS_BY_BU = {
   '120': [
-    { description: '528-COATER', status: 'Stable' },
-    { description: '528-COATER', status: 'Moderate' },
-    { description: '528-COATER', status: 'Stable' },
-    { description: 'TTS1000', status: 'Stable' },
-    { description: 'TTS1000', status: 'Critical' },
-    { description: 'CUSTOM', status: 'Moderate' },
+    { description: 'RDX-195 Coater', status: 'Stable' },
+    { description: 'RDX-195 Coater', status: 'Moderate' },
+    { description: 'RDX-195 Coater', status: 'Stable' },
+    { description: 'RDX-195 Coater', status: 'Stable' },
+    { description: 'FTS7000', status: 'Critical' },
+    { description: 'CTS1100', status: 'Moderate' },
   ],
   '125': [
     { description: '528-COATER', status: 'Stable' },
