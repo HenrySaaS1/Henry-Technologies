@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+﻿import { useState, useEffect, useRef } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import ClientDashboard from './ClientDashboard.jsx'
 import ClientOnboarding from './ClientOnboarding.jsx'
@@ -92,6 +92,79 @@ const INSIGHT_FREQUENCY_OPTIONS = [
   { value: 'daily', label: 'Daily' },
   { value: 'weekly', label: 'Weekly' },
 ]
+
+function SignupOutcomeGoalIcon({ value }) {
+  const p = { width: 18, height: 18, viewBox: '0 0 24 24', 'aria-hidden': true }
+  switch (value) {
+    case 'improve-efficiency':
+      return (
+        <svg {...p} fill="none">
+          <path
+            d="M4 18h16v2H4v-2zm2-3h2.5v3H6v-3zm4-4H13v7H10v-7zm4-6h2.5v13H14V5z"
+            fill="currentColor"
+          />
+        </svg>
+      )
+    case 'reduce-downtime':
+      return (
+        <svg {...p} fill="none">
+          <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M12 8v4l2.5 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      )
+    case 'improve-safety':
+      return (
+        <svg {...p} fill="none">
+          <path
+            d="M12 3l8 4v6c0 5-4 8-8 10-4-2-8-5-8-10V7l8-4z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+        </svg>
+      )
+    case 'increase-visibility':
+      return (
+        <svg {...p} fill="none">
+          <path
+            d="M1 12s4-6 11-6 11 6 11 6-4 6-11 6S1 12 1 12z"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+          <circle cx="12" cy="12" r="3" fill="currentColor" />
+        </svg>
+      )
+    case 'reduce-costs':
+      return (
+        <svg {...p} fill="none">
+          <path
+            d="M12 2v20M17 5H9.5a2.5 2.5 0 000 5H14a2.5 2.5 0 010 5H7"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      )
+    default:
+      return null
+  }
+}
+
+function SignupFrequencyGlyph({ value }) {
+  const p = { width: 20, height: 20, viewBox: '0 0 24 24', 'aria-hidden': true }
+  if (value === 'hourly') {
+    return (
+      <svg {...p}>
+        <path d="M13 2L4 14h7l-1 8 10-14h-7l1-6z" fill="currentColor" />
+      </svg>
+    )
+  }
+  return (
+    <svg {...p} fill="none">
+      <rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M4 10h16M9 3v4M15 3v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
 
 const PHONE_COUNTRY_OPTIONS = [
   { value: '+1', label: 'US (+1)' },
@@ -726,6 +799,8 @@ function App() {
   })
   const [signupStatus, setSignupStatus] = useState('')
   const [signupStep, setSignupStep] = useState(0)
+  const [signupDropActive, setSignupDropActive] = useState(false)
+  const sampleFileInputRef = useRef(null)
   const [activeCaseStudy, setActiveCaseStudy] = useState(null)
   const [authMode, setAuthMode] = useState('signup')
   const [forgotPasswordHelpOpen, setForgotPasswordHelpOpen] = useState(false)
@@ -851,6 +926,14 @@ function App() {
     syncSampleUploadNamesFromFiles(e.target.files)
   }
 
+  const onSignupSampleDrop = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setSignupDropActive(false)
+    const files = e.dataTransfer?.files
+    if (files?.length) syncSampleUploadNamesFromFiles(files)
+  }
+
   const closeSignupModal = () => {
     setShowSignup(false)
     setSignupStatus('')
@@ -873,9 +956,9 @@ function App() {
       monitorAreas: [],
       setupStructure: '',
       operationSize: '',
-    primaryGoal: '',
-    insightFrequency: '',
-    sampleUploadNames: [],
+      primaryGoal: '',
+      insightFrequency: '',
+      sampleUploadNames: [],
     })
   }
 
@@ -1038,10 +1121,16 @@ function App() {
         setSignupStatus('Please complete monitoring scope, setup structure, and operation size.')
         return
       }
+      setSignupStep(2)
+      return
+    }
+    if (signupStep === 2) {
       if (!signupForm.primaryGoal || !signupForm.insightFrequency) {
-        setSignupStatus('Please select your primary goal and insight frequency.')
+        setSignupStatus('Please select your primary goal and how often you want insights.')
         return
       }
+    } else {
+      return
     }
     const emailKey = signupForm.email.trim().toLowerCase()
     const formattedPhone = `${signupForm.phoneCountryCode || '+1'} ${signupForm.phone.trim()}`.trim()
@@ -2051,30 +2140,45 @@ function App() {
                           <span className="signup-pricing-context-price">{PLAN_DISPLAY[signupFromPlan].price}</span>
                         </p>
                       ) : null}
-                      <div className="onboarding-stepper onboarding-stepper--2" aria-label="Signup steps">
+                      <div className="onboarding-stepper onboarding-stepper--3" aria-label="Signup steps">
                         <span
                           className={`onboarding-step-node ${signupStep > 0 ? 'done' : ''} ${
                             signupStep === 0 ? 'active' : ''
                           }`}
                         >
                           <span className="onboarding-step-dot">{signupStep > 0 ? '✓' : '1'}</span>
-                          <span className="onboarding-step-caption">Step 1</span>
+                          <span className="onboarding-step-caption">Personal Information</span>
                         </span>
                         <span className="onboarding-stepper-line" aria-hidden="true" />
                         <span
-                          className={`onboarding-step-node ${signupStep === 1 ? 'active' : ''}`}
+                          className={`onboarding-step-node ${signupStep > 1 ? 'done' : ''} ${
+                            signupStep === 1 ? 'active' : ''
+                          }`}
                         >
-                          <span className="onboarding-step-dot">2</span>
-                          <span className="onboarding-step-caption">Step 2</span>
+                          <span className="onboarding-step-dot">{signupStep > 1 ? '✓' : '2'}</span>
+                          <span className="onboarding-step-caption">Operational Questions</span>
+                        </span>
+                        <span className="onboarding-stepper-line" aria-hidden="true" />
+                        <span
+                          className={`onboarding-step-node ${signupStep === 2 ? 'active' : ''}`}
+                        >
+                          <span className="onboarding-step-dot">3</span>
+                          <span className="onboarding-step-caption">Outcome-Oriented Questions</span>
                         </span>
                       </div>
                       <h3 id="onboarding-title">
-                        {signupStep === 0 ? 'Create Your Account' : 'Operational & Outcome Questions'}
+                        {signupStep === 0
+                          ? 'Create Your Account'
+                          : signupStep === 1
+                            ? 'Operational Questions'
+                            : 'Outcome-Oriented Questions'}
                       </h3>
                       <p className="signup-glass-hint">
                         {signupStep === 0
-                          ? 'Step 1 of 2 — enter your personal and company details.'
-                          : 'Step 2 of 2 — help us understand operations and personalize insights.'}
+                          ? 'Step 1 of 3 — enter your personal and company details.'
+                          : signupStep === 1
+                            ? 'Step 2 of 3 — help us understand how you operate.'
+                            : 'This is where we personalise value.'}
                       </p>
                       <form className="signup-form-new" onSubmit={submitSignup}>
                         {signupStep === 0 ? (
@@ -2372,89 +2476,166 @@ function App() {
                             ))}
                           </div>
                         </fieldset>
-                        <label className="signup-field">
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
-                              />
-                            </svg>
-                          </span>
-                          <select name="primaryGoal" value={signupForm.primaryGoal} onChange={updateSignupField}>
-                            <option value="">Primary goal</option>
-                            {PRIMARY_GOAL_OPTIONS.map((opt) => (
-                              <option key={opt.value} value={opt.value}>
-                                {opt.label}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <label className="signup-field">
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
-                              />
-                            </svg>
-                          </span>
-                          <select
-                            name="insightFrequency"
-                            value={signupForm.insightFrequency}
-                            onChange={updateSignupField}
-                          >
-                            <option value="">Insight frequency</option>
-                            {INSIGHT_FREQUENCY_OPTIONS.map((opt) => (
-                              <option key={opt.value} value={opt.value}>
-                                {opt.label}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <label className="signup-field signup-field--file">
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M8 17H6a2 2 0 01-2-2V9a2 2 0 012-2h2m8 0h2a2 2 0 012 2v6a2 2 0 01-2 2h-2M12 12l-3-3m0 0l3-3m-3 3h8"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                fill="none"
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                          </span>
-                          <input
-                            type="file"
-                            multiple
-                            accept=".csv,.xlsx,.xls,.jpg,.jpeg,.png"
-                            onChange={onSignupSampleFilesChange}
-                            className="signup-field-file-native"
-                          />
-                        </label>
                           </>
                         ) : null}
-                        <div className="onboarding-actions-row">
-                          {signupStep > 0 ? (
+                        {signupStep === 2 ? (
+                          <div className="signup-step3">
+                            <div className="signup-outcome-block">
+                              <p className="signup-outcome-q">1. What is your primary goal?</p>
+                              <div className="signup-outcome-goal-list" role="radiogroup" aria-label="Primary goal">
+                                {PRIMARY_GOAL_OPTIONS.map((opt) => (
+                                  <label
+                                    key={opt.value}
+                                    className={`signup-outcome-goal-card ${
+                                      signupForm.primaryGoal === opt.value ? 'is-selected' : ''
+                                    }`}
+                                  >
+                                    <input
+                                      type="radio"
+                                      name="primaryGoal"
+                                      value={opt.value}
+                                      checked={signupForm.primaryGoal === opt.value}
+                                      onChange={updateSignupField}
+                                    />
+                                    <span className="signup-outcome-goal-icon" aria-hidden="true">
+                                      <SignupOutcomeGoalIcon value={opt.value} />
+                                    </span>
+                                    <span className="signup-outcome-goal-text">{opt.label}</span>
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="signup-outcome-block">
+                              <p className="signup-outcome-q">2. How often do you want insights?</p>
+                              <div
+                                className="signup-outcome-frequency"
+                                role="radiogroup"
+                                aria-label="Insight frequency"
+                              >
+                                {INSIGHT_FREQUENCY_OPTIONS.map((opt) => (
+                                  <label
+                                    key={opt.value}
+                                    className={`signup-outcome-frequency-card ${
+                                      signupForm.insightFrequency === opt.value ? 'is-selected' : ''
+                                    }`}
+                                  >
+                                    <input
+                                      type="radio"
+                                      name="insightFrequency"
+                                      value={opt.value}
+                                      checked={signupForm.insightFrequency === opt.value}
+                                      onChange={updateSignupField}
+                                    />
+                                    <span className="signup-outcome-frequency-ic" aria-hidden="true">
+                                      <SignupFrequencyGlyph value={opt.value} />
+                                    </span>
+                                    <span className="signup-outcome-frequency-text">{opt.label}</span>
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="signup-outcome-block">
+                              <p className="signup-outcome-q">
+                                3. <span className="signup-outcome-optional-label">Optional</span>
+                                <span className="signup-outcome-optional-rest"> (You can skip this)</span>
+                              </p>
+                              <p className="signup-outcome-upload-hint">Upload sample data / images</p>
+                              <div
+                                className={`signup-dropzone ${signupDropActive ? 'is-active' : ''}`}
+                                onDragEnter={(e) => {
+                                  e.preventDefault()
+                                  setSignupDropActive(true)
+                                }}
+                                onDragOver={(e) => {
+                                  e.preventDefault()
+                                  setSignupDropActive(true)
+                                }}
+                                onDragLeave={() => setSignupDropActive(false)}
+                                onDrop={onSignupSampleDrop}
+                              >
+                                <input
+                                  ref={sampleFileInputRef}
+                                  type="file"
+                                  multiple
+                                  className="signup-sample-file-input"
+                                  accept=".csv,.xlsx,.xls,.jpg,.jpeg,.png"
+                                  onChange={onSignupSampleFilesChange}
+                                />
+                                <span className="signup-dropzone-cloud" aria-hidden="true">
+                                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                                    <path
+                                      d="M7 18a4 4 0 004 4h7a4 4 0 00.57-7.97A5 5 0 0012 4a5 5 0 00-5 5v1"
+                                      stroke="#2563eb"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                    <path
+                                      d="M12 11v8m0 0l-2.5-2.5M12 19l2.5-2.5"
+                                      stroke="#2563eb"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                </span>
+                                <p className="signup-dropzone-text">Drag and drop files here or</p>
+                                <button
+                                  type="button"
+                                  className="signup-choose-files-btn"
+                                  onClick={() => sampleFileInputRef.current?.click()}
+                                >
+                                  Choose Files
+                                </button>
+                                <p className="signup-dropzone-foot">
+                                  Supports .csv, .xlsx, .jpg, .png (Max 25MB)
+                                </p>
+                                {signupForm.sampleUploadNames?.length ? (
+                                  <p className="signup-dropzone-names">
+                                    {signupForm.sampleUploadNames.join(', ')}
+                                  </p>
+                                ) : null}
+                              </div>
+                            </div>
+                          </div>
+                        ) : null}
+                        {signupStep < 2 ? (
+                          <div className="onboarding-actions-row">
+                            {signupStep > 0 ? (
+                              <button
+                                type="button"
+                                className="btn-onboarding-back"
+                                onClick={() => {
+                                  setSignupStep((s) => Math.max(0, s - 1))
+                                  setSignupStatus('')
+                                }}
+                              >
+                                Back
+                              </button>
+                            ) : (
+                              <span />
+                            )}
+                            <button type="submit" className="btn-start-monitoring onboarding-next">
+                              Continue
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="onboarding-actions-stack signup-step3-submit-stack">
+                            <button type="submit" className="btn-start-monitoring onboarding-next btn-complete-setup-arrow">
+                              Complete Setup <span aria-hidden="true">→</span>
+                            </button>
                             <button
                               type="button"
-                              className="btn-onboarding-back"
+                              className="signup-step3-back-link"
                               onClick={() => {
-                                setSignupStep((s) => Math.max(0, s - 1))
+                                setSignupStep(1)
                                 setSignupStatus('')
                               }}
                             >
-                              Back
+                              ← Back
                             </button>
-                          ) : (
-                            <span />
-                          )}
-                          <button type="submit" className="btn-start-monitoring onboarding-next">
-                            {signupStep === 0 ? 'Continue' : 'Complete Setup'}
-                          </button>
-                        </div>
+                          </div>
+                        )}
                         {signupStep === 0 ? (
                           <>
                             <p className="signup-login-inline">
@@ -2477,10 +2658,16 @@ function App() {
                               <span>Your data remains private</span>
                             </div>
                           </>
-                        ) : (
+                        ) : signupStep === 1 ? (
                           <button type="button" className="signup-bailout" onClick={backToHomeFromSignup}>
                             Maybe later — Back to Home
                           </button>
+                        ) : (
+                          <div className="signup-trust-row signup-trust-row--icons">
+                            <span>SSL Secured</span>
+                            <span>Enterprise Ready</span>
+                            <span>Your data remains private</span>
+                          </div>
                         )}
                         {signupStatus ? (
                           <p className={`signup-status-new ${signupStatusTone(signupStatus)}`}>{signupStatus}</p>

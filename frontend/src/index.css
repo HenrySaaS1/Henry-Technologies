@@ -3172,30 +3172,31 @@ h3 {
   color: #1d4ed8;
 }
 
-.onboarding-stepper--2 {
+.onboarding-stepper--3 {
   flex-wrap: nowrap;
-  gap: 0.45rem;
+  gap: 0.06rem;
   margin-bottom: 0.42rem;
   align-items: flex-start;
 }
 
-.onboarding-stepper--2 .onboarding-stepper-line {
+.onboarding-stepper--3 .onboarding-stepper-line {
   flex: 1 1 auto;
-  min-width: 0.35rem;
+  min-width: 0.18rem;
   max-width: none;
-  margin-top: 0.62rem;
+  margin-top: 0.56rem;
 }
 
-.onboarding-stepper--2 .onboarding-step-node {
+.onboarding-stepper--3 .onboarding-step-node {
   min-width: 0;
-  flex: 0 1 auto;
+  flex: 0 1 29%;
 }
 
-.onboarding-stepper--2 .onboarding-step-caption {
-  font-size: 0.48rem;
-  line-height: 1.15;
-  max-width: 5.4rem;
+.onboarding-stepper--3 .onboarding-step-caption {
+  font-size: 0.4rem;
+  line-height: 1.1;
+  max-width: 3.6rem;
   hyphens: auto;
+  text-align: center;
 }
 
 .signup-glass--signup .signup-field--file {
@@ -3207,6 +3208,238 @@ h3 {
   min-width: 0;
   font-size: 0.7rem;
   color: #334155;
+}
+
+.signup-step3 {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.signup-outcome-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.signup-outcome-q {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.signup-outcome-optional-label {
+  color: #2563eb;
+}
+
+.signup-outcome-optional-rest {
+  font-weight: 600;
+  color: #64748b;
+}
+
+.signup-outcome-upload-hint {
+  margin: -0.06rem 0 0.12rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.signup-outcome-goal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.signup-outcome-goal-card {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.signup-outcome-goal-card.is-selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.12);
+}
+
+.signup-outcome-goal-card input {
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: #2563eb;
+}
+
+.signup-outcome-goal-icon {
+  display: flex;
+  flex-shrink: 0;
+  color: #64748b;
+}
+
+.signup-outcome-goal-card.is-selected .signup-outcome-goal-icon {
+  color: #2563eb;
+}
+
+.signup-outcome-goal-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.signup-outcome-frequency {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.32rem;
+}
+
+.signup-outcome-frequency-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.28rem;
+  padding: 0.38rem 0.35rem;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  min-height: 2.5rem;
+}
+
+.signup-outcome-frequency-card.is-selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.signup-outcome-frequency-card input {
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: #2563eb;
+}
+
+.signup-outcome-frequency-ic {
+  display: flex;
+  flex-shrink: 0;
+  color: #64748b;
+}
+
+.signup-outcome-frequency-card.is-selected .signup-outcome-frequency-ic {
+  color: #2563eb;
+}
+
+.signup-outcome-frequency-text {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #334155;
+  line-height: 1.2;
+}
+
+.signup-dropzone {
+  position: relative;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 10px;
+  padding: 0.75rem 0.55rem;
+  text-align: center;
+  background: #fafafa;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.signup-dropzone.is-active {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.signup-sample-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.signup-dropzone-cloud {
+  display: block;
+  margin: 0 auto 0.32rem;
+}
+
+.signup-dropzone-text {
+  margin: 0 0 0.22rem;
+  font-size: 0.6rem;
+  color: #64748b;
+}
+
+.signup-choose-files-btn {
+  border: 1px solid #2563eb;
+  background: #fff;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 0.58rem;
+  padding: 0.18rem 0.42rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.signup-dropzone-foot {
+  margin: 0;
+  font-size: 0.52rem;
+  color: #94a3b8;
+}
+
+.signup-dropzone-names {
+  margin: 0.35rem 0 0;
+  font-size: 0.54rem;
+  color: #0f172a;
+  word-break: break-word;
+}
+
+.onboarding-actions-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  margin-top: 0.08rem;
+}
+
+.signup-step3-submit-stack {
+  align-items: stretch;
+}
+
+.signup-glass--signup .signup-step3-submit-stack .btn-start-monitoring {
+  width: 100%;
+  margin-top: 0;
+}
+
+.btn-complete-setup-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.signup-step3-back-link {
+  border: none;
+  background: none;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0.15rem;
+  cursor: pointer;
+  align-self: center;
+}
+
+.signup-step3-back-link:hover {
+  color: #1d4ed8;
 }
 
 .signup-glass--signin .signup-glass-hint {
