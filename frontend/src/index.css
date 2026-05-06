@@ -2957,6 +2957,7 @@ h3 {
   background: #ffffff;
   border: 1px solid #e5e7eb;
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+  padding: 0.52rem 0.55rem 0.48rem;
 }
 
 .signup-glass--signup .signup-auth-switch {
@@ -2977,12 +2978,102 @@ h3 {
 .signup-glass--signup h3 {
   color: #0f172a;
   text-align: center;
-  font-size: 2rem;
+  font-size: 1.08rem;
+  line-height: 1.28;
+  margin: 0 0 0.22rem;
+  letter-spacing: -0.02em;
 }
 
 .signup-glass--signup .signup-glass-hint {
   color: #64748b;
   text-align: center;
+  font-size: 0.64rem;
+  line-height: 1.38;
+  margin: 0 0 0.42rem;
+}
+
+.signup-glass--signup .signup-auth-switch {
+  margin-bottom: 0.42rem;
+}
+
+.signup-glass--signup .signup-auth-switch button {
+  padding: 0.38rem 0.45rem;
+  font-size: 0.7rem;
+}
+
+.signup-glass--signup .onboarding-stepper {
+  gap: 0.35rem;
+  margin-bottom: 0.42rem;
+}
+
+.signup-glass--signup .onboarding-step-dot {
+  width: 1.38rem;
+  height: 1.38rem;
+  font-size: 0.62rem;
+  border-width: 1.5px;
+}
+
+.signup-glass--signup .onboarding-step-caption {
+  font-size: 0.54rem;
+}
+
+.signup-glass--signup .signup-form-new {
+  gap: 0.28rem;
+}
+
+.signup-glass--signup .signup-field--stack {
+  row-gap: 0.22rem;
+  column-gap: 0.45rem;
+}
+
+.signup-glass--signup .signup-field-label {
+  font-size: 0.57rem;
+}
+
+.signup-glass--signup .signup-field {
+  padding: 0.34rem 0.48rem;
+  border-radius: 8px;
+  gap: 0.45rem;
+  background: #ffffff;
+  border-color: #dbe3ef;
+}
+
+.signup-glass--signup .signup-field input,
+.signup-glass--signup .signup-field select {
+  font-size: 0.76rem;
+}
+
+.signup-glass--signup .signup-field-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.signup-glass--signup .signup-phone-code {
+  font-size: 0.68rem;
+  padding: 0.16rem 0.26rem;
+  max-width: 86px;
+}
+
+.signup-glass--signup .btn-start-monitoring {
+  margin-top: 0.06rem;
+  padding: 0.52rem 0.78rem;
+  font-size: 0.82rem;
+  border-radius: 9px;
+}
+
+.signup-glass--signup .signup-login-inline {
+  font-size: 0.72rem;
+  margin: 0.04rem 0 0;
+}
+
+.signup-glass--signup .signup-trust-row {
+  margin-top: 0.2rem;
+  padding-top: 0.28rem;
+  gap: 0.35rem;
+}
+
+.signup-glass--signup .signup-trust-row span {
+  font-size: 0.56rem;
 }
 
 .signup-glass--signup .onboarding-stepper > span:not(.onboarding-stepper-line) {
@@ -3000,11 +3091,6 @@ h3 {
 
 .signup-glass--signup .onboarding-stepper-line {
   background: #93c5fd;
-}
-
-.signup-glass--signup .signup-field {
-  background: #ffffff;
-  border-color: #dbe3ef;
 }
 
 .signup-field--stack {
