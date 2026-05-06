@@ -6,7 +6,13 @@ import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/registry.js'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
 import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
+import harlandRdxXlMachine from './assets/uploads/harland-rdx-xl-machine.png'
 import HarlandJobCardMiniCharts from './HarlandJobCardMiniCharts.jsx'
+
+/** Demo equipment visuals on Harland BU job tiles (job id like `125-2`). */
+const JOB_MACHINE_IMAGES = {
+  '125-2': harlandRdxXlMachine,
+}
 
 const DASH_KPIS = [
   { label: 'OEE', value: '94.2%', hint: 'vs target 90%', trend: '+1.2%', up: true },
@@ -1229,6 +1235,7 @@ function unitJobsForPanel(unitLabel, count) {
       title: `Job ${digits}-${jobNum}`,
       description: row.description,
       status: row.status,
+      machinePhotoSrc: JOB_MACHINE_IMAGES[`${digits}-${jobNum}`] ?? null,
     }
   })
 }
@@ -1280,6 +1287,11 @@ function UnitJobsPanel({ user, unitLabel }) {
           <article key={card.id} className="client-unit-job-card">
             <h4>{card.title}</h4>
             <p>{`Description: ${card.description}`}</p>
+            {card.machinePhotoSrc ? (
+              <div className="client-unit-job-machine-photo">
+                <img src={card.machinePhotoSrc} alt={`Harland RDX-XL equipment — ${card.title}`} loading="lazy" decoding="async" />
+              </div>
+            ) : null}
             <HarlandJobCardMiniCharts timeRange={jobTimeRange} />
             <div className="client-unit-job-meter">
               <span className={`client-unit-job-meter-fill tone-${statusTone(card.status)}`} />
