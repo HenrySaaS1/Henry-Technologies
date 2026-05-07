@@ -1213,6 +1213,149 @@ function locationDrivenCardCount(user) {
   return Math.max(3, Math.min(12, parsed))
 }
 
+/** Manufacturing reference data per machine model description. */
+const MACHINE_SPECS = {
+  '528-COATER': {
+    manufacturer: 'Harland Medical Systems',
+    model: '528 Coater',
+    series: 'HMS-CV (vertical cabinet)',
+    capability: 'Hydrophilic catheter coating, vertical dip',
+    footprint: '48 in × 36 in × 84 in',
+    weight: '780 lb',
+    power: '230 V / 50 A · 3φ',
+    cycleRate: '60–90 s / part',
+    firmware: 'HMS Coat OS v4.2.1',
+    commissioned: '2022-08-14',
+    nextPm: 'Hydraulic seal kit',
+  },
+  'RDX-195': {
+    manufacturer: 'Harland Medical Systems',
+    model: 'RDX-195 / RDX-XL',
+    series: 'RDX precision dip cabinet',
+    capability: 'Programmable dip coating with closed-loop dwell control',
+    footprint: '52 in × 38 in × 86 in',
+    weight: '910 lb',
+    power: '230 V / 60 A · 3φ',
+    cycleRate: '45–75 s / part',
+    firmware: 'RDX Studio v6.1',
+    commissioned: '2023-04-02',
+    nextPm: 'Linear-drive lubrication',
+  },
+  FTS7000: {
+    manufacturer: 'Harland Medical Systems',
+    model: 'FTS7000 Force Tester',
+    series: 'Bench-top mobility cart',
+    capability: 'Tensile / compression / friction-of-stop testing',
+    footprint: '36 in × 30 in × 70 in',
+    weight: '480 lb',
+    power: '120 V / 15 A',
+    cycleRate: '15–30 s / part',
+    firmware: 'FTS Test Suite v3.4',
+    commissioned: '2021-11-19',
+    nextPm: 'Load-cell calibration',
+  },
+  CTS1100: {
+    manufacturer: 'Harland Medical Systems',
+    model: 'CTS1100 Coating Thickness Tester',
+    series: 'Bench-top mobility cart',
+    capability: 'Optical lubricity & coating thickness measurement',
+    footprint: '36 in × 30 in × 70 in',
+    weight: '460 lb',
+    power: '120 V / 15 A',
+    cycleRate: '20–35 s / part',
+    firmware: 'CTS Vision v2.7',
+    commissioned: '2022-02-08',
+    nextPm: 'Optical-stage cleaning',
+  },
+  TTS1000: {
+    manufacturer: 'Harland Medical Systems',
+    model: 'TTS1000 Tensile Test Station',
+    series: 'Workstation cart',
+    capability: 'High-precision tensile testing of catheters / wires',
+    footprint: '40 in × 28 in × 72 in',
+    weight: '520 lb',
+    power: '120 V / 15 A',
+    cycleRate: '18–28 s / part',
+    firmware: 'TTS Connect v5.0',
+    commissioned: '2023-01-30',
+    nextPm: 'Grip jaws inspection',
+  },
+  CUSTOM: {
+    manufacturer: 'Harland Medical Systems',
+    model: 'Custom Chemistry Rig',
+    series: 'Engineered-to-order pilot frame',
+    capability: 'Reactor + condenser + chiller pilot setup',
+    footprint: '78 in × 30 in × 84 in',
+    weight: '1 040 lb',
+    power: '230 V / 30 A',
+    cycleRate: 'Recipe dependent',
+    firmware: 'HMS Pilot OS v1.8',
+    commissioned: '2024-06-21',
+    nextPm: 'Reactor seal & chiller filter',
+  },
+}
+
+const OPERATORS_POOL = [
+  'Priya Mehta',
+  'Marcus Reilly',
+  'Sofía Navarro',
+  'Diego Alvarez',
+  'Hannah Cole',
+  'Nikolai Zorichev',
+  'Lina Park',
+  'Tomás Ribeiro',
+]
+
+function hashId(id) {
+  let h = 0
+  const str = String(id)
+  for (let i = 0; i < str.length; i += 1) {
+    h = ((h << 5) - h) + str.charCodeAt(i)
+    h |= 0
+  }
+  return Math.abs(h)
+}
+
+function jobRuntimeStats(id, status) {
+  const h = hashId(id)
+  const baseCompletion = status === 'Critical' ? 22 : status === 'Moderate' ? 48 : 72
+  const completion = Math.min(98, baseCompletion + (h % 18))
+  const target = 800 + ((h * 7) % 700)
+  const completed = Math.round((target * completion) / 100)
+  const cycleSeconds = 32 + (h % 28)
+  const oeeBase = status === 'Critical' ? 71 : status === 'Moderate' ? 84 : 92
+  const oee = Math.min(99, oeeBase + ((h >> 3) % 6))
+  const buildNo = `B${String(120000 + (h % 60000)).padStart(6, '0')}`
+  const orderNo = `WO-${String(2025 - (h % 2))}-${String(1000 + (h % 8000)).padStart(4, '0')}`
+  const lot = `L${String(70000 + ((h * 11) % 25000))}-${(h % 9) + 1}`
+  const operator = OPERATORS_POOL[h % OPERATORS_POOL.length]
+  const shift = ['A', 'B', 'C'][h % 3]
+  const partsPerHour = Math.round((3600 / cycleSeconds) * (oee / 100))
+  const nextPmDays = (h % 14) + 1
+  const lastService = `2026-${String(((h % 4) + 1)).padStart(2, '0')}-${String((h % 28) + 1).padStart(2, '0')}`
+  return {
+    completion,
+    target,
+    completed,
+    cycleSeconds,
+    oee,
+    buildNo,
+    orderNo,
+    lot,
+    operator,
+    shift,
+    partsPerHour,
+    nextPmDays,
+    lastService,
+  }
+}
+
+function machineSerialFor(id, modelKey) {
+  const h = hashId(`${modelKey}-${id}`)
+  const cleanModel = String(modelKey || '').replace(/[^A-Z0-9]/gi, '').toUpperCase().slice(0, 4) || 'HMS'
+  return `${cleanModel}-${String(h % 90000 + 10000)}`
+}
+
 /** BU 120 / BU 125 job row templates (description + status) for unit job cards. */
 const EXACT_JOBS_BY_BU = {
   '120': [
@@ -1262,11 +1405,138 @@ function statusTone(status) {
   return 'stable'
 }
 
+function JobDetailModal({ job, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [onClose])
+
+  if (!job) return null
+  const { stats, specs, serial } = job
+  const tone = statusTone(job.status)
+  return (
+    <div className="client-job-modal-backdrop" role="presentation" onClick={onClose}>
+      <div
+        className="client-job-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="client-job-modal-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <header className="client-job-modal-head">
+          <div className="client-job-modal-titles">
+            <h3 id="client-job-modal-title">{job.title}</h3>
+            <p>{`Description: ${job.description}`}</p>
+          </div>
+          <span className={`client-job-modal-status tone-${tone}`}>{`Status: ${job.status}`}</span>
+          <button type="button" className="client-job-modal-close" aria-label="Close" onClick={onClose}>
+            ×
+          </button>
+        </header>
+
+        <div className="client-job-modal-body">
+          <div className="client-job-modal-photo">
+            {job.machinePhotoSrc ? (
+              <img src={job.machinePhotoSrc} alt={`${specs?.model || job.description} machine`} />
+            ) : (
+              <div className="client-job-modal-photo-placeholder">No photo</div>
+            )}
+          </div>
+
+          <div className="client-job-modal-metrics">
+            <div className="client-job-modal-progress">
+              <div className="client-job-modal-progress-row">
+                <span>Job completion</span>
+                <strong>{`${stats.completion}%`}</strong>
+              </div>
+              <div className={`client-job-modal-progress-track tone-${tone}`}>
+                <span style={{ width: `${stats.completion}%` }} />
+              </div>
+              <div className="client-job-modal-progress-foot">
+                {`${stats.completed.toLocaleString()} / ${stats.target.toLocaleString()} units`}
+              </div>
+            </div>
+
+            <ul className="client-job-modal-kpis">
+              <li>
+                <span>OEE</span>
+                <strong>{`${stats.oee}%`}</strong>
+              </li>
+              <li>
+                <span>Cycle time</span>
+                <strong>{`${stats.cycleSeconds}s`}</strong>
+              </li>
+              <li>
+                <span>Throughput</span>
+                <strong>{`${stats.partsPerHour}/hr`}</strong>
+              </li>
+              <li>
+                <span>Shift</span>
+                <strong>{stats.shift}</strong>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <section className="client-job-modal-section">
+          <h4>Production order</h4>
+          <dl className="client-job-modal-dl">
+            <div><dt>Build #</dt><dd>{stats.buildNo}</dd></div>
+            <div><dt>Work order</dt><dd>{stats.orderNo}</dd></div>
+            <div><dt>Lot</dt><dd>{stats.lot}</dd></div>
+            <div><dt>Operator</dt><dd>{stats.operator}</dd></div>
+          </dl>
+        </section>
+
+        <section className="client-job-modal-section">
+          <h4>Manufacturing details</h4>
+          <dl className="client-job-modal-dl">
+            <div><dt>Manufacturer</dt><dd>{specs?.manufacturer || 'Harland Medical Systems'}</dd></div>
+            <div><dt>Model</dt><dd>{specs?.model || job.description}</dd></div>
+            <div><dt>Series</dt><dd>{specs?.series || '—'}</dd></div>
+            <div><dt>Serial #</dt><dd>{serial}</dd></div>
+            <div><dt>Capability</dt><dd>{specs?.capability || '—'}</dd></div>
+            <div><dt>Footprint</dt><dd>{specs?.footprint || '—'}</dd></div>
+            <div><dt>Weight</dt><dd>{specs?.weight || '—'}</dd></div>
+            <div><dt>Power</dt><dd>{specs?.power || '—'}</dd></div>
+            <div><dt>Rated cycle</dt><dd>{specs?.cycleRate || '—'}</dd></div>
+            <div><dt>Firmware</dt><dd>{specs?.firmware || '—'}</dd></div>
+            <div><dt>Commissioned</dt><dd>{specs?.commissioned || '—'}</dd></div>
+            <div><dt>Last service</dt><dd>{stats.lastService}</dd></div>
+            <div><dt>Next PM</dt><dd>{`${specs?.nextPm || 'Routine'} · in ${stats.nextPmDays} day${stats.nextPmDays === 1 ? '' : 's'}`}</dd></div>
+          </dl>
+        </section>
+
+        <footer className="client-job-modal-foot">
+          <button type="button" className="client-job-modal-foot-btn" onClick={onClose}>
+            Close
+          </button>
+        </footer>
+      </div>
+    </div>
+  )
+}
+
 function UnitJobsPanel({ user, unitLabel }) {
   const [jobTimeRange, setJobTimeRange] = useState('daily')
+  const [selectedJob, setSelectedJob] = useState(null)
   const count = locationDrivenCardCount(user)
   const digits = digitsFromUnitLabel(unitLabel)
   const cards = unitJobsForPanel(unitLabel, count)
+  const openJob = (card) => {
+    const specs = MACHINE_SPECS[card.description] || null
+    const stats = jobRuntimeStats(card.id, card.status)
+    const serial = machineSerialFor(card.id, specs?.model || card.description)
+    setSelectedJob({ ...card, specs, stats, serial })
+  }
   return (
     <section className="client-unit-jobs-panel" aria-label={`BU ${digits} jobs`}>
       <header className="client-unit-jobs-head">
@@ -1300,7 +1570,20 @@ function UnitJobsPanel({ user, unitLabel }) {
       </header>
       <div className="client-unit-jobs-grid">
         {cards.map((card) => (
-          <article key={card.id} className="client-unit-job-card">
+          <article
+            key={card.id}
+            className="client-unit-job-card client-unit-job-card--clickable"
+            role="button"
+            tabIndex={0}
+            aria-label={`Open details for ${card.title}`}
+            onClick={() => openJob(card)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                openJob(card)
+              }
+            }}
+          >
             <h4>{card.title}</h4>
             <p>{`Description: ${card.description}`}</p>
             <HarlandJobCardMiniCharts
@@ -1314,6 +1597,7 @@ function UnitJobsPanel({ user, unitLabel }) {
             <div className={`client-unit-job-status tone-${statusTone(card.status)}`}>{`Status: ${card.status}`}</div>
           </article>
         ))}
+        {selectedJob ? <JobDetailModal job={selectedJob} onClose={() => setSelectedJob(null)} /> : null}
       </div>
     </section>
   )
