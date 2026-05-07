@@ -183,7 +183,7 @@ export default function HarlandJobCardMiniCharts({
               </LineChart>
             </ResponsiveContainer>
           </MiniWrap>
-          <MiniWrap title={`Monthly Scrap Quantity`}>
+          <MiniWrap title="Scrap">
             <ResponsiveContainer width="100%" height={MINI_H}>
               <BarChart data={rows} margin={M}>
                 <CartesianGrid strokeDasharray="2 2" stroke={COL.grid} />
