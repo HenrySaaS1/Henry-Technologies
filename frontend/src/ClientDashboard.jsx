@@ -6,7 +6,6 @@ import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/registry.js'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
 import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
-import harlandRdxXlMachine from './assets/uploads/harland-rdx-xl.png'
 import harland528Coater from './assets/uploads/harland-528-coater.png'
 import harlandTts1000 from './assets/uploads/harland-tts1000.png'
 import harlandCustomRig from './assets/uploads/harland-custom-rig.png'
@@ -23,8 +22,8 @@ const JOB_MACHINE_IMAGES = {
   '120-4': harlandFts7000,
   '120-5': harlandFts7000,
   '120-6': harlandCts1100,
-  '125-1': harlandRdxXlMachine,
-  '125-2': harlandRdxXlMachine,
+  '125-1': harland528Coater,
+  '125-2': harland528Coater,
   '125-3': harland528Coater,
   '125-4': harlandTts1000,
   '125-5': harlandTts1000,
