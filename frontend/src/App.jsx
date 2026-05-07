@@ -38,6 +38,32 @@ import henryLogo from './assets/henry-logo.png'
 import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import HeroLiveChartsHud from './HeroLiveCharts.jsx'
 
+const PRODUCTS_MENU_ITEMS = [
+  { href: '/#products', label: 'HENRY SnapShot' },
+  { href: '/products#systems', label: 'Systems' },
+  { href: '/products#safety', label: 'Safety' },
+  { href: '/products#security', label: 'Security' },
+  { href: '/products#myhenry-agent', label: 'MyHenry Agent' },
+]
+
+function ProductsMenuLink() {
+  return (
+    <div className="menu-products-wrap">
+      <a href="/products" className="menu-products-trigger">
+        PRODUCTS
+        <span className="menu-products-caret" aria-hidden="true">▾</span>
+      </a>
+      <div className="menu-products-dropdown" role="menu">
+        {PRODUCTS_MENU_ITEMS.map((item) => (
+          <a key={item.label} href={item.href} role="menuitem">
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const INDUSTRY_OPTIONS = [
   { value: '', label: 'Select your industry' },
   { value: 'manufacturing', label: 'Manufacturing' },
@@ -1288,7 +1314,12 @@ function App() {
   }
 
   const mobileNavLinks = [
-    { href: '/#products', label: 'HENRY SnapShot' },
+    { href: '/products', label: 'PRODUCTS' },
+    { href: '/#products', label: '— HENRY SnapShot' },
+    { href: '/products#systems', label: '— Systems' },
+    { href: '/products#safety', label: '— Safety' },
+    { href: '/products#security', label: '— Security' },
+    { href: '/products#myhenry-agent', label: '— MyHenry Agent' },
     { href: '/case-studies', label: 'CASE STUDIES' },
     { href: '/pricing', label: 'PRICING' },
     { href: '/#about', label: 'ABOUT' },
@@ -1688,7 +1719,7 @@ function App() {
           </div>
           <div className="topbar-left">
             <nav className="menu">
-              <a href="/#products" className="menu-nav-snapshot">HENRY SnapShot</a>
+              <ProductsMenuLink />
               <a href="/case-studies">CASE STUDIES</a>
               <a href="/pricing">PRICING</a>
               <a href="/#about">ABOUT</a>
@@ -1760,7 +1791,7 @@ function App() {
           </div>
           <div className="topbar-left">
             <nav className="menu">
-              <a href="/products" className="menu-nav-snapshot">HENRY SnapShot</a>
+              <ProductsMenuLink />
               <a href="/case-studies">CASE STUDIES</a>
               <a href="/pricing">PRICING</a>
               <a href="/#about">ABOUT</a>
@@ -1832,7 +1863,7 @@ function App() {
           </div>
           <div className="topbar-left">
             <nav className="menu">
-              <a href="/products" className="menu-nav-snapshot">HENRY SnapShot</a>
+              <ProductsMenuLink />
               <a href="/case-studies">CASE STUDIES</a>
               <a href="/pricing">PRICING</a>
               <a href="/#about">ABOUT</a>
@@ -1968,7 +1999,7 @@ function App() {
         </div>
         <div className="topbar-left">
           <nav className="menu">
-            <a href="/products" className="menu-nav-snapshot">HENRY SnapShot</a>
+            <ProductsMenuLink />
             <a href="/case-studies">CASE STUDIES</a>
             <a href="/pricing">PRICING</a>
             <a href="#about">ABOUT</a>
