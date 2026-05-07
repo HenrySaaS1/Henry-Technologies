@@ -144,7 +144,7 @@ function CompletionDonut({ value, tone = 'good' }) {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      <span className="client-hjob-completion-label" style={{ color: fill }}>{`${safe}%`}</span>
+      <span className="client-hjob-completion-label" style={{ color: fill }}>{safe}</span>
     </div>
   )
 }
