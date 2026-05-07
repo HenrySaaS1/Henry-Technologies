@@ -97,23 +97,28 @@ function ProductsMenuLink() {
         setOpen(false)
       }}
     >
-      <button
-        type="button"
+      <a
+        href="/#products"
         className="menu-products-trigger"
         aria-expanded={open}
         aria-haspopup="true"
         aria-controls={`products-nav-menu-${menuUid}`}
         id={`products-nav-trigger-${menuUid}`}
-        onClick={(e) => {
-          e.stopPropagation()
-          setOpen((v) => !v)
-        }}
+        onClick={() => setOpen(false)}
       >
         PRODUCTS
-        <span className="menu-products-caret" aria-hidden="true">
+        <span
+          className="menu-products-caret"
+          aria-hidden="true"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setOpen((v) => !v)
+          }}
+        >
           ▾
         </span>
-      </button>
+      </a>
       <div
         id={`products-nav-menu-${menuUid}`}
         className="menu-products-dropdown"
@@ -1386,7 +1391,7 @@ function App() {
   }
 
   const mobileNavLinks = [
-    { href: '/products', label: 'PRODUCTS' },
+    { href: '/#products', label: 'PRODUCTS' },
     { href: '/products', label: '— SnapShot' },
     { href: '/case-studies', label: 'CASE STUDIES' },
     { href: '/pricing', label: 'PRICING' },
