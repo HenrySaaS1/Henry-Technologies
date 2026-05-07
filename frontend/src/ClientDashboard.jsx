@@ -210,8 +210,8 @@ const GLOBAL_SITES = [
             unitPanel: {
               unit: 'BU125',
               description: 'Machines Commercialization',
-              manager: 'Dana Okonkwo',
-              assistant: 'Priya Mehta',
+              manager: 'Alex Anderson',
+              assistant: 'Nikolai Zorichev',
               activeMachines: '9/10',
               activeOperators: '14',
               updatedAt: 'Timestamp',
