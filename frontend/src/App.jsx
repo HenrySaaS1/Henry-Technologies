@@ -39,11 +39,7 @@ import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import HeroLiveChartsHud from './HeroLiveCharts.jsx'
 
 const PRODUCTS_MENU_ITEMS = [
-  { href: '/#products', label: 'HENRY SnapShot' },
-  { href: '/products#systems', label: 'Systems' },
-  { href: '/products#safety', label: 'Safety' },
-  { href: '/products#security', label: 'Security' },
-  { href: '/products#myhenry-agent', label: 'MyHenry Agent' },
+  { href: '/products', label: 'SnapShot' },
 ]
 
 function ProductsMenuLink() {
@@ -1315,11 +1311,7 @@ function App() {
 
   const mobileNavLinks = [
     { href: '/products', label: 'PRODUCTS' },
-    { href: '/#products', label: '— HENRY SnapShot' },
-    { href: '/products#systems', label: '— Systems' },
-    { href: '/products#safety', label: '— Safety' },
-    { href: '/products#security', label: '— Security' },
-    { href: '/products#myhenry-agent', label: '— MyHenry Agent' },
+    { href: '/products', label: '— SnapShot' },
     { href: '/case-studies', label: 'CASE STUDIES' },
     { href: '/pricing', label: 'PRICING' },
     { href: '/#about', label: 'ABOUT' },
