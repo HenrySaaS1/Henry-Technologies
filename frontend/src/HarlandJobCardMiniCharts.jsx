@@ -115,7 +115,7 @@ const COMPLETION_TONE_COLOR = {
   bad: '#dc2626',
 }
 
-function CompletionDonut({ value, tone = 'good' }) {
+function CompletionDonut({ value, tone = 'good', showLabel = true }) {
   const safe = Math.max(0, Math.min(100, Math.round(Number(value) || 0)))
   const fill = COMPLETION_TONE_COLOR[tone] || COMPLETION_TONE_COLOR.good
   const data = [
@@ -144,7 +144,9 @@ function CompletionDonut({ value, tone = 'good' }) {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      <span className="client-hjob-completion-label" style={{ color: fill }}>{`${safe}%`}</span>
+      {showLabel ? (
+        <span className="client-hjob-completion-label" style={{ color: fill }}>{`${safe}%`}</span>
+      ) : null}
     </div>
   )
 }
@@ -175,10 +177,13 @@ export default function HarlandJobCardMiniCharts({
         <div className="client-hjob-photo">
           <img src={machinePhotoSrc} alt={machinePhotoAlt} loading="lazy" decoding="async" />
         </div>
-        <MiniWrap title="% Complete">
+        <MiniWrap
+          title={`${Math.max(0, Math.min(100, Math.round(Number(completion ?? meta.distribution[0]?.value ?? 0))))}% Complete`}
+        >
           <CompletionDonut
             value={completion ?? meta.distribution[0]?.value ?? 0}
             tone={completionTone}
+            showLabel={false}
           />
         </MiniWrap>
         <MiniWrap title="Test Results">
