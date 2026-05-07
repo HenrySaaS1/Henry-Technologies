@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react'
+﻿import { useState, useEffect, useRef, useId } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import ClientDashboard from './ClientDashboard.jsx'
 import ClientOnboarding from './ClientOnboarding.jsx'
@@ -43,15 +43,91 @@ const PRODUCTS_MENU_ITEMS = [
 ]
 
 function ProductsMenuLink() {
+  const menuUid = `p${useId().replace(/:/g, '')}`
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef(null)
+  const leaveTimerRef = useRef(null)
+
+  const clearLeaveTimer = () => {
+    if (leaveTimerRef.current) {
+      clearTimeout(leaveTimerRef.current)
+      leaveTimerRef.current = null
+    }
+  }
+
+  const scheduleClose = () => {
+    clearLeaveTimer()
+    leaveTimerRef.current = window.setTimeout(() => {
+      if (wrapRef.current?.contains(document.activeElement)) return
+      setOpen(false)
+    }, 220)
+  }
+
+  useEffect(() => () => clearLeaveTimer(), [])
+
+  useEffect(() => {
+    if (!open) return
+    const onDocMouseDown = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false)
+    }
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', onDocMouseDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', onDocMouseDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [open])
+
   return (
-    <div className="menu-products-wrap">
-      <a href="/products" className="menu-products-trigger">
+    <div
+      ref={wrapRef}
+      className={`menu-products-wrap${open ? ' is-open' : ''}`}
+      onMouseEnter={() => {
+        clearLeaveTimer()
+        setOpen(true)
+      }}
+      onMouseLeave={scheduleClose}
+      onFocusCapture={() => setOpen(true)}
+      onBlurCapture={(e) => {
+        const next = e.relatedTarget
+        if (next instanceof Node && wrapRef.current?.contains(next)) return
+        setOpen(false)
+      }}
+    >
+      <button
+        type="button"
+        className="menu-products-trigger"
+        aria-expanded={open}
+        aria-haspopup="true"
+        aria-controls={`products-nav-menu-${menuUid}`}
+        id={`products-nav-trigger-${menuUid}`}
+        onClick={(e) => {
+          e.stopPropagation()
+          setOpen((v) => !v)
+        }}
+      >
         PRODUCTS
-        <span className="menu-products-caret" aria-hidden="true">▾</span>
-      </a>
-      <div className="menu-products-dropdown" role="menu">
+        <span className="menu-products-caret" aria-hidden="true">
+          ▾
+        </span>
+      </button>
+      <div
+        id={`products-nav-menu-${menuUid}`}
+        className="menu-products-dropdown"
+        role="menu"
+        aria-hidden={!open}
+      >
         {PRODUCTS_MENU_ITEMS.map((item) => (
-          <a key={item.label} href={item.href} role="menuitem">
+          <a
+            key={item.label}
+            href={item.href}
+            role="menuitem"
+            tabIndex={open ? 0 : -1}
+            onClick={() => setOpen(false)}
+          >
             {item.label}
           </a>
         ))}

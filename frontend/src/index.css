@@ -47,6 +47,7 @@ h3 {
   background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
   border-bottom: 1px solid rgba(148, 163, 184, 0.45);
   box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
+  overflow: visible;
 }
 
 /* Logo stays in the first column; nav uses the middle column so links sit centered in the bar */
@@ -64,6 +65,7 @@ h3 {
   justify-self: stretch;
   min-width: 0;
   padding-inline: 0.35rem;
+  overflow: visible;
 }
 
 .topbar-right {
@@ -254,6 +256,7 @@ h3 {
   font-size: 0.94rem;
   text-transform: uppercase;
   color: #101c35;
+  overflow: visible;
 }
 
 .menu a {
@@ -272,14 +275,34 @@ h3 {
   position: relative;
   display: inline-flex;
   align-items: center;
+  /* Bridge hover gap between trigger and dropdown without shifting layout */
+  padding-bottom: 0.65rem;
+  margin-bottom: -0.65rem;
 }
 
-.menu .menu-products-trigger {
+.menu button.menu-products-trigger {
   display: inline-flex;
   align-items: center;
   gap: 0.32rem;
   letter-spacing: 0.2px;
   cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  font-size: inherit;
+  font-family: inherit;
+  text-transform: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  line-height: inherit;
+}
+
+.menu button.menu-products-trigger:focus-visible {
+  outline: 2px solid #4338ca;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 .menu-products-caret {
@@ -289,8 +312,7 @@ h3 {
   transition: transform 160ms ease;
 }
 
-.menu-products-wrap:hover .menu-products-caret,
-.menu-products-wrap:focus-within .menu-products-caret {
+.menu-products-wrap.is-open .menu-products-caret {
   transform: translateY(1px) rotate(180deg);
 }
 
@@ -298,7 +320,7 @@ h3 {
   position: absolute;
   top: 100%;
   left: 50%;
-  transform: translate(-50%, 8px);
+  transform: translate(-50%, 0);
   min-width: 220px;
   background: #fff;
   border: 1px solid #e2e8f0;
@@ -315,12 +337,11 @@ h3 {
   z-index: 60;
 }
 
-.menu-products-wrap:hover .menu-products-dropdown,
-.menu-products-wrap:focus-within .menu-products-dropdown {
+.menu-products-wrap.is-open .menu-products-dropdown {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translate(-50%, 4px);
+  transform: translate(-50%, 0);
 }
 
 .menu-products-dropdown a {
