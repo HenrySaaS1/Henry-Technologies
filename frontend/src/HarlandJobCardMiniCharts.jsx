@@ -129,75 +129,73 @@ export default function HarlandJobCardMiniCharts({
 
   if (machinePhotoSrc) {
     return (
-      <div className="client-hjob-with-photo">
+      <div className="client-hjob-with-photo" aria-hidden="true">
         <div className="client-hjob-photo">
           <img src={machinePhotoSrc} alt={machinePhotoAlt} loading="lazy" decoding="async" />
         </div>
-        <div className="client-hjob-mini-grid client-hjob-mini-grid--2col" aria-hidden="true">
-          <MiniWrap title="Distribution">
-            <ResponsiveContainer width="100%" height={MINI_H}>
-              <PieChart>
-                <Pie
-                  data={meta.distribution}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={22}
-                  dataKey="value"
-                  stroke="#fff"
-                  strokeWidth={1}
-                >
-                  {[COL.partA, COL.partB].map((c) => (
-                    <Cell key={c} fill={c} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </MiniWrap>
-          <MiniWrap title="Test">
-            <ResponsiveContainer width="100%" height={MINI_H}>
-              <PieChart>
-                <Pie
-                  data={meta.testResults}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={12}
-                  outerRadius={22}
-                  dataKey="value"
-                  stroke="#fff"
-                  strokeWidth={1}
-                >
-                  {[COL.pass, COL.fail].map((c) => (
-                    <Cell key={c} fill={c} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </MiniWrap>
-          <MiniWrap title="Efficiency">
-            <ResponsiveContainer width="100%" height={MINI_H}>
-              <LineChart data={rows} margin={M}>
-                <CartesianGrid strokeDasharray="2 2" stroke={COL.grid} />
-                <XAxis dataKey="period" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
-                <YAxis hide domain={[60, 'auto']} />
-                <Line type="monotone" dataKey="pct" stroke={COL.partB} strokeWidth={1.5} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </MiniWrap>
-          <MiniWrap title="Scrap">
-            <ResponsiveContainer width="100%" height={MINI_H}>
-              <BarChart data={rows} margin={M}>
-                <CartesianGrid strokeDasharray="2 2" stroke={COL.grid} />
-                <XAxis dataKey="period" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
-                <YAxis hide />
-                <Bar dataKey="qty" radius={[1, 1, 0, 0]}>
-                  {rows.map((entry) => (
-                    <Cell key={entry.period} fill={entry.scrapSpike ? COL.fail : COL.partA} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </MiniWrap>
-        </div>
+        <MiniWrap title="Parts Distribution">
+          <ResponsiveContainer width="100%" height={MINI_H}>
+            <PieChart>
+              <Pie
+                data={meta.distribution}
+                cx="50%"
+                cy="50%"
+                outerRadius={22}
+                dataKey="value"
+                stroke="#fff"
+                strokeWidth={1}
+              >
+                {[COL.partA, COL.partB].map((c) => (
+                  <Cell key={c} fill={c} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        </MiniWrap>
+        <MiniWrap title="Test Results">
+          <ResponsiveContainer width="100%" height={MINI_H}>
+            <PieChart>
+              <Pie
+                data={meta.testResults}
+                cx="50%"
+                cy="50%"
+                innerRadius={12}
+                outerRadius={22}
+                dataKey="value"
+                stroke="#fff"
+                strokeWidth={1}
+              >
+                {[COL.pass, COL.fail].map((c) => (
+                  <Cell key={c} fill={c} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        </MiniWrap>
+        <MiniWrap title="Efficiency">
+          <ResponsiveContainer width="100%" height={MINI_H}>
+            <LineChart data={rows} margin={M}>
+              <CartesianGrid strokeDasharray="2 2" stroke={COL.grid} />
+              <XAxis dataKey="period" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
+              <YAxis hide domain={[60, 'auto']} />
+              <Line type="monotone" dataKey="pct" stroke={COL.partB} strokeWidth={1.5} dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </MiniWrap>
+        <MiniWrap title="Monthly Scrap Quantity">
+          <ResponsiveContainer width="100%" height={MINI_H}>
+            <BarChart data={rows} margin={M}>
+              <CartesianGrid strokeDasharray="2 2" stroke={COL.grid} />
+              <XAxis dataKey="period" tick={{ fontSize: 8, fill: COL.axis }} interval={0} />
+              <YAxis hide />
+              <Bar dataKey="qty" radius={[1, 1, 0, 0]}>
+                {rows.map((entry) => (
+                  <Cell key={entry.period} fill={entry.scrapSpike ? COL.fail : COL.partA} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </MiniWrap>
       </div>
     )
   }
