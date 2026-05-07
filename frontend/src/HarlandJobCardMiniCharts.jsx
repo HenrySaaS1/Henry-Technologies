@@ -109,6 +109,46 @@ function MiniWrap({ title, children }) {
   )
 }
 
+const COMPLETION_TONE_COLOR = {
+  good: '#16a34a',
+  warn: '#f59e0b',
+  bad: '#dc2626',
+}
+
+function CompletionDonut({ value, tone = 'good' }) {
+  const safe = Math.max(0, Math.min(100, Math.round(Number(value) || 0)))
+  const fill = COMPLETION_TONE_COLOR[tone] || COMPLETION_TONE_COLOR.good
+  const data = [
+    { name: 'done', value: safe },
+    { name: 'rest', value: Math.max(0.0001, 100 - safe) },
+  ]
+  return (
+    <div className="client-hjob-completion">
+      <ResponsiveContainer width="100%" height={MINI_H}>
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            innerRadius={16}
+            outerRadius={26}
+            dataKey="value"
+            startAngle={90}
+            endAngle={-270}
+            stroke="#fff"
+            strokeWidth={1}
+            isAnimationActive={false}
+          >
+            <Cell fill={fill} />
+            <Cell fill="#e5e7eb" />
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+      <span className="client-hjob-completion-label" style={{ color: fill }}>{`${safe}%`}</span>
+    </div>
+  )
+}
+
 /**
  * Factory-pulse mini charts — dummy data swaps by Daily / Weekly / Monthly.
  * If `machinePhotoSrc` is provided we render the photo on the left and 2x2
@@ -122,6 +162,8 @@ export default function HarlandJobCardMiniCharts({
   timeRange = 'daily',
   machinePhotoSrc = null,
   machinePhotoAlt = '',
+  completion = null,
+  completionTone = 'good',
 }) {
   const key = RANGE_DATA[timeRange] ? timeRange : 'daily'
   const meta = RANGE_DATA[key]
@@ -133,24 +175,11 @@ export default function HarlandJobCardMiniCharts({
         <div className="client-hjob-photo">
           <img src={machinePhotoSrc} alt={machinePhotoAlt} loading="lazy" decoding="async" />
         </div>
-        <MiniWrap title="Parts Distribution">
-          <ResponsiveContainer width="100%" height={MINI_H}>
-            <PieChart>
-              <Pie
-                data={meta.distribution}
-                cx="50%"
-                cy="50%"
-                outerRadius={22}
-                dataKey="value"
-                stroke="#fff"
-                strokeWidth={1}
-              >
-                {[COL.partA, COL.partB].map((c) => (
-                  <Cell key={c} fill={c} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+        <MiniWrap title="% Complete">
+          <CompletionDonut
+            value={completion ?? meta.distribution[0]?.value ?? 0}
+            tone={completionTone}
+          />
         </MiniWrap>
         <MiniWrap title="Test Results">
           <ResponsiveContainer width="100%" height={MINI_H}>

@@ -1389,12 +1389,15 @@ function unitJobsForPanel(unitLabel, count) {
   return Array.from({ length: n }, (_, idx) => {
     const row = template[idx % template.length]
     const jobNum = idx + 1
+    const id = `${digits}-${jobNum}`
+    const stats = jobRuntimeStats(id, row.status)
     return {
-      id: `${digits}-${jobNum}`,
+      id,
       title: `Job ${digits}-${jobNum}`,
       description: row.description,
       status: row.status,
-      machinePhotoSrc: JOB_MACHINE_IMAGES[`${digits}-${jobNum}`] ?? null,
+      machinePhotoSrc: JOB_MACHINE_IMAGES[id] ?? null,
+      completion: stats.completion,
     }
   })
 }
@@ -1590,6 +1593,8 @@ function UnitJobsPanel({ user, unitLabel }) {
               timeRange={jobTimeRange}
               machinePhotoSrc={card.machinePhotoSrc}
               machinePhotoAlt={`Harland equipment for ${card.title}`}
+              completion={card.completion}
+              completionTone={statusTone(card.status)}
             />
             <div className="client-unit-job-meter">
               <span className={`client-unit-job-meter-fill tone-${statusTone(card.status)}`} />

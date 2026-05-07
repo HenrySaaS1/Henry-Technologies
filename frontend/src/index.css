@@ -6138,6 +6138,26 @@ h3 {
   margin: 0.3rem 0 0.4rem;
 }
 
+.client-hjob-completion {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.client-hjob-completion-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+}
+
 .client-hjob-photo {
   grid-row: span 2;
   border-radius: 10px;
