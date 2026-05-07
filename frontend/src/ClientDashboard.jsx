@@ -6,12 +6,29 @@ import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/registry.js'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
 import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
-import harlandRdxXlMachine from './assets/uploads/harland-rdx-xl-machine.png'
+import harlandRdxXlMachine from './assets/uploads/harland-rdx-xl.png'
+import harland528Coater from './assets/uploads/harland-528-coater.png'
+import harlandTts1000 from './assets/uploads/harland-tts1000.png'
+import harlandCustomRig from './assets/uploads/harland-custom-rig.png'
+import harlandRdx195 from './assets/uploads/harland-rdx-195.png'
+import harlandFts7000 from './assets/uploads/harland-fts7000.png'
+import harlandCts1100 from './assets/uploads/harland-cts1100.png'
 import HarlandJobCardMiniCharts from './HarlandJobCardMiniCharts.jsx'
 
-/** Demo equipment visuals on Harland BU job tiles (job id like `125-2`). */
+/** Demo equipment visuals per Harland BU job tile (job id like `125-2`). */
 const JOB_MACHINE_IMAGES = {
+  '120-1': harlandRdx195,
+  '120-2': harlandRdx195,
+  '120-3': harlandRdx195,
+  '120-4': harlandFts7000,
+  '120-5': harlandFts7000,
+  '120-6': harlandCts1100,
+  '125-1': harlandRdxXlMachine,
   '125-2': harlandRdxXlMachine,
+  '125-3': harland528Coater,
+  '125-4': harlandTts1000,
+  '125-5': harlandTts1000,
+  '125-6': harlandCustomRig,
 }
 
 const DASH_KPIS = [
@@ -1200,10 +1217,10 @@ function locationDrivenCardCount(user) {
 /** BU 120 / BU 125 job row templates (description + status) for unit job cards. */
 const EXACT_JOBS_BY_BU = {
   '120': [
-    { description: 'RDX-195 Coater', status: 'Stable' },
-    { description: 'RDX-195 Coater', status: 'Moderate' },
-    { description: 'RDX-195 Coater', status: 'Stable' },
-    { description: 'RDX-195 Coater', status: 'Stable' },
+    { description: 'RDX-195', status: 'Stable' },
+    { description: 'RDX-195', status: 'Moderate' },
+    { description: 'RDX-195', status: 'Stable' },
+    { description: 'FTS7000', status: 'Stable' },
     { description: 'FTS7000', status: 'Critical' },
     { description: 'CTS1100', status: 'Moderate' },
   ],
@@ -1287,12 +1304,11 @@ function UnitJobsPanel({ user, unitLabel }) {
           <article key={card.id} className="client-unit-job-card">
             <h4>{card.title}</h4>
             <p>{`Description: ${card.description}`}</p>
-            {card.machinePhotoSrc ? (
-              <div className="client-unit-job-machine-photo">
-                <img src={card.machinePhotoSrc} alt={`Harland RDX-XL equipment — ${card.title}`} loading="lazy" decoding="async" />
-              </div>
-            ) : null}
-            <HarlandJobCardMiniCharts timeRange={jobTimeRange} />
+            <HarlandJobCardMiniCharts
+              timeRange={jobTimeRange}
+              machinePhotoSrc={card.machinePhotoSrc}
+              machinePhotoAlt={`Harland equipment for ${card.title}`}
+            />
             <div className="client-unit-job-meter">
               <span className={`client-unit-job-meter-fill tone-${statusTone(card.status)}`} />
             </div>

@@ -5739,21 +5739,37 @@ h3 {
   color: #1f2937;
 }
 
-.client-unit-job-machine-photo {
-  margin: 0.3rem auto 0.45rem;
-  max-width: 100%;
+.client-hjob-with-photo {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.4fr);
+  gap: 0.5rem;
+  align-items: stretch;
+  margin: 0.3rem 0 0.4rem;
+}
+
+.client-hjob-photo {
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid #e2e8f0;
   background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.18rem;
+  min-height: 100%;
 }
 
-.client-unit-job-machine-photo img {
+.client-hjob-photo img {
   width: 100%;
-  height: auto;
+  height: 100%;
   max-height: 150px;
   object-fit: contain;
   display: block;
+}
+
+.client-hjob-mini-grid--2col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
 }
 
 .client-hjob-mini-grid {
