@@ -240,8 +240,8 @@ const GLOBAL_SITES = [
             unitPanel: {
               unit: 'BU120',
               description: 'Machines Commercialization',
-              manager: 'Leo Brennan',
-              assistant: 'Hannah Cole',
+              manager: 'Kevin Langeberg',
+              assistant: 'Mikhail Shimko',
               activeMachines: '7/10',
               activeOperators: '11',
               updatedAt: 'Timestamp',
