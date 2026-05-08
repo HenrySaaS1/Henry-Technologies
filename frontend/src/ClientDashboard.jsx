@@ -1687,13 +1687,15 @@ function MiniDonut({ value, max = 100, color = '#7c3aed', track = '#e9d5ff', siz
   )
 }
 
-function MiniBars({ data, maxOverride }) {
+function MiniBars({ data, maxOverride, showValues = true }) {
   const max = maxOverride ?? Math.max(...data.map((d) => d.value), 1)
+  const formatNum = (n) => (n >= 1000 ? n.toLocaleString() : String(n))
   return (
     <div className="client-bu-mini-bars">
       <div className="client-bu-mini-bars-grid">
         {data.map((d) => (
           <div key={d.label} className="client-bu-mini-bar-col" title={`${d.label}: ${d.value}`}>
+            {showValues ? <span className="client-bu-mini-bar-top">{formatNum(d.value)}</span> : null}
             <div className="client-bu-mini-bar-track">
               <span
                 className="client-bu-mini-bar-fill"
@@ -1799,9 +1801,10 @@ function UnitOverviewSide({ unitPanel, statusLabel, cards, localLine, onClose, d
     { label: '3 PM', value: cycleNum + 3 },
   ]
   const throughputTrend = [
-    { label: '6 AM', value: Math.max(20, Math.round(throughputNum * 0.85)) },
-    { label: '9 AM', value: Math.max(30, Math.round(throughputNum * 1.05)) },
-    { label: '12 PM', value: Math.max(30, Math.round(throughputNum * 1.18)) },
+    { label: '3 AM', value: Math.max(20, Math.round(throughputNum * 0.75)) },
+    { label: '6 AM', value: Math.max(20, Math.round(throughputNum * 1.04)) },
+    { label: '9 AM', value: Math.max(30, Math.round(throughputNum * 1.18)) },
+    { label: '12 PM', value: Math.max(30, Math.round(throughputNum * 0.94)) },
     { label: '3 PM', value: Math.max(28, Math.round(throughputNum * 0.99)) },
   ]
 
@@ -1820,12 +1823,23 @@ function UnitOverviewSide({ unitPanel, statusLabel, cards, localLine, onClose, d
 
       <section className="client-bu-section">
         <h5 className="client-bu-section-title"><PulseIcon /> Real-Time Status:</h5>
-        <ul className="client-bu-section-list">
-          <li>Current Status: {String(statusLabel).charAt(0).toUpperCase() + String(statusLabel).slice(1)}</li>
-          <li>Active {isBu120 ? 'Jobs' : 'Machines'}: {unitPanel.activeMachines}</li>
-          <li>Active Operators: {unitPanel.activeOperators}</li>
-          <li>Last Updated: {localLine}</li>
-        </ul>
+        {isBu120 ? (
+          <ul className="client-bu-section-list">
+            <li>Current Status: {String(statusLabel).charAt(0).toUpperCase() + String(statusLabel).slice(1)}</li>
+            <li>Active Jobs: {cards.length}</li>
+            <li>On-Track to Ship: {tally.onTrack}</li>
+            <li>At Risk / Delayed: {tally.atRisk + tally.delayed}</li>
+            <li>Active Operators: {unitPanel.activeOperators}</li>
+            <li>Last Updated: {localLine}</li>
+          </ul>
+        ) : (
+          <ul className="client-bu-section-list">
+            <li>Current Status: {String(statusLabel).charAt(0).toUpperCase() + String(statusLabel).slice(1)}</li>
+            <li>Active Machines: {unitPanel.activeMachines}</li>
+            <li>Active Operators: {unitPanel.activeOperators}</li>
+            <li>Last Updated: {localLine}</li>
+          </ul>
+        )}
       </section>
 
       <section className="client-bu-section">
@@ -2097,13 +2111,11 @@ function UnitJobsPanel({ user, unitLabel }) {
               </div>
 
               <footer className="client-unit-job-foot">
-                <div className="client-unit-job-foot-row">
-                  <span className="client-unit-job-foot-label">Build Progress</span>
-                  <span className={`client-unit-job-foot-value tone-${tone}`}>{`${stats.completion}%`}</span>
-                </div>
+                <span className="client-unit-job-foot-label">Build Progress</span>
                 <div className={`client-unit-job-progress tone-${tone}`}>
                   <span style={{ width: `${stats.completion}%` }} />
                 </div>
+                <span className={`client-unit-job-foot-value tone-${tone}`}>{`${stats.completion}%`}</span>
               </footer>
             </article>
           )
