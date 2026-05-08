@@ -230,7 +230,7 @@ const GLOBAL_SITES = [
       zones: [
         {
           id: 'us-bu-125',
-          label: 'BU 125',
+          label: '125',
           pct: { left: 22, top: 21, width: 7.8, height: 19 },
           machinery: {
             title: 'BU 125',
@@ -260,7 +260,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-120',
-          label: 'BU 120',
+          label: '120',
           pct: { left: 30.2, top: 21, width: 7.2, height: 19 },
           machinery: {
             title: 'BU 120',
@@ -307,7 +307,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-190',
-          label: 'BU 190',
+          label: '190',
           pct: { left: 50.8, top: 21, width: 7.4, height: 19 },
           machinery: {
             title: 'BU 190',
@@ -337,7 +337,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-180',
-          label: 'BU 180',
+          label: '180',
           pct: { left: 58.6, top: 21, width: 7.2, height: 19 },
           machinery: {
             title: 'BU 180',
@@ -367,7 +367,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-140',
-          label: 'BU 140',
+          label: '140',
           pct: { left: 73, top: 21, width: 6.8, height: 19 },
           machinery: {
             title: 'BU 140',
@@ -397,7 +397,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-150',
-          label: 'BU 150',
+          label: '150',
           pct: { left: 80.4, top: 21, width: 7, height: 19 },
           machinery: {
             title: 'BU 150',
@@ -427,7 +427,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-220',
-          label: 'BU 220',
+          label: '220',
           pct: { left: 88, top: 21, width: 8.5, height: 19 },
           machinery: {
             title: 'BU 220',
