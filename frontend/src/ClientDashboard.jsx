@@ -338,7 +338,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-bu-180',
           label: '180',
-          pct: { left: 58.6, top: 21, width: 7.2, height: 19 },
+          pct: { left: 62, top: 21, width: 7.2, height: 19 },
           machinery: {
             title: 'BU 180',
             status: 'running',
