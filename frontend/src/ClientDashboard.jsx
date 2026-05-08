@@ -231,7 +231,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-bu-125',
           label: 'BU 125',
-          pct: { left: 25, top: 22, width: 7.5, height: 18 },
+          pct: { left: 22, top: 21, width: 7.8, height: 19 },
           machinery: {
             title: 'BU 125',
             status: 'running',
@@ -247,7 +247,7 @@ const GLOBAL_SITES = [
               targetVsActual: '1,440 vs 1,180',
               cycleTime: '42 sec',
               throughput: '106 units/hr',
-              focus: { x: 24, y: 44 },
+              focus: { x: 26, y: 45 },
               powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
             },
             lines: [
@@ -261,7 +261,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-bu-120',
           label: 'BU 120',
-          pct: { left: 33, top: 22, width: 7, height: 18 },
+          pct: { left: 30.2, top: 21, width: 7.2, height: 19 },
           machinery: {
             title: 'BU 120',
             status: 'running',
@@ -277,7 +277,7 @@ const GLOBAL_SITES = [
               targetVsActual: '1,200 vs 985',
               cycleTime: '48 sec',
               throughput: '92 units/hr',
-              focus: { x: 36, y: 50 },
+              focus: { x: 34, y: 45 },
               powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
             },
             lines: [
@@ -291,7 +291,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-wh',
           label: 'WH',
-          pct: { left: 41, top: 22, width: 11, height: 18 },
+          pct: { left: 37.8, top: 21, width: 12.6, height: 19 },
           machinery: {
             title: 'Warehouse (WH)',
             status: 'running',
@@ -308,7 +308,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-bu-190',
           label: 'BU 190',
-          pct: { left: 53, top: 22, width: 7, height: 18 },
+          pct: { left: 50.8, top: 21, width: 7.4, height: 19 },
           machinery: {
             title: 'BU 190',
             status: 'running',
@@ -324,7 +324,7 @@ const GLOBAL_SITES = [
               targetVsActual: '1,300 vs 1,040',
               cycleTime: '46 sec',
               throughput: '98 units/hr',
-              focus: { x: 56, y: 48 },
+              focus: { x: 54, y: 45 },
               powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
             },
             lines: [
@@ -338,7 +338,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-bu-180',
           label: 'BU 180',
-          pct: { left: 61, top: 22, width: 7, height: 18 },
+          pct: { left: 58.6, top: 21, width: 7.2, height: 19 },
           machinery: {
             title: 'BU 180',
             status: 'running',
@@ -354,7 +354,7 @@ const GLOBAL_SITES = [
               targetVsActual: '1,050 vs 880',
               cycleTime: '53 sec',
               throughput: '82 units/hr',
-              focus: { x: 64, y: 46 },
+              focus: { x: 62, y: 45 },
               powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
             },
             lines: [
@@ -368,7 +368,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-bu-140',
           label: 'BU 140',
-          pct: { left: 70, top: 22, width: 6, height: 18 },
+          pct: { left: 66.2, top: 21, width: 6.6, height: 19 },
           machinery: {
             title: 'BU 140',
             status: 'alert',
@@ -384,7 +384,7 @@ const GLOBAL_SITES = [
               targetVsActual: '1,100 vs 902',
               cycleTime: '51 sec',
               throughput: '84 units/hr',
-              focus: { x: 74, y: 46 },
+              focus: { x: 69, y: 45 },
               powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
             },
             lines: [
@@ -398,7 +398,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-bu-150',
           label: 'BU 150',
-          pct: { left: 77, top: 22, width: 6.5, height: 18 },
+          pct: { left: 73.2, top: 21, width: 7, height: 19 },
           machinery: {
             title: 'BU 150',
             status: 'running',
@@ -414,7 +414,7 @@ const GLOBAL_SITES = [
               targetVsActual: '1,150 vs 1,005',
               cycleTime: '44 sec',
               throughput: '101 units/hr',
-              focus: { x: 80, y: 48 },
+              focus: { x: 77, y: 45 },
               powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
             },
             lines: [
@@ -428,7 +428,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-bu-220',
           label: 'BU 220',
-          pct: { left: 85, top: 22, width: 6, height: 18 },
+          pct: { left: 80.6, top: 21, width: 8.2, height: 19 },
           machinery: {
             title: 'BU 220',
             status: 'running',
@@ -444,7 +444,7 @@ const GLOBAL_SITES = [
               targetVsActual: '720 vs 612',
               cycleTime: '38 sec',
               throughput: '94 lots/hr',
-              focus: { x: 88, y: 46 },
+              focus: { x: 85, y: 45 },
               powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
             },
             lines: [
