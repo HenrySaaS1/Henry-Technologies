@@ -368,7 +368,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-bu-140',
           label: 'BU 140',
-          pct: { left: 66.2, top: 21, width: 6.6, height: 19 },
+          pct: { left: 73, top: 21, width: 6.8, height: 19 },
           machinery: {
             title: 'BU 140',
             status: 'alert',
@@ -398,7 +398,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-bu-150',
           label: 'BU 150',
-          pct: { left: 73.2, top: 21, width: 7, height: 19 },
+          pct: { left: 80.4, top: 21, width: 7, height: 19 },
           machinery: {
             title: 'BU 150',
             status: 'running',
@@ -428,7 +428,7 @@ const GLOBAL_SITES = [
         {
           id: 'us-bu-220',
           label: 'BU 220',
-          pct: { left: 80.6, top: 21, width: 8.2, height: 19 },
+          pct: { left: 88, top: 21, width: 8.5, height: 19 },
           machinery: {
             title: 'BU 220',
             status: 'running',
