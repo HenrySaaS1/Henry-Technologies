@@ -12,8 +12,6 @@ import harlandCustomRig from './assets/uploads/harland-custom-rig.png'
 import harlandRdx195 from './assets/uploads/harland-rdx-195.png'
 import harlandFts7000 from './assets/uploads/harland-fts7000.png'
 import harlandCts1100 from './assets/uploads/harland-cts1100.png'
-import HarlandJobCardMiniCharts from './HarlandJobCardMiniCharts.jsx'
-
 /** Demo equipment visuals per Harland BU job tile (job id like `125-2`). */
 const JOB_MACHINE_IMAGES = {
   '120-1': harlandRdx195,
@@ -1333,6 +1331,17 @@ function jobRuntimeStats(id, status) {
   const partsPerHour = Math.round((3600 / cycleSeconds) * (oee / 100))
   const nextPmDays = (h % 14) + 1
   const lastService = `2026-${String(((h % 4) + 1)).padStart(2, '0')}-${String((h % 28) + 1).padStart(2, '0')}`
+  const shipStatus = status === 'Critical' ? 'delayed' : status === 'Moderate' ? 'at-risk' : 'on-track'
+  let timeVarianceDays
+  if (shipStatus === 'on-track') {
+    timeVarianceDays = (h >> 1) % 4
+  } else if (shipStatus === 'at-risk') {
+    timeVarianceDays = -1 - ((h >> 2) % 2)
+  } else {
+    timeVarianceDays = -3 - ((h >> 2) % 4)
+  }
+  const baseDays = shipStatus === 'on-track' ? 5 : shipStatus === 'at-risk' ? 10 : 15
+  const daysRemaining = baseDays + (h % 6)
   return {
     completion,
     target,
@@ -1347,6 +1356,9 @@ function jobRuntimeStats(id, status) {
     partsPerHour,
     nextPmDays,
     lastService,
+    shipStatus,
+    timeVarianceDays,
+    daysRemaining,
   }
 }
 
@@ -1354,6 +1366,121 @@ function machineSerialFor(id, modelKey) {
   const h = hashId(`${modelKey}-${id}`)
   const cleanModel = String(modelKey || '').replace(/[^A-Z0-9]/gi, '').toUpperCase().slice(0, 4) || 'HMS'
   return `${cleanModel}-${String(h % 90000 + 10000)}`
+}
+
+const SHIP_STATUS_LABEL = {
+  'on-track': 'On Track',
+  'at-risk': 'At Risk',
+  delayed: 'Delayed',
+}
+
+const SHIP_STATUS_TONE = {
+  'on-track': 'good',
+  'at-risk': 'warn',
+  delayed: 'bad',
+}
+
+function ShipStatusIcon({ status }) {
+  if (status === 'on-track') {
+    return (
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" fill="#16a34a" />
+        <path d="M7 12.5l3 3 7-7" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    )
+  }
+  if (status === 'at-risk') {
+    return (
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path d="M12 2 22 21H2L12 2z" fill="#f59e0b" />
+        <path d="M12 9v6" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" />
+        <circle cx="12" cy="18" r="1.1" fill="#fff" />
+      </svg>
+    )
+  }
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" fill="#dc2626" />
+      <path d="M8.5 8.5l7 7M15.5 8.5l-7 7" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function CalendarIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="#475569" strokeWidth="1.6" />
+      <path d="M3 9h18" stroke="#475569" strokeWidth="1.6" />
+      <path d="M8 3v4M16 3v4" stroke="#475569" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function VarianceArrow({ direction }) {
+  const color = direction === 'up' ? '#16a34a' : direction === 'down' ? '#dc2626' : '#475569'
+  if (direction === 'up') {
+    return (
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <path d="M12 4v16M5 11l7-7 7 7" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    )
+  }
+  if (direction === 'down') {
+    return (
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <path d="M12 4v16M5 13l7 7 7-7" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    )
+  }
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M5 12h14" stroke={color} strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function PulseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M2 12h4l2-7 4 14 2-7h8" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function ClipboardIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <rect x="6" y="4" width="12" height="17" rx="2" fill="none" stroke="#7c3aed" strokeWidth="1.6" />
+      <rect x="9" y="2.5" width="6" height="3" rx="1" fill="#7c3aed" />
+      <path d="M9 11h6M9 14h6M9 17h4" stroke="#7c3aed" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function TruckIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M2 7h11v9H2zM13 10h5l3 3v3h-8z" fill="none" stroke="#7c3aed" strokeWidth="1.6" strokeLinejoin="round" />
+      <circle cx="6" cy="18" r="1.7" fill="#7c3aed" />
+      <circle cx="17" cy="18" r="1.7" fill="#7c3aed" />
+    </svg>
+  )
+}
+
+function EyeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="#7c3aed" strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="2.6" fill="#7c3aed" />
+    </svg>
+  )
+}
+
+function formatTimeVariance(days) {
+  const abs = Math.abs(days)
+  if (days > 0) return { primary: `+${abs} day${abs === 1 ? '' : 's'}`, label: 'Ahead', dir: 'up' }
+  if (days < 0) return { primary: `-${abs} day${abs === 1 ? '' : 's'}`, label: 'Behind', dir: 'down' }
+  return { primary: '0 days', label: 'On Time', dir: 'flat' }
 }
 
 /** BU 120 / BU 125 job row templates (description + status) for unit job cards. */
@@ -1397,7 +1524,7 @@ function unitJobsForPanel(unitLabel, count) {
       description: row.description,
       status: row.status,
       machinePhotoSrc: JOB_MACHINE_IMAGES[id] ?? null,
-      completion: stats.completion,
+      stats,
     }
   })
 }
@@ -1528,6 +1655,332 @@ function JobDetailModal({ job, onClose }) {
   )
 }
 
+function MiniDonut({ value, max = 100, color = '#7c3aed', track = '#e9d5ff', size = 86, label, sub }) {
+  const safe = Math.max(0, Math.min(100, Math.round((Number(value) / Number(max)) * 100) || 0))
+  const r = (size / 2) - 8
+  const cx = size / 2
+  const cy = size / 2
+  const circ = 2 * Math.PI * r
+  const dash = (safe / 100) * circ
+  return (
+    <div className="client-bu-mini-donut" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
+        <circle cx={cx} cy={cy} r={r} stroke={track} strokeWidth="8" fill="none" />
+        <circle
+          cx={cx}
+          cy={cy}
+          r={r}
+          stroke={color}
+          strokeWidth="8"
+          fill="none"
+          strokeDasharray={`${dash} ${circ - dash}`}
+          strokeDashoffset={circ / 4}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${cx} ${cy})`}
+        />
+      </svg>
+      <div className="client-bu-mini-donut-text">
+        <strong>{label}</strong>
+        {sub ? <span>{sub}</span> : null}
+      </div>
+    </div>
+  )
+}
+
+function MiniBars({ data, maxOverride }) {
+  const max = maxOverride ?? Math.max(...data.map((d) => d.value), 1)
+  return (
+    <div className="client-bu-mini-bars">
+      <div className="client-bu-mini-bars-grid">
+        {data.map((d) => (
+          <div key={d.label} className="client-bu-mini-bar-col" title={`${d.label}: ${d.value}`}>
+            <div className="client-bu-mini-bar-track">
+              <span
+                className="client-bu-mini-bar-fill"
+                style={{
+                  height: `${(d.value / max) * 100}%`,
+                  background: d.color || '#1e3a8a',
+                }}
+              />
+            </div>
+            <span className="client-bu-mini-bar-label">{d.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function MiniLine({ data, height = 56, color = '#1e3a8a' }) {
+  if (!data?.length) return null
+  const max = Math.max(...data.map((d) => d.value))
+  const min = Math.min(...data.map((d) => d.value))
+  const span = Math.max(1, max - min)
+  const w = 200
+  const pts = data.map((d, i) => {
+    const x = (i / (data.length - 1 || 1)) * (w - 8) + 4
+    const y = height - 6 - ((d.value - min) / span) * (height - 14)
+    return `${x},${y}`
+  }).join(' ')
+  return (
+    <div className="client-bu-mini-line">
+      <svg viewBox={`0 0 ${w} ${height}`} preserveAspectRatio="none" width="100%" height={height} aria-hidden="true">
+        <polyline points={pts} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" />
+        {data.map((d, i) => {
+          const x = (i / (data.length - 1 || 1)) * (w - 8) + 4
+          const y = height - 6 - ((d.value - min) / span) * (height - 14)
+          return <circle key={d.label} cx={x} cy={y} r="2.5" fill={color} />
+        })}
+      </svg>
+      <div className="client-bu-mini-line-x">
+        {data.map((d) => (
+          <span key={d.label}>{d.label}</span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function MiniHBar({ rows, max }) {
+  const m = max ?? Math.max(...rows.map((r) => r.value), 1)
+  return (
+    <div className="client-bu-mini-hbars">
+      {rows.map((r) => (
+        <div key={r.label} className="client-bu-mini-hbar">
+          <span className="client-bu-mini-hbar-label">{r.label}</span>
+          <div className="client-bu-mini-hbar-track">
+            <span
+              className="client-bu-mini-hbar-fill"
+              style={{ width: `${(r.value / m) * 100}%`, background: r.color }}
+            />
+          </div>
+          <span className="client-bu-mini-hbar-value">{r.value}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function UnitOverviewSide({ unitPanel, statusLabel, cards, localLine, onClose, digits }) {
+  const tally = cards.reduce(
+    (acc, c) => {
+      const k = c.stats.shipStatus
+      if (k === 'on-track') acc.onTrack += 1
+      else if (k === 'at-risk') acc.atRisk += 1
+      else acc.delayed += 1
+      return acc
+    },
+    { onTrack: 0, atRisk: 0, delayed: 0 },
+  )
+  const aheadCount = cards.filter((c) => c.stats.timeVarianceDays > 0).length
+  const onTimeCount = cards.filter((c) => c.stats.timeVarianceDays === 0).length
+  const behindCount = cards.filter((c) => c.stats.timeVarianceDays < 0).length
+  const avgCompletion = cards.length
+    ? Math.round(cards.reduce((s, c) => s + c.stats.completion, 0) / cards.length)
+    : 0
+  const avgDaysRemaining = cards.length
+    ? (cards.reduce((s, c) => s + c.stats.daysRemaining, 0) / cards.length).toFixed(1)
+    : '0.0'
+
+  const isBu120 = digits === '120'
+
+  const targetMatch = String(unitPanel.targetVsActual || '').match(/([\d,]+)\s*vs\s*([\d,]+)/i)
+  const targetNum = targetMatch ? Number(targetMatch[1].replace(/,/g, '')) : 0
+  const actualNum = targetMatch ? Number(targetMatch[2].replace(/,/g, '')) : 0
+  const cycleNum = Number(String(unitPanel.cycleTime || '').match(/\d+/)?.[0] || 0)
+  const throughputNum = Number(String(unitPanel.throughput || '').match(/\d+/)?.[0] || 0)
+  const activeMachinesParts = String(unitPanel.activeMachines || '0/0').split('/').map((s) => Number(s.trim()) || 0)
+
+  const cycleTrend = [
+    { label: '3 AM', value: cycleNum + 6 },
+    { label: '6 AM', value: cycleNum + 1 },
+    { label: '9 AM', value: cycleNum - 2 },
+    { label: '12 PM', value: cycleNum - 4 },
+    { label: '3 PM', value: cycleNum + 3 },
+  ]
+  const throughputTrend = [
+    { label: '6 AM', value: Math.max(20, Math.round(throughputNum * 0.85)) },
+    { label: '9 AM', value: Math.max(30, Math.round(throughputNum * 1.05)) },
+    { label: '12 PM', value: Math.max(30, Math.round(throughputNum * 1.18)) },
+    { label: '3 PM', value: Math.max(28, Math.round(throughputNum * 0.99)) },
+  ]
+
+  return (
+    <aside className="client-bu-side client-bu-side--v2">
+      <button type="button" className="client-building-back" onClick={onClose}>
+        ← Back to home page
+      </button>
+      <h3 className="client-bu-title">Business Unit: {unitPanel.unit}</h3>
+
+      <div className="client-bu-text client-bu-text--meta">
+        <p><strong>Description:</strong> {unitPanel.description}</p>
+        <p><strong>BU Manager:</strong> {unitPanel.manager}</p>
+        <p><strong>Assistant:</strong> {unitPanel.assistant}</p>
+      </div>
+
+      <section className="client-bu-section">
+        <h5 className="client-bu-section-title"><PulseIcon /> Real-Time Status:</h5>
+        <ul className="client-bu-section-list">
+          <li>Current Status: {String(statusLabel).charAt(0).toUpperCase() + String(statusLabel).slice(1)}</li>
+          <li>Active {isBu120 ? 'Jobs' : 'Machines'}: {unitPanel.activeMachines}</li>
+          <li>Active Operators: {unitPanel.activeOperators}</li>
+          <li>Last Updated: {localLine}</li>
+        </ul>
+      </section>
+
+      <section className="client-bu-section">
+        <h5 className="client-bu-section-title"><ClipboardIcon /> {isBu120 ? 'Production Overview:' : 'Production Details:'}</h5>
+        {isBu120 ? (
+          <ul className="client-bu-section-list">
+            <li>Avg Completion: {avgCompletion}%</li>
+            <li>Ahead / On Time / Behind: {aheadCount} / {onTimeCount} / {behindCount}</li>
+            <li>Avg Days Remaining: {avgDaysRemaining}</li>
+            <li>Daily Throughput: {cards.length} active builds</li>
+          </ul>
+        ) : (
+          <ul className="client-bu-section-list">
+            <li>Today&apos;s Output: {unitPanel.todaysOutput}</li>
+            <li>Target vs Actual: {unitPanel.targetVsActual}</li>
+            <li>Cycle Time (Avg): {unitPanel.cycleTime}</li>
+            <li>Throughput: {unitPanel.throughput}</li>
+          </ul>
+        )}
+      </section>
+
+      <section className="client-bu-section">
+        <h5 className="client-bu-section-title"><TruckIcon /> Shipping Outlook:</h5>
+        <ul className="client-bu-section-list client-bu-shipout">
+          <li><span className="client-bu-shipdot tone-good" />On Track: <strong>{tally.onTrack}</strong></li>
+          <li><span className="client-bu-shipdot tone-warn" />At Risk: <strong>{tally.atRisk}</strong></li>
+          <li><span className="client-bu-shipdot tone-bad" />Delayed: <strong>{tally.delayed}</strong></li>
+        </ul>
+      </section>
+
+      <section className="client-bu-section">
+        <h5 className="client-bu-section-title"><EyeIcon /> Visual Snapshot</h5>
+        <div className="client-bu-snap-grid">
+          {isBu120 ? (
+            <>
+              <div className="client-bu-snap-card">
+                <p className="client-bu-snap-card-title">Active Jobs</p>
+                <div className="client-bu-snap-row">
+                  <MiniDonut
+                    value={cards.length}
+                    max={Math.max(cards.length, 6)}
+                    color="#5b21b6"
+                    track="#ede9fe"
+                    label={String(cards.length)}
+                    sub="Active Jobs"
+                  />
+                  <div className="client-bu-snap-aux">
+                    <strong>{unitPanel.activeOperators}</strong>
+                    <span>Operators</span>
+                  </div>
+                </div>
+              </div>
+              <div className="client-bu-snap-card">
+                <p className="client-bu-snap-card-title">Average Completion</p>
+                <div className="client-bu-snap-row">
+                  <MiniDonut
+                    value={avgCompletion}
+                    color="#5b21b6"
+                    track="#ede9fe"
+                    label={`${avgCompletion}%`}
+                  />
+                </div>
+                <p className="client-bu-snap-foot">{`Avg Days Remaining: ${avgDaysRemaining}`}</p>
+              </div>
+              <div className="client-bu-snap-card">
+                <p className="client-bu-snap-card-title">Build Schedule Status</p>
+                <MiniHBar
+                  rows={[
+                    { label: 'Ahead', value: aheadCount, color: '#16a34a' },
+                    { label: 'On Time', value: onTimeCount, color: '#1e3a8a' },
+                    { label: 'Behind', value: behindCount, color: '#dc2626' },
+                  ]}
+                />
+              </div>
+              <div className="client-bu-snap-card">
+                <p className="client-bu-snap-card-title">Shipping Outlook</p>
+                <MiniHBar
+                  rows={[
+                    { label: 'On Track', value: tally.onTrack, color: '#16a34a' },
+                    { label: 'At Risk', value: tally.atRisk, color: '#f59e0b' },
+                    { label: 'Delayed', value: tally.delayed, color: '#dc2626' },
+                  ]}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="client-bu-snap-card">
+                <p className="client-bu-snap-card-title">Active Machines</p>
+                <div className="client-bu-snap-row">
+                  <MiniDonut
+                    value={activeMachinesParts[0]}
+                    max={activeMachinesParts[1] || activeMachinesParts[0] || 1}
+                    color="#5b21b6"
+                    track="#ede9fe"
+                    label={`${activeMachinesParts[0]}/${activeMachinesParts[1]}`}
+                    sub="Active"
+                  />
+                  <div className="client-bu-snap-aux">
+                    <strong>{unitPanel.activeOperators}</strong>
+                    <span>Operators</span>
+                  </div>
+                </div>
+              </div>
+              <div className="client-bu-snap-card">
+                <p className="client-bu-snap-card-title">Target vs Actual</p>
+                <MiniBars
+                  data={[
+                    { label: 'Target', value: targetNum, color: '#1e3a8a' },
+                    { label: 'Actual', value: actualNum, color: '#7c3aed' },
+                  ]}
+                />
+                <p className="client-bu-snap-foot">{unitPanel.targetVsActual}</p>
+              </div>
+              <div className="client-bu-snap-card">
+                <p className="client-bu-snap-card-title">Cycle Time Trend (sec)</p>
+                <MiniLine data={cycleTrend} color="#5b21b6" />
+                <p className="client-bu-snap-foot">{`Average: ${unitPanel.cycleTime}`}</p>
+              </div>
+              <div className="client-bu-snap-card">
+                <p className="client-bu-snap-card-title">Throughput (units/hr)</p>
+                <MiniBars data={throughputTrend.map((d) => ({ ...d, color: '#1e3a8a' }))} />
+                <p className="client-bu-snap-foot">{`Average: ${unitPanel.throughput}`}</p>
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+
+      <div className="client-bu-local">{`Local Time: ${localLine}`}</div>
+      <div className="client-bu-actions client-bu-actions--v2">
+        <button type="button" className="client-bu-action-btn tone-status" aria-label="Status">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+            <path d="M3 12h4l2-7 4 14 2-7h6" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          STATUS
+        </button>
+        <button type="button" className="client-bu-action-btn tone-safety" aria-label="Safety">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+            <path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5L12 2z" fill="none" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
+          </svg>
+          SAFETY
+        </button>
+        <button type="button" className="client-bu-action-btn tone-security" aria-label="Security">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+            <rect x="5" y="11" width="14" height="9" rx="1.5" fill="none" stroke="#fff" strokeWidth="2" />
+            <path d="M8 11V8a4 4 0 1 1 8 0v3" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          SECURITY
+        </button>
+      </div>
+    </aside>
+  )
+}
+
 function UnitJobsPanel({ user, unitLabel }) {
   const [jobTimeRange, setJobTimeRange] = useState('daily')
   const [selectedJob, setSelectedJob] = useState(null)
@@ -1572,36 +2025,89 @@ function UnitJobsPanel({ user, unitLabel }) {
         </div>
       </header>
       <div className="client-unit-jobs-grid">
-        {cards.map((card) => (
-          <article
-            key={card.id}
-            className="client-unit-job-card client-unit-job-card--clickable"
-            role="button"
-            tabIndex={0}
-            aria-label={`Open details for ${card.title}`}
-            onClick={() => openJob(card)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                openJob(card)
-              }
-            }}
-          >
-            <h4>{card.title}</h4>
-            <p>{`Description: ${card.description}`}</p>
-            <HarlandJobCardMiniCharts
-              timeRange={jobTimeRange}
-              machinePhotoSrc={card.machinePhotoSrc}
-              machinePhotoAlt={`Harland equipment for ${card.title}`}
-              completion={card.completion}
-              completionTone={statusTone(card.status)}
-            />
-            <div className="client-unit-job-meter">
-              <span className={`client-unit-job-meter-fill tone-${statusTone(card.status)}`} />
-            </div>
-            <div className={`client-unit-job-status tone-${statusTone(card.status)}`}>{`Status: ${card.status}`}</div>
-          </article>
-        ))}
+        {cards.map((card) => {
+          const stats = card.stats
+          const tone = statusTone(card.status)
+          const tv = formatTimeVariance(stats.timeVarianceDays)
+          const shipLabel = SHIP_STATUS_LABEL[stats.shipStatus]
+          const shipTone = SHIP_STATUS_TONE[stats.shipStatus]
+          return (
+            <article
+              key={card.id}
+              className="client-unit-job-card client-unit-job-card--clickable client-unit-job-card--v2"
+              role="button"
+              tabIndex={0}
+              aria-label={`Open details for ${card.title}`}
+              onClick={() => openJob(card)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  openJob(card)
+                }
+              }}
+            >
+              <header className="client-unit-job-head">
+                <h4>{card.title}</h4>
+                <p>{`Description: ${card.description}`}</p>
+              </header>
+
+              <div className="client-unit-job-body">
+                {card.machinePhotoSrc ? (
+                  <div className="client-unit-job-photo">
+                    <img
+                      src={card.machinePhotoSrc}
+                      alt={`Harland equipment for ${card.title}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                ) : (
+                  <div className="client-unit-job-photo client-unit-job-photo--empty" aria-hidden="true" />
+                )}
+
+                <div className="client-unit-job-tiles">
+                  <div className="client-unit-job-tile">
+                    <span className="client-unit-job-tile-label">Percent Complete</span>
+                    <span className={`client-unit-job-tile-value tone-${tone}`}>{`${stats.completion}%`}</span>
+                  </div>
+                  <div className="client-unit-job-tile">
+                    <span className="client-unit-job-tile-label">Ship Status</span>
+                    <span className={`client-unit-job-ship tone-${shipTone}`}>
+                      <ShipStatusIcon status={stats.shipStatus} />
+                      <strong>{shipLabel}</strong>
+                    </span>
+                  </div>
+                  <div className="client-unit-job-tile">
+                    <span className="client-unit-job-tile-label">Time Variance</span>
+                    <span className={`client-unit-job-variance tone-${tv.dir === 'up' ? 'good' : tv.dir === 'down' ? 'bad' : 'neutral'}`}>
+                      <VarianceArrow direction={tv.dir} />
+                      <strong>{tv.primary}</strong>
+                    </span>
+                    <span className="client-unit-job-variance-foot">{tv.label}</span>
+                  </div>
+                  <div className="client-unit-job-tile">
+                    <span className="client-unit-job-tile-label">Days Remaining</span>
+                    <span className="client-unit-job-days">
+                      <CalendarIcon />
+                      <strong>{stats.daysRemaining}</strong>
+                    </span>
+                    <span className="client-unit-job-days-foot">days left</span>
+                  </div>
+                </div>
+              </div>
+
+              <footer className="client-unit-job-foot">
+                <div className="client-unit-job-foot-row">
+                  <span className="client-unit-job-foot-label">Build Progress</span>
+                  <span className={`client-unit-job-foot-value tone-${tone}`}>{`${stats.completion}%`}</span>
+                </div>
+                <div className={`client-unit-job-progress tone-${tone}`}>
+                  <span style={{ width: `${stats.completion}%` }} />
+                </div>
+              </footer>
+            </article>
+          )
+        })}
         {selectedJob ? <JobDetailModal job={selectedJob} onClose={() => setSelectedJob(null)} /> : null}
       </div>
     </section>
@@ -1639,54 +2145,27 @@ function BuildingSitePageView({ site, zoneId, panelTab, now, onClose, onSelectZo
 
         {activeZone ? (
           activeZone.machinery.unitPanel ? (
-            <div className="client-bu-view">
-              <aside className="client-bu-side">
-                <button type="button" className="client-building-back" onClick={() => onSelectZone(null)}>
-                  ← Back to home page
-                </button>
-                <h3 className="client-bu-title">Business Unit: {activeZone.machinery.unitPanel.unit}</h3>
-                <div className="client-bu-text">
-                  <p>
-                    <strong>Description:</strong> {activeZone.machinery.unitPanel.description}
-                  </p>
-                  <p>
-                    <strong>BU Manager:</strong> {activeZone.machinery.unitPanel.manager}
-                  </p>
-                  <p>
-                    <strong>Assistant:</strong> {activeZone.machinery.unitPanel.assistant}
-                  </p>
-                  <p>
-                    <strong>Real Time Status:</strong>
-                  </p>
-                  <ul>
-                    <li>Current Status: {activeZone.machinery.status}</li>
-                    <li>Active Machines: {activeZone.machinery.unitPanel.activeMachines}</li>
-                    <li>Active Operators: {activeZone.machinery.unitPanel.activeOperators}</li>
-                    <li>Last Updated: {activeZone.machinery.unitPanel.updatedAt}</li>
-                  </ul>
-                  <p>
-                    <strong>Production Details:</strong>
-                  </p>
-                  <ul>
-                    <li>Today&apos;s Output: {activeZone.machinery.unitPanel.todaysOutput}</li>
-                    <li>Target vs Actual: {activeZone.machinery.unitPanel.targetVsActual}</li>
-                    <li>Cycle Time (Avg): {activeZone.machinery.unitPanel.cycleTime}</li>
-                    <li>Throughput: {activeZone.machinery.unitPanel.throughput}</li>
-                  </ul>
+            (() => {
+              const unitDigits = digitsFromUnitLabel(activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, ''))
+              const unitCards = unitJobsForPanel(activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, ''), locationDrivenCardCount(user))
+              return (
+                <div className="client-bu-view">
+                  <UnitOverviewSide
+                    unitPanel={activeZone.machinery.unitPanel}
+                    statusLabel={activeZone.machinery.status}
+                    cards={unitCards}
+                    localLine={localLine}
+                    digits={unitDigits}
+                    onClose={() => onSelectZone(null)}
+                  />
+                  <div
+                    className={`client-bu-image-wrap${activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? ' client-bu-image-wrap--analytics' : ''}`}
+                  >
+                    <UnitJobsPanel user={user} unitLabel={activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, '')} />
+                  </div>
                 </div>
-                <div className="client-bu-local">Local Time: {localLine}</div>
-                <div className="client-bu-actions">
-                  <span>Status</span>
-                  <span>Safety</span>
-                  <span>Security</span>
-                </div>
-              </aside>
-              <div
-                className={`client-bu-image-wrap${activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? ' client-bu-image-wrap--analytics' : ''}`}
-              >
-                <UnitJobsPanel user={user} unitLabel={activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, '')} />
-              </div>
-            </div>
+              )
+            })()
           ) : (
             <div className="client-building-machinery">
               <button type="button" className="client-building-back" onClick={() => onSelectZone(null)}>
