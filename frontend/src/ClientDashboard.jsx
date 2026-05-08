@@ -1970,6 +1970,549 @@ function MiniHBar({ rows, max }) {
   )
 }
 
+const SAFETY_EVENTS_POOL = [
+  { tone: 'good', kind: 'Walkthrough', text: 'Floor walkthrough completed by EHS lead' },
+  { tone: 'good', kind: 'LOTO', text: 'Lockout / Tagout audit passed' },
+  { tone: 'warn', kind: 'Near-Miss', text: 'Near-miss reported — slip in WH; coaching delivered' },
+  { tone: 'warn', kind: 'Ergonomics', text: 'Ergonomics action open: lift assist for line C' },
+  { tone: 'good', kind: 'Drill', text: 'Evacuation drill logged' },
+  { tone: 'good', kind: 'PPE', text: 'PPE compliance spot-check 98%' },
+  { tone: 'warn', kind: 'Near-Miss', text: 'Near-miss: pallet edge — corner guard installed' },
+  { tone: 'good', kind: 'First Aid', text: 'First aid kit restock verified' },
+  { tone: 'bad', kind: 'Incident', text: 'Hand laceration — closed; root cause posted' },
+  { tone: 'good', kind: 'Training', text: 'Confined-space refresher completed for shift B' },
+]
+
+const SAFETY_CHECKS = [
+  'Eye-wash stations tested',
+  'Fire extinguisher inspection',
+  'MSDS / SDS up to date',
+  'Forklift pre-shift inspection',
+  '5S audit closed',
+  'Emergency lighting verified',
+]
+
+const SAFETY_LEADS = [
+  'Priya Shah',
+  'Marcus Webb',
+  'Anika Iyer',
+  'Jorge Alvarado',
+  'Sophie Tremblay',
+  'Devon Carter',
+]
+
+const SECURITY_EVENTS_POOL = [
+  { tone: 'good', kind: 'Badge', text: 'Standard badged entry — Gate 1' },
+  { tone: 'good', kind: 'Visitor', text: 'Visitor checked in — A. Patel · escorted' },
+  { tone: 'warn', kind: 'Anomaly', text: 'Door held > 30s at Gate 3 — auto-resolved' },
+  { tone: 'good', kind: 'Patrol', text: 'Guard tour 4 of 4 complete' },
+  { tone: 'warn', kind: 'Camera', text: 'Camera 12 health alert — stream restored' },
+  { tone: 'good', kind: 'Contractor', text: 'Contractor onboarding cleared — 2 personnel' },
+  { tone: 'bad', kind: 'Alarm', text: 'Perimeter sensor zone B — false alarm logged' },
+  { tone: 'good', kind: 'Cage', text: 'Secure cage access verified · all matched badges' },
+  { tone: 'good', kind: 'Access', text: 'After-hours access request approved' },
+]
+
+const SECURITY_ZONES = [
+  'Main Lobby',
+  'Loading Dock',
+  'Engineering Wing',
+  'Server Room',
+  'Yard / Perimeter',
+  'Roof Access',
+]
+
+const SECURITY_LEADS = [
+  'Robert Lin',
+  'Aisha Mensah',
+  'Diego Vela',
+  'Hannah O’Brien',
+  'Ren Tanaka',
+  'Lila Petrov',
+]
+
+const STATUS_EVENTS_POOL = [
+  { tone: 'good', kind: 'Run', text: 'Line A — job started · operator J. Patel' },
+  { tone: 'good', kind: 'Restart', text: 'Cell B back online after planned PM' },
+  { tone: 'warn', kind: 'Slow Cycle', text: 'Cell C cycle time +6% — monitoring' },
+  { tone: 'good', kind: 'Quality', text: 'In-line vision pass rate 99.4%' },
+  { tone: 'warn', kind: 'Material', text: 'Coater hopper at 18% — refill scheduled' },
+  { tone: 'good', kind: 'Shift', text: 'Shift handover complete · all KPIs green' },
+  { tone: 'bad', kind: 'Downtime', text: 'Cell D unplanned stop — root cause posted' },
+  { tone: 'good', kind: 'Throughput', text: 'Line B above takt for 3 consecutive hours' },
+  { tone: 'good', kind: 'Setup', text: 'Changeover under target time on Line A' },
+]
+
+const STATUS_LINES = [
+  'Line A · Coater',
+  'Line B · Tester',
+  'Line C · Coater',
+  'Line D · Assembly',
+  'Cell E · Inspection',
+  'Cell F · Pack-out',
+]
+
+const STATUS_LEADS = [
+  'Avery Chen',
+  'Marcus Hill',
+  'Priya Shah',
+  'Diego Vela',
+  'Sophie Tremblay',
+  'Kenji Watanabe',
+]
+
+function pickFromPool(pool, n, hash) {
+  if (!pool.length) return []
+  const taken = new Set()
+  const out = []
+  let h = hash >>> 0
+  let guard = 0
+  while (out.length < n && guard < n * 8) {
+    h = ((h * 1103515245) + 12345) >>> 0
+    const idx = h % pool.length
+    if (!taken.has(idx)) {
+      taken.add(idx)
+      out.push(pool[idx])
+    }
+    guard += 1
+  }
+  return out
+}
+
+function safetyDataFor(scopeId) {
+  const h = hashId(`safety-${scopeId || 'all'}`)
+  const daysWithoutLti = 60 + (h % 280)
+  const ppe = 92 + (h % 8)
+  const lotoPass = 94 + ((h >> 2) % 6)
+  const openNearMiss = h % 4
+  const openActions = (h >> 3) % 5
+  const overall =
+    daysWithoutLti > 180 && openNearMiss === 0 && openActions <= 1
+      ? 'all-clear'
+      : openNearMiss <= 2 && openActions <= 3
+        ? 'monitor'
+        : 'action'
+  const events = pickFromPool(SAFETY_EVENTS_POOL, 5, h).map((e, i) => ({
+    ...e,
+    when: `${(i + 1) * 2}h ago`,
+  }))
+  const checks = SAFETY_CHECKS.map((label, i) => ({
+    label,
+    pct: 70 + ((h >> (i + 2)) % 30),
+  }))
+  const lead = SAFETY_LEADS[h % SAFETY_LEADS.length]
+  const lastWalkthrough = `${((h % 5) + 4)}:${String((h * 7) % 60).padStart(2, '0')} local`
+  return {
+    daysWithoutLti,
+    ppe,
+    lotoPass,
+    openNearMiss,
+    openActions,
+    events,
+    checks,
+    lead,
+    lastWalkthrough,
+    overall,
+  }
+}
+
+function securityDataFor(scopeId) {
+  const h = hashId(`security-${scopeId || 'all'}`)
+  const badged24h = 80 + (h % 240)
+  const visitorsActive = h % 8
+  const cameraTotal = 24
+  const cameraOnline = Math.max(20, cameraTotal - ((h >> 1) % 3))
+  const cameraPct = Math.round((cameraOnline / cameraTotal) * 100)
+  const exceptions = (h >> 2) % 4
+  const overall = exceptions === 0 && cameraPct >= 95 ? 'secure' : exceptions <= 2 ? 'monitor' : 'action'
+  const events = pickFromPool(SECURITY_EVENTS_POOL, 5, h).map((e, i) => ({
+    ...e,
+    when: `${(i + 1) * 12}m ago`,
+  }))
+  const zones = SECURITY_ZONES.map((label, i) => {
+    const z = (h >> (i + 2)) % 100
+    const tone = z > 80 ? 'good' : z > 50 ? 'warn' : 'good'
+    const status = z > 80 ? 'Secured' : z > 50 ? 'Monitored' : 'Secured'
+    return { label, status, tone }
+  })
+  const lead = SECURITY_LEADS[h % SECURITY_LEADS.length]
+  return {
+    badged24h,
+    visitorsActive,
+    cameraOnline,
+    cameraTotal,
+    cameraPct,
+    exceptions,
+    events,
+    zones,
+    lead,
+    overall,
+  }
+}
+
+function statusDataFor(scopeId) {
+  const h = hashId(`status-${scopeId || 'all'}`)
+  const machinesTotal = 8 + (h % 6)
+  const machinesOnline = Math.max(machinesTotal - ((h >> 2) % 3), Math.ceil(machinesTotal * 0.7))
+  const oee = 78 + (h % 18)
+  const throughput = 90 + ((h >> 1) % 60)
+  const downtimeMin = (h >> 3) % 35
+  const mttrMin = 6 + ((h >> 4) % 18)
+  const overall =
+    machinesOnline === machinesTotal && oee >= 88 && downtimeMin < 10
+      ? 'green'
+      : oee >= 80 && downtimeMin < 25
+        ? 'monitor'
+        : 'action'
+  const events = pickFromPool(STATUS_EVENTS_POOL, 5, h).map((e, i) => ({
+    ...e,
+    when: `${(i + 1) * 7}m ago`,
+  }))
+  const lines = STATUS_LINES.map((label, i) => {
+    const v = 70 + ((h >> (i + 2)) % 30)
+    return { label, pct: v }
+  })
+  const lead = STATUS_LEADS[h % STATUS_LEADS.length]
+  return {
+    machinesOnline,
+    machinesTotal,
+    oee,
+    throughput,
+    downtimeMin,
+    mttrMin,
+    events,
+    lines,
+    lead,
+    overall,
+  }
+}
+
+function ChartIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M3 12h4l2-7 4 14 2-7h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function ShieldIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5L12 2z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M9 12.5l2 2 4-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function LockIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <rect x="5" y="11" width="14" height="9" rx="1.5" fill="none" stroke="currentColor" strokeWidth="2" />
+      <path d="M8 11V8a4 4 0 1 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="12" cy="15.5" r="1.4" fill="currentColor" />
+    </svg>
+  )
+}
+
+function SxStatusPill({ tone, label }) {
+  return <span className={`client-sx-status client-sx-status--${tone}`}>{label}</span>
+}
+
+function UnitViewSwitcher({ activeView, onSelectView, className }) {
+  const handle = (next) => onSelectView && onSelectView(next)
+  return (
+    <div
+      className={`client-bu-actions client-bu-actions--v2 client-bu-actions--top${className ? ` ${className}` : ''}`}
+      role="tablist"
+      aria-label="Business unit view"
+    >
+      <button
+        type="button"
+        role="tab"
+        aria-selected={activeView === 'jobs'}
+        className={`client-bu-action-btn tone-jobs${activeView === 'jobs' ? ' is-active' : ''}`}
+        aria-label="Jobs"
+        onClick={() => handle('jobs')}
+      >
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+          <rect x="4" y="6" width="16" height="13" rx="1.5" fill="none" stroke="#fff" strokeWidth="2" />
+          <path d="M9 6V4.5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4.5V6" fill="none" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
+          <path d="M8 11h8M8 14.5h5" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        JOBS
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={activeView === 'status'}
+        className={`client-bu-action-btn tone-status${activeView === 'status' ? ' is-active' : ''}`}
+        aria-label="Status"
+        onClick={() => handle('status')}
+      >
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+          <path d="M3 12h4l2-7 4 14 2-7h6" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        STATUS
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={activeView === 'safety'}
+        className={`client-bu-action-btn tone-safety${activeView === 'safety' ? ' is-active' : ''}`}
+        aria-label="Safety"
+        onClick={() => handle('safety')}
+      >
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+          <path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5L12 2z" fill="none" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
+        </svg>
+        SAFETY
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={activeView === 'security'}
+        className={`client-bu-action-btn tone-security${activeView === 'security' ? ' is-active' : ''}`}
+        aria-label="Security"
+        onClick={() => handle('security')}
+      >
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+          <rect x="5" y="11" width="14" height="9" rx="1.5" fill="none" stroke="#fff" strokeWidth="2" />
+          <path d="M8 11V8a4 4 0 1 1 8 0v3" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        SECURITY
+      </button>
+    </div>
+  )
+}
+
+function SxKpiCard({ label, value, sub, tone }) {
+  return (
+    <div className={`client-sx-kpi${tone ? ` client-sx-kpi--${tone}` : ''}`}>
+      <p className="client-sx-kpi-value">{value}</p>
+      <p className="client-sx-kpi-label">{label}</p>
+      {sub ? <p className="client-sx-kpi-sub">{sub}</p> : null}
+    </div>
+  )
+}
+
+function StatusPanel({ scopeId, scopeName, localLine }) {
+  const data = useMemo(() => statusDataFor(scopeId), [scopeId])
+  const tone = data.overall === 'green' ? 'good' : data.overall === 'monitor' ? 'warn' : 'bad'
+  const label = data.overall === 'green' ? 'All Green' : data.overall === 'monitor' ? 'Monitoring' : 'Action Required'
+  const onlinePct = Math.round((data.machinesOnline / data.machinesTotal) * 100)
+  return (
+    <section className="client-sx-panel client-sx-panel--status" aria-label={`${scopeName} status`}>
+      <header className="client-sx-head">
+        <div className="client-sx-head-titles">
+          <p className="client-sx-eyebrow"><ChartIcon /> Production Status</p>
+          <h3 className="client-sx-title">{scopeName}</h3>
+          <p className="client-sx-sub">{`${data.machinesOnline} of ${data.machinesTotal} machines online · OEE ${data.oee}%`}</p>
+        </div>
+        <div className="client-sx-head-aside">
+          <SxStatusPill tone={tone} label={label} />
+        </div>
+      </header>
+      <div className="client-sx-kpis">
+        <SxKpiCard
+          label="Machines Online"
+          value={`${data.machinesOnline}/${data.machinesTotal}`}
+          sub={`${onlinePct}% available`}
+          tone={onlinePct === 100 ? 'good' : onlinePct >= 85 ? 'warn' : 'bad'}
+        />
+        <SxKpiCard
+          label="OEE"
+          value={`${data.oee}%`}
+          tone={data.oee >= 88 ? 'good' : data.oee >= 78 ? 'warn' : 'bad'}
+        />
+        <SxKpiCard
+          label="Throughput"
+          value={data.throughput}
+          sub="units / hr"
+          tone="good"
+        />
+        <SxKpiCard
+          label="Downtime Today"
+          value={`${data.downtimeMin}m`}
+          sub={`MTTR ${data.mttrMin}m`}
+          tone={data.downtimeMin === 0 ? 'good' : data.downtimeMin < 15 ? 'warn' : 'bad'}
+        />
+      </div>
+      <div className="client-sx-grid">
+        <section className="client-sx-card">
+          <h5 className="client-sx-card-title">Recent Events</h5>
+          <ul className="client-sx-events">
+            {data.events.map((e, i) => (
+              <li key={`${e.kind}-${i}`} className={`client-sx-event tone-${e.tone}`}>
+                <span className="client-sx-event-kind">{e.kind}</span>
+                <span className="client-sx-event-text">{e.text}</span>
+                <span className="client-sx-event-when">{e.when}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="client-sx-card">
+          <h5 className="client-sx-card-title">Line Utilization</h5>
+          <ul className="client-sx-checks">
+            {data.lines.map((c) => (
+              <li key={c.label} className="client-sx-check">
+                <span className="client-sx-check-label">{c.label}</span>
+                <div className="client-sx-check-track" aria-hidden="true">
+                  <span
+                    className="client-sx-check-fill"
+                    style={{
+                      width: `${c.pct}%`,
+                      background: c.pct >= 90 ? '#16a34a' : c.pct >= 75 ? '#f59e0b' : '#dc2626',
+                    }}
+                  />
+                </div>
+                <span className="client-sx-check-pct">{c.pct}%</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+      <footer className="client-sx-foot">
+        <span><strong>Shift Lead:</strong> {data.lead}</span>
+        {localLine ? <span>{`Updated · ${localLine}`}</span> : null}
+      </footer>
+    </section>
+  )
+}
+
+function SafetyPanel({ scopeId, scopeName, localLine }) {
+  const data = useMemo(() => safetyDataFor(scopeId), [scopeId])
+  const tone = data.overall === 'all-clear' ? 'good' : data.overall === 'monitor' ? 'warn' : 'bad'
+  const label = data.overall === 'all-clear' ? 'All Clear' : data.overall === 'monitor' ? 'Monitoring' : 'Action Required'
+  return (
+    <section className="client-sx-panel client-sx-panel--safety" aria-label={`${scopeName} safety`}>
+      <header className="client-sx-head">
+        <div className="client-sx-head-titles">
+          <p className="client-sx-eyebrow"><ShieldIcon /> Safety Operations</p>
+          <h3 className="client-sx-title">{scopeName}</h3>
+          <p className="client-sx-sub">Last walkthrough {data.lastWalkthrough}</p>
+        </div>
+        <div className="client-sx-head-aside">
+          <SxStatusPill tone={tone} label={label} />
+        </div>
+      </header>
+      <div className="client-sx-kpis">
+        <SxKpiCard label="Days w/o LTI" value={data.daysWithoutLti} tone="good" />
+        <SxKpiCard label="PPE Compliance" value={`${data.ppe}%`} tone={data.ppe >= 95 ? 'good' : 'warn'} />
+        <SxKpiCard label="LOTO Audits" value={`${data.lotoPass}%`} sub="passed" tone={data.lotoPass >= 95 ? 'good' : 'warn'} />
+        <SxKpiCard
+          label="Open Actions"
+          value={data.openActions}
+          sub={`${data.openNearMiss} open near-miss`}
+          tone={data.openActions === 0 ? 'good' : data.openActions <= 2 ? 'warn' : 'bad'}
+        />
+      </div>
+      <div className="client-sx-grid">
+        <section className="client-sx-card">
+          <h5 className="client-sx-card-title">Recent Events</h5>
+          <ul className="client-sx-events">
+            {data.events.map((e, i) => (
+              <li key={`${e.kind}-${i}`} className={`client-sx-event tone-${e.tone}`}>
+                <span className="client-sx-event-kind">{e.kind}</span>
+                <span className="client-sx-event-text">{e.text}</span>
+                <span className="client-sx-event-when">{e.when}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="client-sx-card">
+          <h5 className="client-sx-card-title">Compliance Checklist</h5>
+          <ul className="client-sx-checks">
+            {data.checks.map((c) => (
+              <li key={c.label} className="client-sx-check">
+                <span className="client-sx-check-label">{c.label}</span>
+                <div className="client-sx-check-track" aria-hidden="true">
+                  <span
+                    className="client-sx-check-fill"
+                    style={{
+                      width: `${c.pct}%`,
+                      background: c.pct >= 95 ? '#16a34a' : c.pct >= 85 ? '#f59e0b' : '#dc2626',
+                    }}
+                  />
+                </div>
+                <span className="client-sx-check-pct">{c.pct}%</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+      <footer className="client-sx-foot">
+        <span><strong>EHS Lead:</strong> {data.lead}</span>
+        {localLine ? <span>{`Updated · ${localLine}`}</span> : null}
+      </footer>
+    </section>
+  )
+}
+
+function SecurityPanel({ scopeId, scopeName, localLine }) {
+  const data = useMemo(() => securityDataFor(scopeId), [scopeId])
+  const tone = data.overall === 'secure' ? 'good' : data.overall === 'monitor' ? 'warn' : 'bad'
+  const label = data.overall === 'secure' ? 'Secure' : data.overall === 'monitor' ? 'Monitoring' : 'Action Required'
+  return (
+    <section className="client-sx-panel client-sx-panel--security" aria-label={`${scopeName} security`}>
+      <header className="client-sx-head">
+        <div className="client-sx-head-titles">
+          <p className="client-sx-eyebrow"><LockIcon /> Security Operations</p>
+          <h3 className="client-sx-title">{scopeName}</h3>
+          <p className="client-sx-sub">{`${data.cameraOnline}/${data.cameraTotal} cameras online · ${data.exceptions} open exceptions`}</p>
+        </div>
+        <div className="client-sx-head-aside">
+          <SxStatusPill tone={tone} label={label} />
+        </div>
+      </header>
+      <div className="client-sx-kpis">
+        <SxKpiCard label="Badged Entries (24h)" value={data.badged24h} tone="good" />
+        <SxKpiCard label="Visitors On Site" value={data.visitorsActive} sub="all escorted" />
+        <SxKpiCard
+          label="Cameras Online"
+          value={`${data.cameraOnline}/${data.cameraTotal}`}
+          sub={`${data.cameraPct}% healthy`}
+          tone={data.cameraPct >= 95 ? 'good' : 'warn'}
+        />
+        <SxKpiCard
+          label="Open Exceptions"
+          value={data.exceptions}
+          tone={data.exceptions === 0 ? 'good' : data.exceptions <= 2 ? 'warn' : 'bad'}
+        />
+      </div>
+      <div className="client-sx-grid">
+        <section className="client-sx-card">
+          <h5 className="client-sx-card-title">Recent Access &amp; Events</h5>
+          <ul className="client-sx-events">
+            {data.events.map((e, i) => (
+              <li key={`${e.kind}-${i}`} className={`client-sx-event tone-${e.tone}`}>
+                <span className="client-sx-event-kind">{e.kind}</span>
+                <span className="client-sx-event-text">{e.text}</span>
+                <span className="client-sx-event-when">{e.when}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="client-sx-card">
+          <h5 className="client-sx-card-title">Zone Status</h5>
+          <ul className="client-sx-zones">
+            {data.zones.map((z) => (
+              <li key={z.label} className={`client-sx-zone tone-${z.tone}`}>
+                <span className="client-sx-zone-dot" aria-hidden="true" />
+                <span className="client-sx-zone-label">{z.label}</span>
+                <span className="client-sx-zone-status">{z.status}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+      <footer className="client-sx-foot">
+        <span><strong>Security Lead:</strong> {data.lead}</span>
+        {localLine ? <span>{`Updated · ${localLine}`}</span> : null}
+      </footer>
+    </section>
+  )
+}
+
 function UnitOverviewSide({ unitPanel, statusLabel, cards, localLine, onClose, digits }) {
   const tally = cards.reduce(
     (acc, c) => {
@@ -2177,27 +2720,6 @@ function UnitOverviewSide({ unitPanel, statusLabel, cards, localLine, onClose, d
       </section>
 
       <div className="client-bu-local">{`Local Time: ${localLine}`}</div>
-      <div className="client-bu-actions client-bu-actions--v2">
-        <button type="button" className="client-bu-action-btn tone-status" aria-label="Status">
-          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-            <path d="M3 12h4l2-7 4 14 2-7h6" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          STATUS
-        </button>
-        <button type="button" className="client-bu-action-btn tone-safety" aria-label="Safety">
-          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-            <path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5L12 2z" fill="none" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
-          </svg>
-          SAFETY
-        </button>
-        <button type="button" className="client-bu-action-btn tone-security" aria-label="Security">
-          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-            <rect x="5" y="11" width="14" height="9" rx="1.5" fill="none" stroke="#fff" strokeWidth="2" />
-            <path d="M8 11V8a4 4 0 1 1 8 0v3" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-          SECURITY
-        </button>
-      </div>
     </aside>
   )
 }
@@ -2333,7 +2855,18 @@ function UnitJobsPanel({ user, unitLabel }) {
   )
 }
 
-function BuildingSitePageView({ site, zoneId, panelTab, now, onClose, onSelectZone, onSelectTab, user }) {
+function BuildingSitePageView({
+  site,
+  zoneId,
+  panelTab,
+  now,
+  onClose,
+  onSelectZone,
+  onSelectTab,
+  user,
+  unitView = 'jobs',
+  onSelectUnitView,
+}) {
   const b = site?.building
   if (!b) return null
   const activeZone = zoneId ? b.zones.find((z) => z.id === zoneId) : null
@@ -2367,6 +2900,10 @@ function BuildingSitePageView({ site, zoneId, panelTab, now, onClose, onSelectZo
             (() => {
               const unitDigits = digitsFromUnitLabel(activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, ''))
               const unitCards = unitJobsForPanel(activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, ''), locationDrivenCardCount(user))
+              const scopeId = `${site.id}-bu-${unitDigits}`
+              const scopeName = `BU ${unitDigits} · ${b.name}`
+              const view = unitView || 'jobs'
+              const handleView = (next) => onSelectUnitView && onSelectUnitView(next)
               return (
                 <div className="client-bu-view">
                   <UnitOverviewSide
@@ -2380,7 +2917,28 @@ function BuildingSitePageView({ site, zoneId, panelTab, now, onClose, onSelectZo
                   <div
                     className={`client-bu-image-wrap${activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? ' client-bu-image-wrap--analytics' : ''}`}
                   >
-                    <UnitJobsPanel user={user} unitLabel={activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, '')} />
+                    <UnitViewSwitcher activeView={view} onSelectView={handleView} />
+                    {view === 'safety' ? (
+                      <SafetyPanel
+                        scopeId={scopeId}
+                        scopeName={scopeName}
+                        localLine={localLine}
+                      />
+                    ) : view === 'security' ? (
+                      <SecurityPanel
+                        scopeId={scopeId}
+                        scopeName={scopeName}
+                        localLine={localLine}
+                      />
+                    ) : view === 'status' ? (
+                      <StatusPanel
+                        scopeId={scopeId}
+                        scopeName={scopeName}
+                        localLine={localLine}
+                      />
+                    ) : (
+                      <UnitJobsPanel user={user} unitLabel={activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, '')} />
+                    )}
                   </div>
                 </div>
               )
@@ -2462,7 +3020,27 @@ function BuildingSitePageView({ site, zoneId, panelTab, now, onClose, onSelectZo
               ))}
             </div>
             <div className="client-building-tab-panel" role="tabpanel">
-              <p className="client-building-tab-panel-text">{panelCopy}</p>
+              {panelTab === 'status' ? (
+                <StatusPanel
+                  scopeId={`${site.id}-bldg`}
+                  scopeName={b.name}
+                  localLine={localLine}
+                />
+              ) : panelTab === 'safety' ? (
+                <SafetyPanel
+                  scopeId={`${site.id}-bldg`}
+                  scopeName={b.name}
+                  localLine={localLine}
+                />
+              ) : panelTab === 'security' ? (
+                <SecurityPanel
+                  scopeId={`${site.id}-bldg`}
+                  scopeName={b.name}
+                  localLine={localLine}
+                />
+              ) : (
+                <p className="client-building-tab-panel-text">{panelCopy}</p>
+              )}
             </div>
           </div>
         ) : null}
@@ -2474,17 +3052,23 @@ function BuildingSitePageView({ site, zoneId, panelTab, now, onClose, onSelectZo
 function BuildingSiteRouteShell({ site, now, onClose, user }) {
   const [buildingZoneId, setBuildingZoneId] = useState(null)
   const [buildingPanelTab, setBuildingPanelTab] = useState('status')
+  const [unitView, setUnitView] = useState('jobs')
+
+  const handleSelectZone = useCallback((next) => {
+    setBuildingZoneId(next)
+    setUnitView('jobs')
+  }, [])
 
   useEffect(() => {
     const onKey = (e) => {
       if (e.key !== 'Escape') return
       e.preventDefault()
-      if (buildingZoneId) setBuildingZoneId(null)
+      if (buildingZoneId) handleSelectZone(null)
       else onClose()
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [buildingZoneId, onClose])
+  }, [buildingZoneId, handleSelectZone, onClose])
 
   return (
     <BuildingSitePageView
@@ -2493,9 +3077,11 @@ function BuildingSiteRouteShell({ site, now, onClose, user }) {
       panelTab={buildingPanelTab}
       now={now}
       onClose={onClose}
-      onSelectZone={setBuildingZoneId}
+      onSelectZone={handleSelectZone}
       onSelectTab={setBuildingPanelTab}
       user={user}
+      unitView={unitView}
+      onSelectUnitView={setUnitView}
     />
   )
 }
