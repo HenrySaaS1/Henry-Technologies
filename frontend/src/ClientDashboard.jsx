@@ -162,7 +162,7 @@ const REPORT_RANGE_PRESETS = [
 
 /** Demo floor asset — same PNG used as placeholder map for all sites until you upload per-site plans. */
 const DEFAULT_FLOOR_PLAN_SRC = `${import.meta.env.BASE_URL}site-floor-plan-us.png`
-const HARLAND_US_FLOOR_PLAN_SRC = `${import.meta.env.BASE_URL}site-floor-plan-us-v3.png`
+const HARLAND_US_FLOOR_PLAN_SRC = `${import.meta.env.BASE_URL}site-floor-plan-us-v4.png`
 
 const BUILDING_FOOTER_TABS = [
   { id: 'status', label: 'Status' },
