@@ -5357,9 +5357,10 @@ h3 {
 .client-building-floor-img {
   display: block;
   width: 100%;
+  max-width: 100%;
   height: auto;
-  min-height: min(56vh, 32rem);
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center top;
   user-select: none;
 }
 
