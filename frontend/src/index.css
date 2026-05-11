@@ -6052,6 +6052,15 @@ h3 {
 .client-sx-panel--safety { border-top: 4px solid #0891b2; }
 .client-sx-panel--security { border-top: 4px solid #16a34a; }
 
+/* Safety / Security under the same Harland header + range tabs as the jobs grid */
+.client-unit-jobs-panel > .client-sx-panel--unit-main {
+  margin-top: 0;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .client-sx-head {
   display: flex;
   align-items: flex-start;

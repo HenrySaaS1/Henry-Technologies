@@ -2379,12 +2379,16 @@ function StatusPanel({ scopeId, scopeName, localLine }) {
   )
 }
 
-function SafetyPanel({ scopeId, scopeName, localLine }) {
+function SafetyPanel({ scopeId, scopeName, localLine, unitDigits }) {
+  const [timeRange, setTimeRange] = useState('daily')
   const data = useMemo(() => safetyDataFor(scopeId), [scopeId])
   const tone = data.overall === 'all-clear' ? 'good' : data.overall === 'monitor' ? 'warn' : 'bad'
   const label = data.overall === 'all-clear' ? 'All Clear' : data.overall === 'monitor' ? 'Monitoring' : 'Action Required'
-  return (
-    <section className="client-sx-panel client-sx-panel--safety" aria-label={`${scopeName} safety`}>
+  const inner = (
+    <section
+      className={`client-sx-panel client-sx-panel--safety${unitDigits ? ' client-sx-panel--unit-main' : ''}`}
+      aria-label={`${scopeName} safety`}
+    >
       <header className="client-sx-head">
         <div className="client-sx-head-titles">
           <p className="client-sx-eyebrow"><ShieldIcon /> Safety Operations</p>
@@ -2446,14 +2450,30 @@ function SafetyPanel({ scopeId, scopeName, localLine }) {
       </footer>
     </section>
   )
+  if (!unitDigits) return inner
+  return (
+    <section className="client-unit-jobs-panel" aria-label={`BU ${unitDigits} safety`}>
+      <UnitHarlandPanelHeader
+        unitDigits={unitDigits}
+        timeRange={timeRange}
+        onTimeRangeChange={setTimeRange}
+        rangeGroupLabel="Safety report range"
+      />
+      {inner}
+    </section>
+  )
 }
 
-function SecurityPanel({ scopeId, scopeName, localLine }) {
+function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
+  const [timeRange, setTimeRange] = useState('daily')
   const data = useMemo(() => securityDataFor(scopeId), [scopeId])
   const tone = data.overall === 'secure' ? 'good' : data.overall === 'monitor' ? 'warn' : 'bad'
   const label = data.overall === 'secure' ? 'Secure' : data.overall === 'monitor' ? 'Monitoring' : 'Action Required'
-  return (
-    <section className="client-sx-panel client-sx-panel--security" aria-label={`${scopeName} security`}>
+  const inner = (
+    <section
+      className={`client-sx-panel client-sx-panel--security${unitDigits ? ' client-sx-panel--unit-main' : ''}`}
+      aria-label={`${scopeName} security`}
+    >
       <header className="client-sx-head">
         <div className="client-sx-head-titles">
           <p className="client-sx-eyebrow"><LockIcon /> Security Operations</p>
@@ -2509,6 +2529,18 @@ function SecurityPanel({ scopeId, scopeName, localLine }) {
         <span><strong>Security Lead:</strong> {data.lead}</span>
         {localLine ? <span>{`Updated · ${localLine}`}</span> : null}
       </footer>
+    </section>
+  )
+  if (!unitDigits) return inner
+  return (
+    <section className="client-unit-jobs-panel" aria-label={`BU ${unitDigits} security`}>
+      <UnitHarlandPanelHeader
+        unitDigits={unitDigits}
+        timeRange={timeRange}
+        onTimeRangeChange={setTimeRange}
+        rangeGroupLabel="Security report range"
+      />
+      {inner}
     </section>
   )
 }
@@ -2724,6 +2756,41 @@ function UnitOverviewSide({ unitPanel, statusLabel, cards, localLine, onClose, d
   )
 }
 
+/** Same top chrome as the jobs grid: BU chip, Harland logo, Daily / Weekly / Monthly (matches Harland unit screenshots). */
+function UnitHarlandPanelHeader({ unitDigits, timeRange, onTimeRangeChange, rangeGroupLabel = 'Report range' }) {
+  return (
+    <header className="client-unit-jobs-head">
+      <div className="client-unit-jobs-head-row1">
+        <span className="client-unit-chip">{`BU ${unitDigits}`}</span>
+        <div className="client-unit-brand">
+          <img
+            src={harlandMedicalSystemsLogo}
+            alt="Harland Medical Systems"
+            className="client-unit-brand-logo"
+            decoding="async"
+          />
+        </div>
+        <span className="client-unit-jobs-head-spacer" aria-hidden="true" />
+      </div>
+      <div className="client-unit-jobs-head-row2">
+        <div className="client-unit-range" role="group" aria-label={rangeGroupLabel}>
+          {(['daily', 'weekly', 'monthly']).map((r) => (
+            <button
+              key={r}
+              type="button"
+              className={timeRange === r ? 'is-active' : ''}
+              aria-pressed={timeRange === r}
+              onClick={() => onTimeRangeChange && onTimeRangeChange(r)}
+            >
+              {r === 'daily' ? 'Daily' : r === 'weekly' ? 'Weekly' : 'Monthly'}
+            </button>
+          ))}
+        </div>
+      </div>
+    </header>
+  )
+}
+
 function UnitJobsPanel({ user, unitLabel }) {
   const [jobTimeRange, setJobTimeRange] = useState('daily')
   const [selectedJob, setSelectedJob] = useState(null)
@@ -2738,35 +2805,7 @@ function UnitJobsPanel({ user, unitLabel }) {
   }
   return (
     <section className="client-unit-jobs-panel" aria-label={`BU ${digits} jobs`}>
-      <header className="client-unit-jobs-head">
-        <div className="client-unit-jobs-head-row1">
-          <span className="client-unit-chip">{`BU ${digits}`}</span>
-          <div className="client-unit-brand">
-            <img
-              src={harlandMedicalSystemsLogo}
-              alt="Harland Medical Systems"
-              className="client-unit-brand-logo"
-              decoding="async"
-            />
-          </div>
-          <span className="client-unit-jobs-head-spacer" aria-hidden="true" />
-        </div>
-        <div className="client-unit-jobs-head-row2">
-          <div className="client-unit-range" role="group" aria-label="Report range">
-            {(['daily', 'weekly', 'monthly']).map((r) => (
-              <button
-                key={r}
-                type="button"
-                className={jobTimeRange === r ? 'is-active' : ''}
-                aria-pressed={jobTimeRange === r}
-                onClick={() => setJobTimeRange(r)}
-              >
-                {r === 'daily' ? 'Daily' : r === 'weekly' ? 'Weekly' : 'Monthly'}
-              </button>
-            ))}
-          </div>
-        </div>
-      </header>
+      <UnitHarlandPanelHeader unitDigits={digits} timeRange={jobTimeRange} onTimeRangeChange={setJobTimeRange} />
       <div className="client-unit-jobs-grid">
         {cards.map((card) => {
           const stats = card.stats
@@ -2923,12 +2962,14 @@ function BuildingSitePageView({
                         scopeId={scopeId}
                         scopeName={scopeName}
                         localLine={localLine}
+                        unitDigits={unitDigits}
                       />
                     ) : view === 'security' ? (
                       <SecurityPanel
                         scopeId={scopeId}
                         scopeName={scopeName}
                         localLine={localLine}
+                        unitDigits={unitDigits}
                       />
                     ) : view === 'status' ? (
                       <StatusPanel
