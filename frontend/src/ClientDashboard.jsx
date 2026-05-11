@@ -311,7 +311,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+1 (612) 555-0142',
     phoneTel: '+16125550142',
     building: {
-      name: 'Harland US Headquarters',
+      name: 'Harland US',
       // Client-approved US building visual
       floorPlanSrc: HARLAND_US_FLOOR_PLAN_SRC,
       footerBlurb: {
@@ -565,7 +565,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+353 (0) 21 555 0173',
     phoneTel: '+353215550173',
     building: {
-      name: 'Dublin Manufacturing Center',
+      name: 'Harland Ireland',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
         safety: 'Chemical store inspection due tomorrow · eyewash tested today.',
@@ -620,7 +620,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+506 4002 8840',
     phoneTel: '+50640028840',
     building: {
-      name: 'San José Assembly Hub',
+      name: 'Harland Costa Rica',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
         safety: 'Ergonomics audit scheduled next week.',
@@ -660,7 +660,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+972 549 985610',
     phoneTel: '+972549985610',
     building: {
-      name: 'Herzliya R&D & light mfg',
+      name: 'Harland Israel',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
         safety: 'Laser enclosure interlocks tested.',
@@ -700,7 +700,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+1 (952) 941-0475',
     phoneTel: '+19529410475',
     building: {
-      name: 'Bengaluru support & NOC',
+      name: 'Harland India',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
         safety: 'Fire drill logged last quarter.',
@@ -3158,9 +3158,6 @@ function BuildingSitePageView({
                   alt={`Floor plan — ${b.name}`}
                   draggable={false}
                 />
-                {/* Hide any embedded PNG header/footer chrome (React already renders the title + tabs). */}
-                <div className="client-building-embed-mask client-building-embed-mask--header" aria-hidden="true" />
-                <div className="client-building-embed-mask client-building-embed-mask--bars" aria-hidden="true" />
                 {b.zones.map((z) => (
                   <button
                     key={z.id}
