@@ -12,6 +12,20 @@ import harlandCustomRig from './assets/uploads/harland-custom-rig.png'
 import harlandRdx195 from './assets/uploads/harland-rdx-195.png'
 import harlandFts7000 from './assets/uploads/harland-fts7000.png'
 import harlandCts1100 from './assets/uploads/harland-cts1100.png'
+// Safety observation thumbnails (user-supplied mock images).
+// Save these five PNGs into frontend/src/assets/uploads with the exact filenames.
+import safetyTripHazard from './assets/uploads/safety-trip-hazard.png'
+import safetyFloorSpill from './assets/uploads/safety-floor-spill.png'
+import safetyGuardMissing from './assets/uploads/safety-guard-missing.png'
+import safetyClearWalkway from './assets/uploads/safety-clear-walkway.png'
+import safetyBlockedExit from './assets/uploads/safety-blocked-exit.png'
+// Security CCTV-style thumbnails (user-supplied mock images).
+// Save the five PNGs into frontend/src/assets/uploads with these exact filenames.
+import secUnauthorized from './assets/uploads/security-unauthorized.png'
+import secAfterHours from './assets/uploads/security-after-hours.png'
+import secPerimeter from './assets/uploads/security-perimeter.png'
+import secDoorHeld from './assets/uploads/security-door-held.png'
+import secVehicle from './assets/uploads/security-vehicle.png'
 /** Demo equipment visuals per Harland BU job tile (job id like `125-2`). */
 const JOB_MACHINE_IMAGES = {
   '120-1': harlandRdx195,
@@ -1970,33 +1984,23 @@ const SECURITY_LEADS = [
   'Lila Petrov',
 ]
 
-/** Scene thumbnails for safety / security dashboard cards (demo). */
-const HMS_DASH_SCENES = [harlandRdx195, harland528Coater, harlandTts1000, harlandCustomRig, harlandFts7000, harlandCts1100]
+/**
+ * Fixed five-card image strip for Safety observations row — matches Trip Hazard → Floor Spill → Guard Missing → Clear Walkway → Blocked Exit.
+ * Uses the five user-supplied safety photos.
+ */
+const HMS_DASH_CARD_IMAGES = [safetyTripHazard, safetyFloorSpill, safetyGuardMissing, safetyClearWalkway, safetyBlockedExit]
 
-function pickFromPool(pool, n, hash) {
-  if (!pool.length) return []
-  const taken = new Set()
-  const out = []
-  let h = hash >>> 0
-  let guard = 0
-  while (out.length < n && guard < n * 8) {
-    h = ((h * 1103515245) + 12345) >>> 0
-    const idx = h % pool.length
-    if (!taken.has(idx)) {
-      taken.add(idx)
-      out.push(pool[idx])
-    }
-    guard += 1
-  }
-  return out
-}
+/** Fixed CCTV-style thumbnails for security events row (Unauthorized → Vehicle in Zone). */
+const SECURITY_CARD_IMAGES = [secUnauthorized, secAfterHours, secPerimeter, secDoorHeld, secVehicle]
 
-const SAFETY_OBS_SEEDS = [
+/** Safety observation row copy aligned to reference “Safety Observations (Today)” cards. */
+const SAFETY_OBS_MOCKUP_ROWS = [
   {
     category: 'Violation',
     catTone: 'bad',
     title: 'Trip Hazard in Aisle',
     where: 'Assembly Area 1',
+    timeLabel: '6:08 AM',
     body: 'Loose cord across walkway; cord cover staged for install.',
     risk: 'High Risk',
     riskTone: 'bad',
@@ -2008,6 +2012,7 @@ const SAFETY_OBS_SEEDS = [
     catTone: 'warn',
     title: 'Floor Spill',
     where: 'Coater Line B',
+    timeLabel: '5:52 AM',
     body: 'Small coolant sheen near drain; absorbent applied.',
     risk: 'Medium Risk',
     riskTone: 'warn',
@@ -2015,11 +2020,24 @@ const SAFETY_OBS_SEEDS = [
     stTone: 'warn',
   },
   {
+    category: 'Observation',
+    catTone: 'warn',
+    title: 'Guard Missing',
+    where: 'Cell 2 wrap station',
+    timeLabel: '5:41 AM',
+    body: 'Fixed guard panel absent on conveyor pinch point; LOTO applied and parts ordered.',
+    risk: 'Medium Risk',
+    riskTone: 'warn',
+    status: 'In Progress',
+    stTone: 'warn',
+  },
+  {
     category: 'Safe',
     catTone: 'good',
-    title: 'PPE Check — Weld Cell',
-    where: 'Cell 3',
-    body: 'All operators in required face shields and leathers.',
+    title: 'Clear Walkway',
+    where: 'Main aisle B',
+    timeLabel: '5:35 AM',
+    body: 'Aisles clear; floor markings visible; no pallets in egress path.',
     risk: 'Low Risk',
     riskTone: 'good',
     status: 'Safe',
@@ -2028,66 +2046,25 @@ const SAFETY_OBS_SEEDS = [
   {
     category: 'Violation',
     catTone: 'bad',
-    title: 'Blocked Eyewash',
-    where: 'Chemical prep',
-    body: 'Cart parked within 36 in of eyewash; moved and tagged.',
+    title: 'Blocked Exit',
+    where: 'Warehouse east',
+    timeLabel: '5:22 AM',
+    body: 'Cartons staged in front of designated egress; crew relocating per permit.',
     risk: 'High Risk',
     riskTone: 'bad',
     status: 'Open',
     stTone: 'bad',
   },
-  {
-    category: 'Observation',
-    catTone: 'warn',
-    title: 'Ergonomic Reach',
-    where: 'Pack-out',
-    body: 'Operator stretching between cycles; lift assist ticket opened.',
-    risk: 'Medium Risk',
-    riskTone: 'warn',
-    status: 'In Progress',
-    stTone: 'warn',
-  },
-  {
-    category: 'Safe',
-    catTone: 'good',
-    title: 'LOTO Verified',
-    where: 'Maintenance Bay',
-    body: 'Isolation points match procedure photos on work order.',
-    risk: 'Low Risk',
-    riskTone: 'good',
-    status: 'Safe',
-    stTone: 'good',
-  },
-  {
-    category: 'Observation',
-    catTone: 'warn',
-    title: 'Noise Dose Near Limit',
-    where: 'Grinding',
-    body: 'Shift rotation adjusted; hearing conservation notified.',
-    risk: 'Medium Risk',
-    riskTone: 'warn',
-    status: 'In Progress',
-    stTone: 'warn',
-  },
-  {
-    category: 'Violation',
-    catTone: 'bad',
-    title: 'Expired Fire Extinguisher Tag',
-    where: 'Warehouse aisle 4',
-    body: 'Monthly inspection overdue by 4 days; replacement scheduled.',
-    risk: 'Medium Risk',
-    riskTone: 'warn',
-    status: 'Open',
-    stTone: 'bad',
-  },
 ]
 
-const SECURITY_EVENT_SEEDS = [
+/** Security event rows (same five thumbnails as safety, fixed order). */
+const SECURITY_EVENTS_MOCKUP_ROWS = [
   {
     severity: 'High',
     sevTone: 'bad',
     title: 'Unauthorized Access',
     where: 'Back Entrance',
+    timeLabel: '5:58 AM',
     body: 'Badge mismatch at reader; guard dispatched and verified visitor escort.',
     status: 'Investigating',
     stTone: 'bad',
@@ -2097,6 +2074,7 @@ const SECURITY_EVENT_SEEDS = [
     sevTone: 'warn',
     title: 'Perimeter Motion',
     where: 'North fence line',
+    timeLabel: '5:44 AM',
     body: 'Camera AI flagged motion outside shift window; patrol cleared debris.',
     status: 'Under Review',
     stTone: 'warn',
@@ -2106,6 +2084,7 @@ const SECURITY_EVENT_SEEDS = [
     sevTone: 'info',
     title: 'Door Held Open',
     where: 'Loading Dock 2',
+    timeLabel: '5:31 AM',
     body: 'Door propped 42s; auto-chime acknowledged by forklift lead.',
     status: 'Closed',
     stTone: 'good',
@@ -2115,6 +2094,7 @@ const SECURITY_EVENT_SEEDS = [
     sevTone: 'warn',
     title: 'Camera Stream Lag',
     where: 'Server Room corridor',
+    timeLabel: '5:18 AM',
     body: 'Stream 2s behind; switch port flapped once then stable.',
     status: 'Under Review',
     stTone: 'warn',
@@ -2124,36 +2104,10 @@ const SECURITY_EVENT_SEEDS = [
     sevTone: 'info',
     title: 'Contractor Check-In',
     where: 'Main Lobby',
+    timeLabel: '5:05 AM',
     body: 'Two badges issued; escort confirmed to cage work.',
     status: 'Closed',
     stTone: 'good',
-  },
-  {
-    severity: 'High',
-    sevTone: 'bad',
-    title: 'Tailgating Attempt',
-    where: 'Engineering Wing',
-    body: 'Second person without badge; door cycle reset and logged.',
-    status: 'Investigating',
-    stTone: 'bad',
-  },
-  {
-    severity: 'Low',
-    sevTone: 'info',
-    title: 'Guard Tour Checkpoint',
-    where: 'Yard post 7',
-    body: 'NFC tap on schedule; no anomalies.',
-    status: 'Closed',
-    stTone: 'good',
-  },
-  {
-    severity: 'Medium',
-    sevTone: 'warn',
-    title: 'After-Hours Elevator',
-    where: 'Tower B',
-    body: 'Elevator called to restricted floor; cleared as cleaning crew.',
-    status: 'Under Review',
-    stTone: 'warn',
   },
 ]
 
@@ -2171,6 +2125,55 @@ function safetyDashboardFor(scopeId, unitDigits) {
   const bu = unitDigits === '120' ? 120 : unitDigits === '125' ? 125 : 0
   const shift = bu === 120 ? 101 : bu === 125 ? 0 : 37
   const hx = (h + shift) >>> 0
+  const observations = SAFETY_OBS_MOCKUP_ROWS.map((row, i) => ({
+    ...row,
+    id: `so-${i}-${hx}`,
+    img: HMS_DASH_CARD_IMAGES[i],
+  }))
+  const lead = SAFETY_LEADS[hx % SAFETY_LEADS.length]
+
+  if (bu === 125) {
+    return {
+      scorePct: 91,
+      scoreWord: 'Excellent',
+      totalObservations: 17,
+      violations: 6,
+      safeConditions: 10,
+      actionsTaken: 4,
+      openActions: 3,
+      areasInspected: 9,
+      areasTotal: 12,
+      trends: {
+        obs: fmtTrend('up', 15, true),
+        viol: fmtTrend('down', 13, false),
+        open: fmtTrend('down', 27, false),
+      },
+      observations,
+      lead,
+    }
+  }
+
+  if (bu === 120) {
+    return {
+      scorePct: 83,
+      scoreWord: 'Good',
+      totalObservations: 18,
+      violations: 6,
+      safeConditions: 12,
+      actionsTaken: 5,
+      openActions: 3,
+      areasInspected: 8,
+      areasTotal: 12,
+      trends: {
+        obs: fmtTrend('up', 12, true),
+        viol: fmtTrend('down', 14, false),
+        open: fmtTrend('down', 25, false),
+      },
+      observations,
+      lead,
+    }
+  }
+
   const totalObs = 14 + (hx % 9)
   const violations = 4 + (hx % 5)
   const safeCond = Math.max(2, totalObs - violations - ((hx >> 3) % 3))
@@ -2180,15 +2183,7 @@ function safetyDashboardFor(scopeId, unitDigits) {
   const areasInspected = 6 + ((hx >> 1) % 5)
   const scorePct = 78 + (hx % 14)
   const scoreWord = scorePct >= 90 ? 'Excellent' : scorePct >= 82 ? 'Good' : 'Watch'
-  const seeds = pickFromPool(SAFETY_OBS_SEEDS, 5, hx)
-  const times = ['6:08 AM', '5:52 AM', '5:41 AM', '5:35 AM', '5:22 AM']
-  const observations = seeds.map((s, i) => ({
-    ...s,
-    id: `so-${i}-${hx}`,
-    timeLabel: times[i] || `${6 - i}:10 AM`,
-    img: HMS_DASH_SCENES[(hx + i * 3) % HMS_DASH_SCENES.length],
-  }))
-  const lead = SAFETY_LEADS[hx % SAFETY_LEADS.length]
+
   return {
     scorePct,
     scoreWord,
@@ -2225,13 +2220,10 @@ function securityDashboardFor(scopeId, unitDigits) {
   const cameraPct = Math.round((cameraOnline / cameraTotal) * 100)
   const scorePct = 88 + (hx % 10)
   const scoreWord = scorePct >= 91 ? 'Excellent' : scorePct >= 84 ? 'Good' : 'Watch'
-  const seeds = pickFromPool(SECURITY_EVENT_SEEDS, 5, hx)
-  const times = ['5:58 AM', '5:44 AM', '5:31 AM', '5:18 AM', '5:05 AM']
-  const events = seeds.map((s, i) => ({
-    ...s,
+  const events = SECURITY_EVENTS_MOCKUP_ROWS.map((row, i) => ({
+    ...row,
     id: `se-${i}-${hx}`,
-    timeLabel: times[i] || `${5 + i}:15 AM`,
-    img: HMS_DASH_SCENES[(hx + i * 5) % HMS_DASH_SCENES.length],
+    img: SECURITY_CARD_IMAGES[i] || SECURITY_CARD_IMAGES[SECURITY_CARD_IMAGES.length - 1],
   }))
   const lead = SECURITY_LEADS[hx % SECURITY_LEADS.length]
   return {
@@ -2568,6 +2560,38 @@ function UnitOverviewSide({
         Business Unit: {unitPanel.unit}
       </h3>
 
+      {onUnitViewChange ? (
+        <div className="client-bu-side-viewnav" role="tablist" aria-label="Business unit pages">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={unitView === 'jobs'}
+            className={`client-bu-side-viewbtn client-bu-side-viewbtn--status${unitView === 'jobs' ? ' is-active' : ''}`}
+            onClick={() => onUnitViewChange('jobs')}
+          >
+            STATUS
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={unitView === 'safety'}
+            className={`client-bu-side-viewbtn client-bu-side-viewbtn--safety${unitView === 'safety' ? ' is-active' : ''}`}
+            onClick={() => onUnitViewChange('safety')}
+          >
+            SAFETY
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={unitView === 'security'}
+            className={`client-bu-side-viewbtn client-bu-side-viewbtn--security${unitView === 'security' ? ' is-active' : ''}`}
+            onClick={() => onUnitViewChange('security')}
+          >
+            SECURITY
+          </button>
+        </div>
+      ) : null}
+
       <div className="client-bu-text client-bu-text--meta">
         <p><strong>Description:</strong> {unitPanel.description}</p>
         <p><strong>BU Manager:</strong> {unitPanel.manager}</p>
@@ -2783,38 +2807,6 @@ function UnitOverviewSide({
       ) : null}
 
       <div className="client-bu-local">{`Local Time: ${localLine}`}</div>
-
-      {onUnitViewChange ? (
-        <div className="client-bu-side-viewnav" role="tablist" aria-label="Business unit pages">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={unitView === 'jobs'}
-            className={`client-bu-side-viewbtn client-bu-side-viewbtn--status${unitView === 'jobs' ? ' is-active' : ''}`}
-            onClick={() => onUnitViewChange('jobs')}
-          >
-            STATUS
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={unitView === 'safety'}
-            className={`client-bu-side-viewbtn client-bu-side-viewbtn--safety${unitView === 'safety' ? ' is-active' : ''}`}
-            onClick={() => onUnitViewChange('safety')}
-          >
-            SAFETY
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={unitView === 'security'}
-            className={`client-bu-side-viewbtn client-bu-side-viewbtn--security${unitView === 'security' ? ' is-active' : ''}`}
-            onClick={() => onUnitViewChange('security')}
-          >
-            SECURITY
-          </button>
-        </div>
-      ) : null}
     </aside>
   )
 }

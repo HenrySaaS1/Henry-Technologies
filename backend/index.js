@@ -376,7 +376,16 @@ app.get('/api/auth/check-email', async (req, res) => {
 })
 
 app.post('/api/auth/register', async (req, res) => {
-  const { email, password, company, productIds, planId, dashboardPreset: requestedPreset } = req.body || {}
+  const {
+    email,
+    password,
+    company,
+    productIds,
+    planId,
+    dashboardPreset: requestedPreset,
+    onboardingData,
+    completeOnboarding,
+  } = req.body || {}
   const emailNorm = String(email || '')
     .trim()
     .toLowerCase()
@@ -442,6 +451,11 @@ app.post('/api/auth/register', async (req, res) => {
         dashboardPreset: presetResolved,
         planId: plan,
         productIds: JSON.stringify(ids),
+        onboardingData:
+          onboardingData && typeof onboardingData === 'object' && !Array.isArray(onboardingData)
+            ? onboardingData
+            : null,
+        onboardingCompletedAt: completeOnboarding === true ? new Date() : null,
       },
     })
     const token = signUserToken(user.id, user.slug)
