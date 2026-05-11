@@ -26,6 +26,11 @@ import secAfterHours from './assets/uploads/security-after-hours.png'
 import secPerimeter from './assets/uploads/security-perimeter.png'
 import secDoorHeld from './assets/uploads/security-door-held.png'
 import secVehicle from './assets/uploads/security-vehicle.png'
+import leadMarkStockhowe from './assets/uploads/lead-mark-stockhowe.png'
+import leadKevinConlon from './assets/uploads/lead-kevin-conlon.png'
+import leadMiguelZaballa from './assets/uploads/lead-miguel-zaballa.png'
+import leadItamarHaran from './assets/uploads/lead-itamar-haran.png'
+import leadDeepakTeja from './assets/uploads/lead-deepak-teja.png'
 /** Demo equipment visuals per Harland BU job tile (job id like `125-2`). */
 const JOB_MACHINE_IMAGES = {
   '120-1': harlandRdx195,
@@ -214,6 +219,81 @@ function formatSiteLocalTime(date, timeZone) {
   }
 }
 
+/** Short clock for footprint cards (matches reference “6:05 AM”). */
+function formatSiteShortTime(date, timeZone) {
+  if (!timeZone) return date.toLocaleTimeString(undefined, { timeStyle: 'short' })
+  try {
+    return new Intl.DateTimeFormat(undefined, {
+      timeZone,
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(date)
+  } catch {
+    return date.toLocaleTimeString(undefined, { timeStyle: 'short' })
+  }
+}
+
+function leadInitials(name) {
+  const parts = String(name || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+  if (!parts.length) return '?'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
+}
+
+function siteOperationalLabel(light) {
+  if (light === 'green') return 'OPERATIONAL'
+  if (light === 'amber') return 'MONITORING'
+  if (light === 'red') return 'INACTIVE'
+  return 'OFFLINE'
+}
+
+function SiteFootprintPeopleIcon() {
+  return (
+    <svg className="client-site-fp-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+      />
+    </svg>
+  )
+}
+
+function SiteFootprintClockIcon() {
+  return (
+    <svg className="client-site-fp-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v7l4.25 2.55.75-1.23-3-1.82z"
+      />
+    </svg>
+  )
+}
+
+function SiteFootprintPulseIcon() {
+  return (
+    <svg className="client-site-fp-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M3 12h4l2-6 4 12 2-6h6v-2h-5l-2 6-4-12-2 6H3z"
+      />
+    </svg>
+  )
+}
+
+function SiteFootprintNoAssetsIcon() {
+  return (
+    <svg className="client-site-fp-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31A7.95 7.95 0 0 1 12 20zm6.31-3.1L7.1 5.69A7.95 7.95 0 0 1 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"
+      />
+    </svg>
+  )
+}
+
 /** Demo global sites — replace with API data for your tenant. */
 const GLOBAL_SITES = [
   {
@@ -223,6 +303,7 @@ const GLOBAL_SITES = [
     flagEmoji: '🇺🇸',
     leadRole: 'Site Director',
     leadName: 'Mark Stockhowe',
+    leadPhoto: leadMarkStockhowe,
     timeZone: 'America/Chicago',
     employees: 118,
     efficiency: 89,
@@ -476,6 +557,7 @@ const GLOBAL_SITES = [
     flagEmoji: '🇮🇪',
     leadRole: 'Site Lead',
     leadName: 'Kevin Conlon',
+    leadPhoto: leadMiguelZaballa,
     timeZone: 'Europe/Dublin',
     employees: 64,
     efficiency: 87,
@@ -530,6 +612,7 @@ const GLOBAL_SITES = [
     flagEmoji: '🇨🇷',
     leadRole: 'Site Lead',
     leadName: 'Miguel Zaballa',
+    leadPhoto: leadKevinConlon,
     timeZone: 'America/Costa_Rica',
     employees: 71,
     efficiency: 82,
@@ -569,6 +652,7 @@ const GLOBAL_SITES = [
     flagEmoji: '🇮🇱',
     leadRole: 'Site Lead',
     leadName: 'Itamar Haran',
+    leadPhoto: leadItamarHaran,
     timeZone: 'Asia/Jerusalem',
     employees: 34,
     efficiency: 75,
@@ -608,6 +692,7 @@ const GLOBAL_SITES = [
     flagEmoji: '🇮🇳',
     leadRole: 'Site Lead',
     leadName: 'Deepak Teja',
+    leadPhoto: leadDeepakTeja,
     timeZone: 'Asia/Kolkata',
     employees: 78,
     efficiency: 84,
@@ -654,8 +739,9 @@ const GLOBAL_SITES = [
     phoneDisplay: '+1 (952) 941-0475',
     phoneTel: '+19529410475',
     building: {
-      name: 'Kuala Lumpur — planned facility',
-      floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
+      name: 'Harland Malaysia',
+      // Site-specific floor plan image (user provided).
+      floorPlanSrc: `${import.meta.env.BASE_URL}site-floor-plan-my.png`,
       footerBlurb: {
         safety: '—',
         security: '—',
@@ -2560,38 +2646,6 @@ function UnitOverviewSide({
         Business Unit: {unitPanel.unit}
       </h3>
 
-      {onUnitViewChange ? (
-        <div className="client-bu-side-viewnav" role="tablist" aria-label="Business unit pages">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={unitView === 'jobs'}
-            className={`client-bu-side-viewbtn client-bu-side-viewbtn--status${unitView === 'jobs' ? ' is-active' : ''}`}
-            onClick={() => onUnitViewChange('jobs')}
-          >
-            STATUS
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={unitView === 'safety'}
-            className={`client-bu-side-viewbtn client-bu-side-viewbtn--safety${unitView === 'safety' ? ' is-active' : ''}`}
-            onClick={() => onUnitViewChange('safety')}
-          >
-            SAFETY
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={unitView === 'security'}
-            className={`client-bu-side-viewbtn client-bu-side-viewbtn--security${unitView === 'security' ? ' is-active' : ''}`}
-            onClick={() => onUnitViewChange('security')}
-          >
-            SECURITY
-          </button>
-        </div>
-      ) : null}
-
       <div className="client-bu-text client-bu-text--meta">
         <p><strong>Description:</strong> {unitPanel.description}</p>
         <p><strong>BU Manager:</strong> {unitPanel.manager}</p>
@@ -2807,6 +2861,38 @@ function UnitOverviewSide({
       ) : null}
 
       <div className="client-bu-local">{`Local Time: ${localLine}`}</div>
+
+      {onUnitViewChange ? (
+        <div className="client-bu-side-viewnav" role="tablist" aria-label="Business unit pages">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={unitView === 'jobs'}
+            className={`client-bu-side-viewbtn client-bu-side-viewbtn--status${unitView === 'jobs' ? ' is-active' : ''}`}
+            onClick={() => onUnitViewChange('jobs')}
+          >
+            STATUS
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={unitView === 'safety'}
+            className={`client-bu-side-viewbtn client-bu-side-viewbtn--safety${unitView === 'safety' ? ' is-active' : ''}`}
+            onClick={() => onUnitViewChange('safety')}
+          >
+            SAFETY
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={unitView === 'security'}
+            className={`client-bu-side-viewbtn client-bu-side-viewbtn--security${unitView === 'security' ? ' is-active' : ''}`}
+            onClick={() => onUnitViewChange('security')}
+          >
+            SECURITY
+          </button>
+        </div>
+      ) : null}
     </aside>
   )
 }
@@ -3072,6 +3158,9 @@ function BuildingSitePageView({
                   alt={`Floor plan — ${b.name}`}
                   draggable={false}
                 />
+                {/* Hide any embedded PNG header/footer chrome (React already renders the title + tabs). */}
+                <div className="client-building-embed-mask client-building-embed-mask--header" aria-hidden="true" />
+                <div className="client-building-embed-mask client-building-embed-mask--bars" aria-hidden="true" />
                 {b.zones.map((z) => (
                   <button
                     key={z.id}
@@ -3437,87 +3526,166 @@ function FootprintSitesSection({
           No sites match &ldquo;{searchQ.trim()}&rdquo;. Clear the search bar to see all regions.
         </p>
       ) : null}
-      {filteredGlobalSites.map((site) => (
-        <article key={site.id} className="client-site-card">
-          <div className="client-site-topline">
-            <SiteTrafficLight
-              active={SITE_SNAPSHOT[site.id]?.light ?? 'off'}
-              label={SITE_SNAPSHOT[site.id]?.status}
-            />
-            <span className="client-site-kpi-chip">
-              {SITE_SNAPSHOT[site.id]?.downtimeMins != null
-                ? `${SITE_SNAPSHOT[site.id].downtimeMins}m downtime`
-                : 'No active assets'}
-            </span>
-          </div>
-          <button
-            type="button"
-            className="client-site-card-main"
-            onClick={() => onOpenBuilding(site)}
-            aria-label={`Open building view for ${site.country}`}
-          >
-            <div className="client-site-title-row">
-              <h3 className="client-site-country">{site.country}</h3>
-              <div className="client-site-flag" title={site.country}>
-                <img
-                  className="client-site-flag-img"
-                  src={`https://flagcdn.com/w80/${String(site.flagCode).toLowerCase()}.png`}
-                  srcSet={`https://flagcdn.com/w160/${String(site.flagCode).toLowerCase()}.png 2x`}
-                  alt={`${site.country} flag`}
-                  width={80}
-                  height={60}
-                  loading="lazy"
-                  decoding="async"
-                />
+      {filteredGlobalSites.map((site) => {
+        const snap = SITE_SNAPSHOT[site.id] || {}
+        const light = snap.light ?? 'off'
+        const fc = String(site.flagCode || '').toLowerCase()
+        const q = snap.quality
+        const ot = snap.onTime
+        const esc = snap.escalations
+        const escTone = esc > 0 ? 'warn' : 'good'
+        const eff = site.efficiency != null ? Math.round(Number(site.efficiency)) : 0
+        const hasEffDonut = site.efficiency != null && !(site.id === 'my' && light === 'red')
+        const indiaTrend = site.id === 'in' ? [42, 55, 48, 62, 58, 70, 65] : null
+        return (
+          <article key={site.id} className="client-site-card client-site-card--fp">
+            <div className="client-site-fp-statusbar">
+              <div className="client-site-fp-status-left">
+                <SiteTrafficLight active={light} label={snap.status} />
+                <span className="client-site-fp-status-word">{siteOperationalLabel(light)}</span>
               </div>
+              <span className="client-site-kpi-chip client-site-kpi-chip--fp">
+                {snap.downtimeMins != null ? `${snap.downtimeMins}m downtime` : 'No active assets'}
+              </span>
             </div>
-            <p className="client-site-lead">
-              {site.leadRole} — <strong>{site.leadName}</strong>
-            </p>
-            <dl className="client-site-metrics">
-              <div>
-                <dt>Local time</dt>
-                <dd>{formatSiteLocalTime(nowTick, site.timeZone)}</dd>
+            <button
+              type="button"
+              className="client-site-card-main"
+              onClick={() => onOpenBuilding(site)}
+              aria-label={`Open building view for ${site.country}`}
+            >
+              <div className="client-site-fp-ident">
+                <div className="client-site-fp-photo" aria-hidden="true">
+                  {site.leadPhoto ? (
+                    <img src={site.leadPhoto} alt="" loading="lazy" decoding="async" />
+                  ) : (
+                    <span className="client-site-fp-photo-ph">{leadInitials(site.leadName)}</span>
+                  )}
+                </div>
+                <div className="client-site-fp-ident-main">
+                  <div className="client-site-title-row">
+                    <h3 className="client-site-country">{site.country}</h3>
+                    <div className="client-site-flag" title={site.country}>
+                      <span className="client-site-flag-emoji" aria-hidden="true">
+                        {site.flagEmoji || '🏳️'}
+                      </span>
+                      <img
+                        className="client-site-flag-img"
+                        src={`https://flagcdn.com/w80/${fc}.png`}
+                        srcSet={`https://flagcdn.com/w160/${fc}.png 2x`}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <p className="client-site-fp-lead">
+                    <span className="client-site-fp-lead-tag">Lead</span>
+                    <strong>{site.leadName}</strong>
+                  </p>
+                </div>
               </div>
-              <div>
-                <dt>No. of active employees</dt>
-                <dd>{site.employees != null ? site.employees : '—'}</dd>
+
+              <div className="client-site-fp-kpis">
+                <div className="client-site-fp-kpi">
+                  <SiteFootprintPeopleIcon />
+                  <div className="client-site-fp-kpi-text">
+                    <strong>{site.employees != null ? site.employees : '—'}</strong>
+                    <span>Employees</span>
+                  </div>
+                </div>
+                <div className="client-site-fp-kpi">
+                  <SiteFootprintClockIcon />
+                  <div className="client-site-fp-kpi-text">
+                    <strong>{formatSiteShortTime(nowTick, site.timeZone)}</strong>
+                    <span>Local time</span>
+                  </div>
+                </div>
+                <div className="client-site-fp-kpi">
+                  {snap.downtimeMins != null ? <SiteFootprintPulseIcon /> : <SiteFootprintNoAssetsIcon />}
+                  <div className="client-site-fp-kpi-text">
+                    <strong>{snap.downtimeMins != null ? `${snap.downtimeMins}m` : '—'}</strong>
+                    <span>Downtime</span>
+                  </div>
+                </div>
+                <div className="client-site-fp-kpi client-site-fp-kpi--donut">
+                  <span className="client-site-fp-kpi-cap">Efficiency</span>
+                  {hasEffDonut ? (
+                    <MiniDonut
+                      value={eff}
+                      max={100}
+                      color="#7c3aed"
+                      track="#ede9fe"
+                      size={76}
+                      label={`${eff}%`}
+                    />
+                  ) : (
+                    <div className="client-site-fp-donut-ph" aria-hidden="true">
+                      <span>—</span>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div>
-                <dt>Operational efficiency</dt>
-                <dd>{site.efficiency != null ? `${site.efficiency}%` : '—'}</dd>
+
+              <div className="client-site-fp-bars">
+                <div className="client-site-fp-bar">
+                  <span className="client-site-fp-bar-label">Quality</span>
+                  <span className="client-site-fp-bar-pct">{q != null ? `${q}%` : 'N/A'}</span>
+                  <div className="client-site-fp-bar-track" aria-hidden="true">
+                    {q != null ? (
+                      <span className="client-site-fp-bar-fill" style={{ width: `${Math.min(100, q)}%` }} />
+                    ) : null}
+                  </div>
+                </div>
+                <div className="client-site-fp-bar">
+                  <span className="client-site-fp-bar-label">On-time</span>
+                  <span className="client-site-fp-bar-pct">{ot != null ? `${ot}%` : 'N/A'}</span>
+                  <div className="client-site-fp-bar-track" aria-hidden="true">
+                    {ot != null ? (
+                      <span className="client-site-fp-bar-fill" style={{ width: `${Math.min(100, ot)}%` }} />
+                    ) : null}
+                  </div>
+                </div>
+                <div className={`client-site-fp-esc client-site-fp-esc--${escTone}`}>
+                  <span>Escalations (24h)</span>
+                  <strong>{esc != null ? esc : '—'}</strong>
+                </div>
               </div>
-            </dl>
-            <div className="client-site-ops">
-              <div className="client-site-ops-row">
-                <span>Quality</span>
-                <strong>
-                  {SITE_SNAPSHOT[site.id]?.quality != null ? `${SITE_SNAPSHOT[site.id].quality}%` : '—'}
-                </strong>
-              </div>
-              <div className="client-site-ops-row">
-                <span>On-time shipments</span>
-                <strong>
-                  {SITE_SNAPSHOT[site.id]?.onTime != null ? `${SITE_SNAPSHOT[site.id].onTime}%` : '—'}
-                </strong>
-              </div>
-              <div className="client-site-ops-row">
-                <span>Escalations (24h)</span>
-                <strong>{SITE_SNAPSHOT[site.id]?.escalations ?? '—'}</strong>
-              </div>
-            </div>
-            <p className="client-site-address">
-              <span className="client-site-address-label">Address</span>
-              {site.address}
-            </p>
-            <span className="client-site-open-hint">Building view →</span>
-          </button>
-          <a className="client-site-phone" href={`tel:${site.phoneTel}`}>
-            <SitePhoneIcon />
-            <span>{site.phoneDisplay}</span>
-          </a>
-        </article>
-      ))}
+
+              {indiaTrend ? (
+                <div className="client-site-fp-trend">
+                  <span className="client-site-fp-trend-cap">Efficiency trend (7d)</span>
+                  <div className="client-site-fp-trend-bars" aria-hidden="true">
+                    {indiaTrend.map((h, i) => (
+                      <span key={i} className="client-site-fp-trend-bar" style={{ height: `${h}%` }} />
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {site.id === 'my' && light === 'red' ? (
+                <p className="client-site-fp-inactive-note" role="status">
+                  <span aria-hidden="true">ⓘ</span> Site inactive — no active assets.
+                </p>
+              ) : null}
+
+              <p className="client-site-address">
+                <span className="client-site-address-label">Address</span>
+                {site.address}
+              </p>
+              <span className="client-site-open-hint">Building view →</span>
+            </button>
+            <a className="client-site-phone" href={`tel:${site.phoneTel}`}>
+              <SitePhoneIcon />
+              <span>{site.phoneDisplay}</span>
+            </a>
+          </article>
+        )
+      })}
     </>
   )
 

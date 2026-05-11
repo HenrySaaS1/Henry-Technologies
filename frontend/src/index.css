@@ -4680,7 +4680,8 @@ h3 {
 .client-sites-section-head {
   margin-bottom: 1.1rem;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(min-content, 2.75fr) minmax(0, 1fr);
+  /* SnapShot wordmark left + centered title + matching wordmark right (multi-site footprint). */
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   column-gap: 0.75rem;
   row-gap: 0.65rem;
@@ -5009,6 +5010,333 @@ h3 {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+/* Footprint cards — reference layout: status + lead photo + KPI strip + bars */
+.client-site-card--fp {
+  padding: 0.85rem 0.8rem 1rem;
+}
+
+.client-site-fp-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.55rem;
+}
+
+.client-site-fp-status-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.client-site-fp-status-word {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #334155;
+}
+
+.client-site-kpi-chip--fp {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #64748b;
+  text-align: right;
+}
+
+.client-site-fp-ident {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  width: 100%;
+  margin-bottom: 0.65rem;
+}
+
+.client-site-fp-photo {
+  flex: 0 0 auto;
+  width: 3.35rem;
+  height: 3.35rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e2e8f0;
+  border: 2px solid #e9d5ff;
+  box-shadow: 0 2px 8px rgba(91, 33, 182, 0.12);
+}
+
+.client-site-fp-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.client-site-fp-photo-ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #64748b;
+  background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+}
+
+.client-site-fp-ident-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.client-site-fp-lead {
+  margin: 0.15rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: #64748b;
+}
+
+.client-site-fp-lead-tag {
+  display: inline-block;
+  margin-right: 0.35rem;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.client-site-fp-lead strong {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.client-site-fp-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.35rem 0.25rem;
+  width: 100%;
+  margin: 0 0 0.65rem;
+  padding: 0.45rem 0.35rem;
+  border-radius: 10px;
+  background: #fafafa;
+  border: 1px solid #eef2f7;
+}
+
+.client-site-fp-kpi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.2rem;
+  min-width: 0;
+  padding: 0.15rem 0.1rem;
+  border-right: 1px solid #e2e8f0;
+}
+
+.client-site-fp-kpi:last-child {
+  border-right: none;
+}
+
+.client-site-fp-ico {
+  color: #2563eb;
+  opacity: 0.9;
+}
+
+.client-site-fp-kpi-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+}
+
+.client-site-fp-kpi-text strong {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.client-site-fp-kpi-text span {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: capitalize;
+}
+
+.client-site-fp-kpi--donut {
+  border-right: none;
+}
+
+.client-site-fp-kpi-cap {
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #64748b;
+}
+
+.client-site-fp-kpi--donut .client-bu-mini-donut {
+  margin: 0 auto;
+}
+
+.client-site-fp-donut-ph {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 2px dashed #cbd5e1;
+  color: #64748b;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.client-site-fp-bars {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.35rem 0.5rem;
+  align-items: end;
+  width: 100%;
+  margin: 0 0 0.55rem;
+}
+
+.client-site-fp-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 0.2rem 0.35rem;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.client-site-fp-bar-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.client-site-fp-bar-pct {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.client-site-fp-bar-track {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  height: 6px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.client-site-fp-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #7c3aed, #6d28d9);
+}
+
+.client-site-fp-esc {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 0.15rem;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #64748b;
+  text-align: right;
+  padding-bottom: 0.15rem;
+}
+
+.client-site-fp-esc strong {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.client-site-fp-esc--good strong {
+  color: #16a34a;
+}
+
+.client-site-fp-esc--warn strong {
+  color: #ea580c;
+}
+
+.client-site-fp-trend {
+  margin: 0 0 0.55rem;
+  padding: 0.4rem 0.45rem;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.client-site-fp-trend-cap {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  margin-bottom: 0.35rem;
+}
+
+.client-site-fp-trend-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.2rem;
+  height: 2.5rem;
+}
+
+.client-site-fp-trend-bar {
+  flex: 1 1 0;
+  min-width: 4px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, #a78bfa, #7c3aed);
+  align-self: flex-end;
+}
+
+.client-site-fp-inactive-note {
+  margin: 0 0 0.55rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  line-height: 1.4;
+  color: #0c4a6e;
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+}
+
+@media (max-width: 720px) {
+  .client-site-fp-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .client-site-fp-kpi {
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.35rem;
+  }
+
+  .client-site-fp-kpi:nth-child(odd) {
+    border-right: 1px solid #e2e8f0;
+  }
+
+  .client-site-fp-bars {
+    grid-template-columns: 1fr;
+  }
+
+  .client-site-fp-esc {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.25rem;
+  }
+}
+
 .client-site-topline {
   width: 100%;
   display: flex;
@@ -5130,6 +5458,7 @@ h3 {
 }
 
 .client-site-flag {
+  position: relative;
   flex: 0 0 auto;
   width: 3.5rem;
   height: 2.5rem;
@@ -5144,7 +5473,23 @@ h3 {
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.1);
 }
 
+/* Always-visible regional flag (Unicode). PNG from flagcdn sits on top when it loads. */
+.client-site-flag-emoji {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.65rem;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
 .client-site-flag-img {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -5469,7 +5814,7 @@ h3 {
   left: 0;
   right: 0;
   width: 100%;
-  height: 20%;
+  height: 16%;
   background: linear-gradient(175deg, #2a6a1c 0%, #43a12a 38%, #2a6a1c 100%);
 }
 
@@ -5826,6 +6171,9 @@ h3 {
   border-radius: 14px;
   padding: 0.9rem 0.85rem 0.95rem;
   box-shadow: 0 8px 28px rgba(15, 23, 42, 0.12);
+  /* Enables margin-top:auto for the view buttons block. */
+  display: flex;
+  flex-direction: column;
 }
 
 .client-bu-side--v2 .client-bu-title {
@@ -6790,7 +7138,9 @@ h3 {
 }
 
 .client-bu-side-viewnav {
-  margin-top: 0.55rem;
+  /* Push the view buttons block to the bottom of the sidebar. */
+  margin-top: auto;
+  padding-top: 0.55rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
