@@ -2264,16 +2264,6 @@ function ShieldIcon() {
   )
 }
 
-function LockIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <rect x="5" y="11" width="14" height="9" rx="1.5" fill="none" stroke="currentColor" strokeWidth="2" />
-      <path d="M8 11V8a4 4 0 1 1 8 0v3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="12" cy="15.5" r="1.4" fill="currentColor" />
-    </svg>
-  )
-}
-
 function ShieldPlusDashIcon() {
   return (
     <svg className="client-hms-dash-shield" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
@@ -2411,12 +2401,12 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
 
   const inner = (
     <div className={`client-hms-dash${unitDigits ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} security dashboard`}>
-      <header className="client-hms-dash-top client-hms-dash-top--security">
+      <header className="client-hms-dash-top client-hms-dash-top--safety">
         <div className="client-hms-dash-top-left">
-          <ShieldIcon />
+          <ShieldPlusDashIcon />
           <span className="client-hms-dash-title">Security Dashboard</span>
         </div>
-        <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="security" />
+        <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="safety" />
       </header>
 
       <div className="client-hms-dash-kpis">
@@ -2424,8 +2414,8 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
           <p className="client-hms-dash-kpi-cap">Security Score</p>
           <MiniDonut
             value={data.scorePct}
-            color="#22c55e"
-            track="#bbf7d0"
+            color="#16a34a"
+            track="#dcfce7"
             size={100}
             label={`${data.scorePct}%`}
             sub={data.scoreWord}
@@ -2459,15 +2449,22 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
 
       <section className="client-hms-dash-section">
         <div className="client-hms-dash-section-head">
-          <h3 className="client-hms-dash-section-title">Latest Security Events (Today)</h3>
+          <h3 className="client-hms-dash-section-title">Security Observations (Today)</h3>
           <button type="button" className="client-hms-dash-viewall">
             View All
           </button>
         </div>
         <div className="client-hms-dash-card-row">
-          {data.events.map((ev) => (
-            <article key={ev.id} className="client-hms-dash-obs-card client-hms-dash-obs-card--sec">
-              <div className="client-hms-dash-obs-imgwrap client-hms-dash-obs-imgwrap--sec">
+          {data.events.map((ev) => {
+            const risk =
+              ev.severity === 'High'
+                ? { label: 'High Risk', tone: 'bad' }
+                : ev.severity === 'Medium'
+                  ? { label: 'Medium Risk', tone: 'warn' }
+                  : { label: 'Low Risk', tone: 'good' }
+            return (
+            <article key={ev.id} className="client-hms-dash-obs-card">
+              <div className="client-hms-dash-obs-imgwrap">
                 <img src={ev.img} alt="" className="client-hms-dash-obs-img" loading="lazy" decoding="async" />
                 <span className={`client-hms-tag client-hms-tag--${ev.sevTone}`}>{ev.severity}</span>
               </div>
@@ -2475,10 +2472,12 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
                 <h4 className="client-hms-dash-obs-title">{ev.title}</h4>
                 <p className="client-hms-dash-obs-meta">{`${ev.where}  ${ev.timeLabel}`}</p>
                 <p className="client-hms-dash-obs-desc">{ev.body}</p>
+                <span className={`client-hms-risk client-hms-risk--${risk.tone}`}>{risk.label}</span>
                 <p className={`client-hms-dash-obs-status client-hms-dash-obs-status--${ev.stTone}`}>{`Status: ${ev.status}`}</p>
               </div>
             </article>
-          ))}
+            )
+          })}
         </div>
       </section>
 
@@ -2563,7 +2562,7 @@ function UnitOverviewSide({
         ← Back to home page
       </button>
       <h3
-        className={`client-bu-title${unitView === 'safety' ? ' client-bu-title--hms-safety' : unitView === 'security' ? ' client-bu-title--hms-security' : ''}`}
+        className={`client-bu-title${unitView === 'safety' || unitView === 'security' ? ' client-bu-title--hms-safety' : ''}`}
       >
         Business Unit: {unitPanel.unit}
       </h3>
@@ -2604,7 +2603,7 @@ function UnitOverviewSide({
 
       {!showJobsSide && unitView === 'security' && dashSec ? (
         <section className="client-bu-section">
-          <h5 className="client-bu-section-title"><LockIcon /> Security Summary (Today):</h5>
+          <h5 className="client-bu-section-title"><ShieldIcon /> Security Summary (Today):</h5>
           <ul className="client-bu-section-list client-hms-side-sum">
             <li>
               <span className="client-hms-sum-dot client-hms-sum-dot--neutral" aria-hidden />

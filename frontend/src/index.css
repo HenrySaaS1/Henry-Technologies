@@ -6464,11 +6464,6 @@ h3 {
   background: linear-gradient(135deg, #0f766e, #14b8a6);
   color: #fff;
 }
-.client-bu-title--hms-security {
-  background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
-  color: #fff;
-}
-
 .client-hms-dash-wrap {
   flex: 1;
   min-height: 0;
@@ -6504,9 +6499,6 @@ h3 {
 .client-hms-dash-top--safety {
   background: linear-gradient(90deg, #0f766e, #14b8a6);
 }
-.client-hms-dash-top--security {
-  background: linear-gradient(90deg, #1e3a8a, #2563eb);
-}
 .client-hms-dash-top-left {
   display: inline-flex;
   align-items: center;
@@ -6515,9 +6507,6 @@ h3 {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   font-size: 0.82rem;
-}
-.client-hms-dash-top--security .client-hms-dash-top-left svg {
-  color: #fff;
 }
 .client-hms-dash-shield {
   flex-shrink: 0;
@@ -6659,9 +6648,6 @@ h3 {
 }
 .client-hms-dash-obs-imgwrap {
   position: relative;
-}
-.client-hms-dash-obs-imgwrap--sec .client-hms-dash-obs-img {
-  filter: grayscale(1) contrast(1.05);
 }
 .client-hms-dash-obs-img {
   display: block;
