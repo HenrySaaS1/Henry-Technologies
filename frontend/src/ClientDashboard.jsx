@@ -165,7 +165,6 @@ const DEFAULT_FLOOR_PLAN_SRC = `${import.meta.env.BASE_URL}site-floor-plan-us.pn
 const HARLAND_US_FLOOR_PLAN_SRC = `${import.meta.env.BASE_URL}site-floor-plan-us-v4.png`
 
 const BUILDING_FOOTER_TABS = [
-  { id: 'status', label: 'Status' },
   { id: 'safety', label: 'Safety' },
   { id: 'security', label: 'Security' },
   { id: 'settings', label: 'Settings' },
@@ -221,8 +220,6 @@ const GLOBAL_SITES = [
       // Client-approved US building visual
       floorPlanSrc: HARLAND_US_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status:
-          'Production cells mostly green. Rack hall B within spec; weld East in planned maintenance.',
         safety: 'Last floor walkthrough 06:00 local · 0 open near-miss actions for this building.',
         security: 'Perimeter logged · 22 badged entries in the last 4 hours.',
         settings: 'Map layers and zone labels are demo data — swap in your CAD or BIM exports.',
@@ -475,7 +472,6 @@ const GLOBAL_SITES = [
       name: 'Dublin Manufacturing Center',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Fill line holding steady; packaging lane C trending above target takt.',
         safety: 'Chemical store inspection due tomorrow · eyewash tested today.',
         security: 'Visitor escort policy active · 5 contractors on floor.',
         settings: 'EU data residency profile (demo) — align retention with DPA.',
@@ -530,7 +526,6 @@ const GLOBAL_SITES = [
       name: 'San José Assembly Hub',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Regional hub: two cells in run, one idle for die swap.',
         safety: 'Ergonomics audit scheduled next week.',
         security: 'Night shift handover complete.',
         settings: 'Spanish + English UI labels supported (demo).',
@@ -570,7 +565,6 @@ const GLOBAL_SITES = [
       name: 'Herzliya R&D & light mfg',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Prototype line idle; pilot build window Friday.',
         safety: 'Laser enclosure interlocks tested.',
         security: 'SCIF zone badge required beyond checkpoint 2 (demo).',
         settings: 'Link Jira epics to floor assets when wired.',
@@ -610,7 +604,6 @@ const GLOBAL_SITES = [
       name: 'Bengaluru support & NOC',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Remote monitoring for APAC plants · no local heavy assets in this demo.',
         safety: 'Fire drill logged last quarter.',
         security: '24/7 access control on floor 4.',
         settings: 'Replace this map with your India floor when co-locating gear.',
@@ -650,7 +643,6 @@ const GLOBAL_SITES = [
       name: 'Kuala Lumpur — planned facility',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Footprint TBD · using reference layout until CAD is uploaded.',
         safety: '—',
         security: '—',
         settings: 'Assign building name, zones, and image per site from admin API.',
@@ -693,7 +685,6 @@ const HENRY10_ONLY_SITES = [
       name: 'Atlanta Fulton Assembly Campus',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Three lines at rate; robotics bay B in preventative maintenance window tonight.',
         safety: 'LOTO audit passed · 2 open ergonomic actions tracked to completion Friday.',
         security: 'Keycard anomalies 0 · visitor escorts 6 since 06:00.',
         settings: 'Demo floor plan · replace with your Atlanta CAD export.',
@@ -733,7 +724,6 @@ const HENRY10_ONLY_SITES = [
       name: 'Miami Dade Components',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Hurricane season checklist green · humidity envelopes within spec on clean lines.',
         safety: 'Heat stress protocol active for yard crew · rest cycles logged.',
         security: 'Guard tour 4/4 complete · gate 2 camera verified.',
         settings: 'Demo floor plan — Spanish UI labels available in production.',
@@ -773,7 +763,6 @@ const HENRY10_ONLY_SITES = [
       name: 'Front Range Packaging Center',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'High-altitude compressor tuned; carton erectors within SPC bands.',
         safety: 'Near-miss from fork truck corner posted · coaching scheduled.',
         security: 'Perimeter RFID sync OK.',
         settings: 'Demo zoning — uplink redundancy shown in telemetry rail.',
@@ -813,7 +802,6 @@ const HENRY10_ONLY_SITES = [
       name: 'Planta Norte Maipú',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Calidad ISO recertificación en auditoría paralela demo.',
         safety: 'Charla extintores registrada ayer.',
         security: 'Ronda nocturna completa.',
         settings: 'Mapa demo — cargar BIM real por API admin.',
@@ -853,7 +841,6 @@ const HENRY10_ONLY_SITES = [
       name: 'Xinyi EMS Floor',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Reflow ovens balanced; AOI catch rate trending best-in-footprint demo.',
         safety: 'ESD audit score 96 · minor findings closed same day.',
         security: 'Cage access 18 events · all matched badges.',
         settings: 'ESD map overlay simulated on this JPEG placeholder.',
@@ -893,7 +880,6 @@ const HENRY10_ONLY_SITES = [
       name: 'Brackengate Modular Line',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Load-shed mitigation on UPS test passed · diesel gen exercise Sunday.',
         safety: 'Hydration checkpoints · heat index monitored.',
         security: 'Perimeter intrusion 0 · patrol log signed.',
         settings: 'Grid stability widget is demo KPI only.',
@@ -933,7 +919,6 @@ const HENRY10_ONLY_SITES = [
       name: 'Tlapan Stamping & Weld',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Two transfer presses synchronized; weld spatter VOC within permit.',
         safety: 'Monthly confined-space tabletop completed.',
         security: 'Contractor onboarding 11 cleared.',
         settings: 'NOM compliance narrative is illustrative — wire your permits.',
@@ -973,7 +958,6 @@ const HENRY10_ONLY_SITES = [
       name: 'Warsaw Prosta Campus',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Assembly heijunka leveling — feeder supermarket restocked nightly.',
         safety: 'PPE vending compliance 98%.',
         security: 'GDPR data residency posture shown in footer API stub.',
         settings: 'Euro pallet lane metric is demo.',
@@ -1013,7 +997,6 @@ const HENRY10_ONLY_SITES = [
       name: 'Murarrie Distribution Annex',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Cyclone season bundle staged; dock doors calibrated after humidity spike.',
         safety: 'Site medic hours extended on heat watch.',
         security: 'Yard CCTV failover test passed.',
         settings: 'Timezone shown as Brisbane local for demo.',
@@ -1053,7 +1036,6 @@ const HENRY10_ONLY_SITES = [
       name: 'Saint-Laurent Pharma-grade Suite',
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
-        status: 'Clean suite differential pressure trending nominal post filter swap.',
         safety: 'Bilingual evacuation drill scheduled Thursday.',
         security: 'Gowning throughput within capacity · no tailbacks.',
         settings: 'Annex layout uses generic photo until your GMP CAD imports.',
@@ -2031,36 +2013,6 @@ const SECURITY_LEADS = [
   'Lila Petrov',
 ]
 
-const STATUS_EVENTS_POOL = [
-  { tone: 'good', kind: 'Run', text: 'Line A — job started · operator J. Patel' },
-  { tone: 'good', kind: 'Restart', text: 'Cell B back online after planned PM' },
-  { tone: 'warn', kind: 'Slow Cycle', text: 'Cell C cycle time +6% — monitoring' },
-  { tone: 'good', kind: 'Quality', text: 'In-line vision pass rate 99.4%' },
-  { tone: 'warn', kind: 'Material', text: 'Coater hopper at 18% — refill scheduled' },
-  { tone: 'good', kind: 'Shift', text: 'Shift handover complete · all KPIs green' },
-  { tone: 'bad', kind: 'Downtime', text: 'Cell D unplanned stop — root cause posted' },
-  { tone: 'good', kind: 'Throughput', text: 'Line B above takt for 3 consecutive hours' },
-  { tone: 'good', kind: 'Setup', text: 'Changeover under target time on Line A' },
-]
-
-const STATUS_LINES = [
-  'Line A · Coater',
-  'Line B · Tester',
-  'Line C · Coater',
-  'Line D · Assembly',
-  'Cell E · Inspection',
-  'Cell F · Pack-out',
-]
-
-const STATUS_LEADS = [
-  'Avery Chen',
-  'Marcus Hill',
-  'Priya Shah',
-  'Diego Vela',
-  'Sophie Tremblay',
-  'Kenji Watanabe',
-]
-
 function pickFromPool(pool, n, hash) {
   if (!pool.length) return []
   const taken = new Set()
@@ -2150,51 +2102,6 @@ function securityDataFor(scopeId) {
   }
 }
 
-function statusDataFor(scopeId) {
-  const h = hashId(`status-${scopeId || 'all'}`)
-  const machinesTotal = 8 + (h % 6)
-  const machinesOnline = Math.max(machinesTotal - ((h >> 2) % 3), Math.ceil(machinesTotal * 0.7))
-  const oee = 78 + (h % 18)
-  const throughput = 90 + ((h >> 1) % 60)
-  const downtimeMin = (h >> 3) % 35
-  const mttrMin = 6 + ((h >> 4) % 18)
-  const overall =
-    machinesOnline === machinesTotal && oee >= 88 && downtimeMin < 10
-      ? 'green'
-      : oee >= 80 && downtimeMin < 25
-        ? 'monitor'
-        : 'action'
-  const events = pickFromPool(STATUS_EVENTS_POOL, 5, h).map((e, i) => ({
-    ...e,
-    when: `${(i + 1) * 7}m ago`,
-  }))
-  const lines = STATUS_LINES.map((label, i) => {
-    const v = 70 + ((h >> (i + 2)) % 30)
-    return { label, pct: v }
-  })
-  const lead = STATUS_LEADS[h % STATUS_LEADS.length]
-  return {
-    machinesOnline,
-    machinesTotal,
-    oee,
-    throughput,
-    downtimeMin,
-    mttrMin,
-    events,
-    lines,
-    lead,
-    overall,
-  }
-}
-
-function ChartIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <path d="M3 12h4l2-7 4 14 2-7h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
 function ShieldIcon() {
   return (
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -2226,19 +2133,6 @@ function UnitViewSwitcher({ activeView, onSelectView, className }) {
       role="tablist"
       aria-label="Business unit view"
     >
-      <button
-        type="button"
-        role="tab"
-        aria-selected={activeView === 'status'}
-        className={`client-bu-action-btn tone-status${activeView === 'status' ? ' is-active' : ''}`}
-        aria-label="Status"
-        onClick={() => handle('status')}
-      >
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-          <path d="M3 12h4l2-7 4 14 2-7h6" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        STATUS
-      </button>
       <button
         type="button"
         role="tab"
@@ -2292,90 +2186,6 @@ function SxKpiCard({ label, value, sub, tone }) {
       <p className="client-sx-kpi-label">{label}</p>
       {sub ? <p className="client-sx-kpi-sub">{sub}</p> : null}
     </div>
-  )
-}
-
-function StatusPanel({ scopeId, scopeName, localLine }) {
-  const data = useMemo(() => statusDataFor(scopeId), [scopeId])
-  const tone = data.overall === 'green' ? 'good' : data.overall === 'monitor' ? 'warn' : 'bad'
-  const label = data.overall === 'green' ? 'All Green' : data.overall === 'monitor' ? 'Monitoring' : 'Action Required'
-  const onlinePct = Math.round((data.machinesOnline / data.machinesTotal) * 100)
-  return (
-    <section className="client-sx-panel client-sx-panel--status" aria-label={`${scopeName} status`}>
-      <header className="client-sx-head">
-        <div className="client-sx-head-titles">
-          <p className="client-sx-eyebrow"><ChartIcon /> Production Status</p>
-          <h3 className="client-sx-title">{scopeName}</h3>
-          <p className="client-sx-sub">{`${data.machinesOnline} of ${data.machinesTotal} machines online · OEE ${data.oee}%`}</p>
-        </div>
-        <div className="client-sx-head-aside">
-          <SxStatusPill tone={tone} label={label} />
-        </div>
-      </header>
-      <div className="client-sx-kpis">
-        <SxKpiCard
-          label="Machines Online"
-          value={`${data.machinesOnline}/${data.machinesTotal}`}
-          sub={`${onlinePct}% available`}
-          tone={onlinePct === 100 ? 'good' : onlinePct >= 85 ? 'warn' : 'bad'}
-        />
-        <SxKpiCard
-          label="OEE"
-          value={`${data.oee}%`}
-          tone={data.oee >= 88 ? 'good' : data.oee >= 78 ? 'warn' : 'bad'}
-        />
-        <SxKpiCard
-          label="Throughput"
-          value={data.throughput}
-          sub="units / hr"
-          tone="good"
-        />
-        <SxKpiCard
-          label="Downtime Today"
-          value={`${data.downtimeMin}m`}
-          sub={`MTTR ${data.mttrMin}m`}
-          tone={data.downtimeMin === 0 ? 'good' : data.downtimeMin < 15 ? 'warn' : 'bad'}
-        />
-      </div>
-      <div className="client-sx-grid">
-        <section className="client-sx-card">
-          <h5 className="client-sx-card-title">Recent Events</h5>
-          <ul className="client-sx-events">
-            {data.events.map((e, i) => (
-              <li key={`${e.kind}-${i}`} className={`client-sx-event tone-${e.tone}`}>
-                <span className="client-sx-event-kind">{e.kind}</span>
-                <span className="client-sx-event-text">{e.text}</span>
-                <span className="client-sx-event-when">{e.when}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section className="client-sx-card">
-          <h5 className="client-sx-card-title">Line Utilization</h5>
-          <ul className="client-sx-checks">
-            {data.lines.map((c) => (
-              <li key={c.label} className="client-sx-check">
-                <span className="client-sx-check-label">{c.label}</span>
-                <div className="client-sx-check-track" aria-hidden="true">
-                  <span
-                    className="client-sx-check-fill"
-                    style={{
-                      width: `${c.pct}%`,
-                      background: c.pct >= 90 ? '#16a34a' : c.pct >= 75 ? '#f59e0b' : '#dc2626',
-                    }}
-                  />
-                </div>
-                <span className="client-sx-check-pct">{c.pct}%</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
-      <footer className="client-sx-foot">
-        <span><strong>Shift Lead:</strong> {data.lead}</span>
-        {localLine ? <span>{`Updated · ${localLine}`}</span> : null}
-      </footer>
-    </section>
   )
 }
 
@@ -2941,7 +2751,8 @@ function BuildingSitePageView({
               const unitCards = unitJobsForPanel(activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, ''), locationDrivenCardCount(user))
               const scopeId = `${site.id}-bu-${unitDigits}`
               const scopeName = `BU ${unitDigits} · ${b.name}`
-              const view = unitView || 'jobs'
+              const view =
+                unitView === 'safety' || unitView === 'security' ? unitView : 'jobs'
               const handleView = (next) => onSelectUnitView && onSelectUnitView(next)
               return (
                 <div className="client-bu-view">
@@ -2970,12 +2781,6 @@ function BuildingSitePageView({
                         scopeName={scopeName}
                         localLine={localLine}
                         unitDigits={unitDigits}
-                      />
-                    ) : view === 'status' ? (
-                      <StatusPanel
-                        scopeId={scopeId}
-                        scopeName={scopeName}
-                        localLine={localLine}
                       />
                     ) : (
                       <UnitJobsPanel user={user} unitLabel={activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, '')} />
@@ -3061,13 +2866,7 @@ function BuildingSitePageView({
               ))}
             </div>
             <div className="client-building-tab-panel" role="tabpanel">
-              {panelTab === 'status' ? (
-                <StatusPanel
-                  scopeId={`${site.id}-bldg`}
-                  scopeName={b.name}
-                  localLine={localLine}
-                />
-              ) : panelTab === 'safety' ? (
+              {panelTab === 'safety' ? (
                 <SafetyPanel
                   scopeId={`${site.id}-bldg`}
                   scopeName={b.name}
@@ -3092,7 +2891,7 @@ function BuildingSitePageView({
 
 function BuildingSiteRouteShell({ site, now, onClose, user }) {
   const [buildingZoneId, setBuildingZoneId] = useState(null)
-  const [buildingPanelTab, setBuildingPanelTab] = useState('status')
+  const [buildingPanelTab, setBuildingPanelTab] = useState('safety')
   const [unitView, setUnitView] = useState('jobs')
 
   const handleSelectZone = useCallback((next) => {
