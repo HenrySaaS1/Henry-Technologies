@@ -311,7 +311,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+1-952-941-0475',
     phoneTel: '+19529410475',
     building: {
-      name: 'Harland US',
+      name: 'Harland United States',
       // Client-approved US building visual
       floorPlanSrc: HARLAND_US_FLOOR_PLAN_SRC,
       footerBlurb: {
