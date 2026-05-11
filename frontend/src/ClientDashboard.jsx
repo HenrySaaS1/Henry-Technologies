@@ -2229,6 +2229,19 @@ function UnitViewSwitcher({ activeView, onSelectView, className }) {
       <button
         type="button"
         role="tab"
+        aria-selected={activeView === 'status'}
+        className={`client-bu-action-btn tone-status${activeView === 'status' ? ' is-active' : ''}`}
+        aria-label="Status"
+        onClick={() => handle('status')}
+      >
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+          <path d="M3 12h4l2-7 4 14 2-7h6" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        STATUS
+      </button>
+      <button
+        type="button"
+        role="tab"
         aria-selected={activeView === 'jobs'}
         className={`client-bu-action-btn tone-jobs${activeView === 'jobs' ? ' is-active' : ''}`}
         aria-label="Jobs"
@@ -2240,19 +2253,6 @@ function UnitViewSwitcher({ activeView, onSelectView, className }) {
           <path d="M8 11h8M8 14.5h5" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
         </svg>
         JOBS
-      </button>
-      <button
-        type="button"
-        role="tab"
-        aria-selected={activeView === 'status'}
-        className={`client-bu-action-btn tone-status${activeView === 'status' ? ' is-active' : ''}`}
-        aria-label="Status"
-        onClick={() => handle('status')}
-      >
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-          <path d="M3 12h4l2-7 4 14 2-7h6" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        STATUS
       </button>
       <button
         type="button"
