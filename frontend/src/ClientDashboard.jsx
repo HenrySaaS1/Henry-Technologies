@@ -1952,28 +1952,6 @@ function MiniHBar({ rows, max }) {
   )
 }
 
-const SAFETY_EVENTS_POOL = [
-  { tone: 'good', kind: 'Walkthrough', text: 'Floor walkthrough completed by EHS lead' },
-  { tone: 'good', kind: 'LOTO', text: 'Lockout / Tagout audit passed' },
-  { tone: 'warn', kind: 'Near-Miss', text: 'Near-miss reported — slip in WH; coaching delivered' },
-  { tone: 'warn', kind: 'Ergonomics', text: 'Ergonomics action open: lift assist for line C' },
-  { tone: 'good', kind: 'Drill', text: 'Evacuation drill logged' },
-  { tone: 'good', kind: 'PPE', text: 'PPE compliance spot-check 98%' },
-  { tone: 'warn', kind: 'Near-Miss', text: 'Near-miss: pallet edge — corner guard installed' },
-  { tone: 'good', kind: 'First Aid', text: 'First aid kit restock verified' },
-  { tone: 'bad', kind: 'Incident', text: 'Hand laceration — closed; root cause posted' },
-  { tone: 'good', kind: 'Training', text: 'Confined-space refresher completed for shift B' },
-]
-
-const SAFETY_CHECKS = [
-  'Eye-wash stations tested',
-  'Fire extinguisher inspection',
-  'MSDS / SDS up to date',
-  'Forklift pre-shift inspection',
-  '5S audit closed',
-  'Emergency lighting verified',
-]
-
 const SAFETY_LEADS = [
   'Priya Shah',
   'Marcus Webb',
@@ -1981,27 +1959,6 @@ const SAFETY_LEADS = [
   'Jorge Alvarado',
   'Sophie Tremblay',
   'Devon Carter',
-]
-
-const SECURITY_EVENTS_POOL = [
-  { tone: 'good', kind: 'Badge', text: 'Standard badged entry — Gate 1' },
-  { tone: 'good', kind: 'Visitor', text: 'Visitor checked in — A. Patel · escorted' },
-  { tone: 'warn', kind: 'Anomaly', text: 'Door held > 30s at Gate 3 — auto-resolved' },
-  { tone: 'good', kind: 'Patrol', text: 'Guard tour 4 of 4 complete' },
-  { tone: 'warn', kind: 'Camera', text: 'Camera 12 health alert — stream restored' },
-  { tone: 'good', kind: 'Contractor', text: 'Contractor onboarding cleared — 2 personnel' },
-  { tone: 'bad', kind: 'Alarm', text: 'Perimeter sensor zone B — false alarm logged' },
-  { tone: 'good', kind: 'Cage', text: 'Secure cage access verified · all matched badges' },
-  { tone: 'good', kind: 'Access', text: 'After-hours access request approved' },
-]
-
-const SECURITY_ZONES = [
-  'Main Lobby',
-  'Loading Dock',
-  'Engineering Wing',
-  'Server Room',
-  'Yard / Perimeter',
-  'Roof Access',
 ]
 
 const SECURITY_LEADS = [
@@ -2012,6 +1969,9 @@ const SECURITY_LEADS = [
   'Ren Tanaka',
   'Lila Petrov',
 ]
+
+/** Scene thumbnails for safety / security dashboard cards (demo). */
+const HMS_DASH_SCENES = [harlandRdx195, harland528Coater, harlandTts1000, harlandCustomRig, harlandFts7000, harlandCts1100]
 
 function pickFromPool(pool, n, hash) {
   if (!pool.length) return []
@@ -2031,74 +1991,267 @@ function pickFromPool(pool, n, hash) {
   return out
 }
 
-function safetyDataFor(scopeId) {
-  const h = hashId(`safety-${scopeId || 'all'}`)
-  const daysWithoutLti = 60 + (h % 280)
-  const ppe = 92 + (h % 8)
-  const lotoPass = 94 + ((h >> 2) % 6)
-  const openNearMiss = h % 4
-  const openActions = (h >> 3) % 5
-  const overall =
-    daysWithoutLti > 180 && openNearMiss === 0 && openActions <= 1
-      ? 'all-clear'
-      : openNearMiss <= 2 && openActions <= 3
-        ? 'monitor'
-        : 'action'
-  const events = pickFromPool(SAFETY_EVENTS_POOL, 5, h).map((e, i) => ({
-    ...e,
-    when: `${(i + 1) * 2}h ago`,
+const SAFETY_OBS_SEEDS = [
+  {
+    category: 'Violation',
+    catTone: 'bad',
+    title: 'Trip Hazard in Aisle',
+    where: 'Assembly Area 1',
+    body: 'Loose cord across walkway; cord cover staged for install.',
+    risk: 'High Risk',
+    riskTone: 'bad',
+    status: 'Open',
+    stTone: 'bad',
+  },
+  {
+    category: 'Observation',
+    catTone: 'warn',
+    title: 'Floor Spill',
+    where: 'Coater Line B',
+    body: 'Small coolant sheen near drain; absorbent applied.',
+    risk: 'Medium Risk',
+    riskTone: 'warn',
+    status: 'In Progress',
+    stTone: 'warn',
+  },
+  {
+    category: 'Safe',
+    catTone: 'good',
+    title: 'PPE Check — Weld Cell',
+    where: 'Cell 3',
+    body: 'All operators in required face shields and leathers.',
+    risk: 'Low Risk',
+    riskTone: 'good',
+    status: 'Safe',
+    stTone: 'good',
+  },
+  {
+    category: 'Violation',
+    catTone: 'bad',
+    title: 'Blocked Eyewash',
+    where: 'Chemical prep',
+    body: 'Cart parked within 36 in of eyewash; moved and tagged.',
+    risk: 'High Risk',
+    riskTone: 'bad',
+    status: 'Open',
+    stTone: 'bad',
+  },
+  {
+    category: 'Observation',
+    catTone: 'warn',
+    title: 'Ergonomic Reach',
+    where: 'Pack-out',
+    body: 'Operator stretching between cycles; lift assist ticket opened.',
+    risk: 'Medium Risk',
+    riskTone: 'warn',
+    status: 'In Progress',
+    stTone: 'warn',
+  },
+  {
+    category: 'Safe',
+    catTone: 'good',
+    title: 'LOTO Verified',
+    where: 'Maintenance Bay',
+    body: 'Isolation points match procedure photos on work order.',
+    risk: 'Low Risk',
+    riskTone: 'good',
+    status: 'Safe',
+    stTone: 'good',
+  },
+  {
+    category: 'Observation',
+    catTone: 'warn',
+    title: 'Noise Dose Near Limit',
+    where: 'Grinding',
+    body: 'Shift rotation adjusted; hearing conservation notified.',
+    risk: 'Medium Risk',
+    riskTone: 'warn',
+    status: 'In Progress',
+    stTone: 'warn',
+  },
+  {
+    category: 'Violation',
+    catTone: 'bad',
+    title: 'Expired Fire Extinguisher Tag',
+    where: 'Warehouse aisle 4',
+    body: 'Monthly inspection overdue by 4 days; replacement scheduled.',
+    risk: 'Medium Risk',
+    riskTone: 'warn',
+    status: 'Open',
+    stTone: 'bad',
+  },
+]
+
+const SECURITY_EVENT_SEEDS = [
+  {
+    severity: 'High',
+    sevTone: 'bad',
+    title: 'Unauthorized Access',
+    where: 'Back Entrance',
+    body: 'Badge mismatch at reader; guard dispatched and verified visitor escort.',
+    status: 'Investigating',
+    stTone: 'bad',
+  },
+  {
+    severity: 'Medium',
+    sevTone: 'warn',
+    title: 'Perimeter Motion',
+    where: 'North fence line',
+    body: 'Camera AI flagged motion outside shift window; patrol cleared debris.',
+    status: 'Under Review',
+    stTone: 'warn',
+  },
+  {
+    severity: 'Low',
+    sevTone: 'info',
+    title: 'Door Held Open',
+    where: 'Loading Dock 2',
+    body: 'Door propped 42s; auto-chime acknowledged by forklift lead.',
+    status: 'Closed',
+    stTone: 'good',
+  },
+  {
+    severity: 'Medium',
+    sevTone: 'warn',
+    title: 'Camera Stream Lag',
+    where: 'Server Room corridor',
+    body: 'Stream 2s behind; switch port flapped once then stable.',
+    status: 'Under Review',
+    stTone: 'warn',
+  },
+  {
+    severity: 'Low',
+    sevTone: 'info',
+    title: 'Contractor Check-In',
+    where: 'Main Lobby',
+    body: 'Two badges issued; escort confirmed to cage work.',
+    status: 'Closed',
+    stTone: 'good',
+  },
+  {
+    severity: 'High',
+    sevTone: 'bad',
+    title: 'Tailgating Attempt',
+    where: 'Engineering Wing',
+    body: 'Second person without badge; door cycle reset and logged.',
+    status: 'Investigating',
+    stTone: 'bad',
+  },
+  {
+    severity: 'Low',
+    sevTone: 'info',
+    title: 'Guard Tour Checkpoint',
+    where: 'Yard post 7',
+    body: 'NFC tap on schedule; no anomalies.',
+    status: 'Closed',
+    stTone: 'good',
+  },
+  {
+    severity: 'Medium',
+    sevTone: 'warn',
+    title: 'After-Hours Elevator',
+    where: 'Tower B',
+    body: 'Elevator called to restricted floor; cleared as cleaning crew.',
+    status: 'Under Review',
+    stTone: 'warn',
+  },
+]
+
+function fmtTrend(arrow, pct, isGood) {
+  const sym = arrow === 'up' ? '↑' : arrow === 'down' ? '↓' : '—'
+  let cls = 'client-hms-trend--neutral'
+  if (arrow === 'up' || arrow === 'down') cls = isGood ? 'client-hms-trend--good' : 'client-hms-trend--bad'
+  const pctPart = pct === 0 && sym === '—' ? '0%' : `${pct}%`
+  return { text: `${sym} ${pctPart} vs yesterday`, cls }
+}
+
+/** Harland-style safety dashboard (BU120 / BU125 + building scope). */
+function safetyDashboardFor(scopeId, unitDigits) {
+  const h = hashId(`safety-dash-${scopeId || 'all'}`)
+  const bu = unitDigits === '120' ? 120 : unitDigits === '125' ? 125 : 0
+  const shift = bu === 120 ? 101 : bu === 125 ? 0 : 37
+  const hx = (h + shift) >>> 0
+  const totalObs = 14 + (hx % 9)
+  const violations = 4 + (hx % 5)
+  const safeCond = Math.max(2, totalObs - violations - ((hx >> 3) % 3))
+  const actionsTaken = 3 + ((hx >> 2) % 5)
+  const openActions = 2 + ((hx >> 4) % 4)
+  const areasTotal = 12
+  const areasInspected = 6 + ((hx >> 1) % 5)
+  const scorePct = 78 + (hx % 14)
+  const scoreWord = scorePct >= 90 ? 'Excellent' : scorePct >= 82 ? 'Good' : 'Watch'
+  const seeds = pickFromPool(SAFETY_OBS_SEEDS, 5, hx)
+  const times = ['6:08 AM', '5:52 AM', '5:41 AM', '5:35 AM', '5:22 AM']
+  const observations = seeds.map((s, i) => ({
+    ...s,
+    id: `so-${i}-${hx}`,
+    timeLabel: times[i] || `${6 - i}:10 AM`,
+    img: HMS_DASH_SCENES[(hx + i * 3) % HMS_DASH_SCENES.length],
   }))
-  const checks = SAFETY_CHECKS.map((label, i) => ({
-    label,
-    pct: 70 + ((h >> (i + 2)) % 30),
-  }))
-  const lead = SAFETY_LEADS[h % SAFETY_LEADS.length]
-  const lastWalkthrough = `${((h % 5) + 4)}:${String((h * 7) % 60).padStart(2, '0')} local`
+  const lead = SAFETY_LEADS[hx % SAFETY_LEADS.length]
   return {
-    daysWithoutLti,
-    ppe,
-    lotoPass,
-    openNearMiss,
+    scorePct,
+    scoreWord,
+    totalObservations: totalObs,
+    violations,
+    safeConditions: safeCond,
+    actionsTaken,
     openActions,
-    events,
-    checks,
+    areasInspected,
+    areasTotal,
+    trends: {
+      obs: fmtTrend('up', 8 + (hx % 8), true),
+      viol: fmtTrend('down', 10 + (hx % 12), false),
+      open: fmtTrend('down', 15 + (hx % 15), false),
+    },
+    observations,
     lead,
-    lastWalkthrough,
-    overall,
   }
 }
 
-function securityDataFor(scopeId) {
-  const h = hashId(`security-${scopeId || 'all'}`)
-  const badged24h = 80 + (h % 240)
-  const visitorsActive = h % 8
-  const cameraTotal = 24
-  const cameraOnline = Math.max(20, cameraTotal - ((h >> 1) % 3))
+/** Harland-style security dashboard (BU120 / BU125 + building scope). */
+function securityDashboardFor(scopeId, unitDigits) {
+  const h = hashId(`sec-dash-${scopeId || 'all'}`)
+  const bu = unitDigits === '120' ? 120 : unitDigits === '125' ? 125 : 0
+  const shift = bu === 120 ? 59 : bu === 125 ? 0 : 23
+  const hx = (h + shift) >>> 0
+  const totalEvents = 11 + (hx % 10)
+  const highSev = Math.min(2, (hx >> 3) % 3)
+  const medSev = 2 + ((hx >> 1) % 4)
+  const lowSev = Math.max(0, totalEvents - highSev - medSev)
+  const openInv = 1 + ((hx >> 3) % 3)
+  const cameraTotal = 48 + (hx % 6)
+  const cameraOnline = Math.max(cameraTotal - 2, cameraTotal - ((hx >> 4) % 3))
   const cameraPct = Math.round((cameraOnline / cameraTotal) * 100)
-  const exceptions = (h >> 2) % 4
-  const overall = exceptions === 0 && cameraPct >= 95 ? 'secure' : exceptions <= 2 ? 'monitor' : 'action'
-  const events = pickFromPool(SECURITY_EVENTS_POOL, 5, h).map((e, i) => ({
-    ...e,
-    when: `${(i + 1) * 12}m ago`,
+  const scorePct = 88 + (hx % 10)
+  const scoreWord = scorePct >= 91 ? 'Excellent' : scorePct >= 84 ? 'Good' : 'Watch'
+  const seeds = pickFromPool(SECURITY_EVENT_SEEDS, 5, hx)
+  const times = ['5:58 AM', '5:44 AM', '5:31 AM', '5:18 AM', '5:05 AM']
+  const events = seeds.map((s, i) => ({
+    ...s,
+    id: `se-${i}-${hx}`,
+    timeLabel: times[i] || `${5 + i}:15 AM`,
+    img: HMS_DASH_SCENES[(hx + i * 5) % HMS_DASH_SCENES.length],
   }))
-  const zones = SECURITY_ZONES.map((label, i) => {
-    const z = (h >> (i + 2)) % 100
-    const tone = z > 80 ? 'good' : z > 50 ? 'warn' : 'good'
-    const status = z > 80 ? 'Secured' : z > 50 ? 'Monitored' : 'Secured'
-    return { label, status, tone }
-  })
-  const lead = SECURITY_LEADS[h % SECURITY_LEADS.length]
+  const lead = SECURITY_LEADS[hx % SECURITY_LEADS.length]
   return {
-    badged24h,
-    visitorsActive,
+    scorePct,
+    scoreWord,
+    totalEvents,
+    highSev,
+    medSev,
+    lowSev,
+    openInvestigations: openInv,
     cameraOnline,
     cameraTotal,
     cameraPct,
-    exceptions,
+    trends: {
+      events: fmtTrend('down', 8 + (hx % 12), true),
+      high: fmtTrend('flat', 0, true),
+      inv: fmtTrend('down', 20 + (hx % 20), true),
+    },
     events,
-    zones,
     lead,
-    overall,
   }
 }
 
@@ -2121,241 +2274,241 @@ function LockIcon() {
   )
 }
 
-function SxStatusPill({ tone, label }) {
-  return <span className={`client-sx-status client-sx-status--${tone}`}>{label}</span>
-}
-
-function UnitViewSwitcher({ activeView, onSelectView, className }) {
-  const handle = (next) => onSelectView && onSelectView(next)
+function ShieldPlusDashIcon() {
   return (
-    <div
-      className={`client-bu-actions client-bu-actions--v2 client-bu-actions--top${className ? ` ${className}` : ''}`}
-      role="tablist"
-      aria-label="Business unit view"
-    >
-      <button
-        type="button"
-        role="tab"
-        aria-selected={activeView === 'jobs'}
-        className={`client-bu-action-btn tone-jobs${activeView === 'jobs' ? ' is-active' : ''}`}
-        aria-label="Status"
-        onClick={() => handle('jobs')}
-      >
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-          <rect x="4" y="6" width="16" height="13" rx="1.5" fill="none" stroke="#fff" strokeWidth="2" />
-          <path d="M9 6V4.5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4.5V6" fill="none" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
-          <path d="M8 11h8M8 14.5h5" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-        STATUS
-      </button>
-      <button
-        type="button"
-        role="tab"
-        aria-selected={activeView === 'safety'}
-        className={`client-bu-action-btn tone-safety${activeView === 'safety' ? ' is-active' : ''}`}
-        aria-label="Safety"
-        onClick={() => handle('safety')}
-      >
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-          <path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5L12 2z" fill="none" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
-        </svg>
-        SAFETY
-      </button>
-      <button
-        type="button"
-        role="tab"
-        aria-selected={activeView === 'security'}
-        className={`client-bu-action-btn tone-security${activeView === 'security' ? ' is-active' : ''}`}
-        aria-label="Security"
-        onClick={() => handle('security')}
-      >
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-          <rect x="5" y="11" width="14" height="9" rx="1.5" fill="none" stroke="#fff" strokeWidth="2" />
-          <path d="M8 11V8a4 4 0 1 1 8 0v3" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-        SECURITY
-      </button>
-    </div>
+    <svg className="client-hms-dash-shield" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path
+        d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"
+        fill="currentColor"
+        fillOpacity="0.2"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path d="M12 8v8M8 12h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
   )
 }
 
-function SxKpiCard({ label, value, sub, tone }) {
+function HmsDashTimeRange({ value, onChange, variant }) {
   return (
-    <div className={`client-sx-kpi${tone ? ` client-sx-kpi--${tone}` : ''}`}>
-      <p className="client-sx-kpi-value">{value}</p>
-      <p className="client-sx-kpi-label">{label}</p>
-      {sub ? <p className="client-sx-kpi-sub">{sub}</p> : null}
+    <div className={`client-hms-dash-range client-hms-dash-range--${variant}`} role="group" aria-label="Report range">
+      {(['daily', 'weekly', 'monthly']).map((r) => (
+        <button
+          key={r}
+          type="button"
+          className={value === r ? 'is-active' : ''}
+          aria-pressed={value === r}
+          onClick={() => onChange(r)}
+        >
+          {r === 'daily' ? 'Daily' : r === 'weekly' ? 'Weekly' : 'Monthly'}
+        </button>
+      ))}
     </div>
   )
 }
 
 function SafetyPanel({ scopeId, scopeName, localLine, unitDigits }) {
+  const ud = unitDigits || ''
   const [timeRange, setTimeRange] = useState('daily')
-  const data = useMemo(() => safetyDataFor(scopeId), [scopeId])
-  const tone = data.overall === 'all-clear' ? 'good' : data.overall === 'monitor' ? 'warn' : 'bad'
-  const label = data.overall === 'all-clear' ? 'All Clear' : data.overall === 'monitor' ? 'Monitoring' : 'Action Required'
+  const data = useMemo(() => safetyDashboardFor(scopeId, ud), [scopeId, ud])
+  const areasPct = Math.round((data.areasInspected / Math.max(1, data.areasTotal)) * 100)
+
   const inner = (
-    <section
-      className={`client-sx-panel client-sx-panel--safety${unitDigits ? ' client-sx-panel--unit-main' : ''}`}
-      aria-label={`${scopeName} safety`}
-    >
-      <header className="client-sx-head">
-        <div className="client-sx-head-titles">
-          <p className="client-sx-eyebrow"><ShieldIcon /> Safety Operations</p>
-          <h3 className="client-sx-title">{scopeName}</h3>
-          <p className="client-sx-sub">Last walkthrough {data.lastWalkthrough}</p>
+    <div className={`client-hms-dash${unitDigits ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} safety dashboard`}>
+      <header className="client-hms-dash-top client-hms-dash-top--safety">
+        <div className="client-hms-dash-top-left">
+          <ShieldPlusDashIcon />
+          <span className="client-hms-dash-title">Safety Dashboard</span>
         </div>
-        <div className="client-sx-head-aside">
-          <SxStatusPill tone={tone} label={label} />
-        </div>
+        <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="safety" />
       </header>
-      <div className="client-sx-kpis">
-        <SxKpiCard label="Days w/o LTI" value={data.daysWithoutLti} tone="good" />
-        <SxKpiCard label="PPE Compliance" value={`${data.ppe}%`} tone={data.ppe >= 95 ? 'good' : 'warn'} />
-        <SxKpiCard label="LOTO Audits" value={`${data.lotoPass}%`} sub="passed" tone={data.lotoPass >= 95 ? 'good' : 'warn'} />
-        <SxKpiCard
-          label="Open Actions"
-          value={data.openActions}
-          sub={`${data.openNearMiss} open near-miss`}
-          tone={data.openActions === 0 ? 'good' : data.openActions <= 2 ? 'warn' : 'bad'}
-        />
+
+      <div className="client-hms-dash-kpis">
+        <div className="client-hms-dash-kpi client-hms-dash-kpi--score">
+          <p className="client-hms-dash-kpi-cap">Safety Score</p>
+          <MiniDonut
+            value={data.scorePct}
+            color="#16a34a"
+            track="#dcfce7"
+            size={100}
+            label={`${data.scorePct}%`}
+            sub={data.scoreWord}
+          />
+        </div>
+        <div className="client-hms-dash-kpi">
+          <p className="client-hms-dash-kpi-value">{data.totalObservations}</p>
+          <p className="client-hms-dash-kpi-label">Total Observations</p>
+          <p className="client-hms-dash-kpi-sub">Today</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.obs.cls}`}>{data.trends.obs.text}</p>
+        </div>
+        <div className="client-hms-dash-kpi">
+          <p className="client-hms-dash-kpi-value">{data.violations}</p>
+          <p className="client-hms-dash-kpi-label">Violations</p>
+          <p className="client-hms-dash-kpi-sub">Today</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.viol.cls}`}>{data.trends.viol.text}</p>
+        </div>
+        <div className="client-hms-dash-kpi">
+          <p className="client-hms-dash-kpi-value">{data.openActions}</p>
+          <p className="client-hms-dash-kpi-label">Open Actions</p>
+          <p className="client-hms-dash-kpi-sub">Requires Attention</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.open.cls}`}>{data.trends.open.text}</p>
+        </div>
+        <div className="client-hms-dash-kpi">
+          <p className="client-hms-dash-kpi-value">{`${data.areasInspected} / ${data.areasTotal}`}</p>
+          <p className="client-hms-dash-kpi-label">Areas Inspected</p>
+          <p className="client-hms-dash-kpi-sub">Areas</p>
+          <p className="client-hms-dash-kpi-trend client-hms-trend--neutral">{`${areasPct}% of total areas`}</p>
+        </div>
       </div>
-      <div className="client-sx-grid">
-        <section className="client-sx-card">
-          <h5 className="client-sx-card-title">Recent Events</h5>
-          <ul className="client-sx-events">
-            {data.events.map((e, i) => (
-              <li key={`${e.kind}-${i}`} className={`client-sx-event tone-${e.tone}`}>
-                <span className="client-sx-event-kind">{e.kind}</span>
-                <span className="client-sx-event-text">{e.text}</span>
-                <span className="client-sx-event-when">{e.when}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section className="client-sx-card">
-          <h5 className="client-sx-card-title">Compliance Checklist</h5>
-          <ul className="client-sx-checks">
-            {data.checks.map((c) => (
-              <li key={c.label} className="client-sx-check">
-                <span className="client-sx-check-label">{c.label}</span>
-                <div className="client-sx-check-track" aria-hidden="true">
-                  <span
-                    className="client-sx-check-fill"
-                    style={{
-                      width: `${c.pct}%`,
-                      background: c.pct >= 95 ? '#16a34a' : c.pct >= 85 ? '#f59e0b' : '#dc2626',
-                    }}
-                  />
-                </div>
-                <span className="client-sx-check-pct">{c.pct}%</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
-      <footer className="client-sx-foot">
-        <span><strong>EHS Lead:</strong> {data.lead}</span>
+
+      <section className="client-hms-dash-section">
+        <div className="client-hms-dash-section-head">
+          <h3 className="client-hms-dash-section-title">Safety Observations (Today)</h3>
+          <button type="button" className="client-hms-dash-viewall">
+            View All
+          </button>
+        </div>
+        <div className="client-hms-dash-card-row">
+          {data.observations.map((o) => (
+            <article key={o.id} className="client-hms-dash-obs-card">
+              <div className="client-hms-dash-obs-imgwrap">
+                <img src={o.img} alt="" className="client-hms-dash-obs-img" loading="lazy" decoding="async" />
+                <span className={`client-hms-tag client-hms-tag--${o.catTone}`}>{o.category}</span>
+              </div>
+              <div className="client-hms-dash-obs-body">
+                <h4 className="client-hms-dash-obs-title">{o.title}</h4>
+                <p className="client-hms-dash-obs-meta">{`${o.where}  ${o.timeLabel}`}</p>
+                <p className="client-hms-dash-obs-desc">{o.body}</p>
+                <span className={`client-hms-risk client-hms-risk--${o.riskTone}`}>{o.risk}</span>
+                <p className={`client-hms-dash-obs-status client-hms-dash-obs-status--${o.stTone}`}>{`Status: ${o.status}`}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <footer className="client-hms-dash-foot">
+        <span>
+          <strong>EHS Lead:</strong> {data.lead}
+        </span>
         {localLine ? <span>{`Updated · ${localLine}`}</span> : null}
       </footer>
-    </section>
+    </div>
   )
-  if (!unitDigits) return inner
+
   return (
-    <section className="client-unit-jobs-panel" aria-label={`BU ${unitDigits} safety`}>
-      <UnitHarlandPanelHeader
-        unitDigits={unitDigits}
-        timeRange={timeRange}
-        onTimeRangeChange={setTimeRange}
-        rangeGroupLabel="Safety report range"
-      />
+    <section className={unitDigits ? 'client-hms-dash-wrap client-hms-dash-wrap--unit' : 'client-hms-dash-wrap'} aria-label={`BU ${unitDigits || 'building'} safety`}>
       {inner}
     </section>
   )
 }
 
 function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
+  const ud = unitDigits || ''
   const [timeRange, setTimeRange] = useState('daily')
-  const data = useMemo(() => securityDataFor(scopeId), [scopeId])
-  const tone = data.overall === 'secure' ? 'good' : data.overall === 'monitor' ? 'warn' : 'bad'
-  const label = data.overall === 'secure' ? 'Secure' : data.overall === 'monitor' ? 'Monitoring' : 'Action Required'
+  const data = useMemo(() => securityDashboardFor(scopeId, ud), [scopeId, ud])
+
   const inner = (
-    <section
-      className={`client-sx-panel client-sx-panel--security${unitDigits ? ' client-sx-panel--unit-main' : ''}`}
-      aria-label={`${scopeName} security`}
-    >
-      <header className="client-sx-head">
-        <div className="client-sx-head-titles">
-          <p className="client-sx-eyebrow"><LockIcon /> Security Operations</p>
-          <h3 className="client-sx-title">{scopeName}</h3>
-          <p className="client-sx-sub">{`${data.cameraOnline}/${data.cameraTotal} cameras online · ${data.exceptions} open exceptions`}</p>
+    <div className={`client-hms-dash${unitDigits ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} security dashboard`}>
+      <header className="client-hms-dash-top client-hms-dash-top--security">
+        <div className="client-hms-dash-top-left">
+          <ShieldIcon />
+          <span className="client-hms-dash-title">Security Dashboard</span>
         </div>
-        <div className="client-sx-head-aside">
-          <SxStatusPill tone={tone} label={label} />
-        </div>
+        <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="security" />
       </header>
-      <div className="client-sx-kpis">
-        <SxKpiCard label="Badged Entries (24h)" value={data.badged24h} tone="good" />
-        <SxKpiCard label="Visitors On Site" value={data.visitorsActive} sub="all escorted" />
-        <SxKpiCard
-          label="Cameras Online"
-          value={`${data.cameraOnline}/${data.cameraTotal}`}
-          sub={`${data.cameraPct}% healthy`}
-          tone={data.cameraPct >= 95 ? 'good' : 'warn'}
-        />
-        <SxKpiCard
-          label="Open Exceptions"
-          value={data.exceptions}
-          tone={data.exceptions === 0 ? 'good' : data.exceptions <= 2 ? 'warn' : 'bad'}
-        />
+
+      <div className="client-hms-dash-kpis">
+        <div className="client-hms-dash-kpi client-hms-dash-kpi--score">
+          <p className="client-hms-dash-kpi-cap">Security Score</p>
+          <MiniDonut
+            value={data.scorePct}
+            color="#22c55e"
+            track="#bbf7d0"
+            size={100}
+            label={`${data.scorePct}%`}
+            sub={data.scoreWord}
+          />
+        </div>
+        <div className="client-hms-dash-kpi">
+          <p className="client-hms-dash-kpi-value">{data.totalEvents}</p>
+          <p className="client-hms-dash-kpi-label">Total Events</p>
+          <p className="client-hms-dash-kpi-sub">Today</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.events.cls}`}>{data.trends.events.text}</p>
+        </div>
+        <div className="client-hms-dash-kpi">
+          <p className="client-hms-dash-kpi-value">{data.highSev}</p>
+          <p className="client-hms-dash-kpi-label">High Severity</p>
+          <p className="client-hms-dash-kpi-sub">Today</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.high.cls}`}>{data.trends.high.text}</p>
+        </div>
+        <div className="client-hms-dash-kpi">
+          <p className="client-hms-dash-kpi-value">{data.openInvestigations}</p>
+          <p className="client-hms-dash-kpi-label">Open Investigations</p>
+          <p className="client-hms-dash-kpi-sub">Requires Attention</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.inv.cls}`}>{data.trends.inv.text}</p>
+        </div>
+        <div className="client-hms-dash-kpi">
+          <p className="client-hms-dash-kpi-value">{`${data.cameraOnline} / ${data.cameraTotal}`}</p>
+          <p className="client-hms-dash-kpi-label">Cameras Online</p>
+          <p className="client-hms-dash-kpi-sub">Cameras</p>
+          <p className="client-hms-dash-kpi-trend client-hms-trend--neutral">{`${data.cameraPct}% Online`}</p>
+        </div>
       </div>
-      <div className="client-sx-grid">
-        <section className="client-sx-card">
-          <h5 className="client-sx-card-title">Recent Access &amp; Events</h5>
-          <ul className="client-sx-events">
-            {data.events.map((e, i) => (
-              <li key={`${e.kind}-${i}`} className={`client-sx-event tone-${e.tone}`}>
-                <span className="client-sx-event-kind">{e.kind}</span>
-                <span className="client-sx-event-text">{e.text}</span>
-                <span className="client-sx-event-when">{e.when}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section className="client-sx-card">
-          <h5 className="client-sx-card-title">Zone Status</h5>
-          <ul className="client-sx-zones">
-            {data.zones.map((z) => (
-              <li key={z.label} className={`client-sx-zone tone-${z.tone}`}>
-                <span className="client-sx-zone-dot" aria-hidden="true" />
-                <span className="client-sx-zone-label">{z.label}</span>
-                <span className="client-sx-zone-status">{z.status}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
-      <footer className="client-sx-foot">
-        <span><strong>Security Lead:</strong> {data.lead}</span>
+
+      <section className="client-hms-dash-section">
+        <div className="client-hms-dash-section-head">
+          <h3 className="client-hms-dash-section-title">Latest Security Events (Today)</h3>
+          <button type="button" className="client-hms-dash-viewall">
+            View All
+          </button>
+        </div>
+        <div className="client-hms-dash-card-row">
+          {data.events.map((ev) => (
+            <article key={ev.id} className="client-hms-dash-obs-card client-hms-dash-obs-card--sec">
+              <div className="client-hms-dash-obs-imgwrap client-hms-dash-obs-imgwrap--sec">
+                <img src={ev.img} alt="" className="client-hms-dash-obs-img" loading="lazy" decoding="async" />
+                <span className={`client-hms-tag client-hms-tag--${ev.sevTone}`}>{ev.severity}</span>
+              </div>
+              <div className="client-hms-dash-obs-body">
+                <h4 className="client-hms-dash-obs-title">{ev.title}</h4>
+                <p className="client-hms-dash-obs-meta">{`${ev.where}  ${ev.timeLabel}`}</p>
+                <p className="client-hms-dash-obs-desc">{ev.body}</p>
+                <p className={`client-hms-dash-obs-status client-hms-dash-obs-status--${ev.stTone}`}>{`Status: ${ev.status}`}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <footer className="client-hms-dash-foot">
+        <span>
+          <strong>Security Lead:</strong> {data.lead}
+        </span>
         {localLine ? <span>{`Updated · ${localLine}`}</span> : null}
       </footer>
-    </section>
+    </div>
   )
-  if (!unitDigits) return inner
+
   return (
-    <section className="client-unit-jobs-panel" aria-label={`BU ${unitDigits} security`}>
-      <UnitHarlandPanelHeader
-        unitDigits={unitDigits}
-        timeRange={timeRange}
-        onTimeRangeChange={setTimeRange}
-        rangeGroupLabel="Security report range"
-      />
+    <section className={unitDigits ? 'client-hms-dash-wrap client-hms-dash-wrap--unit' : 'client-hms-dash-wrap'} aria-label={`BU ${unitDigits || 'building'} security`}>
       {inner}
     </section>
   )
 }
 
-function UnitOverviewSide({ unitPanel, statusLabel, cards, localLine, onClose, digits }) {
+function UnitOverviewSide({
+  unitPanel,
+  statusLabel,
+  cards,
+  localLine,
+  onClose,
+  digits,
+  scopeId,
+  unitView = 'jobs',
+  onUnitViewChange,
+}) {
   const tally = cards.reduce(
     (acc, c) => {
       const k = c.stats.shipStatus
@@ -2400,12 +2553,20 @@ function UnitOverviewSide({ unitPanel, statusLabel, cards, localLine, onClose, d
     { label: '3 PM', value: Math.max(28, Math.round(throughputNum * 0.99)) },
   ]
 
+  const showJobsSide = !onUnitViewChange || unitView === 'jobs'
+  const dashSafety = onUnitViewChange && scopeId ? safetyDashboardFor(scopeId, digits || '') : null
+  const dashSec = onUnitViewChange && scopeId ? securityDashboardFor(scopeId, digits || '') : null
+
   return (
     <aside className="client-bu-side client-bu-side--v2">
       <button type="button" className="client-building-back" onClick={onClose}>
         ← Back to home page
       </button>
-      <h3 className="client-bu-title">Business Unit: {unitPanel.unit}</h3>
+      <h3
+        className={`client-bu-title${unitView === 'safety' ? ' client-bu-title--hms-safety' : unitView === 'security' ? ' client-bu-title--hms-security' : ''}`}
+      >
+        Business Unit: {unitPanel.unit}
+      </h3>
 
       <div className="client-bu-text client-bu-text--meta">
         <p><strong>Description:</strong> {unitPanel.description}</p>
@@ -2413,6 +2574,64 @@ function UnitOverviewSide({ unitPanel, statusLabel, cards, localLine, onClose, d
         <p><strong>Assistant:</strong> {unitPanel.assistant}</p>
       </div>
 
+      {!showJobsSide && unitView === 'safety' && dashSafety ? (
+        <section className="client-bu-section">
+          <h5 className="client-bu-section-title"><ShieldIcon /> Safety Summary (Today):</h5>
+          <ul className="client-bu-section-list client-hms-side-sum">
+            <li>
+              <span className="client-hms-sum-dot client-hms-sum-dot--neutral" aria-hidden />
+              Total Observations: <strong>{dashSafety.totalObservations}</strong>
+            </li>
+            <li>
+              <span className="client-hms-sum-dot client-hms-sum-dot--good" aria-hidden />
+              Safe Conditions: <strong>{dashSafety.safeConditions}</strong>
+            </li>
+            <li>
+              <span className="client-hms-sum-dot client-hms-sum-dot--bad" aria-hidden />
+              Violations: <strong>{dashSafety.violations}</strong>
+            </li>
+            <li>
+              <span className="client-hms-sum-dot client-hms-sum-dot--warn" aria-hidden />
+              Actions Taken: <strong>{dashSafety.actionsTaken}</strong>
+            </li>
+            <li>
+              <span className="client-hms-sum-dot client-hms-sum-dot--info" aria-hidden />
+              Open Actions: <strong>{dashSafety.openActions}</strong>
+            </li>
+          </ul>
+        </section>
+      ) : null}
+
+      {!showJobsSide && unitView === 'security' && dashSec ? (
+        <section className="client-bu-section">
+          <h5 className="client-bu-section-title"><LockIcon /> Security Summary (Today):</h5>
+          <ul className="client-bu-section-list client-hms-side-sum">
+            <li>
+              <span className="client-hms-sum-dot client-hms-sum-dot--neutral" aria-hidden />
+              Total Events: <strong>{dashSec.totalEvents}</strong>
+            </li>
+            <li>
+              <span className="client-hms-sum-dot client-hms-sum-dot--bad" aria-hidden />
+              High Severity: <strong>{dashSec.highSev}</strong>
+            </li>
+            <li>
+              <span className="client-hms-sum-dot client-hms-sum-dot--warn" aria-hidden />
+              Medium Severity: <strong>{dashSec.medSev}</strong>
+            </li>
+            <li>
+              <span className="client-hms-sum-dot client-hms-sum-dot--info" aria-hidden />
+              Low Severity: <strong>{dashSec.lowSev}</strong>
+            </li>
+            <li>
+              <span className="client-hms-sum-dot client-hms-sum-dot--info" aria-hidden />
+              Open Investigations: <strong>{dashSec.openInvestigations}</strong>
+            </li>
+          </ul>
+        </section>
+      ) : null}
+
+      {showJobsSide ? (
+      <>
       <section className="client-bu-section">
         <h5 className="client-bu-section-title"><PulseIcon /> Real-Time Status:</h5>
         {isBu120 ? (
@@ -2560,8 +2779,42 @@ function UnitOverviewSide({ unitPanel, statusLabel, cards, localLine, onClose, d
           )}
         </div>
       </section>
+      </>
+      ) : null}
 
       <div className="client-bu-local">{`Local Time: ${localLine}`}</div>
+
+      {onUnitViewChange ? (
+        <div className="client-bu-side-viewnav" role="tablist" aria-label="Business unit pages">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={unitView === 'jobs'}
+            className={`client-bu-side-viewbtn client-bu-side-viewbtn--status${unitView === 'jobs' ? ' is-active' : ''}`}
+            onClick={() => onUnitViewChange('jobs')}
+          >
+            STATUS
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={unitView === 'safety'}
+            className={`client-bu-side-viewbtn client-bu-side-viewbtn--safety${unitView === 'safety' ? ' is-active' : ''}`}
+            onClick={() => onUnitViewChange('safety')}
+          >
+            SAFETY
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={unitView === 'security'}
+            className={`client-bu-side-viewbtn client-bu-side-viewbtn--security${unitView === 'security' ? ' is-active' : ''}`}
+            onClick={() => onUnitViewChange('security')}
+          >
+            SECURITY
+          </button>
+        </div>
+      ) : null}
     </aside>
   )
 }
@@ -2762,12 +3015,14 @@ function BuildingSitePageView({
                     cards={unitCards}
                     localLine={localLine}
                     digits={unitDigits}
+                    scopeId={scopeId}
+                    unitView={view}
+                    onUnitViewChange={handleView}
                     onClose={() => onSelectZone(null)}
                   />
                   <div
-                    className={`client-bu-image-wrap${activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? ' client-bu-image-wrap--analytics' : ''}`}
+                    className={`client-bu-image-wrap${activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? ' client-bu-image-wrap--analytics' : ''}${view !== 'jobs' ? ' client-bu-image-wrap--hms-dash' : ''}`}
                   >
-                    <UnitViewSwitcher activeView={view} onSelectView={handleView} />
                     {view === 'safety' ? (
                       <SafetyPanel
                         scopeId={scopeId}

@@ -6050,15 +6050,6 @@ h3 {
 .client-sx-panel--safety { border-top: 4px solid #0891b2; }
 .client-sx-panel--security { border-top: 4px solid #16a34a; }
 
-/* Safety / Security under the same Harland header + range tabs as the jobs grid */
-.client-unit-jobs-panel > .client-sx-panel--unit-main {
-  margin-top: 0;
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
 .client-sx-head {
   display: flex;
   align-items: flex-start;
@@ -6366,6 +6357,382 @@ h3 {
   .client-sx-grid { grid-template-columns: minmax(0, 1fr); }
   .client-sx-event { grid-template-columns: auto minmax(0, 1fr); }
   .client-sx-event-when { grid-column: 2; justify-self: end; }
+}
+
+/* === Harland Safety / Security dashboards (BU120 / BU125) ==== */
+.client-bu-image-wrap--hms-dash {
+  background: #f1f5f9;
+  padding: 0.65rem 0.7rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.client-bu-title--hms-safety {
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  color: #fff;
+}
+.client-bu-title--hms-security {
+  background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+  color: #fff;
+}
+
+.client-hms-dash-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.client-hms-dash-wrap--unit {
+  overflow: auto;
+}
+
+.client-hms-dash {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  background: #fff;
+  border-radius: 12px;
+  padding: 0.75rem 0.8rem 0.9rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+}
+
+.client-hms-dash-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  color: #fff;
+}
+.client-hms-dash-top--safety {
+  background: linear-gradient(90deg, #0f766e, #14b8a6);
+}
+.client-hms-dash-top--security {
+  background: linear-gradient(90deg, #1e3a8a, #2563eb);
+}
+.client-hms-dash-top-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+}
+.client-hms-dash-top--security .client-hms-dash-top-left svg {
+  color: #fff;
+}
+.client-hms-dash-shield {
+  flex-shrink: 0;
+}
+
+.client-hms-dash-range {
+  display: inline-flex;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+.client-hms-dash-range button {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+}
+.client-hms-dash-range button.is-active {
+  background: #fff;
+  color: #0f172a;
+}
+
+.client-hms-dash-kpis {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+@media (max-width: 1100px) {
+  .client-hms-dash-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .client-hms-dash-kpi--score {
+    grid-column: 1 / -1;
+  }
+}
+
+.client-hms-dash-kpi {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.55rem 0.5rem 0.5rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+.client-hms-dash-kpi--score .client-bu-mini-donut {
+  margin: 0 auto;
+}
+.client-hms-dash-kpi-cap {
+  margin: 0 0 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+.client-hms-dash-kpi-value {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.1;
+}
+.client-hms-dash-kpi-label {
+  margin: 0.15rem 0 0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.client-hms-dash-kpi-sub {
+  margin: 0.2rem 0 0;
+  font-size: 0.72rem;
+  color: #475569;
+}
+.client-hms-dash-kpi-trend {
+  margin: 0.35rem 0 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.client-hms-trend--good {
+  color: #16a34a;
+}
+.client-hms-trend--bad {
+  color: #dc2626;
+}
+.client-hms-trend--neutral {
+  color: #64748b;
+}
+
+.client-hms-dash-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.client-hms-dash-section-title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #0f172a;
+}
+.client-hms-dash-viewall {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 0.72rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.client-hms-dash-card-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.55rem;
+}
+@media (max-width: 1100px) {
+  .client-hms-dash-card-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.client-hms-dash-obs-card {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.client-hms-dash-obs-imgwrap {
+  position: relative;
+}
+.client-hms-dash-obs-imgwrap--sec .client-hms-dash-obs-img {
+  filter: grayscale(1) contrast(1.05);
+}
+.client-hms-dash-obs-img {
+  display: block;
+  width: 100%;
+  height: 5.5rem;
+  object-fit: cover;
+}
+.client-hms-tag {
+  position: absolute;
+  top: 0.35rem;
+  left: 0.35rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  color: #fff;
+}
+.client-hms-tag--bad {
+  background: #b91c1c;
+}
+.client-hms-tag--warn {
+  background: #d97706;
+}
+.client-hms-tag--good {
+  background: #15803d;
+}
+.client-hms-tag--info {
+  background: #2563eb;
+}
+
+.client-hms-dash-obs-body {
+  padding: 0.45rem 0.5rem 0.55rem;
+  text-align: left;
+}
+.client-hms-dash-obs-title {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.client-hms-dash-obs-meta {
+  margin: 0.2rem 0 0.15rem;
+  font-size: 0.65rem;
+  color: #64748b;
+}
+.client-hms-dash-obs-desc {
+  margin: 0 0 0.35rem;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  color: #475569;
+}
+.client-hms-risk {
+  display: inline-block;
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.15rem 0.4rem;
+  border-radius: 999px;
+  margin-bottom: 0.25rem;
+}
+.client-hms-risk--bad {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.client-hms-risk--warn {
+  background: #fef3c7;
+  color: #92400e;
+}
+.client-hms-risk--good {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.client-hms-dash-obs-status {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+.client-hms-dash-obs-status--bad {
+  color: #b91c1c;
+}
+.client-hms-dash-obs-status--warn {
+  color: #b45309;
+}
+.client-hms-dash-obs-status--good {
+  color: #166534;
+}
+
+.client-hms-dash-foot {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding-top: 0.35rem;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.client-hms-side-sum li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.client-hms-sum-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.client-hms-sum-dot--neutral {
+  background: #94a3b8;
+}
+.client-hms-sum-dot--good {
+  background: #22c55e;
+}
+.client-hms-sum-dot--bad {
+  background: #ef4444;
+}
+.client-hms-sum-dot--warn {
+  background: #f59e0b;
+}
+.client-hms-sum-dot--info {
+  background: #3b82f6;
+}
+
+.client-bu-side-viewnav {
+  margin-top: 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.client-bu-side-viewbtn {
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.92;
+  transition: transform 0.12s ease, opacity 0.12s ease, box-shadow 0.12s ease;
+}
+.client-bu-side-viewbtn:hover {
+  opacity: 1;
+}
+.client-bu-side-viewbtn.is-active {
+  opacity: 1;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(15, 23, 42, 0.2);
+  transform: translateY(-1px);
+}
+.client-bu-side-viewbtn--status {
+  background: linear-gradient(90deg, #2563eb, #1d4ed8);
+}
+.client-bu-side-viewbtn--safety {
+  background: linear-gradient(90deg, #0d9488, #14b8a6);
+}
+.client-bu-side-viewbtn--security {
+  background: linear-gradient(90deg, #1e3a8a, #172554);
 }
 
 /* === Redesigned BU job card (v2) ============================== */
