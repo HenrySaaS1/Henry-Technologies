@@ -2138,7 +2138,7 @@ function UnitViewSwitcher({ activeView, onSelectView, className }) {
         role="tab"
         aria-selected={activeView === 'jobs'}
         className={`client-bu-action-btn tone-jobs${activeView === 'jobs' ? ' is-active' : ''}`}
-        aria-label="Jobs"
+        aria-label="Status"
         onClick={() => handle('jobs')}
       >
         <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
@@ -2146,7 +2146,7 @@ function UnitViewSwitcher({ activeView, onSelectView, className }) {
           <path d="M9 6V4.5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4.5V6" fill="none" stroke="#fff" strokeWidth="2" strokeLinejoin="round" />
           <path d="M8 11h8M8 14.5h5" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
         </svg>
-        JOBS
+        STATUS
       </button>
       <button
         type="button"
