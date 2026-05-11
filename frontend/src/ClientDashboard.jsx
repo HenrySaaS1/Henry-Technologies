@@ -216,7 +216,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+1 (612) 555-0142',
     phoneTel: '+16125550142',
     building: {
-      name: 'US Headquarters',
+      name: 'Harland US Headquarters',
       // Client-approved US building visual
       floorPlanSrc: HARLAND_US_FLOOR_PLAN_SRC,
       footerBlurb: {
