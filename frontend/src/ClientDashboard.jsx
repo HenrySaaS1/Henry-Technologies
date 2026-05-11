@@ -307,9 +307,9 @@ const GLOBAL_SITES = [
     timeZone: 'America/Chicago',
     employees: 118,
     efficiency: 89,
-    address: '4820 Nicollet Ave S, Minneapolis, MN 55419 USA',
-    phoneDisplay: '+1 (612) 555-0142',
-    phoneTel: '+16125550142',
+    address: '7418 Washington Ave. South, Eden Prairie, MN 55344',
+    phoneDisplay: '+1-952-941-0475',
+    phoneTel: '+19529410475',
     building: {
       name: 'Harland US',
       // Client-approved US building visual
