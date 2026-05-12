@@ -5,12 +5,13 @@ import { PRESET_DEMO_EMAILS } from './registry.js'
 /** Bearer value stored locally — never sent to `/api`; apiClient skips Authorization for this marker. */
 export const DEMO_DASHBOARD_TOKEN = '__HENRY_DASHBOARD_DEMO_V1'
 
-/** Preset keys for the three Henry product dashboards (+ Harland). */
+/** Preset keys for the Henry product dashboards, Harland, and Aviora (no API / DB). */
 export const DASHBOARD_DEMO_PRESETS_ORDER = /** @type {const} */ [
   ['henry1', 'Dashboard #2 · single-site'],
   ['henry3', 'Dashboard #3 · three-site'],
   ['henry10', 'Dashboard #10 · ten-site'],
   ['harland', 'Harland Medical'],
+  ['aviora', 'Aviora Construction'],
 ]
 
 const PRESET_META = {
@@ -42,6 +43,13 @@ const PRESET_META = {
     planId: 'premium',
     dashboardPreset: 'harland',
   },
+  aviora: {
+    email: 'landerson@aviora.com',
+    company: 'AVIORA CONSTRUCTION INC',
+    slug: 'aviora',
+    planId: 'premium',
+    dashboardPreset: 'aviora',
+  },
 }
 
 /**
@@ -61,7 +69,7 @@ export function dashboardDemoShortcutsVisible() {
   }
 }
 
-/** @returns {'henry1' | 'henry3' | 'henry10' | 'harland' | null} */
+/** @returns {'henry1' | 'henry3' | 'henry10' | 'harland' | 'aviora' | null} */
 export function normalizeDashboardDemoPreset(raw) {
   const k = String(raw || '').trim().toLowerCase()
   return k in PRESET_META ? /** @type {any} */ (k) : null

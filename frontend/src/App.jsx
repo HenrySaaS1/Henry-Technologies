@@ -389,7 +389,13 @@ function signInFailureMessage(apiError, { showDemoShortcutsHint }) {
   }
   const raw = String(apiError.message || '').trim()
   if (apiError.code === 'LOGIN_DATABASE_UNAVAILABLE' || apiError.code === 'LOGIN_SCHEMA_MISMATCH') {
-    return raw || hintFallback || 'Sign-in is unavailable until the database is ready.'
+    const body = raw || hintFallback || 'Sign-in is unavailable until the database is ready.'
+    const demoFooter = showDemoShortcutsHint
+      ? '\n\nYou can use the dashboard preview buttons below (including Aviora) without a password while the API database is offline.'
+      : ''
+    const devFooter =
+      import.meta.env.DEV && apiError.detail ? `\n\nDev detail: ${apiError.detail}` : ''
+    return `${body}${demoFooter}${devFooter}`
   }
   if (
     apiError.code === 'LOGIN_SERVER_ERROR' ||
