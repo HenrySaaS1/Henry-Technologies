@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useId } from 'react'
+import { useState, useEffect, useRef, useId } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import ClientDashboard from './ClientDashboard.jsx'
 import ClientOnboarding from './ClientOnboarding.jsx'
@@ -1569,12 +1569,12 @@ function App() {
       <div className="products-snapshot-hero">
         <div className="products-snapshot-hero-text">
           <h2 className="products-snapshot-hero-title">HENRY Snapshot</h2>
-          <p className="products-snapshot-hero-tagline">Visual intelligence for smarter factory operations</p>
+          <p className="products-snapshot-hero-tagline">Visual intelligence for smarter business operations</p>
           <p className="products-snapshot-hero-body">
-            HENRY Snapshot is a visual intelligence product designed to capture and analyse key moments from factory
+            HENRY Snapshot is a visual intelligence product designed to capture and analyse key moments from business
             operations. It helps teams monitor job status, production progress, workflow updates, system performance,
             safety concerns, and security-related activities in one place. Using images, video, and operational data,
-            HENRY Snapshot converts shop-floor activity into simple, actionable insights. It gives managers a quick view
+            HENRY Snapshot converts day-to-day operations into simple, actionable insights. It gives managers a quick view
             of what is happening, what needs attention, and where delays, risks, safety issues, or security concerns may
             exist.
           </p>
@@ -1582,7 +1582,7 @@ function App() {
             HENRY Snapshot supports stronger operational control by helping teams track systems, identify unsafe
             conditions, improve workplace security, and respond faster to potential issues. HENRY Snapshot is built to
             improve visibility, speed up decision-making, and create a safer, more secure, and more efficient
-            manufacturing environment.
+            business environment.
           </p>
           <button
             type="button"
