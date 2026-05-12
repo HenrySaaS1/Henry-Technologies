@@ -1,4 +1,17 @@
 import { AVIORA_CONSTRUCTION_PROJECTS, AVIORA_PORTFOLIO_FOOTER } from './avioraPortfolioData.js'
+import leadKevinConlon from '../assets/uploads/lead-kevin-conlon.png'
+import leadMarkStockhowe from '../assets/uploads/lead-mark-stockhowe.png'
+import leadItamarHaran from '../assets/uploads/lead-itamar-haran.png'
+import siteImgSkyline from '../assets/uploads/harland-528-coater.png'
+import siteImgGreenfield from '../assets/uploads/harland-tts1000.png'
+import siteImgRiverstone from '../assets/uploads/harland-custom-rig.png'
+
+/** Demo lead portraits + site hero thumbnails (swap for client photography when available). */
+const PROJECT_VISUALS = {
+  skyline: { lead: leadKevinConlon, site: siteImgSkyline },
+  greenfield: { lead: leadMarkStockhowe, site: siteImgGreenfield },
+  riverstone: { lead: leadItamarHaran, site: siteImgRiverstone },
+}
 
 function leadInitials(name) {
   const parts = String(name || '')
@@ -119,10 +132,12 @@ function CompletionRing({ pct, tone }) {
   )
 }
 
-function ProjectCard({ p }) {
+function ProjectCard({ p, visuals }) {
   const tone = p.statusKey === 'operational' ? 'operational' : p.statusKey === 'monitoring' ? 'monitoring' : 'risk'
   const statusLabel =
     p.statusKey === 'operational' ? 'OPERATIONAL' : p.statusKey === 'monitoring' ? 'MONITORING' : 'AT RISK'
+  const leadSrc = visuals?.lead
+  const siteSrc = visuals?.site
 
   return (
     <article className={`aviora-port-card aviora-port-card--${tone}`}>
@@ -144,9 +159,15 @@ function ProjectCard({ p }) {
         </div>
         <div className="aviora-port-card-media">
           <div className="aviora-port-lead-photo" aria-hidden="true">
-            {leadInitials(p.lead)}
+            {leadSrc ? (
+              <img src={leadSrc} alt="" loading="lazy" decoding="async" />
+            ) : (
+              <span className="aviora-port-lead-photo-fallback">{leadInitials(p.lead)}</span>
+            )}
           </div>
-          <div className="aviora-port-site-thumb" aria-hidden="true" title="Site preview (demo)" />
+          <div className="aviora-port-site-thumb" aria-hidden="true" title="Site preview (demo)">
+            {siteSrc ? <img src={siteSrc} alt="" loading="lazy" decoding="async" /> : null}
+          </div>
         </div>
       </div>
 
@@ -270,7 +291,7 @@ export default function AvioraConstructionPortfolio({ companyName, nowTick }) {
 
       <div className="aviora-port-grid">
         {AVIORA_CONSTRUCTION_PROJECTS.map((p) => (
-          <ProjectCard key={p.id} p={p} />
+          <ProjectCard key={p.id} p={p} visuals={PROJECT_VISUALS[p.id]} />
         ))}
       </div>
 
