@@ -10,10 +10,12 @@ import {
   activateDashboardDemo,
   apiJson,
   clearAuth,
+  avioraApexDashboardPath,
   clientDashboardBasename,
   getTenantSlug,
   getToken,
   harlandApexDashboardPath,
+  isAvioraWorkspaceUser,
   isDemoDashboardToken,
   isHarlandTenantHostname,
   isHarlandWorkspaceUser,
@@ -879,7 +881,12 @@ function App() {
   const [currentUser, setCurrentUser] = useState(() => (AUTH_BYPASS ? bypassDemoUser() : null))
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const tenantSlug = getTenantSlug()
-  const tenantLabel = tenantSlug === 'harland' ? 'Harland Medical Systems' : null
+  const tenantLabel =
+    tenantSlug === 'harland'
+      ? 'Harland Medical Systems'
+      : tenantSlug === 'aviora'
+        ? 'Aviora Construction'
+        : null
 
   useEffect(() => {
     if (!isProductsPage || typeof window === 'undefined') return
@@ -923,21 +930,36 @@ function App() {
     return () => ac.abort()
   }, [])
 
-  /** Harland on apex / localhost: canonical dashboard URL is `/harland` (React Router basename + address bar). */
+  /**
+   * After sign-in, normalize apex URL to the workspace path: `/harland` (Harland) or `/aviora` (Aviora).
+   * Harland subdomain hosts keep the root URL (no `/harland` prefix).
+   */
   useEffect(() => {
-    if (!currentUser) return
-    if (!isHarlandWorkspaceUser(currentUser)) return
-    if (typeof window === 'undefined') return
-    if (isHarlandTenantHostname(window.location.hostname)) return
+    if (!currentUser || typeof window === 'undefined') return
+
+    const host = window.location.hostname
+    const onHarlandHost = isHarlandTenantHostname(host)
 
     const path = window.location.pathname.replace(/\/+$/, '') || '/'
-    if (path === '/harland' || path.startsWith('/harland/')) return
-
     const allow = (p) => path === p || path.startsWith(`${p}/`)
     if (allow('/onboarding') || allow('/pricing') || allow('/products') || allow('/case-studies')) return
 
-    if (path === '/') {
-      window.location.replace(harlandApexDashboardPath())
+    const harlandUser = isHarlandWorkspaceUser(currentUser)
+    const avioraUser = isAvioraWorkspaceUser(currentUser)
+
+    if (harlandUser && !onHarlandHost) {
+      if (path === '/harland' || path.startsWith('/harland/')) return
+      if (path === '/' || path === '/aviora' || path.startsWith('/aviora/')) {
+        window.location.replace(harlandApexDashboardPath())
+      }
+      return
+    }
+
+    if (avioraUser) {
+      if (path === '/aviora' || path.startsWith('/aviora/')) return
+      if (path === '/' || path === '/harland' || path.startsWith('/harland/')) {
+        window.location.replace(avioraApexDashboardPath())
+      }
     }
   }, [currentUser])
 
@@ -953,6 +975,12 @@ function App() {
   const signOut = () => {
     clearAuth()
     setCurrentUser(null)
+    if (typeof window !== 'undefined') {
+      const p = window.location.pathname.replace(/\/+$/, '') || '/'
+      if (p === '/harland' || p.startsWith('/harland/') || p === '/aviora' || p.startsWith('/aviora/')) {
+        window.location.replace('/')
+      }
+    }
   }
 
   const enterBypassWorkspace = () => {
@@ -1281,7 +1309,9 @@ function App() {
         company:
           tenantSlug === 'harland'
             ? 'Harland Medical Systems'
-            : signupForm.companyName.trim() || defaultOrganizationFromEmail(emailKey),
+            : tenantSlug === 'aviora'
+              ? 'Aviora Construction Inc'
+              : signupForm.companyName.trim() || defaultOrganizationFromEmail(emailKey),
         productIds,
         onboardingData,
         completeOnboarding: true,
@@ -1796,9 +1826,12 @@ function App() {
           onComplete={(u) => {
             setCurrentUser(u)
             if (typeof window !== 'undefined') {
-              const apexHarland =
-                isHarlandWorkspaceUser(u) && !isHarlandTenantHostname(window.location.hostname)
-              window.location.replace(apexHarland ? harlandApexDashboardPath() : '/')
+              const host = window.location.hostname
+              const apexHarland = isHarlandWorkspaceUser(u) && !isHarlandTenantHostname(host)
+              const apexAviora = isAvioraWorkspaceUser(u)
+              window.location.replace(
+                apexHarland ? harlandApexDashboardPath() : apexAviora ? avioraApexDashboardPath() : '/',
+              )
             }
           }}
           onSignOut={signOut}

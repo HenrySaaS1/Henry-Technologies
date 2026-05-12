@@ -66,10 +66,11 @@ function tenantSlugFromHost(hostname) {
   return null
 }
 
-/** Harland workspace on apex host: `goaskhenry.com/harland` (and `/harland/...` routes). */
+/** Path-based tenants on apex host (see `clientDashboardBasename`). */
 function tenantSlugFromPathname(pathname) {
   const p = String(pathname || '').split('?')[0]
   if (/^\/harland(\/|$)/i.test(p)) return 'harland'
+  if (/^\/aviora(\/|$)/i.test(p)) return 'aviora'
   return null
 }
 
@@ -87,6 +88,18 @@ export function isHarlandWorkspaceUser(user) {
   return false
 }
 
+/** Aviora Construction workspace (slug, preset, email, or company name). */
+export function isAvioraWorkspaceUser(user) {
+  if (!user || typeof user !== 'object') return false
+  if (user.slug === 'aviora') return true
+  if (user.dashboardPreset === 'aviora') return true
+  const email = typeof user.email === 'string' ? user.email.trim().toLowerCase() : ''
+  if (/@aviora\.com$/i.test(email)) return true
+  const company = user.company
+  if (typeof company === 'string' && company.toLowerCase().includes('aviora')) return true
+  return false
+}
+
 /**
  * Browser URL for Harland on apex / localhost (not on `harland.*` subdomains). Honors Vite `base` / `VITE_BASE_PATH`.
  */
@@ -97,8 +110,16 @@ export function harlandApexDashboardPath() {
   return `${viteTrim}/harland`
 }
 
+/** Aviora workspace on apex / localhost: `goaskhenry.com/aviora` (and `/aviora/...` routes). */
+export function avioraApexDashboardPath() {
+  const raw = import.meta.env.BASE_URL
+  const viteTrim = typeof raw === 'string' && raw !== '/' ? String(raw).replace(/\/$/, '') : ''
+  if (!viteTrim) return '/aviora'
+  return `${viteTrim}/aviora`
+}
+
 /**
- * React Router basename for the client dashboard. Harland on apex uses `/harland` (or `{base}/harland`).
+ * React Router basename for the client dashboard. Harland on apex uses `/harland`; Aviora uses `/aviora`.
  * On `harland.*.goaskhenry.com`, basename stays the Vite app base only so URLs stay on the subdomain root.
  */
 export function clientDashboardBasename(user) {
@@ -109,11 +130,18 @@ export function clientDashboardBasename(user) {
   const useHarlandPath =
     Boolean(user && isHarlandWorkspaceUser(user)) && typeof window !== 'undefined' && !onHarlandHost
 
-  if (!useHarlandPath) {
-    return viteTrim || undefined
+  if (useHarlandPath) {
+    if (!viteTrim) return '/harland'
+    return `${viteTrim}/harland`
   }
-  if (!viteTrim) return '/harland'
-  return `${viteTrim}/harland`
+
+  const useAvioraPath = Boolean(user && isAvioraWorkspaceUser(user)) && typeof window !== 'undefined'
+  if (useAvioraPath) {
+    if (!viteTrim) return '/aviora'
+    return `${viteTrim}/aviora`
+  }
+
+  return viteTrim || undefined
 }
 
 export function getTenantSlug() {
@@ -129,7 +157,7 @@ export function getTenantSlug() {
     host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host.endsWith('.local')
   if (isLocal) {
     // `VITE_TENANT_SLUG` was causing sign-in 401s on localhost (user slug in DB != harland). Use
-    // `?tenant=...` or open `/harland` when you need the Harland tenant locally.
+    // `?tenant=...` or open `/harland` / `/aviora` when you need that tenant locally.
     return null
   }
 

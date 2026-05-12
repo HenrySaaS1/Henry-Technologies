@@ -1,7 +1,7 @@
 /**
  * Maps marketing / white-label hostnames to workspace tenant slugs.
  * Keep in sync with `tenantSlugFromHost` in `frontend/src/apiClient.js`.
- * Path-based `/harland` on the apex site is resolved in the browser only (see `getTenantSlug` there).
+ * Path-based `/harland` and `/aviora` on the apex site are resolved in the browser only (see `getTenantSlug` there).
  */
 export function tenantSlugFromHost(hostname) {
   let host = String(hostname || '')
