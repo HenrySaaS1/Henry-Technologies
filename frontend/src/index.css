@@ -8496,6 +8496,84 @@ h3 {
   box-shadow: 0 6px 20px rgba(15, 23, 42, 0.1);
 }
 
+.client-overview-ai-alerts.client-overview-ai-alerts--inset.client-overview-ai-alerts--inset-site-mirror {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  max-height: none;
+  overflow: visible;
+}
+
+.client-site-fp-photo-ph--ai {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: linear-gradient(145deg, #7c3aed 0%, #5b21b6 100%);
+}
+
+.client-site-card--overview-alerts-inset .client-site-card-main {
+  cursor: pointer;
+}
+
+.client-site-fp-inset-ack-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem 0.55rem 0.45rem;
+  border-top: 1px solid #eef2f7;
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+}
+
+.client-site-fp-inset-ack-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  padding: 0.38rem 0.42rem;
+  border-radius: 9px;
+  background: #fafafa;
+  border: 1px solid #eef2f7;
+}
+
+.client-site-fp-inset-ack-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.client-site-fp-inset-ack-body strong {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.client-site-fp-inset-ack-when {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.client-site-fp-inset-empty {
+  margin: 0.35rem 0.5rem 0.5rem;
+  padding: 0.5rem 0.45rem;
+  border-radius: 9px;
+  text-align: center;
+  font-size: 0.72rem;
+}
+
+.client-overview-ai-foot--inset-mirror {
+  margin: 0.35rem 0.55rem 0.45rem;
+  font-size: 0.62rem;
+  line-height: 1.35;
+  color: #64748b;
+  text-align: center;
+}
+
 .client-overview-ai-alerts--inset .client-overview-ai-alerts-top {
   margin-bottom: 0.42rem;
   align-items: flex-end;

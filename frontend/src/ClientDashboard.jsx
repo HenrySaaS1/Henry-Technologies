@@ -3762,11 +3762,162 @@ function OverviewAiAlertsAside({
   ackedIds,
   onViewAllAlerts,
   variant = 'ribbon',
+  mirrorSite = null,
+  nowTick = null,
 }) {
   const asideClass =
     variant === 'inset'
-      ? 'client-overview-ai-alerts client-overview-ai-alerts--inset'
+      ? 'client-overview-ai-alerts client-overview-ai-alerts--inset client-overview-ai-alerts--inset-site-mirror'
       : 'client-overview-ai-alerts client-overview-ai-alerts--ribbon'
+
+  if (variant === 'inset' && mirrorSite) {
+    const clock = nowTick ?? new Date()
+    const totalAlerts = Array.isArray(ctx.alerts) ? ctx.alerts.length : 0
+    const unacked = visibleAlerts.filter((a) => !ackedIds.has(a.id))
+    const highN = unacked.filter((a) => a.severity === 'high').length
+    const medN = unacked.filter((a) => a.severity === 'med').length
+    const lowN = unacked.filter((a) => a.severity === 'low').length
+    const light = highN > 0 ? 'red' : medN > 0 ? 'amber' : 'green'
+    const alertStatusWord = highN > 0 ? 'ATTENTION' : medN > 0 ? 'MONITORING' : 'OPERATIONAL'
+    const healthPct = Math.max(
+      36,
+      Math.min(100, 100 - highN * 14 - medN * 6 - lowN * 2),
+    )
+    const ackedCount = ackedIds.size
+    const reviewedPct =
+      totalAlerts > 0 ? Math.round((ackedCount / Math.max(1, totalAlerts)) * 100) : 100
+    const mixPct = unacked.length ? Math.round((lowN / unacked.length) * 100) : 0
+
+    return (
+      <aside className={asideClass} aria-labelledby="overview-ai-alerts-inset-h">
+        <article className="client-site-card client-site-card--fp client-site-card--overview-alerts-inset">
+          <div className="client-site-fp-statusbar">
+            <div className="client-site-fp-status-left">
+              <SiteTrafficLight active={light} label={alertStatusWord} />
+              <span className="client-site-fp-status-word">{alertStatusWord}</span>
+            </div>
+            <span className="client-site-kpi-chip client-site-kpi-chip--fp">
+              {unacked.length ? `${unacked.length} open` : 'Queue clear'}
+            </span>
+          </div>
+          <button
+            type="button"
+            className="client-site-card-main"
+            onClick={onViewAllAlerts}
+            aria-label="Open full alerts workspace"
+          >
+            <div className="client-site-fp-ident">
+              <div className="client-site-fp-photo" aria-hidden="true">
+                <span className="client-site-fp-photo-ph client-site-fp-photo-ph--ai">AI</span>
+              </div>
+              <div className="client-site-fp-ident-main">
+                <div className="client-site-title-row">
+                  <h2 id="overview-ai-alerts-inset-h" className="client-site-country">
+                    AI alerts
+                  </h2>
+                  <div className="client-site-flag" aria-hidden="true" title="Intelligence layer">
+                    <span className="client-site-flag-emoji">✦</span>
+                  </div>
+                </div>
+                <p className="client-site-fp-lead">
+                  <span className="client-site-fp-lead-tag">Lead</span>
+                  <strong>HENRY AI</strong>
+                </p>
+              </div>
+            </div>
+
+            <div className="client-site-fp-kpis">
+              <div className="client-site-fp-kpi">
+                <SiteFootprintPeopleIcon />
+                <div className="client-site-fp-kpi-text">
+                  <strong>{unacked.length}</strong>
+                  <span>Open</span>
+                </div>
+              </div>
+              <div className="client-site-fp-kpi">
+                <SiteFootprintClockIcon />
+                <div className="client-site-fp-kpi-text">
+                  <strong>{formatSiteShortTime(clock, mirrorSite.timeZone)}</strong>
+                  <span>Local time</span>
+                </div>
+              </div>
+              <div className="client-site-fp-kpi">
+                <SiteFootprintPulseIcon />
+                <div className="client-site-fp-kpi-text">
+                  <strong>{highN}</strong>
+                  <span>High</span>
+                </div>
+              </div>
+              <div className="client-site-fp-kpi client-site-fp-kpi--donut">
+                <span className="client-site-fp-kpi-cap">Health</span>
+                <MiniDonut
+                  value={healthPct}
+                  max={100}
+                  color="#7c3aed"
+                  track="#ede9fe"
+                  size={76}
+                  label={`${healthPct}%`}
+                />
+              </div>
+            </div>
+
+            <div className="client-site-fp-bars">
+              <div className="client-site-fp-bar">
+                <span className="client-site-fp-bar-label">Reviewed</span>
+                <span className="client-site-fp-bar-pct">{reviewedPct}%</span>
+                <div className="client-site-fp-bar-track" aria-hidden="true">
+                  <span className="client-site-fp-bar-fill" style={{ width: `${Math.min(100, reviewedPct)}%` }} />
+                </div>
+              </div>
+              <div className="client-site-fp-bar">
+                <span className="client-site-fp-bar-label">Low share</span>
+                <span className="client-site-fp-bar-pct">{Math.max(6, mixPct)}%</span>
+                <div className="client-site-fp-bar-track" aria-hidden="true">
+                  <span className="client-site-fp-bar-fill" style={{ width: `${Math.min(100, Math.max(6, mixPct))}%` }} />
+                </div>
+              </div>
+              <div className={`client-site-fp-esc client-site-fp-esc--${highN > 0 ? 'warn' : 'good'}`}>
+                <span>Escalations (24h)</span>
+                <strong>{highN}</strong>
+              </div>
+            </div>
+
+            <p className="client-site-address">
+              <span className="client-site-address-label">Watch window</span>
+              {ctx.alertsLead}
+            </p>
+            <span className="client-site-open-hint">All alerts →</span>
+          </button>
+
+          {visibleAlerts.length ? (
+            <ul className="client-site-fp-inset-ack-list" aria-label="Acknowledge alerts">
+              {visibleAlerts.slice(0, 4).map((a) => (
+                <li key={a.id} className="client-site-fp-inset-ack-row">
+                  <span className={`client-sev client-sev--${a.severity}`}>
+                    {a.severity === 'high' ? 'High' : a.severity === 'med' ? 'Med' : 'Low'}
+                  </span>
+                  <div className="client-site-fp-inset-ack-body">
+                    <strong>{a.title}</strong>
+                    <span className="client-site-fp-inset-ack-when">{a.when}</span>
+                  </div>
+                  <button type="button" className="client-alert-ack" onClick={() => onAcknowledge(a.id)}>
+                    Ack
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="client-alerts-empty client-alerts-empty--overview client-site-fp-inset-empty">
+              {ackedIds.size > 0
+                ? 'Nothing in this filter — open Alerts for the full list.'
+                : 'No alerts match this filter.'}
+            </p>
+          )}
+          <p className="client-overview-ai-foot client-overview-ai-foot--inset-mirror">{ctx.alertsFoot}</p>
+        </article>
+      </aside>
+    )
+  }
 
   return (
     <aside className={asideClass} aria-labelledby="overview-ai-alerts-h">
@@ -4294,6 +4445,8 @@ export default function ClientDashboard({ user, onSignOut }) {
                 topAlerts={
                   <OverviewAiAlertsAside
                     variant="inset"
+                    mirrorSite={workspaceSites[0]}
+                    nowTick={nowTick}
                     ctx={ctx}
                     visibleAlerts={visibleAlerts}
                     alertFilter={alertFilter}
