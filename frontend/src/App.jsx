@@ -1569,7 +1569,10 @@ function App() {
       <div className="products-snapshot-hero">
         <div className="products-snapshot-hero-text">
           <h2 className="products-snapshot-hero-title">
-            HENRY SnapShot<span className="products-snapshot-tm" aria-label="trademark">TM</span>
+            <span className="products-snapshot-hero-title__henry">HENRY</span>{' '}
+            <span className="products-snapshot-hero-title__snapshot">
+              SnapShot<span className="products-snapshot-tm" aria-label="trademark">™</span>
+            </span>
           </h2>
           <p className="products-snapshot-hero-tagline">Visual Intelligence For Smart Business Operations</p>
           <p className="products-snapshot-hero-body">

@@ -1377,18 +1377,25 @@ h3 {
   font-size: clamp(1.65rem, 3.2vw, 2.35rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #001f3f;
   line-height: 1.15;
+}
+
+.products-snapshot-hero-title__henry {
+  color: #0c2748;
+}
+
+.products-snapshot-hero-title__snapshot {
+  color: #0d9488;
 }
 
 .products-snapshot-hero-title .products-snapshot-tm {
   display: inline-block;
-  margin-left: 0.1em;
-  font-size: 0.38em;
+  margin-left: 0.06em;
+  font-size: 0.42em;
   font-weight: 700;
   vertical-align: super;
   line-height: 1;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
 }
 
 .products-snapshot-hero-tagline {
