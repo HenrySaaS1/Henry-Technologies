@@ -10,13 +10,22 @@ export const PRESET_DEMO_EMAILS = {
   henry10: 'henry10@gmail.com',
 }
 
-/** Same layout and demo content baseline; presets merge overrides (Dashboard #2 / #3 / #10, Harland). */
+/** Shared baseline; matches single-site (Dashboard #2) chrome. Harland overrides back to Dashboard #1. */
 export const WORKSPACE = {
-  sub: 'Real-time production monitoring — shared HENRY workspace for all clients.',
+  sub: 'Single-site Henry dashboard — United States HQ and production snapshot.',
   dashboardTemplate: {
-    name: 'Dashboard #1',
-    sub: 'Multi-location & multi-site clients',
+    name: 'Dashboard #2',
+    sub: 'Single-location workspace',
   },
+  clientBrand: {
+    mode: 'tenant-lockup',
+    logoSrc: henryLogo,
+    logoAlt: 'HENRY',
+  },
+  footprintSub:
+    'United States site — leadership, local time, headcount, and efficiency for this footprint.',
+  locationsLeadSub:
+    'United States headquarters — open the building map for zone-level monitoring.',
   pills: [
     { className: 'green', label: 'Running 12' },
     { className: 'yellow', label: 'Idle 4' },
@@ -100,7 +109,7 @@ export const WORKSPACE = {
   ],
 }
 
-/** Per-preset UI copy + branding layered on WORKSPACE (#2 single site, #3 three sites, #10 ten sites, Harland). */
+/** Per-preset overrides (#3 / #10 multi-site, Harland branding + Dashboard #1 chrome). */
 const PRESET_OVERRIDES = {
   harland: {
     sub: 'Harland Medical Systems operations dashboard — live line performance, quality, and alerts.',
@@ -109,22 +118,14 @@ const PRESET_OVERRIDES = {
       logoSrc: harlandMedicalSystemsLogo,
       logoAlt: 'Harland Medical Systems',
     },
-  },
-  henry1: {
-    sub: 'Single-site Henry dashboard — United States HQ and production snapshot.',
-    clientBrand: {
-      mode: 'tenant-lockup',
-      logoSrc: henryLogo,
-      logoAlt: 'HENRY',
-    },
     dashboardTemplate: {
-      name: 'Dashboard #2',
-      sub: 'Single-location workspace',
+      name: 'Dashboard #1',
+      sub: 'Multi-location & multi-site clients',
     },
     footprintSub:
-      'United States site — leadership, local time, headcount, and efficiency for this footprint.',
+      'Global footprint — site leadership, local time, headcount, and efficiency by region.',
     locationsLeadSub:
-      'United States headquarters — open the building map for zone-level monitoring.',
+      'Regional production sites — open a building map for zone-level monitoring.',
   },
   henry3: {
     sub: 'Three-site Henry dashboard — Americas and Ireland production snapshot.',
