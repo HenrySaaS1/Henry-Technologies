@@ -1568,19 +1568,21 @@ function App() {
     <section className="products-detailed-page" aria-label="Detailed products">
       <div className="products-snapshot-hero">
         <div className="products-snapshot-hero-text">
-          <h2 className="products-snapshot-hero-title">HENRY Snapshot</h2>
-          <p className="products-snapshot-hero-tagline">Visual intelligence for smarter business operations</p>
+          <h2 className="products-snapshot-hero-title">
+            HENRY SnapShot<span className="products-snapshot-tm" aria-label="trademark">TM</span>
+          </h2>
+          <p className="products-snapshot-hero-tagline">Visual Intelligence For Smart Business Operations</p>
           <p className="products-snapshot-hero-body">
-            HENRY Snapshot is a visual intelligence product designed to capture and analyse key moments from business
+            HENRY SnapShot is a visual intelligence product designed to capture and analyse key moments from business
             operations. It helps teams monitor job status, production progress, workflow updates, system performance,
             safety concerns, and security-related activities in one place. Using images, video, and operational data,
-            HENRY Snapshot converts day-to-day operations into simple, actionable insights. It gives managers a quick view
+            HENRY SnapShot converts day-to-day operations into simple, actionable insights. It gives managers a quick view
             of what is happening, what needs attention, and where delays, risks, safety issues, or security concerns may
             exist.
           </p>
           <p className="products-snapshot-hero-body">
-            HENRY Snapshot supports stronger operational control by helping teams track systems, identify unsafe
-            conditions, improve workplace security, and respond faster to potential issues. HENRY Snapshot is built to
+            HENRY SnapShot supports stronger operational control by helping teams track systems, identify unsafe
+            conditions, improve workplace security, and respond faster to potential issues. HENRY SnapShot is built to
             improve visibility, speed up decision-making, and create a safer, more secure, and more efficient
             business environment.
           </p>
@@ -1589,7 +1591,7 @@ function App() {
             className="products-snapshot-hero-cta"
             onClick={() => scrollToProductDetail('systems')}
           >
-            Explore Snapshot <span aria-hidden="true">→</span>
+            Explore SnapShot <span aria-hidden="true">→</span>
           </button>
         </div>
         <div className="products-snapshot-hero-visual" aria-hidden="true">

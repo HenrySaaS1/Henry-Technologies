@@ -1381,6 +1381,16 @@ h3 {
   line-height: 1.15;
 }
 
+.products-snapshot-hero-title .products-snapshot-tm {
+  display: inline-block;
+  margin-left: 0.1em;
+  font-size: 0.38em;
+  font-weight: 700;
+  vertical-align: super;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
 .products-snapshot-hero-tagline {
   margin: 0 0 1rem;
   font-size: clamp(1rem, 1.8vw, 1.2rem);
