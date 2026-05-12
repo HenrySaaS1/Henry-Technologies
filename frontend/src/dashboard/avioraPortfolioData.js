@@ -1,5 +1,12 @@
 /** Demo portfolio for Aviora Construction — aligned to stakeholder reference deck. */
 
+/**
+ * Remote placeholder portrait for Skyline lead (Olivia Carter) — demo only; not production PII.
+ * Pravatar seed keeps the same face across sessions.
+ */
+export const AVIORA_OLIVIA_LEAD_IMAGE_URL =
+  'https://i.pravatar.cc/400?u=aviora-construction-skyline-lead'
+
 export const AVIORA_CONSTRUCTION_PROJECTS = [
   {
     id: 'skyline',
@@ -44,7 +51,7 @@ export const AVIORA_CONSTRUCTION_PROJECTS = [
     statusKey: 'risk',
     name: 'Riverstone Villas',
     location: 'Orlando, FL',
-    lead: 'Marcus Lee',
+    lead: 'Maya Singh',
     dayProgress: { current: 36, total: 120, cyclePct: 30 },
     crewWorkers: 41,
     weatherDelayHrs: 18.5,
@@ -55,7 +62,7 @@ export const AVIORA_CONSTRUCTION_PROJECTS = [
     issues: { count: 12, level: 'High' },
     footer: {
       tone: 'bad',
-      text: 'Critical path at risk — executive review recommended.',
+      text: 'Significant delays and risks require immediate attention.',
     },
   },
 ]

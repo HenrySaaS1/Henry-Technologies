@@ -1,16 +1,20 @@
-import { AVIORA_CONSTRUCTION_PROJECTS, AVIORA_PORTFOLIO_FOOTER } from './avioraPortfolioData.js'
-import leadKevinConlon from '../assets/uploads/lead-kevin-conlon.png'
-import leadMarkStockhowe from '../assets/uploads/lead-mark-stockhowe.png'
-import leadItamarHaran from '../assets/uploads/lead-itamar-haran.png'
-import siteImgSkyline from '../assets/uploads/harland-528-coater.png'
-import siteImgGreenfield from '../assets/uploads/harland-tts1000.png'
-import siteImgRiverstone from '../assets/uploads/harland-custom-rig.png'
+import { Link } from 'react-router-dom'
+import {
+  AVIORA_CONSTRUCTION_PROJECTS,
+  AVIORA_OLIVIA_LEAD_IMAGE_URL,
+  AVIORA_PORTFOLIO_FOOTER,
+} from './avioraPortfolioData.js'
+import leadEthanBrooks from '../assets/uploads/aviora-lead-ethan-brooks.jpg'
+import leadMayaSingh from '../assets/uploads/aviora-lead-maya-singh.jpg'
+import siteImgSkyline from '../assets/uploads/aviora-site-skyline-residences.jpg'
+import siteImgGreenfield from '../assets/uploads/aviora-site-greenfield-heights.jpg'
+import siteImgRiverstone from '../assets/uploads/aviora-site-riverstone-villas.jpg'
 
-/** Demo lead portraits + site hero thumbnails (swap for client photography when available). */
+/** Lead portraits cropped from stakeholder mockup; site heroes match reference properties. */
 const PROJECT_VISUALS = {
-  skyline: { lead: leadKevinConlon, site: siteImgSkyline },
-  greenfield: { lead: leadMarkStockhowe, site: siteImgGreenfield },
-  riverstone: { lead: leadItamarHaran, site: siteImgRiverstone },
+  skyline: { lead: AVIORA_OLIVIA_LEAD_IMAGE_URL, site: siteImgSkyline, leadObjectPosition: '50% 38%' },
+  greenfield: { lead: leadEthanBrooks, site: siteImgGreenfield, leadObjectPosition: '50% 18%' },
+  riverstone: { lead: leadMayaSingh, site: siteImgRiverstone, leadObjectPosition: '50% 16%' },
 }
 
 function leadInitials(name) {
@@ -140,7 +144,11 @@ function ProjectCard({ p, visuals }) {
   const siteSrc = visuals?.site
 
   return (
-    <article className={`aviora-port-card aviora-port-card--${tone}`}>
+    <Link
+      to={`/property/${p.id}`}
+      className={`aviora-port-card aviora-port-card--link aviora-port-card--${tone}`}
+      aria-label={`Open property detail for ${p.name}`}
+    >
       <div className="aviora-port-card-head">
         <span className={`aviora-port-pill aviora-port-pill--${tone}`}>
           <span className="aviora-port-pill-dot" aria-hidden="true" />
@@ -148,7 +156,22 @@ function ProjectCard({ p, visuals }) {
         </span>
       </div>
       <div className="aviora-port-card-title-row">
-        <div>
+        <div className="aviora-port-lead-photo" aria-hidden="true">
+          <div className="aviora-port-lead-photo-inner">
+            {leadSrc ? (
+              <img
+                src={leadSrc}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                style={{ objectPosition: visuals?.leadObjectPosition ?? '50% 16%' }}
+              />
+            ) : (
+              <span className="aviora-port-lead-photo-fallback">{leadInitials(p.lead)}</span>
+            )}
+          </div>
+        </div>
+        <div className="aviora-port-card-title-text">
           <h3 className="aviora-port-project-name">{p.name}</h3>
           <p className="aviora-port-project-loc">
             <span aria-hidden="true">📍</span> {p.location}
@@ -157,17 +180,8 @@ function ProjectCard({ p, visuals }) {
             Lead: <strong>{p.lead}</strong>
           </p>
         </div>
-        <div className="aviora-port-card-media">
-          <div className="aviora-port-lead-photo" aria-hidden="true">
-            {leadSrc ? (
-              <img src={leadSrc} alt="" loading="lazy" decoding="async" />
-            ) : (
-              <span className="aviora-port-lead-photo-fallback">{leadInitials(p.lead)}</span>
-            )}
-          </div>
-          <div className="aviora-port-site-thumb" aria-hidden="true" title="Site preview (demo)">
-            {siteSrc ? <img src={siteSrc} alt="" loading="lazy" decoding="async" /> : null}
-          </div>
+        <div className="aviora-port-site-thumb" aria-hidden="true" title="Site preview (demo)">
+          {siteSrc ? <img src={siteSrc} alt="" loading="lazy" decoding="async" /> : null}
         </div>
       </div>
 
@@ -253,7 +267,7 @@ function ProjectCard({ p, visuals }) {
         </span>
         <p>{p.footer.text}</p>
       </div>
-    </article>
+    </Link>
   )
 }
 

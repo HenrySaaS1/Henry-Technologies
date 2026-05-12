@@ -5,6 +5,9 @@ import henryLogo from './assets/henry-logo.png'
 import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/registry.js'
 import AvioraConstructionPortfolio from './dashboard/AvioraConstructionPortfolio.jsx'
+import AvioraPropertyDetailPage from './dashboard/AvioraPropertyDetailPage.jsx'
+import { isAvioraPropertyDetailId } from './dashboard/avioraPropertyDetailData.js'
+import { AVIORA_OLIVIA_LEAD_IMAGE_URL } from './dashboard/avioraPortfolioData.js'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
 import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
 import harland528Coater from './assets/uploads/harland-528-coater.png'
@@ -30,6 +33,8 @@ import secVehicle from './assets/uploads/security-vehicle.png'
 import leadMarkStockhowe from './assets/uploads/lead-mark-stockhowe.png'
 import leadKevinConlon from './assets/uploads/lead-kevin-conlon.png'
 import leadMiguelZaballa from './assets/uploads/lead-miguel-zaballa.png'
+import avioraLeadEthan from './assets/uploads/aviora-lead-ethan-brooks.jpg'
+import avioraLeadMaya from './assets/uploads/aviora-lead-maya-singh.jpg'
 import leadItamarHaran from './assets/uploads/lead-itamar-haran.png'
 import leadDeepakTeja from './assets/uploads/lead-deepak-teja.png'
 /** Demo equipment visuals per Harland BU job tile (job id like `125-2`). */
@@ -1179,7 +1184,108 @@ const SITE_SNAPSHOT = {
   waw: { status: 'Strong', light: 'green', tone: 'good', quality: 99.2, onTime: 96, downtimeMins: 22, escalations: 0 },
   bne: { status: 'Stable', light: 'green', tone: 'good', quality: 98.0, onTime: 93, downtimeMins: 44, escalations: 1 },
   yul: { status: 'Stable', light: 'green', tone: 'good', quality: 99.5, onTime: 97, downtimeMins: 16, escalations: 0 },
+  'aviora-skyline': {
+    status: 'On track',
+    light: 'green',
+    tone: 'good',
+    quality: 92,
+    onTime: 96,
+    downtimeMins: null,
+    escalations: 3,
+  },
+  'aviora-greenfield': {
+    status: 'Behind',
+    light: 'amber',
+    tone: 'warn',
+    quality: 88,
+    onTime: 79,
+    downtimeMins: null,
+    escalations: 7,
+  },
+  'aviora-riverstone': {
+    status: 'At risk',
+    light: 'red',
+    tone: 'bad',
+    quality: 82,
+    onTime: 58,
+    downtimeMins: null,
+    escalations: 12,
+  },
 }
+
+/** Aviora Construction — three portfolio properties (no Harland footprint demo). */
+const AVORIA_LOCATION_SITES = [
+  {
+    id: 'aviora-skyline',
+    country: 'Skyline Residences',
+    flagCode: 'US',
+    flagEmoji: '🏗️',
+    leadRole: 'Project Lead',
+    leadName: 'Olivia Carter',
+    leadPhoto: AVIORA_OLIVIA_LEAD_IMAGE_URL,
+    leadPhotoFocus: '50% 38%',
+    timeZone: 'America/Chicago',
+    employees: 68,
+    efficiency: 72,
+    address: 'Austin, TX · PR 101 · High-rise residential (demo)',
+    phoneDisplay: '—',
+    phoneTel: '',
+    avioraPropertyId: 'skyline',
+    primaryChip: 'Weather delay 4.5 hrs',
+    footprintThirdKpiStrong: '4.5 hrs',
+    footprintThirdKpiCaption: 'Weather impact',
+    operationalLabel: 'OPERATIONAL',
+    fpEscalationsLabel: 'Open issues',
+    fpEscalationsCount: 3,
+    openHint: 'Property detail →',
+  },
+  {
+    id: 'aviora-greenfield',
+    country: 'Greenfield Heights',
+    flagCode: 'US',
+    flagEmoji: '🏗️',
+    leadRole: 'Project Lead',
+    leadName: 'Ethan Brooks',
+    leadPhoto: avioraLeadEthan,
+    timeZone: 'America/Phoenix',
+    employees: 54,
+    efficiency: 48,
+    address: 'Phoenix, AZ · PR 102 · Mid-rise community (demo)',
+    phoneDisplay: '—',
+    phoneTel: '',
+    avioraPropertyId: 'greenfield',
+    primaryChip: 'Weather delay 12.0 hrs',
+    footprintThirdKpiStrong: '12.0 hrs',
+    footprintThirdKpiCaption: 'Weather impact',
+    operationalLabel: 'MONITORING',
+    fpEscalationsLabel: 'Open issues',
+    fpEscalationsCount: 7,
+    openHint: 'Property detail →',
+  },
+  {
+    id: 'aviora-riverstone',
+    country: 'Riverstone Villas',
+    flagCode: 'US',
+    flagEmoji: '🏗️',
+    leadRole: 'Project Lead',
+    leadName: 'Maya Singh',
+    leadPhoto: avioraLeadMaya,
+    timeZone: 'America/New_York',
+    employees: 41,
+    efficiency: 30,
+    address: 'Orlando, FL · PR 103 · Gated villas (demo)',
+    phoneDisplay: '—',
+    phoneTel: '',
+    avioraPropertyId: 'riverstone',
+    primaryChip: 'Weather delay 18.5 hrs',
+    footprintThirdKpiStrong: '18.5 hrs',
+    footprintThirdKpiCaption: 'Weather impact',
+    operationalLabel: 'AT RISK',
+    fpEscalationsLabel: 'Open issues',
+    fpEscalationsCount: 12,
+    openHint: 'Property detail →',
+  },
+]
 
 /** Henry1/Henry3 use ids from `GLOBAL_SITES`; Henry10 uses `HENRY10_ONLY_SITES` (`dashboard/registry` + prisma seed). */
 function parseRequestedLocationCount(user) {
@@ -1198,7 +1304,7 @@ function defaultSitesForPreset(user) {
     return GLOBAL_SITES.filter((s) => ['us', 'ie', 'cr'].includes(s.id))
   }
   if (preset === 'aviora') {
-    return GLOBAL_SITES.filter((s) => ['us', 'ie', 'cr'].includes(s.id))
+    return AVORIA_LOCATION_SITES
   }
   if (preset === 'henry10') {
     return HENRY10_ONLY_SITES
@@ -1208,7 +1314,12 @@ function defaultSitesForPreset(user) {
 
 function workspaceSitesForUser(user) {
   const requestedCount = parseRequestedLocationCount(user)
+  const preset = resolveDashboardPresetKey(user)
   const defaultSites = defaultSitesForPreset(user)
+  if (preset === 'aviora') {
+    if (!requestedCount) return defaultSites
+    return defaultSites.slice(0, Math.max(1, requestedCount))
+  }
   if (!requestedCount) return defaultSites
 
   const uniquePool = [
@@ -3516,6 +3627,8 @@ function FootprintSitesSection({
   nowTick,
   onOpenBuilding,
   topAlerts,
+  hideSnapshotBranding = false,
+  onOpenAvioraProperty,
 }) {
   const isWorkspaceSingle = workspaceSites.length === 1
   const useDashHero = Boolean(topAlerts) && isWorkspaceSingle
@@ -3534,7 +3647,10 @@ function FootprintSitesSection({
         const q = snap.quality
         const ot = snap.onTime
         const esc = snap.escalations
-        const escTone = esc > 0 ? 'warn' : 'good'
+        const escCountForTone =
+          site.fpEscalationsCount != null ? Number(site.fpEscalationsCount) : esc
+        const escTone =
+          Number.isFinite(escCountForTone) && escCountForTone > 0 ? 'warn' : 'good'
         const eff = site.efficiency != null ? Math.round(Number(site.efficiency)) : 0
         const hasEffDonut = site.efficiency != null && !(site.id === 'my' && light === 'red')
         const indiaTrend = site.id === 'in' ? [42, 55, 48, 62, 58, 70, 65] : null
@@ -3543,22 +3659,44 @@ function FootprintSitesSection({
             <div className="client-site-fp-statusbar">
               <div className="client-site-fp-status-left">
                 <SiteTrafficLight active={light} label={snap.status} />
-                <span className="client-site-fp-status-word">{siteOperationalLabel(light)}</span>
+                <span className="client-site-fp-status-word">
+                  {site.operationalLabel ?? siteOperationalLabel(light)}
+                </span>
               </div>
               <span className="client-site-kpi-chip client-site-kpi-chip--fp">
-                {snap.downtimeMins != null ? `${snap.downtimeMins}m downtime` : 'No active assets'}
+                {site.primaryChip ??
+                  (snap.downtimeMins != null ? `${snap.downtimeMins}m downtime` : 'No active assets')}
               </span>
             </div>
             <button
               type="button"
               className="client-site-card-main"
-              onClick={() => onOpenBuilding(site)}
-              aria-label={`Open building view for ${site.country}`}
+              onClick={() => {
+                if (site.avioraPropertyId && onOpenAvioraProperty) {
+                  onOpenAvioraProperty(site.avioraPropertyId)
+                  return
+                }
+                onOpenBuilding(site)
+              }}
+              aria-label={
+                site.avioraPropertyId
+                  ? `Open property dashboard for ${site.country}`
+                  : `Open building view for ${site.country}`
+              }
             >
               <div className="client-site-fp-ident">
-                <div className="client-site-fp-photo" aria-hidden="true">
+                <div
+                  className={`client-site-fp-photo${site.avioraPropertyId ? ' client-site-fp-photo--tight-portrait' : ''}`}
+                  aria-hidden="true"
+                >
                   {site.leadPhoto ? (
-                    <img src={site.leadPhoto} alt="" loading="lazy" decoding="async" />
+                    <img
+                      src={site.leadPhoto}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      style={site.leadPhotoFocus ? { objectPosition: site.leadPhotoFocus } : undefined}
+                    />
                   ) : (
                     <span className="client-site-fp-photo-ph">{leadInitials(site.leadName)}</span>
                   )}
@@ -3607,10 +3745,18 @@ function FootprintSitesSection({
                   </div>
                 </div>
                 <div className="client-site-fp-kpi">
-                  {snap.downtimeMins != null ? <SiteFootprintPulseIcon /> : <SiteFootprintNoAssetsIcon />}
+                  {snap.downtimeMins != null || site.footprintThirdKpiStrong ? (
+                    <SiteFootprintPulseIcon />
+                  ) : (
+                    <SiteFootprintNoAssetsIcon />
+                  )}
                   <div className="client-site-fp-kpi-text">
-                    <strong>{snap.downtimeMins != null ? `${snap.downtimeMins}m` : '—'}</strong>
-                    <span>Downtime</span>
+                    <strong>
+                      {snap.downtimeMins != null
+                        ? `${snap.downtimeMins}m`
+                        : (site.footprintThirdKpiStrong ?? '—')}
+                    </strong>
+                    <span>{site.footprintThirdKpiCaption ?? 'Downtime'}</span>
                   </div>
                 </div>
                 <div className="client-site-fp-kpi client-site-fp-kpi--donut">
@@ -3652,8 +3798,8 @@ function FootprintSitesSection({
                   </div>
                 </div>
                 <div className={`client-site-fp-esc client-site-fp-esc--${escTone}`}>
-                  <span>Escalations (24h)</span>
-                  <strong>{esc != null ? esc : '—'}</strong>
+                  <span>{site.fpEscalationsLabel ?? 'Escalations (24h)'}</span>
+                  <strong>{site.fpEscalationsCount ?? (esc != null ? esc : '—')}</strong>
                 </div>
               </div>
 
@@ -3678,12 +3824,19 @@ function FootprintSitesSection({
                 <span className="client-site-address-label">Address</span>
                 {site.address}
               </p>
-              <span className="client-site-open-hint">Building view →</span>
+              <span className="client-site-open-hint">{site.openHint ?? 'Building view →'}</span>
             </button>
-            <a className="client-site-phone" href={`tel:${site.phoneTel}`}>
-              <SitePhoneIcon />
-              <span>{site.phoneDisplay}</span>
-            </a>
+            {site.phoneTel ? (
+              <a className="client-site-phone" href={`tel:${site.phoneTel}`}>
+                <SitePhoneIcon />
+                <span>{site.phoneDisplay}</span>
+              </a>
+            ) : (
+              <span className="client-site-phone client-site-phone--static">
+                <SitePhoneIcon />
+                <span>{site.phoneDisplay}</span>
+              </span>
+            )}
           </article>
         )
       })}
@@ -3699,9 +3852,11 @@ function FootprintSitesSection({
         <div className="client-sites-dash-hero">
           <div className="client-sites-dash-hero-strip">
             <div className="client-sites-dash-hero-intro">
-              <div className="client-sites-snapshot-solo" aria-hidden="true">
-                <SnapshotWordmark compact />
-              </div>
+              {!hideSnapshotBranding ? (
+                <div className="client-sites-snapshot-solo" aria-hidden="true">
+                  <SnapshotWordmark compact />
+                </div>
+              ) : null}
               <div className="client-sites-section-head-copy client-sites-dash-hero-copy">
                 <h2 id="global-sites-title" className="client-sites-section-title">
                   {company}
@@ -3732,13 +3887,17 @@ function FootprintSitesSection({
         }`}
       >
         {isWorkspaceSingle ? (
-          <div className="client-sites-snapshot-solo" aria-hidden="true">
-            <SnapshotWordmark compact />
-          </div>
+          hideSnapshotBranding ? null : (
+            <div className="client-sites-snapshot-solo" aria-hidden="true">
+              <SnapshotWordmark compact />
+            </div>
+          )
         ) : (
-          <div className="client-sites-snapshot client-sites-snapshot--left" aria-hidden="true">
-            <SnapshotWordmark />
-          </div>
+          hideSnapshotBranding ? null : (
+            <div className="client-sites-snapshot client-sites-snapshot--left" aria-hidden="true">
+              <SnapshotWordmark />
+            </div>
+          )
         )}
         <div className="client-sites-section-head-copy">
           <h2 id="global-sites-title" className="client-sites-section-title">
@@ -3746,7 +3905,7 @@ function FootprintSitesSection({
           </h2>
           <p className="client-sites-section-sub">{footprintBlurb}</p>
         </div>
-        {isWorkspaceSingle ? null : (
+        {isWorkspaceSingle || hideSnapshotBranding ? null : (
           <div className="client-sites-snapshot client-sites-snapshot--right" aria-hidden="true">
             <SnapshotWordmark />
           </div>
@@ -4005,6 +4164,11 @@ export default function ClientDashboard({ user, onSignOut }) {
     matchPath({ path: 'building/:siteId', end: true }, pathnameForMatch)?.params?.siteId ??
     null
 
+  const routeAvioraPropertyId =
+    matchPath({ path: '/property/:propertyId', end: true }, pathnameForMatch)?.params?.propertyId ??
+    matchPath({ path: 'property/:propertyId', end: true }, pathnameForMatch)?.params?.propertyId ??
+    null
+
   const buildingSiteOnRoute =
     routeBuildingSiteId != null ? workspaceSites.find((s) => s.id === routeBuildingSiteId) ?? null : null
 
@@ -4043,6 +4207,14 @@ export default function ClientDashboard({ user, onSignOut }) {
   }, [toast])
 
   const presetKey = resolveDashboardPresetKey(user)
+  const avioraPropertyRouteRequested = Boolean(routeAvioraPropertyId)
+  const invalidAvioraPropertyRoute =
+    avioraPropertyRouteRequested &&
+    (presetKey !== 'aviora' || !isAvioraPropertyDetailId(routeAvioraPropertyId))
+  const avioraPropertyPageActive =
+    presetKey === 'aviora' &&
+    avioraPropertyRouteRequested &&
+    isAvioraPropertyDetailId(routeAvioraPropertyId)
   const useHenry1InsetAiAlerts = presetKey === 'henry1'
   const ctx = getDashboardContext(presetKey)
   const myHenryRecommendations = buildMyHenryRecommendations(user?.onboarding)
@@ -4406,7 +4578,7 @@ export default function ClientDashboard({ user, onSignOut }) {
               type="button"
               className={`client-nav-item${tab === item.id ? ' active' : ''}`}
               onClick={() => {
-                if (routeBuildingSiteId) navigate('/')
+                if (routeBuildingSiteId || routeAvioraPropertyId) navigate('/')
                 setTab(item.id)
               }}
             >
@@ -4418,8 +4590,12 @@ export default function ClientDashboard({ user, onSignOut }) {
           ))}
         </aside>
 
-        <main className={`client-main${buildingPageActive ? ' client-main--building-route' : ''}`}>
+        <main
+          className={`client-main${buildingPageActive ? ' client-main--building-route' : ''}${avioraPropertyPageActive ? ' client-main--aviora-property-route' : ''}`}
+        >
           {invalidBuildingRoute ? (
+            <Navigate to="/" replace />
+          ) : invalidAvioraPropertyRoute ? (
             <Navigate to="/" replace />
           ) : buildingPageActive ? (
             <BuildingSiteRouteShell
@@ -4428,6 +4604,13 @@ export default function ClientDashboard({ user, onSignOut }) {
               now={nowTick}
               onClose={closeBuilding}
               user={user}
+            />
+          ) : avioraPropertyPageActive ? (
+            <AvioraPropertyDetailPage
+              key={routeAvioraPropertyId}
+              propertyId={routeAvioraPropertyId}
+              companyName={ctx.portfolioCompanyName || user.company}
+              nowTick={nowTick}
             />
           ) : (
             <>
@@ -4451,6 +4634,12 @@ export default function ClientDashboard({ user, onSignOut }) {
                 searchQ={searchQ}
                 nowTick={nowTick}
                 onOpenBuilding={openBuilding}
+                hideSnapshotBranding={presetKey === 'aviora'}
+                onOpenAvioraProperty={
+                  presetKey === 'aviora'
+                    ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
+                    : undefined
+                }
                 topAlerts={
                   <OverviewAiAlertsAside
                     variant="inset"
@@ -4476,6 +4665,12 @@ export default function ClientDashboard({ user, onSignOut }) {
                   searchQ={searchQ}
                   nowTick={nowTick}
                   onOpenBuilding={openBuilding}
+                  hideSnapshotBranding={presetKey === 'aviora'}
+                  onOpenAvioraProperty={
+                    presetKey === 'aviora'
+                      ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
+                      : undefined
+                  }
                 />
                 {/* Full-width AI alerts below footprint; Henry1 uses inset alerts inside purple band */}
                 <OverviewAiAlertsAside
@@ -4498,6 +4693,12 @@ export default function ClientDashboard({ user, onSignOut }) {
                 searchQ={searchQ}
                 nowTick={nowTick}
                 onOpenBuilding={openBuilding}
+                hideSnapshotBranding={presetKey === 'aviora'}
+                onOpenAvioraProperty={
+                  presetKey === 'aviora'
+                    ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
+                    : undefined
+                }
               />
             )
           ) : null}
@@ -5225,7 +5426,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             type="button"
             className={`client-dock-item${tab === item.id ? ' is-active' : ''}`}
             onClick={() => {
-              if (routeBuildingSiteId) navigate('/')
+              if (routeBuildingSiteId || routeAvioraPropertyId) navigate('/')
               setTab(item.id)
             }}
           >
