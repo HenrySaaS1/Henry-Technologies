@@ -4,6 +4,7 @@ import { titlesForProductIds } from './productCatalog.js'
 import henryLogo from './assets/henry-logo.png'
 import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/registry.js'
+import AvioraConstructionPortfolio from './dashboard/AvioraConstructionPortfolio.jsx'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
 import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
 import harland528Coater from './assets/uploads/harland-528-coater.png'
@@ -1194,6 +1195,9 @@ function defaultSitesForPreset(user) {
     return GLOBAL_SITES.filter((s) => s.id === 'us')
   }
   if (preset === 'henry3') {
+    return GLOBAL_SITES.filter((s) => ['us', 'ie', 'cr'].includes(s.id))
+  }
+  if (preset === 'aviora') {
     return GLOBAL_SITES.filter((s) => ['us', 'ie', 'cr'].includes(s.id))
   }
   if (preset === 'henry10') {
@@ -4433,7 +4437,12 @@ export default function ClientDashboard({ user, onSignOut }) {
           </div>
 
           {tab === 'dashboard' || tab === 'locations' ? (
-            tab === 'dashboard' && useHenry1InsetAiAlerts && workspaceSites.length === 1 ? (
+            tab === 'dashboard' && presetKey === 'aviora' ? (
+              <AvioraConstructionPortfolio
+                companyName={ctx.portfolioCompanyName || user.company}
+                nowTick={nowTick}
+              />
+            ) : tab === 'dashboard' && useHenry1InsetAiAlerts && workspaceSites.length === 1 ? (
               <FootprintSitesSection
                 workspaceSites={workspaceSites}
                 filteredGlobalSites={filteredGlobalSites}

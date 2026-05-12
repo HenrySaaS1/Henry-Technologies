@@ -1,5 +1,5 @@
 /** Valid stored/API dashboard preset keys (productized layouts #1 base + #2/#3/#10 variants, Harland branding). */
-const VALID = new Set(['henry1', 'henry3', 'henry10', 'harland'])
+const VALID = new Set(['henry1', 'henry3', 'henry10', 'harland', 'aviora'])
 
 function normalizePreset(value) {
   if (typeof value !== 'string') return null
@@ -20,6 +20,7 @@ export function inferDashboardPreset({ email, slug, company, dashboardPreset }) 
   if (norm === 'henry10@gmail.com' || slugKey === 'henry10') return 'henry10'
   if (/@harlandmedical\.com$/i.test(norm) || slugKey === 'harland') return 'harland'
   if (typeof company === 'string' && company.toLowerCase().includes('harland')) return 'harland'
+  if (slugKey === 'aviora' || /@aviora\.com$/i.test(norm)) return 'aviora'
   return null
 }
 

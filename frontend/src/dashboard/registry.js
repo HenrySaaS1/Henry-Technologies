@@ -1,7 +1,7 @@
 import henryLogo from '../assets/henry-logo.png'
 import harlandMedicalSystemsLogo from '../assets/clients/harland-medical-systems-logo.png'
 
-const VALID_PRESET_KEYS = new Set(['henry1', 'henry3', 'henry10', 'harland'])
+const VALID_PRESET_KEYS = new Set(['henry1', 'henry3', 'henry10', 'harland', 'aviora'])
 
 /** Demo accounts seeded in prisma/seed.js — kept here for preset + site filtering. */
 export const PRESET_DEMO_EMAILS = {
@@ -159,11 +159,23 @@ const PRESET_OVERRIDES = {
     locationsLeadSub:
       'Ten hubs across regions — choose a location to open the building-level map.',
   },
+  aviora: {
+    portfolioCompanyName: 'AVIORA CONSTRUCTION INC',
+    sub: 'Portfolio overview — property leadership, build progress, site health, and schedule performance.',
+    dashboardTemplate: {
+      name: 'Portfolio',
+      sub: 'Three active properties',
+    },
+    footprintSub:
+      'Active jobsites — open a location for safety, quality, and schedule drill-down (demo).',
+    locationsLeadSub:
+      'Three properties in flight — choose a region to open site-level monitoring.',
+  },
 }
 
 /**
  * Stored API `dashboardPreset` wins when valid; else legacy inference (slug, demo emails, Harland).
- * @returns {'' | 'henry1' | 'henry3' | 'henry10' | 'harland'}
+ * @returns {'' | 'henry1' | 'henry3' | 'henry10' | 'harland' | 'aviora'}
  */
 export function resolveDashboardPresetKey(user) {
   if (!user || typeof user !== 'object') return ''
@@ -178,6 +190,7 @@ export function resolveDashboardPresetKey(user) {
   if (slugKey === 'harland') return 'harland'
   const company = user.company
   if (typeof company === 'string' && company.toLowerCase().includes('harland')) return 'harland'
+  if (slugKey === 'aviora' || /@aviora\.com$/i.test(norm)) return 'aviora'
   return ''
 }
 

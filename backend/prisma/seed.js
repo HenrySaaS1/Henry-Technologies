@@ -53,10 +53,10 @@ async function main() {
   await upsertUser({
     email: 'landerson@aviora.com',
     password: 'Aviora@123',
-    company: 'Aviora',
+    company: 'AVIORA CONSTRUCTION INC',
     slug: 'aviora',
     planId: 'premium',
-    dashboardPreset: 'henry1',
+    dashboardPreset: 'aviora',
   })
   console.log('Aviora tenant user ready:', 'landerson@aviora.com')
 
