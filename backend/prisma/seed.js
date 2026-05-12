@@ -1,4 +1,4 @@
-﻿import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 /** Same default module ids as frontend `productCatalog.js` */
@@ -49,6 +49,16 @@ async function main() {
     dashboardPreset: 'harland',
   })
   console.log('Harland client user ready:', 'landerson@harlandmedical.com')
+
+  await upsertUser({
+    email: 'landerson@aviora.com',
+    password: 'Aviora@123',
+    company: 'Aviora',
+    slug: 'aviora',
+    planId: 'premium',
+    dashboardPreset: 'henry1',
+  })
+  console.log('Aviora tenant user ready:', 'landerson@aviora.com')
 
   const henryDemo = await upsertUser({
     email: 'henry1@gmail.com',
