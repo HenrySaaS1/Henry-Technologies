@@ -66,17 +66,70 @@ function tenantSlugFromHost(hostname) {
   return null
 }
 
+/** Harland workspace on apex host: `goaskhenry.com/harland` (and `/harland/...` routes). */
+function tenantSlugFromPathname(pathname) {
+  const p = String(pathname || '').split('?')[0]
+  if (/^\/harland(\/|$)/i.test(p)) return 'harland'
+  return null
+}
+
+export function isHarlandTenantHostname(hostname) {
+  return Boolean(tenantSlugFromHost(hostname))
+}
+
+/** True for Harland Medical demo / production workspace users (slug, preset, or email domain). */
+export function isHarlandWorkspaceUser(user) {
+  if (!user || typeof user !== 'object') return false
+  if (user.slug === 'harland') return true
+  if (user.dashboardPreset === 'harland') return true
+  const email = typeof user.email === 'string' ? user.email.trim().toLowerCase() : ''
+  if (/@harlandmedical\.com$/i.test(email)) return true
+  return false
+}
+
+/**
+ * Browser URL for Harland on apex / localhost (not on `harland.*` subdomains). Honors Vite `base` / `VITE_BASE_PATH`.
+ */
+export function harlandApexDashboardPath() {
+  const raw = import.meta.env.BASE_URL
+  const viteTrim = typeof raw === 'string' && raw !== '/' ? String(raw).replace(/\/$/, '') : ''
+  if (!viteTrim) return '/harland'
+  return `${viteTrim}/harland`
+}
+
+/**
+ * React Router basename for the client dashboard. Harland on apex uses `/harland` (or `{base}/harland`).
+ * On `harland.*.goaskhenry.com`, basename stays the Vite app base only so URLs stay on the subdomain root.
+ */
+export function clientDashboardBasename(user) {
+  const raw = import.meta.env.BASE_URL
+  const viteTrim = typeof raw === 'string' && raw !== '/' ? String(raw).replace(/\/$/, '') : ''
+  const host = typeof window !== 'undefined' ? window.location.hostname : ''
+  const onHarlandHost = Boolean(tenantSlugFromHost(host))
+  const useHarlandPath =
+    Boolean(user && isHarlandWorkspaceUser(user)) && typeof window !== 'undefined' && !onHarlandHost
+
+  if (!useHarlandPath) {
+    return viteTrim || undefined
+  }
+  if (!viteTrim) return '/harland'
+  return `${viteTrim}/harland`
+}
+
 export function getTenantSlug() {
   if (typeof window === 'undefined') return null
   const byQuery = new URLSearchParams(window.location.search).get('tenant')
   if (byQuery) return String(byQuery).trim().toLowerCase()
+
+  const fromPath = tenantSlugFromPathname(window.location.pathname)
+  if (fromPath) return fromPath
 
   const host = window.location.hostname
   const isLocal =
     host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host.endsWith('.local')
   if (isLocal) {
     // `VITE_TENANT_SLUG` was causing sign-in 401s on localhost (user slug in DB != harland). Use
-    // `?tenant=...` when you need to test workspace filtering locally.
+    // `?tenant=...` or open `/harland` when you need the Harland tenant locally.
     return null
   }
 

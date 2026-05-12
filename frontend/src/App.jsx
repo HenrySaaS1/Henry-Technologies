@@ -10,9 +10,13 @@ import {
   activateDashboardDemo,
   apiJson,
   clearAuth,
+  clientDashboardBasename,
   getTenantSlug,
   getToken,
+  harlandApexDashboardPath,
   isDemoDashboardToken,
+  isHarlandTenantHostname,
+  isHarlandWorkspaceUser,
   readPersistedDemoPresetKey,
   setToken,
 } from './apiClient.js'
@@ -330,14 +334,6 @@ const PLAN_DISPLAY = {
   premium: { label: 'Premium', price: '$300 / month' },
 }
 const BOOK_DEMO_URL = 'https://larrya-dostiglobal61.zohobookings.com/#/yourbusinessname'
-
-/** Align client-app routing with Vite `base` (SPA subdirectory deploy). */
-function clientDashboardBasename() {
-  const raw = import.meta.env.BASE_URL
-  if (typeof raw !== 'string' || raw === '/') return undefined
-  const trimmed = raw.replace(/\/$/, '')
-  return trimmed || undefined
-}
 
 function defaultOrganizationFromEmail(email) {
   const norm = String(email).trim().toLowerCase()
@@ -926,6 +922,24 @@ function App() {
 
     return () => ac.abort()
   }, [])
+
+  /** Harland on apex / localhost: canonical dashboard URL is `/harland` (React Router basename + address bar). */
+  useEffect(() => {
+    if (!currentUser) return
+    if (!isHarlandWorkspaceUser(currentUser)) return
+    if (typeof window === 'undefined') return
+    if (isHarlandTenantHostname(window.location.hostname)) return
+
+    const path = window.location.pathname.replace(/\/+$/, '') || '/'
+    if (path === '/harland' || path.startsWith('/harland/')) return
+
+    const allow = (p) => path === p || path.startsWith(`${p}/`)
+    if (allow('/onboarding') || allow('/pricing') || allow('/products') || allow('/case-studies')) return
+
+    if (path === '/') {
+      window.location.replace(harlandApexDashboardPath())
+    }
+  }, [currentUser])
 
   useEffect(() => {
     if (AUTH_BYPASS) return
@@ -1782,7 +1796,9 @@ function App() {
           onComplete={(u) => {
             setCurrentUser(u)
             if (typeof window !== 'undefined') {
-              window.location.replace('/')
+              const apexHarland =
+                isHarlandWorkspaceUser(u) && !isHarlandTenantHostname(window.location.hostname)
+              window.location.replace(apexHarland ? harlandApexDashboardPath() : '/')
             }
           }}
           onSignOut={signOut}
@@ -1801,7 +1817,7 @@ function App() {
 
   if (currentUser && !isOnboardingPage && !isPricingPage && !isProductsPage && !isCaseStudiesPage) {
     return (
-      <BrowserRouter basename={clientDashboardBasename()}>
+      <BrowserRouter basename={clientDashboardBasename(currentUser)}>
         <div className="page page--client">
           <ClientDashboard key={currentUser.email} user={currentUser} onSignOut={signOut} />
         </div>
