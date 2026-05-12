@@ -167,9 +167,9 @@ const PRESET_OVERRIDES = {
       sub: 'Three active properties',
     },
     footprintSub:
-      'Active jobsites — open a location for safety, quality, and schedule drill-down (demo).',
+      'Skyline Residences, Greenfield Heights, and Riverstone Villas — open a property for schedule and package drill-down (demo).',
     locationsLeadSub:
-      'Three properties in flight — choose a region to open site-level monitoring.',
+      'Three Aviora properties — choose a jobsite to open its property dashboard (demo).',
   },
 }
 
