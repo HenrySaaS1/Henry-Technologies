@@ -15,6 +15,7 @@ import {
   getTenantSlug,
   getToken,
   harlandApexDashboardPath,
+  isAvioraTenantHostname,
   isAvioraWorkspaceUser,
   isDemoDashboardToken,
   isHarlandTenantHostname,
@@ -945,6 +946,7 @@ function App() {
 
     const host = window.location.hostname
     const onHarlandHost = isHarlandTenantHostname(host)
+    const onAvioraHost = isAvioraTenantHostname(host)
 
     const path = window.location.pathname.replace(/\/+$/, '') || '/'
     const allow = (p) => path === p || path.startsWith(`${p}/`)
@@ -961,7 +963,7 @@ function App() {
       return
     }
 
-    if (avioraUser) {
+    if (avioraUser && !onAvioraHost) {
       if (path === '/aviora' || path.startsWith('/aviora/')) return
       if (path === '/' || path === '/harland' || path.startsWith('/harland/')) {
         window.location.replace(avioraApexDashboardPath())
@@ -1834,7 +1836,7 @@ function App() {
             if (typeof window !== 'undefined') {
               const host = window.location.hostname
               const apexHarland = isHarlandWorkspaceUser(u) && !isHarlandTenantHostname(host)
-              const apexAviora = isAvioraWorkspaceUser(u)
+              const apexAviora = isAvioraWorkspaceUser(u) && !isAvioraTenantHostname(host)
               window.location.replace(
                 apexHarland ? harlandApexDashboardPath() : apexAviora ? avioraApexDashboardPath() : '/',
               )

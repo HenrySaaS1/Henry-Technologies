@@ -16,5 +16,9 @@ export function tenantSlugFromHost(hostname) {
   ) {
     return 'harland'
   }
+  if (host === 'aviora.goaskhenry.com') return 'aviora'
+  if (host.startsWith('aviora.') && host.endsWith('.goaskhenry.com')) {
+    return 'aviora'
+  }
   return null
 }

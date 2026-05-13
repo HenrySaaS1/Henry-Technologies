@@ -63,6 +63,10 @@ function tenantSlugFromHost(hostname) {
   ) {
     return 'harland'
   }
+  if (host === 'aviora.goaskhenry.com') return 'aviora'
+  if (host.startsWith('aviora.') && host.endsWith('.goaskhenry.com')) {
+    return 'aviora'
+  }
   return null
 }
 
@@ -75,7 +79,12 @@ function tenantSlugFromPathname(pathname) {
 }
 
 export function isHarlandTenantHostname(hostname) {
-  return Boolean(tenantSlugFromHost(hostname))
+  return tenantSlugFromHost(hostname) === 'harland'
+}
+
+/** True when hostname maps to the Aviora workspace (subdomain), e.g. aviora.goaskhenry.com. */
+export function isAvioraTenantHostname(hostname) {
+  return tenantSlugFromHost(hostname) === 'aviora'
 }
 
 /** True for Harland Medical demo / production workspace users (slug, preset, or email domain). */
@@ -120,13 +129,14 @@ export function avioraApexDashboardPath() {
 
 /**
  * React Router basename for the client dashboard. Harland on apex uses `/harland`; Aviora uses `/aviora`.
- * On `harland.*.goaskhenry.com`, basename stays the Vite app base only so URLs stay on the subdomain root.
+ * On `harland.*.goaskhenry.com` or `aviora.*.goaskhenry.com`, basename stays the Vite app base only so URLs stay on the subdomain root.
  */
 export function clientDashboardBasename(user) {
   const raw = import.meta.env.BASE_URL
   const viteTrim = typeof raw === 'string' && raw !== '/' ? String(raw).replace(/\/$/, '') : ''
   const host = typeof window !== 'undefined' ? window.location.hostname : ''
-  const onHarlandHost = Boolean(tenantSlugFromHost(host))
+  const onHarlandHost = tenantSlugFromHost(host) === 'harland'
+  const onAvioraHost = tenantSlugFromHost(host) === 'aviora'
   const useHarlandPath =
     Boolean(user && isHarlandWorkspaceUser(user)) && typeof window !== 'undefined' && !onHarlandHost
 
@@ -135,7 +145,8 @@ export function clientDashboardBasename(user) {
     return `${viteTrim}/harland`
   }
 
-  const useAvioraPath = Boolean(user && isAvioraWorkspaceUser(user)) && typeof window !== 'undefined'
+  const useAvioraPath =
+    Boolean(user && isAvioraWorkspaceUser(user)) && typeof window !== 'undefined' && !onAvioraHost
   if (useAvioraPath) {
     if (!viteTrim) return '/aviora'
     return `${viteTrim}/aviora`
@@ -161,8 +172,8 @@ export function getTenantSlug() {
     return null
   }
 
-  // Hostname beats build-time VITE_TENANT_SLUG so one SWA build works for goaskhenry.com (no tenant)
-  // and harland*.goaskhenry.com (Harland) without sending the wrong X-Tenant-Slug on the apex domain.
+  // Hostname beats build-time VITE_TENANT_SLUG so one SWA build works for goaskhenry.com (no tenant),
+  // harland*.goaskhenry.com, and aviora*.goaskhenry.com without sending the wrong X-Tenant-Slug on apex.
   const fromHost = tenantSlugFromHost(host)
   if (fromHost) return fromHost
 
