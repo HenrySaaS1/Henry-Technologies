@@ -8,7 +8,12 @@ import { prisma } from './lib/prisma.js'
 import { signUserToken, readBearerAuth, readBearerUserId } from './lib/authTokens.js'
 import { assertProductionEnv } from './lib/productionEnv.js'
 import { tenantSlugFromHost } from './lib/tenantSlugFromHost.js'
-import { inferDashboardPreset, resolveDashboardPresetForCreate } from './lib/dashboardPreset.js'
+import {
+  inferDashboardPreset,
+  normalizeDashboardPreset,
+  resolveDashboardPresetForCreate,
+  VALID_DASHBOARD_PRESETS,
+} from './lib/dashboardPreset.js'
 
 dotenv.config()
 assertProductionEnv()
@@ -435,13 +440,19 @@ app.post('/api/auth/register', async (req, res) => {
 
   try {
     const passwordHash = await bcrypt.hash(String(password), 10)
-    const slug = tenantSlug || 'generic'
+    const slugGuess = tenantSlug || 'generic'
     const presetResolved = resolveDashboardPresetForCreate({
       email: emailNorm,
-      slug,
+      slug: slugGuess,
       company: companyName,
       requestedPreset,
     })
+    // Apex sign-up has no tenant: infer slug from workspace preset so login from `/aviora` (etc.) matches `user.slug`.
+    let slug = tenantSlug || 'generic'
+    if (!tenantSlug) {
+      const p = normalizeDashboardPreset(presetResolved)
+      if (p && VALID_DASHBOARD_PRESETS.has(p)) slug = p
+    }
     const user = await prisma.user.create({
       data: {
         email: emailNorm,
