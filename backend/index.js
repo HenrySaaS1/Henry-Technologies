@@ -139,6 +139,10 @@ function classifyLoginPrismaFailure(e) {
   if (
     prismaCode === 'P1000' ||
     prismaCode === 'P1001' ||
+    prismaCode === 'P1002' ||
+    prismaCode === 'P1003' ||
+    prismaCode === 'P1008' ||
+    prismaCode === 'P1011' ||
     prismaCode === 'P1012' ||
     prismaCode === 'P1013' ||
     prismaCode === 'P1017'
@@ -635,7 +639,36 @@ app.post('/api/auth/login', async (req, res) => {
     } catch (updErr) {
       console.error('[auth/login] lastLoginAt update failed; issuing session anyway', updErr)
     }
-    const token = signUserToken(user.id, refreshed.slug)
+    let token
+    let payloadUser
+    try {
+      token = signUserToken(user.id, refreshed.slug)
+      payloadUser = userToClient(refreshed)
+    } catch (prepErr) {
+      const pn = prepErr instanceof Error ? prepErr.name : 'Unknown'
+      const pm = prepErr instanceof Error ? prepErr.message : String(prepErr)
+      const pst = prepErr instanceof Error ? prepErr.stack : null
+      console.error('[auth/login] LOGIN_SESSION_BUILD_FAILED', {
+        userId: user.id,
+        slug: refreshed.slug,
+        errName: pn,
+        errMsg: pm,
+        stack: pst,
+      })
+      await logAuthEvent(req, {
+        eventType: 'login',
+        email: emailNorm,
+        success: false,
+        userId: user.id,
+        message: `login_session_build:${pn}`,
+      })
+      return res.status(500).json({
+        ok: false,
+        code: 'LOGIN_SERVER_ERROR',
+        message:
+          'Sign-in failed because of an unexpected server error. This is usually not a wrong password. Try again in a few minutes; if it keeps happening, contact support with the time you tried.',
+      })
+    }
     await logAuthEvent(req, {
       eventType: 'login',
       email: emailNorm,
@@ -643,7 +676,7 @@ app.post('/api/auth/login', async (req, res) => {
       userId: user.id,
       message: 'logged_in',
     })
-    res.json({ ok: true, token, user: userToClient(refreshed) })
+    res.json({ ok: true, token, user: payloadUser })
   } catch (e) {
     const errName = e instanceof Error ? e.name : 'Unknown'
     const errMsg = e instanceof Error ? e.message : String(e)
