@@ -15,6 +15,9 @@
   3. Restart Azure API → try sign-in again.
 
   To register users you still need hashed passwords via your app register flow or seed.
+
+  Demo tenants (Harland + Aviora) in one shot for Supabase SQL Editor:
+    docs/supabase-seed-demo-tenants.sql
 */
 
 CREATE SCHEMA IF NOT EXISTS "public";
