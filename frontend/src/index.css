@@ -11694,7 +11694,7 @@ h3 {
 .aviora-prop-body {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 22.5rem) minmax(0, 1fr);
   gap: 0;
   min-height: 0;
   background: #e2e8f0;
@@ -11712,12 +11712,12 @@ h3 {
 }
 
 .aviora-prop-side {
-  padding: 0.75rem 0.85rem 0.65rem;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-  border-right: 1px solid #e2e8f0;
+  padding: 0.55rem 0.65rem 0.55rem 0.75rem;
+  background: #e8edf5;
+  border-right: 1px solid #cbd5e1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.45rem;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
@@ -11725,16 +11725,40 @@ h3 {
   box-shadow: inset 4px 0 0 transparent;
 }
 
-.aviora-prop-side-scroll {
+.aviora-prop-side-shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.aviora-prop-side-sheet {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.1);
+  overflow: hidden;
+}
+
+.aviora-prop-side-sheet-scroll {
   flex: 1;
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+.aviora-prop-side-sheet-foot {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  padding-right: 0.1rem;
-  margin-right: -0.1rem;
+  gap: 0.42rem;
+  padding: 0.48rem 0.55rem 0.52rem;
+  border-top: 1px solid #eef2f7;
+  background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
 }
 
 @media (max-width: 1100px) {
@@ -11756,49 +11780,42 @@ h3 {
   box-shadow: inset 4px 0 0 #dc2626;
 }
 
-.aviora-prop-side-panel--lead {
-  padding: 0;
-  overflow: hidden;
-}
-
-.aviora-prop-side-panel-hero {
-  aspect-ratio: 16 / 10;
-  background: #e2e8f0;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.aviora-prop-side-panel-hero img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 13px 13px 0 0;
-}
-
-.aviora-prop-side-panel-body {
-  padding: 0.85rem 0.95rem 0.95rem;
-}
-
-.aviora-prop-side-panel-body .aviora-prop-person {
-  margin-top: 0.55rem;
-  padding-top: 0.55rem;
-  margin-bottom: 0;
+.aviora-prop-side-section {
+  padding: 0.52rem 0.65rem 0.55rem;
   border-top: 1px solid #eef2f7;
 }
 
-.aviora-prop-side-panel-body .aviora-prop-person:first-of-type {
+.aviora-prop-side-section:first-child {
   border-top: none;
-  margin-top: 0.35rem;
-  padding-top: 0.35rem;
 }
 
-.aviora-prop-side-panel-body .aviora-prop-person:last-child {
-  padding-bottom: 0.05rem;
+.aviora-prop-side-section--lead {
+  padding: 0;
+}
+
+.aviora-prop-side-section--snap {
+  padding-bottom: 0.5rem;
+}
+
+.aviora-prop-side-panel-body {
+  padding: 0.55rem 0.65rem 0.6rem;
+}
+
+.aviora-prop-side-panel-body .aviora-prop-info-line {
+  margin-bottom: 0;
+  padding-bottom: 0.48rem;
+  margin-top: 0;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.aviora-prop-side-panel-body .aviora-prop-info-line:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .aviora-prop-back {
   flex-shrink: 0;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: #1d4ed8;
   text-decoration: none;
@@ -11836,8 +11853,8 @@ h3 {
 .aviora-prop-side-head {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  margin-bottom: 0.55rem;
+  gap: 0.32rem;
+  margin-bottom: 0.38rem;
 }
 
 .aviora-prop-side-h-ic {
@@ -11846,11 +11863,16 @@ h3 {
   flex-shrink: 0;
 }
 
+.aviora-prop-side-h-ic svg {
+  width: 15px;
+  height: 15px;
+}
+
 .aviora-prop-side-h {
   margin: 0;
-  font-size: 0.62rem;
+  font-size: 0.54rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.085em;
   text-transform: uppercase;
   color: #64748b;
 }
@@ -11858,13 +11880,13 @@ h3 {
 .aviora-prop-cols2 {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.45rem;
+  gap: 0.32rem;
   align-items: start;
 }
 
 .aviora-prop-cols2--split {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 0.55rem 0.75rem;
+  gap: 0.38rem 0.55rem;
 }
 
 .aviora-prop-cols2--delivery .aviora-prop-delivery-foot {
@@ -11874,16 +11896,28 @@ h3 {
 .aviora-prop-col {
   display: flex;
   flex-direction: column;
-  gap: 0.38rem;
+  gap: 0.28rem;
   min-width: 0;
 }
 
 .aviora-prop-current-status {
-  margin: 0 0 0.45rem;
-  font-size: 0.78rem;
+  margin: 0;
+  font-size: 0.66rem;
   font-weight: 600;
   color: #475569;
-  line-height: 1.35;
+  line-height: 1.3;
+}
+
+.aviora-prop-rt-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.32rem 0.55rem;
+  align-items: start;
+}
+
+.aviora-prop-rt-split .aviora-prop-current-status {
+  grid-column: 1 / -1;
+  margin-bottom: 0.22rem;
 }
 
 .aviora-prop-current-status-val {
@@ -11900,9 +11934,9 @@ h3 {
 .aviora-prop-stat-row {
   display: flex;
   flex-direction: column;
-  gap: 0.12rem;
-  font-size: 0.72rem;
-  line-height: 1.3;
+  gap: 0.06rem;
+  font-size: 0.6rem;
+  line-height: 1.22;
 }
 
 .aviora-prop-stat-l {
@@ -11913,144 +11947,82 @@ h3 {
 .aviora-prop-stat-v {
   color: #0f172a;
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 0.74rem;
   letter-spacing: -0.02em;
 }
 
 .aviora-prop-stat-v--warn {
   color: #ea580c;
-  font-size: 1.02rem;
+  font-size: 0.78rem;
 }
 
 .aviora-prop-stat-v--bad {
   color: #dc2626;
-  font-size: 1.08rem;
+  font-size: 0.8rem;
 }
 
 .aviora-prop-info-line {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.42rem;
   align-items: flex-start;
-  margin-bottom: 0.65rem;
-  padding-bottom: 0.65rem;
-  border-bottom: 1px solid #eef2f7;
 }
 
 .aviora-prop-info-ic {
   display: flex;
   color: #64748b;
   flex-shrink: 0;
-  margin-top: 0.1rem;
+  margin-top: 0.06rem;
+}
+
+.aviora-prop-info-ic svg {
+  width: 15px;
+  height: 15px;
 }
 
 .aviora-prop-info-k {
   display: block;
-  font-size: 0.62rem;
+  font-size: 0.54rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #64748b;
-  margin-bottom: 0.12rem;
-}
-
-.aviora-prop-info-v {
-  margin: 0;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #0f172a;
-  line-height: 1.35;
-}
-
-.aviora-prop-delivery-inline {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.74rem;
-  font-weight: 600;
-  color: #334155;
-}
-
-.aviora-prop-person {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin-bottom: 0.55rem;
-}
-
-.aviora-prop-person-lead-ic {
-  display: flex;
-  color: #94a3b8;
-  flex-shrink: 0;
-}
-
-.aviora-prop-person:last-child {
-  margin-bottom: 0;
-}
-
-.aviora-prop-person-photo {
-  width: 2.85rem;
-  height: 2.85rem;
-  border-radius: 50%;
-  overflow: hidden;
-  flex-shrink: 0;
-  border: 2px solid #e2e8f0;
-  background: #f1f5f9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 6px rgba(15, 23, 42, 0.06);
-}
-
-.aviora-prop-person-photo-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.aviora-prop-person-photo-inner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 16%;
-  transform: scale(1.2);
-  transform-origin: 50% 30%;
-  display: block;
-}
-
-.aviora-prop-person-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  font-size: 1.05rem;
-  font-weight: 900;
-  color: #475569;
-}
-
-.aviora-prop-person-label {
-  display: block;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: #64748b;
   margin-bottom: 0.06rem;
 }
 
-.aviora-prop-person-name {
-  font-size: 1rem;
+.aviora-prop-info-v {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.28;
+}
+
+.aviora-prop-info-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.aviora-prop-info-person-name {
+  display: block;
+  margin: 0;
+  font-size: 0.68rem;
   font-weight: 800;
   color: #0f172a;
+  line-height: 1.25;
+}
+
+.aviora-prop-delivery-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #334155;
 }
 
 .aviora-prop-delivery-dot {
-  width: 0.45rem;
-  height: 0.45rem;
+  width: 0.38rem;
+  height: 0.38rem;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -12067,8 +12039,8 @@ h3 {
 
 .aviora-prop-delivery-foot {
   margin: 0;
-  font-size: 0.74rem;
-  line-height: 1.45;
+  font-size: 0.62rem;
+  line-height: 1.35;
   color: #64748b;
   font-weight: 600;
 }
@@ -12078,36 +12050,57 @@ h3 {
   font-weight: 800;
 }
 
-.aviora-prop-side-foot {
-  flex-shrink: 0;
-  margin-top: auto;
-  padding-top: 0.65rem;
-  border-top: 1px solid #e2e8f0;
-  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+.aviora-prop-side-clock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.32rem 0.55rem;
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #5b21b6;
+  background: linear-gradient(180deg, #f5f3ff 0%, #ede9fe 100%);
+  border: 1px solid #ddd6fe;
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 
-.aviora-prop-side-clock {
-  margin: 0 0 0.55rem;
-  font-size: 0.74rem;
-  color: #64748b;
+.aviora-prop-side-clock > span:last-child {
+  min-width: 0;
+  text-wrap: balance;
+}
+
+.aviora-prop-side-clock-ic {
+  display: flex;
+  flex-shrink: 0;
+  color: #6d28d9;
+}
+
+.aviora-prop-side-clock-ic svg {
+  display: block;
+  width: 13px;
+  height: 13px;
 }
 
 .aviora-prop-side-clock-k {
   font-weight: 800;
-  color: #475569;
+  color: #4c1d95;
   margin-right: 0.25rem;
 }
 
 .aviora-prop-cta-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.35rem;
+  gap: 0.3rem;
 }
 
 .aviora-prop-cta {
-  border-radius: 12px;
-  padding: 0.5rem 0.25rem;
-  font-size: 0.62rem;
+  border-radius: 10px;
+  padding: 0.4rem 0.15rem 0.42rem;
+  font-size: 0.56rem;
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -12116,13 +12109,18 @@ h3 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.28rem;
+  justify-content: center;
+  gap: 0.22rem;
+  min-width: 0;
   color: #fff;
+  line-height: 1.05;
   transition: transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease;
 }
 
 .aviora-prop-cta svg {
   flex-shrink: 0;
+  width: 17px;
+  height: 17px;
 }
 
 .aviora-prop-cta--status {
@@ -12178,7 +12176,7 @@ h3 {
 .aviora-prop-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.65rem;
+  gap: 0.48rem;
 }
 
 @media (max-width: 900px) {
@@ -12195,31 +12193,31 @@ h3 {
 
 .aviora-prop-pkg {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
-  padding: 0.55rem 0.6rem 0.5rem;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.055);
+  padding: 0.42rem 0.48rem 0.42rem;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.32rem;
   min-width: 0;
 }
 
 .aviora-prop-pkg-head {
   display: flex;
   align-items: flex-start;
-  gap: 0.4rem;
+  gap: 0.32rem;
 }
 
 .aviora-prop-pkg-num {
   flex-shrink: 0;
-  width: 1.65rem;
-  height: 1.65rem;
+  width: 1.38rem;
+  height: 1.38rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.72rem;
+  font-size: 0.62rem;
   font-weight: 900;
   color: #fff;
   background: linear-gradient(145deg, #6366f1, #4338ca);
@@ -12232,29 +12230,29 @@ h3 {
 
 .aviora-prop-pkg-name {
   margin: 0;
-  font-size: 0.88rem;
+  font-size: 0.74rem;
   font-weight: 800;
   color: #0f172a;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .aviora-prop-pkg-sub {
-  margin: 0.1rem 0 0;
-  font-size: 0.68rem;
+  margin: 0.06rem 0 0;
+  font-size: 0.56rem;
   font-weight: 700;
   color: #64748b;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.045em;
 }
 
 .aviora-prop-pkg-badge {
   flex-shrink: 0;
-  font-size: 0.62rem;
+  font-size: 0.52rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 0.22rem 0.42rem;
-  border-radius: 6px;
+  padding: 0.16rem 0.32rem;
+  border-radius: 5px;
   white-space: nowrap;
 }
 
@@ -12274,19 +12272,20 @@ h3 {
 }
 
 .aviora-prop-pkg-photo {
-  padding: 0.5rem 0.55rem;
+  padding: 0.32rem 0.38rem;
   background: #fff;
-  border-radius: 14px;
+  border-radius: 10px;
   border: 1px solid #e2e8f0;
 }
 
 .aviora-prop-pkg-photo-inner {
   position: relative;
   width: 100%;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
-  aspect-ratio: 4 / 3;
-  min-height: clamp(9rem, 24vw, 13rem);
+  aspect-ratio: 16 / 10;
+  max-height: 7.25rem;
+  min-height: 0;
   background: #f1f5f9;
 }
 
@@ -12301,11 +12300,11 @@ h3 {
 .aviora-prop-pkg-metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.4rem;
-  padding: 0.5rem 0.45rem 0.45rem;
+  gap: 0.28rem;
+  padding: 0.38rem 0.35rem 0.35rem;
   background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
+  border-radius: 10px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
@@ -12317,17 +12316,17 @@ h3 {
 
 .aviora-prop-pkg-metric-label {
   display: block;
-  font-size: 0.5rem;
+  font-size: 0.46rem;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.065em;
   text-transform: uppercase;
   color: #64748b;
-  margin-bottom: 0.06rem;
+  margin-bottom: 0.04rem;
   text-align: center;
 }
 
 .aviora-prop-pkg-pct {
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   font-weight: 800;
   color: #0f172a;
   letter-spacing: -0.02em;
@@ -12336,10 +12335,10 @@ h3 {
 }
 
 .aviora-prop-pkg-metrics strong {
-  font-size: 0.72rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: #0f172a;
-  line-height: 1.25;
+  line-height: 1.2;
   text-align: center;
   display: block;
 }
@@ -12362,7 +12361,7 @@ h3 {
 }
 
 .aviora-prop-pkg-bar-track {
-  height: 0.55rem;
+  height: 0.45rem;
   border-radius: 999px;
   background: #e2e8f0;
   overflow: hidden;
@@ -12391,7 +12390,7 @@ h3 {
 
 .aviora-prop-pkg-bar-cap {
   margin: 0;
-  font-size: 0.58rem;
+  font-size: 0.52rem;
   font-weight: 600;
   color: #64748b;
   display: flex;
@@ -12580,6 +12579,70 @@ h3 {
   background: #dc2626;
 }
 
+/* Property sidebar: tighter snapshot to match PR reference density */
+.aviora-prop-side-section--snap .aviora-snap-root {
+  gap: 0.35rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-row2 {
+  gap: 0.28rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-card {
+  padding: 0.3rem 0.28rem 0.28rem;
+  border-radius: 10px;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-card-title {
+  margin: 0 0 0.22rem;
+  font-size: 0.5rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-ring-wrap {
+  max-width: 4.05rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-ring-cap strong {
+  font-size: 0.66rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-ring-cap span {
+  font-size: 0.42rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-card-cap {
+  margin: 0.2rem 0 0;
+  font-size: 0.48rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-sch-bars {
+  height: 3.25rem;
+  gap: 0.26rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-sch-col {
+  gap: 0.16rem;
+  font-size: 0.45rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-sch-bar {
+  max-width: 1.85rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-stack {
+  height: 0.42rem;
+  margin-bottom: 0.22rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-stack-legend {
+  gap: 0.22rem 0.45rem;
+  font-size: 0.48rem;
+}
+
+.aviora-prop-side-section--snap .aviora-snap-tva {
+  min-height: 3.5rem;
+}
+
 .aviora-snap-tva {
   display: flex;
   justify-content: space-around;
@@ -12714,6 +12777,21 @@ h3 {
 
 .aviora-hub-top-inner--security {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.05fr);
+}
+
+.aviora-hub-top-inner--embedded {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  padding: 0.5rem 0.85rem 0.62rem;
+  gap: 0.35rem;
+}
+
+.aviora-hub-top-inner--embedded.aviora-hub-top-inner--security {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.aviora-hub-top-inner--embedded .aviora-hub-title-block {
+  width: 100%;
 }
 
 .aviora-hub-prop-pick {

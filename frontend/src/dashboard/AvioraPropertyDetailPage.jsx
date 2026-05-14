@@ -4,14 +4,18 @@ import { AVIORA_PROPERTY_DETAILS } from './avioraPropertyDetailData.js'
 import AvioraPropertySnapshot from './AvioraPropertySnapshot.jsx'
 import AvioraSafetySecurityDashboard from './AvioraSafetySecurityDashboard.jsx'
 
-function initials(name) {
-  const parts = String(name || '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-  if (!parts.length) return '?'
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
+/** @param {{ label: string; value: string }[]} rows */
+function realtimeColumns(rows) {
+  const filtered = rows.filter((r) => !/overall completion/i.test(r.label))
+  const left = []
+  const right = []
+  for (const r of filtered) {
+    const l = r.label.toLowerCase()
+    const toRight = l.startsWith('day') || l.includes('delayed') || l.includes('at risk')
+    if (toRight) right.push(r)
+    else left.push(r)
+  }
+  return { left, right }
 }
 
 /** @param {{ label: string; value: string }[]} rows */
@@ -27,6 +31,15 @@ function metricValueTone(label) {
   if (l.includes('delayed')) return 'bad'
   if (l.includes('at risk')) return 'warn'
   return undefined
+}
+
+function IconHardHat() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+      <path d="M2 18h20v2H2v-2zM4.5 18V9.5C4.5 6.5 7 4 10.5 4h3C17 4 19.5 6.5 19.5 9.5V18" strokeLinecap="round" />
+      <path d="M9 14h6M10 10h4" strokeLinecap="round" />
+    </svg>
+  )
 }
 
 function IconTrend() {
@@ -63,15 +76,6 @@ function IconEye() {
   )
 }
 
-function IconDoc() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" strokeLinejoin="round" />
-      <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" strokeLinecap="round" />
-    </svg>
-  )
-}
-
 function IconUser() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
@@ -80,10 +84,21 @@ function IconUser() {
   )
 }
 
+/** Bar chart — reference Status control */
 function IconBar() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <path d="M4 20V10M10 20V4M16 20v-6M22 20V8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconBuildingCog() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 21V8l8-4v17M12 21V12h5v9M9 14h2M9 17h2M16 14h2M16 17h2" />
+      <circle cx="18" cy="6" r="2.2" />
+      <path d="M18 4.2v.65M18 7.15v.65M16.35 6h-.55M20.2 6h-.55M17.1 4.9l.4.4M18.5 6.3l.4.4M18.5 4.9l-.4.4M17.1 6.3l-.4.4" />
     </svg>
   )
 }
@@ -206,31 +221,16 @@ function PackageCard({ pkg }) {
   )
 }
 
-function PersonRow({ label, person }) {
-  const focus = person.photoFocus ?? '50% 16%'
+function PersonRow({ label, person, variant = 'pm' }) {
+  const LeadIcon = variant === 'engineer' ? IconHardHat : IconUser
   return (
-    <div className="aviora-prop-person">
-      <span className="aviora-prop-person-lead-ic" aria-hidden="true">
-        <IconUser />
+    <div className="aviora-prop-info-line aviora-prop-info-line--person">
+      <span className="aviora-prop-info-ic" aria-hidden="true">
+        <LeadIcon />
       </span>
-      <div className="aviora-prop-person-photo" aria-hidden="true">
-        <div className="aviora-prop-person-photo-inner">
-          {person.photo ? (
-            <img
-              src={person.photo}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              style={{ objectPosition: focus }}
-            />
-          ) : (
-            <span className="aviora-prop-person-fallback">{initials(person.name)}</span>
-          )}
-        </div>
-      </div>
-      <div>
-        <span className="aviora-prop-person-label">{label}</span>
-        <strong className="aviora-prop-person-name">{person.name}</strong>
+      <div className="aviora-prop-info-body">
+        <span className="aviora-prop-info-k">{label}</span>
+        <strong className="aviora-prop-info-person-name">{person.name}</strong>
       </div>
     </div>
   )
@@ -245,7 +245,11 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
   const [propView, setPropView] = useState(/** @type {'status' | 'safety' | 'security'} */ ('status'))
   const tick = nowTick ?? new Date()
   const today = tick.toLocaleDateString(undefined, { dateStyle: 'long' })
-  const time = tick.toLocaleTimeString(undefined, { timeStyle: 'short' })
+  const time = tick.toLocaleTimeString(undefined, {
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  })
   const sidebarToneClass =
     d.portfolioTone === 'operational'
       ? 'aviora-prop-side--ok'
@@ -264,6 +268,7 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
 
   if (!d) return null
 
+  const rt = realtimeColumns(d.realtime)
   const co = constructionColumns(d.construction)
   const bullets = d.deliveryBullets || []
   const deliveryLeft = bullets.filter((b) => b.tone !== 'bad')
@@ -325,9 +330,7 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
             </span>
             <div>
               <span className="aviora-prop-meta-lab">Local Time</span>
-              <strong>
-                {time} <span className="aviora-prop-tz">CDT</span>
-              </strong>
+              <strong>{time}</strong>
             </div>
           </div>
         </div>
@@ -339,131 +342,137 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
             ← Back to portfolio overview
           </Link>
 
-          <div className="aviora-prop-side-scroll">
-            <div className="aviora-prop-side-block">
-              <div className="aviora-prop-side-panel aviora-prop-side-panel--info aviora-prop-side-panel--lead">
-                <div className="aviora-prop-side-panel-hero">
-                  <img src={d.heroImage} alt="" loading="lazy" decoding="async" />
+          <div className="aviora-prop-side-shell">
+            <div className="aviora-prop-side-sheet">
+              <div className="aviora-prop-side-sheet-scroll">
+                <div className="aviora-prop-side-section aviora-prop-side-section--lead">
+                  <div className="aviora-prop-side-panel-body">
+                    <div className="aviora-prop-info-line">
+                      <span className="aviora-prop-info-ic" aria-hidden="true">
+                        <IconBuilding />
+                      </span>
+                      <div className="aviora-prop-info-body">
+                        <span className="aviora-prop-info-k">Description</span>
+                        <p className="aviora-prop-info-v">{d.description}</p>
+                      </div>
+                    </div>
+                    <PersonRow label="Project Manager" person={d.projectManager} variant="pm" />
+                    <PersonRow label="Site Engineer" person={d.siteEngineer} variant="engineer" />
+                  </div>
                 </div>
-                <div className="aviora-prop-side-panel-body">
-                  <div className="aviora-prop-info-line">
-                    <span className="aviora-prop-info-ic" aria-hidden="true">
-                      <IconDoc />
-                    </span>
-                    <div className="aviora-prop-info-body">
-                      <span className="aviora-prop-info-k">Description</span>
-                      <p className="aviora-prop-info-v">{d.description}</p>
+
+                <div className="aviora-prop-side-section">
+                  <SideSectionHead icon={<IconTrend />} title="Real-Time Status" />
+                  <div className="aviora-prop-rt-split">
+                    <p className="aviora-prop-current-status">
+                      Current Status:{' '}
+                      <strong className="aviora-prop-current-status-val">{d.currentStatusLabel}</strong>
+                    </p>
+                    <div className="aviora-prop-col">
+                      {rt.left.map((row) => (
+                        <StatRow key={row.label} label={row.label} value={row.value} />
+                      ))}
+                    </div>
+                    <div className="aviora-prop-col">
+                      {rt.right.map((row) => (
+                        <StatRow key={row.label} label={row.label} value={row.value} />
+                      ))}
                     </div>
                   </div>
-                  <PersonRow label="Project Manager" person={d.projectManager} />
-                  <PersonRow label="Site Engineer" person={d.siteEngineer} />
                 </div>
-              </div>
-            </div>
 
-            <div className="aviora-prop-side-block">
-              <div className="aviora-prop-side-panel">
-                <SideSectionHead icon={<IconTrend />} title="Real-Time Status" />
-                <div className="aviora-prop-rt-stack">
-                  <p className="aviora-prop-current-status">
-                    Current Status:{' '}
-                    <strong className="aviora-prop-current-status-val">{d.currentStatusLabel}</strong>
-                  </p>
-                  {d.realtime.map((row) => (
-                    <StatRow key={row.label} label={row.label} value={row.value} />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="aviora-prop-side-block">
-              <div className="aviora-prop-side-panel">
-                <SideSectionHead icon={<IconBuilding />} title="Construction Overview" />
-                <div className="aviora-prop-cols2 aviora-prop-cols2--split">
-                  <div className="aviora-prop-col">
-                    {co.left.map((row) => (
-                      <StatRow key={row.label} label={row.label} value={row.value} />
-                    ))}
-                  </div>
-                  <div className="aviora-prop-col">
-                    {co.right.map((row) => (
-                      <StatRow key={row.label} label={row.label} value={row.value} />
-                    ))}
+                <div className="aviora-prop-side-section">
+                  <SideSectionHead icon={<IconBuildingCog />} title="Construction Overview" />
+                  <div className="aviora-prop-cols2 aviora-prop-cols2--split">
+                    <div className="aviora-prop-col">
+                      {co.left.map((row) => (
+                        <StatRow key={row.label} label={row.label} value={row.value} />
+                      ))}
+                    </div>
+                    <div className="aviora-prop-col">
+                      {co.right.map((row) => (
+                        <StatRow key={row.label} label={row.label} value={row.value} />
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="aviora-prop-side-block">
-              <div className="aviora-prop-side-panel">
-                <SideSectionHead icon={<IconPackage />} title="Delivery Outlook" />
-                <div className="aviora-prop-cols2 aviora-prop-cols2--delivery aviora-prop-cols2--split">
-                  <div className="aviora-prop-col">
-                    {deliveryLeft.map((b) => (
-                      <div key={b.text} className="aviora-prop-delivery-inline">
-                        <span className={`aviora-prop-delivery-dot aviora-prop-delivery-dot--${b.tone}`} aria-hidden="true" />
-                        <span>{b.text}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="aviora-prop-col">
-                    {deliveryRight.map((b) => (
-                      <div key={b.text} className="aviora-prop-delivery-inline">
-                        <span className={`aviora-prop-delivery-dot aviora-prop-delivery-dot--${b.tone}`} aria-hidden="true" />
-                        <span>{b.text}</span>
-                      </div>
-                    ))}
-                    {d.deliveryFoot ? (
-                      <p className={`aviora-prop-delivery-foot${footOk ? ' aviora-prop-delivery-foot--ok' : ''}`}>{d.deliveryFoot}</p>
-                    ) : null}
+                <div className="aviora-prop-side-section">
+                  <SideSectionHead icon={<IconPackage />} title="Delivery Outlook" />
+                  <div className="aviora-prop-cols2 aviora-prop-cols2--delivery aviora-prop-cols2--split">
+                    <div className="aviora-prop-col">
+                      {deliveryLeft.map((b) => (
+                        <div key={b.text} className="aviora-prop-delivery-inline">
+                          <span className={`aviora-prop-delivery-dot aviora-prop-delivery-dot--${b.tone}`} aria-hidden="true" />
+                          <span>{b.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="aviora-prop-col">
+                      {deliveryRight.map((b) => (
+                        <div key={b.text} className="aviora-prop-delivery-inline">
+                          <span className={`aviora-prop-delivery-dot aviora-prop-delivery-dot--${b.tone}`} aria-hidden="true" />
+                          <span>{b.text}</span>
+                        </div>
+                      ))}
+                      {d.deliveryFoot ? (
+                        <p className={`aviora-prop-delivery-foot${footOk ? ' aviora-prop-delivery-foot--ok' : ''}`}>{d.deliveryFoot}</p>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="aviora-prop-side-block">
-              <div className="aviora-prop-side-panel aviora-prop-snap">
-                <SideSectionHead icon={<IconEye />} title="Visual Snapshot" />
-                <AvioraPropertySnapshot snap={d.snapshot} />
+                <div className="aviora-prop-side-section aviora-prop-side-section--snap">
+                  <SideSectionHead icon={<IconEye />} title="Visual Snapshot" />
+                  <AvioraPropertySnapshot snap={d.snapshot} />
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div className="aviora-prop-side-foot">
-            <p className="aviora-prop-side-clock">
-              <span className="aviora-prop-side-clock-k">Local Time:</span> {clockLine}
-            </p>
-            <div className="aviora-prop-cta-row" role="tablist" aria-label="Property workspace">
-              <button
-                type="button"
-                role="tab"
-                aria-selected={propView === 'status'}
-                className={`aviora-prop-cta aviora-prop-cta--status${propView === 'status' ? ' is-active' : ''}`}
-                onClick={() => setPropView('status')}
-              >
-                <IconBar />
-                Status
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={propView === 'safety'}
-                className={`aviora-prop-cta aviora-prop-cta--safety${propView === 'safety' ? ' is-active' : ''}`}
-                onClick={() => setPropView('safety')}
-              >
-                <IconShield />
-                Safety
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={propView === 'security'}
-                className={`aviora-prop-cta aviora-prop-cta--security${propView === 'security' ? ' is-active' : ''}`}
-                onClick={() => setPropView('security')}
-              >
-                <IconLock />
-                Security
-              </button>
+              <div className="aviora-prop-side-sheet-foot">
+                <p className="aviora-prop-side-clock">
+                  <span className="aviora-prop-side-clock-ic" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M12 7v5l3 2" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                  <span>
+                    <span className="aviora-prop-side-clock-k">Local Time:</span> {clockLine}
+                  </span>
+                </p>
+                <div className="aviora-prop-cta-row" role="tablist" aria-label="Property workspace">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={propView === 'status'}
+                    className={`aviora-prop-cta aviora-prop-cta--status${propView === 'status' ? ' is-active' : ''}`}
+                    onClick={() => setPropView('status')}
+                  >
+                    <IconBar />
+                    Status
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={propView === 'safety'}
+                    className={`aviora-prop-cta aviora-prop-cta--safety${propView === 'safety' ? ' is-active' : ''}`}
+                    onClick={() => setPropView('safety')}
+                  >
+                    <IconShield />
+                    Safety
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={propView === 'security'}
+                    className={`aviora-prop-cta aviora-prop-cta--security${propView === 'security' ? ' is-active' : ''}`}
+                    onClick={() => setPropView('security')}
+                  >
+                    <IconLock />
+                    Security
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </aside>

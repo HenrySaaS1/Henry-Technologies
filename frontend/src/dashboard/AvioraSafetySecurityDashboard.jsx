@@ -307,15 +307,17 @@ export default function AvioraSafetySecurityDashboard({
     >
       <header className={headerClass}>
         <div className="aviora-hub-top-skyline" aria-hidden="true" />
-        <div className={`aviora-hub-top-inner${mode === 'security' ? ' aviora-hub-top-inner--security' : ''}`}>
-          <div className="aviora-hub-brand" aria-label={`${hub.companyLine} ${companyName}`}>
-            <span className="aviora-hub-logo" aria-hidden="true">
-              A
-            </span>
-            <div>
-              <span className="aviora-hub-brand-line">{hub.companyLine}</span>
+        <div className={`aviora-hub-top-inner${mode === 'security' ? ' aviora-hub-top-inner--security' : ''}${embedded ? ' aviora-hub-top-inner--embedded' : ''}`}>
+          {!embedded ? (
+            <div className="aviora-hub-brand" aria-label={`${hub.companyLine} ${companyName}`}>
+              <span className="aviora-hub-logo" aria-hidden="true">
+                A
+              </span>
+              <div>
+                <span className="aviora-hub-brand-line">{hub.companyLine}</span>
+              </div>
             </div>
-          </div>
+          ) : null}
           <div className="aviora-hub-title-block">
             {mode === 'security' ? (
               <span className="aviora-hub-title-ic" aria-hidden="true">
@@ -323,13 +325,13 @@ export default function AvioraSafetySecurityDashboard({
               </span>
             ) : null}
             <h1 className="aviora-hub-title">{title}</h1>
-            {mode === 'safety' ? (
+            {mode === 'safety' && !embedded ? (
               <p className="aviora-hub-loc">
                 <IconPin /> {hub.locationLine}
               </p>
             ) : null}
           </div>
-          {mode === 'security' ? (
+          {mode === 'security' && !embedded ? (
             <div className="aviora-hub-prop-pick" role="presentation">
               <IconBuilding />
               <span className="aviora-hub-prop-pick-text">
@@ -341,22 +343,24 @@ export default function AvioraSafetySecurityDashboard({
               </span>
             </div>
           ) : null}
-          <div className="aviora-hub-datetime">
-            <div className="aviora-hub-dt-card">
-              <IconCalendar />
-              <div>
-                <span className="aviora-hub-dt-k">Today&apos;s Date</span>
-                <span className="aviora-hub-dt-v">{dateStr}</span>
+          {!embedded ? (
+            <div className="aviora-hub-datetime">
+              <div className="aviora-hub-dt-card">
+                <IconCalendar />
+                <div>
+                  <span className="aviora-hub-dt-k">Today&apos;s Date</span>
+                  <span className="aviora-hub-dt-v">{dateStr}</span>
+                </div>
+              </div>
+              <div className="aviora-hub-dt-card">
+                <IconClock />
+                <div>
+                  <span className="aviora-hub-dt-k">Local Time</span>
+                  <span className="aviora-hub-dt-v">{timeStr}</span>
+                </div>
               </div>
             </div>
-            <div className="aviora-hub-dt-card">
-              <IconClock />
-              <div>
-                <span className="aviora-hub-dt-k">Local Time</span>
-                <span className="aviora-hub-dt-v">{timeStr}</span>
-              </div>
-            </div>
-          </div>
+          ) : null}
         </div>
       </header>
 
