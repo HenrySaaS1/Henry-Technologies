@@ -6,6 +6,7 @@ import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/registry.js'
 import AvioraConstructionPortfolio from './dashboard/AvioraConstructionPortfolio.jsx'
 import AvioraPropertyDetailPage from './dashboard/AvioraPropertyDetailPage.jsx'
+import AvioraSafetySecurityDashboard from './dashboard/AvioraSafetySecurityDashboard.jsx'
 import { isAvioraPropertyDetailId } from './dashboard/avioraPropertyDetailData.js'
 import { AVIORA_OLIVIA_LEAD_IMAGE_URL } from './dashboard/avioraPortfolioData.js'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
@@ -3431,6 +3432,15 @@ const NAV_ITEMS = [
     ),
   },
   {
+    id: 'safety',
+    label: 'Safety & Security',
+    dockLabel: 'Safety',
+    avioraOnly: true,
+    icon: (
+      <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 5.99V18.9c-3.72-1.15-6.47-4.82-7-8.94h7V6.99z" />
+    ),
+  },
+  {
     id: 'lines',
     label: 'Machine activity',
     dockLabel: 'Lines',
@@ -3483,6 +3493,10 @@ const TAB_HEADINGS = {
     sub: 'Live status, OEE vs target, and operator context per asset.',
   },
   alerts: { title: 'Alerts', sub: 'Unacknowledged items and escalation status for your lines.' },
+  safety: {
+    title: 'Safety & Security',
+    sub: 'Site safety index, patrol coverage, perimeter checks, and illustrated findings (demo).',
+  },
   reports: { title: 'Reports', sub: 'Shift summaries, quality, and labor rollups — export or schedule digests.' },
   insights: {
     title: 'Activities',
@@ -4207,6 +4221,12 @@ export default function ClientDashboard({ user, onSignOut }) {
   }, [toast])
 
   const presetKey = resolveDashboardPresetKey(user)
+  const navItemsForPreset = useMemo(
+    () => NAV_ITEMS.filter((item) => !item.avioraOnly || presetKey === 'aviora'),
+    [presetKey],
+  )
+  const effectiveTab = presetKey !== 'aviora' && 'safety' === tab ? 'dashboard' : tab
+
   const avioraPropertyRouteRequested = Boolean(routeAvioraPropertyId)
   const invalidAvioraPropertyRoute =
     avioraPropertyRouteRequested &&
@@ -4221,10 +4241,12 @@ export default function ClientDashboard({ user, onSignOut }) {
   const tenantLockup = ctx.clientBrand?.mode === 'tenant-lockup' ? ctx.clientBrand : null
   const activeProductTitles = titlesForProductIds(user.products)
   const greetName = displayNameFromEmail(user.email)
-  const heading = TAB_HEADINGS[tab] || TAB_HEADINGS.dashboard
+  const heading = TAB_HEADINGS[effectiveTab] || TAB_HEADINGS.dashboard
   const mainTitle = heading.title ?? user.company
   const mainSub =
-    tab === 'locations' && ctx.locationsLeadSub ? ctx.locationsLeadSub : heading.sub ?? ctx.sub
+    effectiveTab === 'locations' && ctx.locationsLeadSub
+      ? ctx.locationsLeadSub
+      : heading.sub ?? ctx.sub
   const footprintBlurb =
     ctx.footprintSub ||
     'Global footprint — site leadership, local time, headcount, and efficiency by region.'
@@ -4381,20 +4403,28 @@ export default function ClientDashboard({ user, onSignOut }) {
       setToast('Switched to Settings.')
       return
     }
-    if ((tab === 'dashboard' || tab === 'locations') && filteredGlobalSites.length === 0) {
+    if (/\b(safety|security|perimeter|egress)\b/i.test(raw) && presetKey === 'aviora') {
+      setTab('safety')
+      setToast('Switched to Safety & Security.')
+      return
+    }
+    if (
+      (effectiveTab === 'dashboard' || effectiveTab === 'locations') &&
+      filteredGlobalSites.length === 0
+    ) {
       setToast(`No sites match “${raw}”. Try another term or clear search.`)
       return
     }
-    if (tab === 'lines' && filteredLines.length === 0) {
+    if (effectiveTab === 'lines' && filteredLines.length === 0) {
       setToast(`No lines match “${raw}”.`)
       return
     }
-    if (tab === 'alerts' && visibleAlerts.length === 0) {
+    if (effectiveTab === 'alerts' && visibleAlerts.length === 0) {
       setToast(`No alerts match “${raw}”. Try another word or clear search.`)
       return
     }
     setToast(
-      tab === 'dashboard' || tab === 'locations'
+      effectiveTab === 'dashboard' || effectiveTab === 'locations'
         ? `${filteredGlobalSites.length} site(s) match in the grid below.`
         : `Showing matches for “${raw}”.`,
     )
@@ -4572,11 +4602,11 @@ export default function ClientDashboard({ user, onSignOut }) {
       <div className="client-body">
         <aside className="client-sidebar" aria-label="Workspace">
           <p className="client-sidebar-label">Workspace</p>
-          {NAV_ITEMS.map((item) => (
+          {navItemsForPreset.map((item) => (
             <button
               key={item.id}
               type="button"
-              className={`client-nav-item${tab === item.id ? ' active' : ''}`}
+              className={`client-nav-item${effectiveTab === item.id ? ' active' : ''}`}
               onClick={() => {
                 if (routeBuildingSiteId || routeAvioraPropertyId) navigate('/')
                 setTab(item.id)
@@ -4619,13 +4649,13 @@ export default function ClientDashboard({ user, onSignOut }) {
             <p className="client-main-sub">{mainSub}</p>
           </div>
 
-          {tab === 'dashboard' || tab === 'locations' ? (
-            tab === 'dashboard' && presetKey === 'aviora' ? (
+          {effectiveTab === 'dashboard' || effectiveTab === 'locations' ? (
+            effectiveTab === 'dashboard' && presetKey === 'aviora' ? (
               <AvioraConstructionPortfolio
                 companyName={ctx.portfolioCompanyName || user.company}
                 nowTick={nowTick}
               />
-            ) : tab === 'dashboard' && useHenry1InsetAiAlerts && workspaceSites.length === 1 ? (
+            ) : effectiveTab === 'dashboard' && useHenry1InsetAiAlerts && workspaceSites.length === 1 ? (
               <FootprintSitesSection
                 workspaceSites={workspaceSites}
                 filteredGlobalSites={filteredGlobalSites}
@@ -4655,7 +4685,7 @@ export default function ClientDashboard({ user, onSignOut }) {
                   />
                 }
               />
-            ) : tab === 'dashboard' ? (
+            ) : effectiveTab === 'dashboard' ? (
               <div className="client-sites-ribbon-wrap">
                 <FootprintSitesSection
                   workspaceSites={workspaceSites}
@@ -4703,7 +4733,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             )
           ) : null}
 
-          {tab === 'dashboard' ? (
+          {effectiveTab === 'dashboard' ? (
             <div
               className={`client-welcome${workspaceSites.length === 1 ? ' client-welcome--narrow' : ''}`}
               role="status"
@@ -4724,7 +4754,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             </div>
           ) : null}
 
-          {tab === 'dashboard' ? (
+          {effectiveTab === 'dashboard' ? (
             <div className="client-demo-dashes" aria-label="Demo snapshot: three health signals">
               <div className="client-demo-dashes-head">
                 <span className="client-demo-dashes-badge">Demo</span>
@@ -4759,7 +4789,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             </div>
           ) : null}
 
-          {tab === 'dashboard' && !onboard.hidden ? (
+          {effectiveTab === 'dashboard' && !onboard.hidden ? (
             onboardAllDone ? (
               <div className="client-onboard-complete">
                 <div>
@@ -4816,7 +4846,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             )
           ) : null}
 
-          {tab === 'dashboard' ? (
+          {effectiveTab === 'dashboard' ? (
             <>
               <div className="client-kpi-grid" aria-label="Key performance indicators">
                 {DASH_KPIS.map((k) => (
@@ -5052,7 +5082,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             </>
           ) : null}
 
-          {tab === 'lines' ? (
+          {effectiveTab === 'lines' ? (
             <div className="client-lines-page">
               <p className="client-lines-lead">
                 {searchQ.trim()
@@ -5100,7 +5130,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             </div>
           ) : null}
 
-          {tab === 'alerts' ? (
+          {effectiveTab === 'alerts' ? (
             <div className="client-alerts-panel">
               <p className="client-alerts-lead">{ctx.alertsLead}</p>
               <div className="client-filter-row" role="toolbar" aria-label="Filter alerts by severity">
@@ -5143,7 +5173,14 @@ export default function ClientDashboard({ user, onSignOut }) {
             </div>
           ) : null}
 
-          {tab === 'reports' ? (
+          {effectiveTab === 'safety' ? (
+            <AvioraSafetySecurityDashboard
+              companyName={ctx.portfolioCompanyName || user.company}
+              nowTick={nowTick}
+            />
+          ) : null}
+
+          {effectiveTab === 'reports' ? (
             <div className="client-text-panel">
               <div className="client-reports-toolbar">
                 <div className="client-filter-row" role="toolbar" aria-label="Report time range">
@@ -5190,7 +5227,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             </div>
           ) : null}
 
-          {tab === 'insights' ? (
+          {effectiveTab === 'insights' ? (
             <div className="client-text-panel client-activities-page">
               <section className="client-myhenry-panel" aria-label="MyHenry recommendations">
                 <h3 className="client-myhenry-title">AI Insight Panel (MyHenry)</h3>
@@ -5249,7 +5286,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             </div>
           ) : null}
 
-          {tab === 'maintenance' ? (
+          {effectiveTab === 'maintenance' ? (
             <div className="client-text-panel client-text-panel--placeholder" aria-labelledby="maintenance-h">
               <h2 id="maintenance-h" className="client-panel-title">
                 Maintenance
@@ -5268,7 +5305,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             </div>
           ) : null}
 
-          {tab === 'users' ? (
+          {effectiveTab === 'users' ? (
             <div className="client-text-panel client-text-panel--placeholder" aria-labelledby="users-h">
               <h2 id="users-h" className="client-panel-title">
                 Users
@@ -5287,7 +5324,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             </div>
           ) : null}
 
-          {tab === 'account' ? (
+          {effectiveTab === 'account' ? (
             <div className="client-account-panel">
               <div className="client-account-hero">
                 <div className="client-account-hero-avatar" aria-hidden="true">
@@ -5420,11 +5457,11 @@ export default function ClientDashboard({ user, onSignOut }) {
       </div>
 
       <nav className="client-mobile-dock" aria-label="Workspace tabs">
-        {NAV_ITEMS.filter((item) => !item.hideInDock).map((item) => (
+        {navItemsForPreset.filter((item) => !item.hideInDock).map((item) => (
           <button
             key={`dock-${item.id}`}
             type="button"
-            className={`client-dock-item${tab === item.id ? ' is-active' : ''}`}
+            className={`client-dock-item${effectiveTab === item.id ? ' is-active' : ''}`}
             onClick={() => {
               if (routeBuildingSiteId || routeAvioraPropertyId) navigate('/')
               setTab(item.id)
