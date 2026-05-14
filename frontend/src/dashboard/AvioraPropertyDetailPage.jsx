@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AVIORA_PROPERTY_DETAILS } from './avioraPropertyDetailData.js'
 import AvioraPropertySnapshot from './AvioraPropertySnapshot.jsx'
+import AvioraSafetySecurityDashboard from './AvioraSafetySecurityDashboard.jsx'
 
 function initials(name) {
   const parts = String(name || '')
@@ -126,6 +127,7 @@ function PersonRow({ label, person }) {
 export default function AvioraPropertyDetailPage({ propertyId, companyName, nowTick }) {
   const d = AVIORA_PROPERTY_DETAILS[propertyId]
   const [period, setPeriod] = useState('daily')
+  const [propView, setPropView] = useState(/** @type {'status' | 'safety' | 'security'} */ ('status'))
   const tick = nowTick ?? new Date()
   const today = tick.toLocaleDateString(undefined, { dateStyle: 'long' })
   const time = tick.toLocaleTimeString(undefined, { timeStyle: 'short' })
@@ -273,26 +275,56 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
 
           <div className="aviora-prop-side-foot">
             <p className="aviora-prop-side-clock">{clockLine}</p>
-            <div className="aviora-prop-cta-row">
-              <button type="button" className="aviora-prop-cta aviora-prop-cta--fill">
+            <div className="aviora-prop-cta-row" role="tablist" aria-label="Property workspace">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={propView === 'status'}
+                className={`aviora-prop-cta aviora-prop-cta--fill${propView === 'status' ? ' is-active' : ''}`}
+                onClick={() => setPropView('status')}
+              >
                 Status
               </button>
-              <button type="button" className="aviora-prop-cta aviora-prop-cta--outline">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={propView === 'safety'}
+                className={`aviora-prop-cta aviora-prop-cta--outline${propView === 'safety' ? ' is-active' : ''}`}
+                onClick={() => setPropView('safety')}
+              >
                 Safety
               </button>
-              <button type="button" className="aviora-prop-cta aviora-prop-cta--green">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={propView === 'security'}
+                className={`aviora-prop-cta aviora-prop-cta--green${propView === 'security' ? ' is-active' : ''}`}
+                onClick={() => setPropView('security')}
+              >
                 Security
               </button>
             </div>
           </div>
         </aside>
 
-        <div className="aviora-prop-main">
-          <div className="aviora-prop-grid">
-            {d.packages.map((pkg) => (
-              <PackageCard key={pkg.num} pkg={pkg} />
-            ))}
-          </div>
+        <div className={`aviora-prop-main${propView !== 'status' ? ' aviora-prop-main--hub' : ''}`}>
+          {propView === 'status' ? (
+            <div className="aviora-prop-grid">
+              {d.packages.map((pkg) => (
+                <PackageCard key={pkg.num} pkg={pkg} />
+              ))}
+            </div>
+          ) : (
+            <AvioraSafetySecurityDashboard
+              key={`${propertyId}-${propView}`}
+              propertyId={propertyId}
+              companyName={companyName}
+              nowTick={nowTick}
+              layout="embedded"
+              initialMode={propView === 'security' ? 'security' : 'safety'}
+              onOpenStatus={() => setPropView('status')}
+            />
+          )}
         </div>
       </div>
     </div>

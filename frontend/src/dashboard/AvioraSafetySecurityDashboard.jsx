@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  AVIORA_HUB,
+  avioraHubForProperty,
   AVIORA_SAFETY_KPI_CARDS,
   AVIORA_SAFETY_OBSERVATIONS,
   AVIORA_SAFETY_SIDEBAR_STATS,
@@ -107,6 +107,31 @@ function IconLock() {
   )
 }
 
+function IconBuilding() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+      <path d="M4 21V8l8-4v17M12 21V12h5v9M9 14h2M9 17h2M16 14h2M16 17h2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IconChevronDown() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IconSearch() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <circle cx="11" cy="11" r="6" />
+      <path d="M16 16l5 5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function SidebarGlyph({ name }) {
   if (name === 'clipboard')
     return (
@@ -131,6 +156,15 @@ function SidebarGlyph({ name }) {
     return (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="#ca8a04" aria-hidden="true">
         <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" />
+      </svg>
+    )
+  if (name === 'warnOrange')
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" fill="#ffedd5" stroke="#ea580c" strokeWidth="1.5" />
+        <text x="12" y="16" textAnchor="middle" fontSize="12" fontWeight="900" fill="#c2410c">
+          !
+        </text>
       </svg>
     )
   return (
@@ -227,10 +261,19 @@ function sevClass(s) {
 }
 
 /**
- * @param {{ companyName: string; nowTick?: Date; onOpenStatus?: () => void }} props
+ * @param {{ companyName: string; nowTick?: Date; onOpenStatus?: () => void; layout?: 'full' | 'embedded'; initialMode?: 'safety' | 'security'; propertyId?: string }} props
  */
-export default function AvioraSafetySecurityDashboard({ companyName, nowTick, onOpenStatus }) {
-  const [mode, setMode] = useState(/** @type {'safety' | 'security'} */ ('safety'))
+export default function AvioraSafetySecurityDashboard({
+  companyName,
+  nowTick,
+  onOpenStatus,
+  layout = 'full',
+  initialMode,
+  propertyId,
+}) {
+  const embedded = layout === 'embedded'
+  const [mode, setMode] = useState(/** @type {'safety' | 'security'} */ (initialMode ?? 'safety'))
+
   const tick = nowTick ?? new Date()
 
   const dateStr = tick.toLocaleDateString(undefined, {
@@ -253,22 +296,24 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
     timeZoneName: 'short',
   })
 
-  const hub = AVIORA_HUB
+  const hub = avioraHubForProperty(propertyId)
   const headerClass = mode === 'safety' ? 'aviora-hub-top aviora-hub-top--safety' : 'aviora-hub-top aviora-hub-top--security'
   const title = mode === 'safety' ? 'SAFETY DASHBOARD' : 'SECURITY DASHBOARD'
 
   return (
-    <div className={`aviora-hub aviora-hub--${mode}`} aria-label={mode === 'safety' ? 'Safety dashboard' : 'Security dashboard'}>
+    <div
+      className={`aviora-hub aviora-hub--${mode}${embedded ? ' aviora-hub--embedded' : ''}`}
+      aria-label={mode === 'safety' ? 'Safety dashboard' : 'Security dashboard'}
+    >
       <header className={headerClass}>
         <div className="aviora-hub-top-skyline" aria-hidden="true" />
-        <div className="aviora-hub-top-inner">
-          <div className="aviora-hub-brand">
+        <div className={`aviora-hub-top-inner${mode === 'security' ? ' aviora-hub-top-inner--security' : ''}`}>
+          <div className="aviora-hub-brand" aria-label={`${hub.companyLine} ${companyName}`}>
             <span className="aviora-hub-logo" aria-hidden="true">
               A
             </span>
             <div>
               <span className="aviora-hub-brand-line">{hub.companyLine}</span>
-              <span className="aviora-hub-brand-sub">{companyName}</span>
             </div>
           </div>
           <div className="aviora-hub-title-block">
@@ -278,10 +323,24 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
               </span>
             ) : null}
             <h1 className="aviora-hub-title">{title}</h1>
-            <p className="aviora-hub-loc">
-              <IconPin /> {hub.locationLine}
-            </p>
+            {mode === 'safety' ? (
+              <p className="aviora-hub-loc">
+                <IconPin /> {hub.locationLine}
+              </p>
+            ) : null}
           </div>
+          {mode === 'security' ? (
+            <div className="aviora-hub-prop-pick" role="presentation">
+              <IconBuilding />
+              <span className="aviora-hub-prop-pick-text">
+                <span className="aviora-hub-prop-pick-name">{hub.propertyName}</span>
+                <span className="aviora-hub-prop-pick-code">{hub.propertyCode}</span>
+              </span>
+              <span className="aviora-hub-prop-pick-chev" aria-hidden="true">
+                <IconChevronDown />
+              </span>
+            </div>
+          ) : null}
           <div className="aviora-hub-datetime">
             <div className="aviora-hub-dt-card">
               <IconCalendar />
@@ -301,7 +360,8 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
         </div>
       </header>
 
-      <div className="aviora-hub-body">
+      <div className={`aviora-hub-body${embedded ? ' aviora-hub-body--embedded' : ''}`}>
+        {!embedded ? (
         <aside className="aviora-hub-side" aria-label="Property and summary">
           <div className="aviora-hub-side-hero">
             <img src={hub.sitePhoto} alt="" className="aviora-hub-side-img" loading="lazy" decoding="async" />
@@ -341,6 +401,7 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
           </div>
 
           {mode === 'safety' ? (
+            <>
             <div className="aviora-hub-side-block aviora-hub-side-block--tint">
               <h2 className="aviora-hub-side-h">Safety Summary (Today)</h2>
               <ul className="aviora-hub-sum-list">
@@ -355,6 +416,10 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
                 ))}
               </ul>
             </div>
+            <div className="aviora-hub-clock-big aviora-hub-clock-big--safety" aria-label="Local time">
+              <span className="aviora-hub-clock-k">Local Time:</span> {clockBig}
+            </div>
+            </>
           ) : (
             <>
               <div className="aviora-hub-side-block aviora-hub-side-block--tint aviora-hub-side-block--sec">
@@ -371,13 +436,16 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
                   ))}
                 </ul>
               </div>
-              <div className="aviora-hub-clock-big" aria-label="Local time">
-                {clockBig}
+              <div className="aviora-hub-clock-big aviora-hub-clock-big--security" aria-label="Local time">
+                <span className="aviora-hub-clock-k">Local Time:</span> {clockBig}
               </div>
             </>
           )}
 
-          <nav className="aviora-hub-side-nav" aria-label="Hub sections">
+          <nav
+            className={`aviora-hub-side-nav aviora-hub-side-nav--${mode}`}
+            aria-label="Hub sections"
+          >
             <button type="button" className="aviora-hub-navbtn aviora-hub-navbtn--status" onClick={() => onOpenStatus?.()}>
               <IconBar />
               Status
@@ -400,8 +468,9 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
             </button>
           </nav>
         </aside>
+        ) : null}
 
-        <div className="aviora-hub-main">
+        <div className={`aviora-hub-main${embedded ? ' aviora-hub-main--embedded' : ''}`}>
           {mode === 'safety' ? (
             <>
               <ul className="aviora-hub-kpis" aria-label="Safety KPIs">
@@ -442,7 +511,7 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
               </ul>
 
               <div className="aviora-hub-section-head">
-                <h2 className="aviora-hub-section-h">Safety Observations (Today)</h2>
+                <h2 className="aviora-hub-section-h">Safety observations (today)</h2>
                 <button type="button" className="aviora-hub-viewall">
                   View All
                 </button>
@@ -466,7 +535,9 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
                       <p className="aviora-hub-obs-desc">{o.description}</p>
                       <div className="aviora-hub-obs-foot">
                         <span className={`aviora-hub-risk ${riskClass(o.risk)}`}>{riskLabel(o.risk)}</span>
-                        <span className={`aviora-hub-obs-st ${obsStatusClass(o.status)}`}>{o.statusLabel}</span>
+                        <span className={`aviora-hub-obs-st ${obsStatusClass(o.status)}`}>
+                          Status: {o.statusLabel}
+                        </span>
                       </div>
                     </div>
                   </article>
@@ -512,6 +583,14 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
                             <span className="aviora-hub-kpi-ic aviora-hub-kpi-ic--inv">
                               <FootGlyph icon="cam" />
                             </span>
+                          ) : k.icon === 'calendar' ? (
+                            <span className="aviora-hub-kpi-ic aviora-hub-kpi-ic--purple">
+                              <IconCalendar />
+                            </span>
+                          ) : k.icon === 'search' ? (
+                            <span className="aviora-hub-kpi-ic aviora-hub-kpi-ic--purple">
+                              <IconSearch />
+                            </span>
                           ) : null}
                           {k.label}
                         </span>
@@ -533,7 +612,7 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
               </ul>
 
               <div className="aviora-hub-section-head">
-                <h2 className="aviora-hub-section-h">Latest Security Events (Today)</h2>
+                <h2 className="aviora-hub-section-h">Latest security events (today)</h2>
                 <button type="button" className="aviora-hub-viewall">
                   View All
                 </button>
@@ -550,7 +629,10 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick, on
                       <p className="aviora-hub-sec-meta">
                         <IconPin /> {e.location} · {e.timeClock}
                       </p>
-                      <p className={`aviora-hub-sec-status aviora-hub-sec-status--${e.statusTone}`}>{e.statusLabel}</p>
+                      <p className="aviora-hub-sec-desc">{e.detail}</p>
+                      <p className={`aviora-hub-sec-status aviora-hub-sec-status--${e.statusTone}`}>
+                        Status: {e.statusLabel}
+                      </p>
                     </div>
                   </article>
                 ))}
