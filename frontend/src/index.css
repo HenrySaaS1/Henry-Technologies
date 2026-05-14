@@ -11539,8 +11539,13 @@ h3 {
 /* —— Aviora property drill-down (PR 101–103 reference) —— */
 .client-main.client-main--aviora-property-route {
   min-width: 0;
+  min-height: 0;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  background: #e2e8f0;
 }
 
 .aviora-prop {
@@ -11693,6 +11698,11 @@ h3 {
   gap: 0;
   min-height: 0;
   background: #e2e8f0;
+  align-items: stretch;
+}
+
+.aviora-prop-body > * {
+  min-height: 0;
 }
 
 @media (max-width: 1100px) {
@@ -11702,15 +11712,29 @@ h3 {
 }
 
 .aviora-prop-side {
-  padding: 1rem 1rem 1.1rem;
+  padding: 0.75rem 0.85rem 0.65rem;
   background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border-right: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.5rem;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
   color: #0f172a;
   box-shadow: inset 4px 0 0 transparent;
+}
+
+.aviora-prop-side-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding-right: 0.1rem;
+  margin-right: -0.1rem;
 }
 
 @media (max-width: 1100px) {
@@ -11732,7 +11756,48 @@ h3 {
   box-shadow: inset 4px 0 0 #dc2626;
 }
 
+.aviora-prop-side-panel--lead {
+  padding: 0;
+  overflow: hidden;
+}
+
+.aviora-prop-side-panel-hero {
+  aspect-ratio: 16 / 10;
+  background: #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.aviora-prop-side-panel-hero img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 13px 13px 0 0;
+}
+
+.aviora-prop-side-panel-body {
+  padding: 0.85rem 0.95rem 0.95rem;
+}
+
+.aviora-prop-side-panel-body .aviora-prop-person {
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  margin-bottom: 0;
+  border-top: 1px solid #eef2f7;
+}
+
+.aviora-prop-side-panel-body .aviora-prop-person:first-of-type {
+  border-top: none;
+  margin-top: 0.35rem;
+  padding-top: 0.35rem;
+}
+
+.aviora-prop-side-panel-body .aviora-prop-person:last-child {
+  padding-bottom: 0.05rem;
+}
+
 .aviora-prop-back {
+  flex-shrink: 0;
   font-size: 0.8rem;
   font-weight: 700;
   color: #1d4ed8;
@@ -11741,21 +11806,6 @@ h3 {
 
 .aviora-prop-back:hover {
   text-decoration: underline;
-}
-
-.aviora-prop-side-hero {
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-  aspect-ratio: 16 / 10;
-  background: #f1f5f9;
-}
-
-.aviora-prop-side-hero img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .aviora-prop-desc {
@@ -11780,7 +11830,7 @@ h3 {
 }
 
 .aviora-prop-side-panel--info {
-  margin-top: 0.15rem;
+  margin-top: 0;
 }
 
 .aviora-prop-side-head {
@@ -11807,9 +11857,14 @@ h3 {
 
 .aviora-prop-cols2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.65rem 1rem;
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
   align-items: start;
+}
+
+.aviora-prop-cols2--split {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.55rem 0.75rem;
 }
 
 .aviora-prop-cols2--delivery .aviora-prop-delivery-foot {
@@ -11824,7 +11879,7 @@ h3 {
 }
 
 .aviora-prop-current-status {
-  margin: 0 0 0.15rem;
+  margin: 0 0 0.45rem;
   font-size: 0.78rem;
   font-weight: 600;
   color: #475569;
@@ -11834,6 +11889,12 @@ h3 {
 .aviora-prop-current-status-val {
   font-weight: 800;
   color: #1d4ed8;
+}
+
+.aviora-prop-rt-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
 }
 
 .aviora-prop-stat-row {
@@ -11852,14 +11913,18 @@ h3 {
 .aviora-prop-stat-v {
   color: #0f172a;
   font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
 }
 
 .aviora-prop-stat-v--warn {
   color: #ea580c;
+  font-size: 1.02rem;
 }
 
 .aviora-prop-stat-v--bad {
   color: #dc2626;
+  font-size: 1.08rem;
 }
 
 .aviora-prop-info-line {
@@ -12014,9 +12079,11 @@ h3 {
 }
 
 .aviora-prop-side-foot {
+  flex-shrink: 0;
   margin-top: auto;
   padding-top: 0.65rem;
   border-top: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
 }
 
 .aviora-prop-side-clock {
@@ -12089,6 +12156,8 @@ h3 {
   padding: 0.85rem 0.85rem 1rem;
   background: #e8eef5;
   min-width: 0;
+  min-height: 0;
+  overflow: auto;
 }
 
 .aviora-prop-main--hub {
