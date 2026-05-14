@@ -748,6 +748,8 @@ const GLOBAL_SITES = [
     operationalLabel: 'WATCH',
     building: {
       name: 'Harland Malaysia',
+      /** Top bar shows building name only (no date/time line under the title). */
+      omitTopbarLocal: true,
       // Site-specific floor plan image (user provided).
       floorPlanSrc: `${import.meta.env.BASE_URL}site-floor-plan-my.png`,
       footerBlurb: {
@@ -3474,16 +3476,18 @@ function BuildingSitePageView({
         className="client-building-dialog client-building-dialog--route-page"
         role="region"
         aria-labelledby="client-building-title"
-        aria-describedby="client-building-local"
+        aria-describedby={b.omitTopbarLocal ? undefined : 'client-building-local'}
       >
         <div className="client-building-topbar">
           <div className="client-building-topbar-brand">
             <h2 id="client-building-title" className="client-building-name">
               {b.name}
             </h2>
-            <p id="client-building-local" className="client-building-topbar-local">
-              {localLine}
-            </p>
+            {!b.omitTopbarLocal ? (
+              <p id="client-building-local" className="client-building-topbar-local">
+                {localLine}
+              </p>
+            ) : null}
           </div>
           <button type="button" className="client-building-close" onClick={onClose} aria-label="Back to workspace overview">
             ×
