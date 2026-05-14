@@ -485,12 +485,6 @@ const solutions = [
 
 const products = [
   {
-    slug: 'systems',
-    title: 'Systems',
-    text: 'A unified view of your entire plant, powered by IIoT. Monitor machines, equipment, and workflows in real time to optimize performance and reduce downtime.',
-    image: PRODUCT_IMAGES.systems,
-  },
-  {
     slug: 'safety',
     title: 'Safety',
     text: 'Proactively detect and prevent safety risks on the factory floor. From boundary violations to unsafe behaviors, stay compliant and protect your workforce at all times.',
@@ -503,6 +497,12 @@ const products = [
     image: PRODUCT_IMAGES.security,
   },
   {
+    slug: 'systems',
+    title: 'Systems',
+    text: 'A unified view of your entire plant, powered by IIoT. Monitor machines, equipment, and workflows in real time to optimize performance and reduce downtime.',
+    image: PRODUCT_IMAGES.systems,
+  },
+  {
     slug: 'myhenry-agent',
     title: 'MyHenry Agent',
     text: 'Your personalised AI agent trained on your business. Get instant answers, insights, and recommendations across operations, HR, finance, and more, tailored to your workflows.',
@@ -511,28 +511,6 @@ const products = [
 ]
 
 const productDetails = [
-  {
-    slug: 'systems',
-    title: 'Systems',
-    intro:
-      'HENRY Systems connects your entire plant through IIoT, providing a unified operational view. From machines to workflows, monitor everything in real time to optimise efficiency and reduce downtime.',
-    body:
-      'Designed for modern manufacturing, Systems brings clarity and control to complex operations.',
-    bullets: [
-      'Machine Monitoring: Track equipment performance in real time',
-      'IIoT Integration: Seamlessly connect sensors, PLCs, and devices',
-      'Downtime Analysis: Identify and reduce operational inefficiencies',
-      'Centralised Dashboard: View all systems in one unified interface',
-      'Performance Optimisation: Improve output with data-driven insights',
-    ],
-    benefits: [
-      'Increase production efficiency',
-      'Identify bottlenecks quickly',
-      'Reduce operational costs',
-      'Improve decision-making with accurate data',
-    ],
-    image: PRODUCT_IMAGES.systems,
-  },
   {
     slug: 'safety',
     title: 'Safety',
@@ -576,6 +554,28 @@ const productDetails = [
       'Gain full control over business performance',
     ],
     image: PRODUCT_IMAGES.security,
+  },
+  {
+    slug: 'systems',
+    title: 'Systems',
+    intro:
+      'HENRY Systems connects your entire plant through IIoT, providing a unified operational view. From machines to workflows, monitor everything in real time to optimise efficiency and reduce downtime.',
+    body:
+      'Designed for modern manufacturing, Systems brings clarity and control to complex operations.',
+    bullets: [
+      'Machine Monitoring: Track equipment performance in real time',
+      'IIoT Integration: Seamlessly connect sensors, PLCs, and devices',
+      'Downtime Analysis: Identify and reduce operational inefficiencies',
+      'Centralised Dashboard: View all systems in one unified interface',
+      'Performance Optimisation: Improve output with data-driven insights',
+    ],
+    benefits: [
+      'Increase production efficiency',
+      'Identify bottlenecks quickly',
+      'Reduce operational costs',
+      'Improve decision-making with accurate data',
+    ],
+    image: PRODUCT_IMAGES.systems,
   },
   {
     slug: 'myhenry-agent',
@@ -1569,8 +1569,8 @@ function App() {
           </div>
         </div>
         <div className="snapshot-mobile-actions">
-          <a className="btn-primary snapshot-mobile-cta" href="/products#systems">
-            Explore Systems
+          <a className="btn-primary snapshot-mobile-cta" href="/products#safety">
+            Explore SnapShot
           </a>
           <span className="snapshot-mobile-hint-scroll" aria-hidden="true">
             ← Swipe for more →
@@ -1644,7 +1644,7 @@ function App() {
           <button
             type="button"
             className="products-snapshot-hero-cta"
-            onClick={() => scrollToProductDetail('systems')}
+            onClick={() => scrollToProductDetail('safety')}
           >
             Explore SnapShot <span aria-hidden="true">→</span>
           </button>
