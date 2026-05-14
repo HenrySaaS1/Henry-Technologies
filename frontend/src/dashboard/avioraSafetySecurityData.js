@@ -1,13 +1,14 @@
 /**
  * Demo content for Aviora Safety & Security hub (Greenfield Heights · PR 102).
+ * Safety observation photos: `aviora-safety-*.png` (stakeholder assets in repo).
  */
 
 import siteGreenfield from '../assets/uploads/aviora-site-greenfield-heights.jpg'
-import imgScaffolding from '../assets/uploads/harland-cts1100.png'
-import imgWetSpill from '../assets/uploads/safety-floor-spill.png'
-import imgHotCut from '../assets/uploads/harland-528-coater.png'
-import imgWalkway from '../assets/uploads/safety-clear-walkway.png'
-import imgBlockedExit from '../assets/uploads/safety-blocked-exit.png'
+import imgScaffold from '../assets/uploads/aviora-safety-scaffolding.png'
+import imgWetConcrete from '../assets/uploads/aviora-safety-wet-concrete.png'
+import imgPpeHotwork from '../assets/uploads/aviora-safety-hot-work.png'
+import imgWalkway from '../assets/uploads/aviora-safety-walkway.png'
+import imgBlockedExit from '../assets/uploads/aviora-safety-blocked-exit.png'
 
 import imgGate2Night from '../assets/uploads/aviora-security-gate2-night.png'
 import imgYardNight from '../assets/uploads/aviora-security-yard-night.png'
@@ -172,7 +173,7 @@ export const AVIORA_SAFETY_OBSERVATIONS = [
     status: 'open',
     statusLabel: 'Open',
     topBadge: 'Violation',
-    imageSrc: imgScaffolding,
+    imageSrc: imgScaffold,
   },
   {
     id: 'spill',
@@ -184,7 +185,7 @@ export const AVIORA_SAFETY_OBSERVATIONS = [
     status: 'open',
     statusLabel: 'Open',
     topBadge: 'Violation',
-    imageSrc: imgWetSpill,
+    imageSrc: imgWetConcrete,
   },
   {
     id: 'ppe',
@@ -196,7 +197,7 @@ export const AVIORA_SAFETY_OBSERVATIONS = [
     status: 'in_progress',
     statusLabel: 'In Progress',
     topBadge: 'Violation',
-    imageSrc: imgHotCut,
+    imageSrc: imgPpeHotwork,
   },
   {
     id: 'walk',
