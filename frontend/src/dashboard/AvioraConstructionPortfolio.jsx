@@ -17,6 +17,31 @@ const PROJECT_VISUALS = {
   riverstone: { lead: leadMayaSingh, site: siteImgRiverstone, leadObjectPosition: '50% 16%' },
 }
 
+/** @param {Date} tick @param {string} iana */
+function siteClock24(tick, iana) {
+  try {
+    return tick.toLocaleTimeString('en-US', {
+      timeZone: iana,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      hourCycle: 'h23',
+    })
+  } catch {
+    return '—'
+  }
+}
+
+/** @param {Date} tick @param {string} iana */
+function siteTimeZoneAbbrev(tick, iana) {
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone: iana, timeZoneName: 'short' }).formatToParts(tick)
+    return parts.find((x) => x.type === 'timeZoneName')?.value ?? ''
+  } catch {
+    return ''
+  }
+}
+
 function leadInitials(name) {
   const parts = String(name || '')
     .trim()
@@ -60,46 +85,78 @@ function IcCloud() {
   )
 }
 
-function IcShield() {
-  return (
-    <svg className="aviora-port-ico aviora-port-ico--blue" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <path fill="currentColor" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-    </svg>
-  )
+function avioraAccentFromTone(tone) {
+  if (tone === 'operational') return { main: '#16a34a', track: '#dcfce7' }
+  if (tone === 'monitoring') return { main: '#ea580c', track: '#ffedd5' }
+  return { main: '#dc2626', track: '#fee2e2' }
 }
 
-function IcHelmet() {
-  return (
-    <svg className="aviora-port-ico aviora-port-ico--teal" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M12 2C8.13 2 5 5.13 5 9v1h14V9c0-3.87-3.13-7-7-7zm-1 12H9v2h2v-2zm2 0h2v2h-2v-2zm6-4H5v6c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-6z"
-      />
-    </svg>
-  )
+/** @param {'High' | 'Medium' | 'N/A'} level */
+function avioraSecurityBarHeights(level) {
+  if (level === 'High') return [38, 50, 62, 76, 92]
+  if (level === 'Medium') return [32, 42, 50, 58, 66]
+  return [16, 18, 14, 20, 16]
 }
 
-function IcWarn() {
-  return (
-    <svg className="aviora-port-ico aviora-port-ico--orange" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-    </svg>
-  )
+function avioraSparkPercents(projectId, base) {
+  const seed = String(projectId)
+    .split('')
+    .reduce((a, c) => a + c.charCodeAt(0), 0)
+  return Array.from({ length: 8 }, (_, i) => {
+    const w = Math.sin(seed * 0.07 + i * 0.55) * 3.2 + (i - 3.5) * 0.4
+    return Math.round(Math.max(52, Math.min(100, base + w)))
+  })
 }
 
-function IcCalSm() {
+/** @param {'operational' | 'monitoring' | 'risk'} statusKey */
+function avioraStatusStepperFill(statusKey) {
+  if (statusKey === 'operational') return 4
+  if (statusKey === 'monitoring') return 3
+  if (statusKey === 'risk') return 1
+  return 2
+}
+
+/** @param {'operational' | 'monitoring' | 'risk'} statusKey */
+function avioraPillarStatusCaption(statusKey) {
+  if (statusKey === 'operational') return 'Operational'
+  if (statusKey === 'monitoring') return 'Monitoring'
+  return 'At risk'
+}
+
+/** @param {{ value: number; max?: number; color: string; track: string; size?: number; label: string }} props */
+function PortfolioMiniDonut({ value, max = 100, color, track, size = 64, label }) {
+  const safe = Math.max(0, Math.min(100, Math.round((Number(value) / Number(max)) * 100) || 0))
+  const r = size / 2 - 7
+  const cx = size / 2
+  const cy = size / 2
+  const circ = 2 * Math.PI * r
+  const dash = (safe / 100) * circ
   return (
-    <svg className="aviora-port-ico aviora-port-ico--green" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"
-      />
-    </svg>
+    <div className="aviora-port-mini-donut" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
+        <circle cx={cx} cy={cy} r={r} stroke={track} strokeWidth="7" fill="none" />
+        <circle
+          cx={cx}
+          cy={cy}
+          r={r}
+          stroke={color}
+          strokeWidth="7"
+          fill="none"
+          strokeDasharray={`${dash} ${circ - dash}`}
+          strokeDashoffset={circ / 4}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${cx} ${cy})`}
+        />
+      </svg>
+      <div className="aviora-port-mini-donut-cap">
+        <strong>{label}</strong>
+      </div>
+    </div>
   )
 }
 
 function CompletionRing({ pct, tone }) {
-  const size = 112
+  const size = 100
   const r = (size / 2) - 10
   const cx = size / 2
   const cy = size / 2
@@ -136,12 +193,36 @@ function CompletionRing({ pct, tone }) {
   )
 }
 
-function ProjectCard({ p, visuals }) {
+function ProjectCard({ p, visuals, nowTick }) {
   const tone = p.statusKey === 'operational' ? 'operational' : p.statusKey === 'monitoring' ? 'monitoring' : 'risk'
   const statusLabel =
     p.statusKey === 'operational' ? 'OPERATIONAL' : p.statusKey === 'monitoring' ? 'MONITORING' : 'AT RISK'
   const leadSrc = visuals?.lead
   const siteSrc = visuals?.site
+  const tick = nowTick ?? new Date()
+  const tz = typeof p.siteTimeZone === 'string' ? p.siteTimeZone : 'America/Chicago'
+  const siteHhmm = siteClock24(tick, tz)
+  const siteTzAbbr = siteTimeZoneAbbrev(tick, tz)
+  const pillars = p.pillars
+  const accent = avioraAccentFromTone(tone)
+  const secLevel = pillars?.securityLevel ?? 'N/A'
+  const secBars = avioraSecurityBarHeights(secLevel)
+  const systemsPct = pillars?.systemsPct ?? 0
+  const sparkPts = avioraSparkPercents(p.id, systemsPct)
+  const wSp = 72
+  const hSp = 30
+  const sparkMin = Math.min(...sparkPts)
+  const sparkSpan = Math.max(1, Math.max(...sparkPts) - sparkMin)
+  const sparkLinePts = sparkPts
+    .map((pt, i) => {
+      const x = 4 + (i / Math.max(1, sparkPts.length - 1)) * (wSp - 8)
+      const y = hSp - 4 - ((pt - sparkMin) / sparkSpan) * (hSp - 8)
+      return `${x},${y}`
+    })
+    .join(' ')
+  const stepFill = avioraStatusStepperFill(p.statusKey)
+  const statusCaption = avioraPillarStatusCaption(p.statusKey)
+  const safetyVal = pillars?.safetyPct ?? 0
 
   return (
     <Link
@@ -172,6 +253,11 @@ function ProjectCard({ p, visuals }) {
           </div>
         </div>
         <div className="aviora-port-card-title-text">
+          <p className="aviora-port-project-site-time" title={`Local time at ${p.location}`}>
+            <span className="aviora-port-project-site-time-k">Site time</span>
+            <strong className="aviora-port-project-site-time-val">{siteHhmm}</strong>
+            {siteTzAbbr ? <span className="aviora-port-project-site-time-z">{siteTzAbbr}</span> : null}
+          </p>
           <h3 className="aviora-port-project-name">{p.name}</h3>
           <p className="aviora-port-project-loc">
             <span aria-hidden="true">📍</span> {p.location}
@@ -230,34 +316,61 @@ function ProjectCard({ p, visuals }) {
         </div>
       </div>
 
-      <div className="aviora-port-metrics4">
-        <div className="aviora-port-m4">
-          <IcCalSm />
-          <span className="aviora-port-m4-label">Schedule adherence</span>
-          <strong>
-            {p.schedule.pct}% <span className="aviora-port-m4-sub">{p.schedule.status}</span>
-          </strong>
+      <div className="aviora-port-pillars" aria-label="Safety, security, systems, and status">
+        <div className="aviora-port-pcol">
+          <span className="aviora-port-pcap">Safety</span>
+          <PortfolioMiniDonut
+            value={safetyVal}
+            max={100}
+            color={accent.main}
+            track={accent.track}
+            size={64}
+            label={`${safetyVal}%`}
+          />
         </div>
-        <div className="aviora-port-m4">
-          <IcShield />
-          <span className="aviora-port-m4-label">Quality score</span>
-          <strong>
-            {p.quality.pct}% <span className="aviora-port-m4-sub">{p.quality.status}</span>
-          </strong>
+        <div className="aviora-port-pcol">
+          <span className="aviora-port-pcap">Security</span>
+          <div
+            className={`aviora-port-sec-bars${secLevel === 'N/A' ? ' aviora-port-sec-bars--na' : ''}`}
+            style={secLevel !== 'N/A' ? { ['--aviora-sec-bar']: accent.main } : undefined}
+            aria-hidden="true"
+          >
+            {secBars.map((pct, i) => (
+              <span key={i} className="aviora-port-sec-bar" style={{ height: `${pct}%` }} />
+            ))}
+          </div>
+          <span className="aviora-port-pfoot">{secLevel}</span>
         </div>
-        <div className="aviora-port-m4">
-          <IcHelmet />
-          <span className="aviora-port-m4-label">Safety score</span>
-          <strong>
-            {p.safety.pct}% <span className="aviora-port-m4-sub">{p.safety.status}</span>
-          </strong>
+        <div className="aviora-port-pcol">
+          <span className="aviora-port-pcap">Systems</span>
+          <svg className="aviora-port-spark" viewBox={`0 0 ${wSp} ${hSp}`} preserveAspectRatio="none" aria-hidden="true">
+            <polyline
+              points={sparkLinePts}
+              fill="none"
+              stroke={accent.main}
+              strokeWidth="2"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+          </svg>
+          <span className="aviora-port-pfoot">{systemsPct}%</span>
         </div>
-        <div className="aviora-port-m4">
-          <IcWarn />
-          <span className="aviora-port-m4-label">Open issues</span>
-          <strong>
-            {p.issues.count} <span className="aviora-port-m4-sub">{p.issues.level}</span>
-          </strong>
+        <div className="aviora-port-pcol">
+          <span className="aviora-port-pcap">Status</span>
+          <div className="aviora-port-status-stepper" aria-hidden="true">
+            {[0, 1, 2, 3].map((i) => (
+              <span
+                key={i}
+                className={`aviora-port-status-dot${i < stepFill ? ' is-on' : ''}`}
+                style={
+                  i < stepFill
+                    ? { background: accent.main, borderColor: accent.main }
+                    : undefined
+                }
+              />
+            ))}
+          </div>
+          <span className="aviora-port-pfoot">{statusCaption}</span>
         </div>
       </div>
 
@@ -277,7 +390,11 @@ function ProjectCard({ p, visuals }) {
 export default function AvioraConstructionPortfolio({ companyName, nowTick }) {
   const tick = nowTick ?? new Date()
   const today = tick.toLocaleDateString(undefined, { dateStyle: 'long' })
-  const time = tick.toLocaleTimeString(undefined, { timeStyle: 'short' })
+  const timeWithTz = tick.toLocaleTimeString(undefined, {
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  })
   const f = AVIORA_PORTFOLIO_FOOTER
 
   return (
@@ -285,27 +402,22 @@ export default function AvioraConstructionPortfolio({ companyName, nowTick }) {
       <header className="aviora-port-header">
         <div>
           <h2 className="aviora-port-brand">{companyName}</h2>
-          <p className="aviora-port-tag">
-            Portfolio overview – property leadership, build progress, site health, and schedule performance.
-          </p>
         </div>
         <div className="aviora-port-header-meta">
-          <div>
+          <div className="aviora-port-meta-pill">
             <span className="aviora-port-meta-label">Today&apos;s date</span>
             <strong>{today}</strong>
           </div>
-          <div>
+          <div className="aviora-port-meta-pill">
             <span className="aviora-port-meta-label">Local time</span>
-            <strong>
-              {time} <span className="aviora-port-tz">CDT</span>
-            </strong>
+            <strong>{timeWithTz}</strong>
           </div>
         </div>
       </header>
 
       <div className="aviora-port-grid">
         {AVIORA_CONSTRUCTION_PROJECTS.map((p) => (
-          <ProjectCard key={p.id} p={p} visuals={PROJECT_VISUALS[p.id]} />
+          <ProjectCard key={p.id} p={p} visuals={PROJECT_VISUALS[p.id]} nowTick={tick} />
         ))}
       </div>
 

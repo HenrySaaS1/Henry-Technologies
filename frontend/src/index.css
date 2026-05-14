@@ -11369,41 +11369,46 @@ h3 {
 }
 
 .aviora-port-brand {
-  margin: 0 0 0.35rem;
-  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+  margin: 0;
+  font-size: clamp(1.05rem, 2.1vw, 1.32rem);
   font-weight: 900;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.aviora-port-tag {
-  margin: 0;
-  max-width: 44rem;
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: rgba(226, 232, 240, 0.92);
-}
-
 .aviora-port-header-meta {
   display: flex;
-  gap: 1.35rem;
+  gap: 0.65rem;
   flex-wrap: wrap;
-  font-size: 0.78rem;
+  align-items: center;
+  font-size: 0.72rem;
+}
+
+.aviora-port-meta-pill {
+  padding: 0.42rem 0.75rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(91, 33, 182, 0.42), rgba(76, 29, 149, 0.38));
+  border: 1px solid rgba(196, 181, 253, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.aviora-port-meta-pill strong {
+  display: block;
+  margin-top: 0.06rem;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #f5f3ff;
+  letter-spacing: 0.01em;
 }
 
 .aviora-port-meta-label {
   display: block;
-  font-size: 0.58rem;
+  font-size: 0.52rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.95);
-  margin-bottom: 0.12rem;
-}
-
-.aviora-port-tz {
-  font-weight: 600;
-  color: rgba(148, 163, 184, 0.95);
+  color: rgba(221, 214, 254, 0.95);
+  margin-bottom: 0;
 }
 
 .aviora-port-grid {
@@ -11417,18 +11422,6 @@ h3 {
 @media (max-width: 1100px) {
   .aviora-port-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 1280px) {
-  .aviora-port-lead-photo {
-    width: 3.85rem;
-    height: 3.85rem;
-  }
-
-  .aviora-port-site-thumb {
-    width: 5.85rem;
-    height: 3.9rem;
   }
 }
 
@@ -11520,9 +11513,40 @@ h3 {
   min-width: 0;
 }
 
+.aviora-port-project-site-time {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.28rem 0.4rem;
+  margin: 0 0 0.32rem;
+  font-size: 0.62rem;
+  line-height: 1.25;
+}
+
+.aviora-port-project-site-time-k {
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.aviora-port-project-site-time-val {
+  font-size: 0.78rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: #0f172a;
+  letter-spacing: 0.03em;
+}
+
+.aviora-port-project-site-time-z {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
 .aviora-port-project-name {
   margin: 0 0 0.18rem;
-  font-size: clamp(1.12rem, 2.1vw, 1.28rem);
+  font-size: clamp(0.98rem, 1.65vw, 1.12rem);
   font-weight: 900;
   color: #0f172a;
   line-height: 1.2;
@@ -11530,14 +11554,14 @@ h3 {
 
 .aviora-port-project-loc {
   margin: 0 0 0.22rem;
-  font-size: 0.84rem;
+  font-size: 0.76rem;
   color: #64748b;
   font-weight: 600;
 }
 
 .aviora-port-project-lead {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: #64748b;
 }
 .aviora-port-project-lead strong {
@@ -11546,8 +11570,8 @@ h3 {
 }
 
 .aviora-port-lead-photo {
-  width: 4.25rem;
-  height: 4.25rem;
+  width: 3.65rem;
+  height: 3.65rem;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
@@ -11590,20 +11614,20 @@ h3 {
   height: 100%;
   object-fit: cover;
   object-position: 50% 16%;
-  transform: scale(1.22);
+  transform: scale(1.08);
   transform-origin: 50% 32%;
 }
 
 .aviora-port-lead-photo-fallback {
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 900;
   color: #fff;
   letter-spacing: 0.02em;
 }
 
 .aviora-port-site-thumb {
-  width: 6.75rem;
-  height: 4.5rem;
+  width: 6.1rem;
+  height: 4.05rem;
   border-radius: 10px;
   overflow: hidden;
   flex-shrink: 0;
@@ -11752,43 +11776,134 @@ h3 {
   line-height: 1;
 }
 
-.aviora-port-metrics4 {
+.aviora-port-pillars {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.4rem;
-  margin-bottom: 0.55rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.35rem 0.2rem;
+  padding: 0.5rem 0 0.55rem;
+  margin-bottom: 0.5rem;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #eef2f7;
 }
 
-.aviora-port-m4 {
+.aviora-port-pcol {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.12rem;
-  padding: 0.38rem 0.42rem;
-  border-radius: 10px;
-  background: #f8fafc;
-  border: 1px solid #eef2f7;
+  align-items: center;
+  text-align: center;
+  padding: 0 0.15rem;
+  border-left: 1px solid #e2e8f0;
+  min-width: 0;
 }
 
-.aviora-port-m4-label {
+.aviora-port-pcol:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.aviora-port-pcap {
   font-size: 0.54rem;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: #64748b;
+  margin-bottom: 0.22rem;
 }
 
-.aviora-port-m4 strong {
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: #0f172a;
-}
-
-.aviora-port-m4-sub {
-  font-size: 0.66rem;
+.aviora-port-pfoot {
+  margin-top: 0.22rem;
+  font-size: 0.64rem;
   font-weight: 700;
-  color: #64748b;
-  margin-left: 0.15rem;
+  color: #334155;
+  line-height: 1.2;
+}
+
+.aviora-port-mini-donut {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aviora-port-mini-donut-cap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.aviora-port-mini-donut-cap strong {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.aviora-port-sec-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  height: 2.5rem;
+  width: 100%;
+  margin: 0.1rem 0;
+}
+
+.aviora-port-sec-bar {
+  width: 5px;
+  min-height: 4px;
+  border-radius: 2px 2px 0 0;
+  background: var(--aviora-sec-bar, #64748b);
+  align-self: flex-end;
+}
+
+.aviora-port-sec-bars--na .aviora-port-sec-bar {
+  background: #cbd5e1;
+}
+
+.aviora-port-spark {
+  display: block;
+  width: 100%;
+  height: 2.15rem;
+  margin: 0.12rem 0 0.05rem;
+}
+
+.aviora-port-status-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  height: 2.15rem;
+  margin: 0.12rem 0 0.05rem;
+}
+
+.aviora-port-status-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  background: #f1f5f9;
+}
+
+.aviora-port-status-dot.is-on {
+  border-width: 2px;
+}
+
+@media (max-width: 520px) {
+  .aviora-port-pillars {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aviora-port-pcol {
+    border-left: none;
+    padding: 0.25rem 0.1rem;
+  }
+
+  .aviora-port-pcol:nth-child(odd) {
+    border-right: 1px solid #e2e8f0;
+  }
 }
 
 .aviora-port-card-foot {
@@ -13138,10 +13253,12 @@ h3 {
 }
 
 .aviora-hub-top-inner--embedded {
+  display: grid;
   grid-template-columns: minmax(0, 1fr);
   justify-items: start;
-  padding: 0.5rem 0.85rem 0.62rem;
+  align-items: center;
   gap: 0.35rem;
+  padding: 0.5rem 0.85rem 0.62rem;
 }
 
 .aviora-hub-top-inner--embedded.aviora-hub-top-inner--security {
@@ -13150,6 +13267,7 @@ h3 {
 
 .aviora-hub-top-inner--embedded .aviora-hub-title-block {
   width: 100%;
+  min-width: 0;
 }
 
 .aviora-hub-prop-pick {
