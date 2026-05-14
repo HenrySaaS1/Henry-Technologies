@@ -11602,7 +11602,7 @@ h3 {
 
 .aviora-prop-page-title {
   margin: 0 0 0.5rem;
-  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  font-size: clamp(0.92rem, 1.85vw, 1.15rem);
   font-weight: 900;
   color: #f8fafc;
   line-height: 1.2;
@@ -12050,10 +12050,10 @@ h3 {
 
 .aviora-prop-pkg-name {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 900;
+  font-size: 0.88rem;
+  font-weight: 800;
   color: #0f172a;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .aviora-prop-pkg-sub {
@@ -12103,8 +12103,8 @@ h3 {
   width: 100%;
   border-radius: 8px;
   overflow: hidden;
-  aspect-ratio: 16 / 10;
-  min-height: 7.5rem;
+  aspect-ratio: 4 / 3;
+  min-height: clamp(9rem, 24vw, 13rem);
   background: #f1f5f9;
 }
 
@@ -12130,24 +12130,26 @@ h3 {
 
 .aviora-prop-pkg-metric-label {
   display: block;
-  font-size: 0.54rem;
+  font-size: 0.5rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #64748b;
-  margin-bottom: 0.08rem;
+  margin-bottom: 0.06rem;
 }
 
 .aviora-prop-pkg-pct {
-  font-size: 1.18rem;
-  font-weight: 900;
+  font-size: 0.95rem;
+  font-weight: 800;
   color: #0f172a;
+  letter-spacing: -0.02em;
 }
 
 .aviora-prop-pkg-metrics strong {
-  font-size: 0.8rem;
-  font-weight: 800;
+  font-size: 0.72rem;
+  font-weight: 700;
   color: #0f172a;
+  line-height: 1.25;
 }
 
 .aviora-prop-pkg-var--ok {
@@ -12190,15 +12192,15 @@ h3 {
 
 .aviora-prop-pkg-bar-cap {
   margin: 0;
-  font-size: 0.64rem;
-  font-weight: 700;
+  font-size: 0.58rem;
+  font-weight: 600;
   color: #64748b;
   display: flex;
   justify-content: space-between;
 }
 
 .aviora-prop-pkg-bar-cap span {
-  font-weight: 900;
+  font-weight: 800;
   color: #334155;
 }
 
