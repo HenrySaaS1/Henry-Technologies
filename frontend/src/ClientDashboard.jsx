@@ -745,6 +745,7 @@ const GLOBAL_SITES = [
     address: 'TBD',
     phoneDisplay: '+1 (952) 941-0475',
     phoneTel: '+19529410475',
+    operationalLabel: 'WATCH',
     building: {
       name: 'Harland Malaysia',
       // Site-specific floor plan image (user provided).
@@ -758,6 +759,8 @@ const GLOBAL_SITES = [
         {
           id: 'my-placeholder',
           label: 'Future production zone',
+          /** Floor plan artwork already includes this title — hide HTML label to avoid doubling. */
+          omitMapLabel: true,
           pct: { left: 50, top: 28, width: 32, height: 34 },
           machinery: {
             title: 'Placeholder zone',
@@ -1560,6 +1563,302 @@ function SitePhoneIcon() {
         d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
       />
     </svg>
+  )
+}
+
+function SiteMapPinIcon() {
+  return (
+    <svg className="client-harland-fp-ico" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"
+      />
+    </svg>
+  )
+}
+
+function SiteEnvelopeIcon() {
+  return (
+    <svg className="client-harland-fp-ico" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5L4 8V6l8 5 8-5v2z" />
+    </svg>
+  )
+}
+
+function harlandAccentFromLight(light) {
+  if (light === 'green') return { main: '#43a12a', track: '#dcfce7' }
+  if (light === 'amber') return { main: '#ea580c', track: '#ffedd5' }
+  if (light === 'red') return { main: '#94a3b8', track: '#e2e8f0' }
+  return { main: '#5b21b6', track: '#ede9fe' }
+}
+
+function harlandSecurityLevel(snap) {
+  const light = snap.light ?? 'off'
+  if (light === 'red') return 'N/A'
+  if (light === 'amber') return 'Medium'
+  const esc = snap.escalations ?? 0
+  if (esc >= 2) return 'Medium'
+  return 'High'
+}
+
+function harlandSecurityBarHeights(level) {
+  if (level === 'High') return [38, 50, 62, 76, 92]
+  if (level === 'Medium') return [32, 42, 50, 58, 66]
+  return [16, 18, 14, 20, 16]
+}
+
+function harlandSparkPercents(siteId, base) {
+  const seed = String(siteId)
+    .split('')
+    .reduce((a, c) => a + c.charCodeAt(0), 0)
+  return Array.from({ length: 8 }, (_, i) => {
+    const w = Math.sin(seed * 0.07 + i * 0.55) * 3.2 + (i - 3.5) * 0.4
+    return Math.round(Math.max(52, Math.min(100, base + w)))
+  })
+}
+
+function harlandStatusStepperFilled(light) {
+  if (light === 'green') return 4
+  if (light === 'amber') return 3
+  if (light === 'red') return 1
+  return 2
+}
+
+function harlandCardStatusCaption(opLabel) {
+  const u = String(opLabel || '').toUpperCase()
+  if (u === 'WATCH' || u === 'INACTIVE') return 'Inactive'
+  if (u === 'MONITORING') return 'Monitoring'
+  if (u === 'OPERATIONAL') return 'Operational'
+  const s = String(opLabel || '').trim()
+  if (!s) return '—'
+  return s.charAt(0) + s.slice(1).toLowerCase()
+}
+
+function harlandDemoSiteEmail(site) {
+  if (site.leadEmail) return site.leadEmail
+  return `${String(site.id || 'site').toUpperCase()}@HMS.COM`
+}
+
+/** SnapStat-style footprint card (Harland Overview / Locations). */
+function HarlandFootprintSiteCard({ site, snap, nowTick, onOpenBuilding, onOpenAvioraProperty }) {
+  const light = snap.light ?? 'off'
+  const opLabel = site.operationalLabel ?? siteOperationalLabel(light)
+  const accent = harlandAccentFromLight(light)
+  const fc = String(site.flagCode || '').toLowerCase()
+  const inactive = light === 'red'
+  const safetyPct = inactive || snap.quality == null ? null : Math.round(Number(snap.quality))
+  const securityLevel = harlandSecurityLevel(snap)
+  const systemsPct =
+    inactive || site.efficiency == null ? null : Math.round(Number(site.efficiency))
+  const sparkPts = harlandSparkPercents(site.id, systemsPct ?? 88)
+  const sparkMin = Math.min(...sparkPts)
+  const sparkSpan = Math.max(1, Math.max(...sparkPts) - sparkMin)
+  const w = 88
+  const h = 36
+  const sparkLinePts = sparkPts
+    .map((p, i) => {
+      const x = 4 + (i / Math.max(1, sparkPts.length - 1)) * (w - 8)
+      const y = h - 5 - ((p - sparkMin) / sparkSpan) * (h - 10)
+      return `${x},${y}`
+    })
+    .join(' ')
+  const secBars = harlandSecurityBarHeights(securityLevel)
+  const stepFill = harlandStatusStepperFilled(light)
+  const cardMods = [
+    'client-site-card',
+    'client-site-card--fp',
+    'client-site-card--harland-fp',
+    inactive ? 'client-site-card--harland-fp-inactive' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  return (
+    <article className={cardMods}>
+      <button
+        type="button"
+        className="client-site-card-main client-site-card-main--harland-fp"
+        onClick={() => {
+          if (site.avioraPropertyId && onOpenAvioraProperty) {
+            onOpenAvioraProperty(site.avioraPropertyId)
+            return
+          }
+          onOpenBuilding(site)
+        }}
+        aria-label={
+          site.avioraPropertyId
+            ? `Open property dashboard for ${site.country}`
+            : `Open building view for ${site.country}`
+        }
+      >
+        <div className="client-harland-fp-top">
+          <div className="client-harland-fp-status">
+            <SiteTrafficLight active={light === 'off' ? null : light} label={opLabel} />
+            <span className={`client-harland-fp-status-txt client-harland-fp-status-txt--${light}`}>
+              {opLabel}
+            </span>
+          </div>
+          <div className="client-harland-fp-clock">
+            <div className="client-harland-fp-flag" title={site.country}>
+              <span className="client-site-flag-emoji" aria-hidden="true">
+                {site.flagEmoji || '🏳️'}
+              </span>
+              <img
+                className="client-site-flag-img"
+                src={`https://flagcdn.com/w80/${fc}.png`}
+                srcSet={`https://flagcdn.com/w160/${fc}.png 2x`}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                }}
+              />
+            </div>
+            <div className="client-harland-fp-clock-text">
+              <strong>{formatSiteShortTime(nowTick, site.timeZone)}</strong>
+              <span>Local time</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="client-harland-fp-lead">
+          <div className="client-site-fp-photo" aria-hidden="true">
+            {site.leadPhoto ? (
+              <img
+                src={site.leadPhoto}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                style={site.leadPhotoFocus ? { objectPosition: site.leadPhotoFocus } : undefined}
+              />
+            ) : (
+              <span className="client-site-fp-photo-ph">{leadInitials(site.leadName)}</span>
+            )}
+          </div>
+          <div className="client-harland-fp-lead-copy">
+            <h3 className="client-site-country client-site-country--harland-fp">{site.country}</h3>
+            <p className="client-harland-fp-lead-name">
+              <strong>{site.leadName}</strong>
+            </p>
+            <p className="client-harland-fp-lead-role">{site.leadRole || 'Site Leader'}</p>
+          </div>
+        </div>
+
+        <div className="client-harland-fp-metrics">
+          <div className="client-harland-fp-mcol">
+            <span className="client-harland-fp-mcap">Safety</span>
+            {safetyPct != null ? (
+              <MiniDonut
+                value={safetyPct}
+                max={100}
+                color={accent.main}
+                track={accent.track}
+                size={72}
+                label={`${safetyPct}%`}
+              />
+            ) : (
+              <div className="client-harland-fp-na-donut" aria-hidden="true">
+                <span>N/A</span>
+              </div>
+            )}
+          </div>
+          <div className="client-harland-fp-mcol">
+            <span className="client-harland-fp-mcap">Security</span>
+            <div
+              className={`client-harland-fp-sec-bars${securityLevel === 'N/A' ? ' client-harland-fp-sec-bars--na' : ''}`}
+              style={securityLevel !== 'N/A' ? { ['--harland-bar']: accent.main } : undefined}
+              aria-hidden="true"
+            >
+              {secBars.map((pct, i) => (
+                <span key={i} className="client-harland-fp-sec-bar" style={{ height: `${pct}%` }} />
+              ))}
+            </div>
+            <span className="client-harland-fp-mfoot">{securityLevel}</span>
+          </div>
+          <div className="client-harland-fp-mcol">
+            <span className="client-harland-fp-mcap">Systems</span>
+            {systemsPct != null ? (
+              <>
+                <svg
+                  className="client-harland-fp-spark"
+                  viewBox={`0 0 ${w} ${h}`}
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <polyline
+                    points={sparkLinePts}
+                    fill="none"
+                    stroke={accent.main}
+                    strokeWidth="2.2"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span className="client-harland-fp-mfoot">{systemsPct}%</span>
+              </>
+            ) : (
+              <>
+                <div className="client-harland-fp-spark-ph" aria-hidden="true" />
+                <span className="client-harland-fp-mfoot">N/A</span>
+              </>
+            )}
+          </div>
+          <div className="client-harland-fp-mcol">
+            <span className="client-harland-fp-mcap">Status</span>
+            <div className="client-harland-fp-stepper" aria-hidden="true">
+              {[0, 1, 2, 3].map((i) => (
+                <span
+                  key={i}
+                  className={`client-harland-fp-stepper-dot${i < stepFill ? ' is-on' : ''}`}
+                  style={
+                    i < stepFill
+                      ? { background: accent.main, borderColor: accent.main }
+                      : undefined
+                  }
+                />
+              ))}
+            </div>
+            <span className="client-harland-fp-mfoot">{harlandCardStatusCaption(opLabel)}</span>
+          </div>
+        </div>
+
+        <div className="client-harland-fp-footer">
+          <p className="client-harland-fp-foot-row">
+            <SiteMapPinIcon />
+            <span>{site.address}</span>
+          </p>
+          <p className="client-harland-fp-foot-row">
+            <SiteEnvelopeIcon />
+            <a
+              className="client-harland-fp-mail"
+              href={`mailto:${harlandDemoSiteEmail(site)}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {harlandDemoSiteEmail(site)}
+            </a>
+          </p>
+          {site.phoneTel ? (
+            <a
+              className="client-harland-fp-foot-row client-harland-fp-phone"
+              href={`tel:${site.phoneTel}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <SitePhoneIcon />
+              <span>{site.phoneDisplay}</span>
+            </a>
+          ) : (
+            <p className="client-harland-fp-foot-row">
+              <SitePhoneIcon />
+              <span>{site.phoneDisplay}</span>
+            </p>
+          )}
+        </div>
+
+        <span className="client-site-open-hint">{site.openHint ?? 'Building view →'}</span>
+      </button>
+    </article>
   )
 }
 
@@ -3289,7 +3588,9 @@ function BuildingSitePageView({
                     aria-label={`Open machinery view: ${z.label}`}
                   >
                     <span className="client-building-zone-ring" aria-hidden="true" />
-                    <span className="client-building-zone-label">{z.label}</span>
+                    {z.omitMapLabel ? null : (
+                      <span className="client-building-zone-label">{z.label}</span>
+                    )}
                   </button>
                 ))}
               </div>
@@ -3643,6 +3944,7 @@ function FootprintSitesSection({
   topAlerts,
   hideSnapshotBranding = false,
   onOpenAvioraProperty,
+  footprintLayout = 'classic',
 }) {
   const isWorkspaceSingle = workspaceSites.length === 1
   const useDashHero = Boolean(topAlerts) && isWorkspaceSingle
@@ -3656,6 +3958,18 @@ function FootprintSitesSection({
       ) : null}
       {filteredGlobalSites.map((site) => {
         const snap = SITE_SNAPSHOT[site.id] || {}
+        if (footprintLayout === 'harland') {
+          return (
+            <HarlandFootprintSiteCard
+              key={site.id}
+              site={site}
+              snap={snap}
+              nowTick={nowTick}
+              onOpenBuilding={onOpenBuilding}
+              onOpenAvioraProperty={onOpenAvioraProperty}
+            />
+          )
+        }
         const light = snap.light ?? 'off'
         const fc = String(site.flagCode || '').toLowerCase()
         const q = snap.quality
@@ -3882,7 +4196,13 @@ function FootprintSitesSection({
           <div className="client-sites-dash-hero-body">
             <div className="client-sites-dash-hero-alerts">{topAlerts}</div>
             <div className="client-sites-dash-hero-cards">
-              <div className="client-sites-grid">{siteList}</div>
+              <div
+                className={`client-sites-grid${
+                  footprintLayout === 'harland' ? ' client-sites-grid--harland-fp' : ''
+                }`}
+              >
+                {siteList}
+              </div>
             </div>
           </div>
         </div>
@@ -3925,7 +4245,11 @@ function FootprintSitesSection({
           </div>
         )}
       </div>
-      <div className="client-sites-grid">{siteList}</div>
+      <div
+        className={`client-sites-grid${footprintLayout === 'harland' ? ' client-sites-grid--harland-fp' : ''}`}
+      >
+        {siteList}
+      </div>
     </section>
   )
 }
@@ -4667,6 +4991,7 @@ export default function ClientDashboard({ user, onSignOut }) {
                 nowTick={nowTick}
                 onOpenBuilding={openBuilding}
                 hideSnapshotBranding={presetKey === 'aviora'}
+                footprintLayout={presetKey === 'harland' ? 'harland' : 'classic'}
                 onOpenAvioraProperty={
                   presetKey === 'aviora'
                     ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
@@ -4698,6 +5023,7 @@ export default function ClientDashboard({ user, onSignOut }) {
                   nowTick={nowTick}
                   onOpenBuilding={openBuilding}
                   hideSnapshotBranding={presetKey === 'aviora'}
+                  footprintLayout={presetKey === 'harland' ? 'harland' : 'classic'}
                   onOpenAvioraProperty={
                     presetKey === 'aviora'
                       ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
@@ -4726,6 +5052,7 @@ export default function ClientDashboard({ user, onSignOut }) {
                 nowTick={nowTick}
                 onOpenBuilding={openBuilding}
                 hideSnapshotBranding={presetKey === 'aviora'}
+                footprintLayout={presetKey === 'harland' ? 'harland' : 'classic'}
                 onOpenAvioraProperty={
                   presetKey === 'aviora'
                     ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
