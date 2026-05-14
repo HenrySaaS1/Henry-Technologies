@@ -74,8 +74,8 @@ export default function AvioraSafetySecurityDashboard({ companyName, nowTick }) 
   return (
     <div className="aviora-ss-root" aria-label="Safety and security overview">
       <p className="aviora-ss-lead">
-        <strong>{companyName}</strong> — site safety, perimeter, and compliance (illustrative). Add photos under{' '}
-        <code className="aviora-ss-code">frontend/src/assets/uploads/</code> and set <code className="aviora-ss-code">imageSrc</code> in{' '}
+        <strong>{companyName}</strong> — site safety, perimeter, and compliance (illustrative). Replace thumbnails under{' '}
+        <code className="aviora-ss-code">frontend/src/assets/uploads/aviora-security-*.png</code> or edit{' '}
         <code className="aviora-ss-code">avioraSafetySecurityData.js</code>.
       </p>
 

@@ -1,14 +1,15 @@
 /**
- * Demo data for Aviora Safety & Security — aligns to stakeholder reference imagery.
- * Swap imports below for files in `../assets/uploads/` (e.g. `aviora-safety-exit.png`).
+ * Demo data for Aviora Safety & Security.
+ * Security thumbnails live in `../assets/uploads/aviora-security-*.png`.
  */
 
 import imgBlockedExit from '../assets/uploads/safety-blocked-exit.png'
-import imgHotWork from '../assets/uploads/harland-528-coater.png'
 import imgWalkway from '../assets/uploads/safety-clear-walkway.png'
-import imgGate from '../assets/uploads/security-unauthorized.png'
-import imgScaffold from '../assets/uploads/security-perimeter.png'
-import imgWetSlab from '../assets/uploads/safety-floor-spill.png'
+import imgGateOpenNight from '../assets/uploads/aviora-security-gate-open-night.png'
+import imgGate2Night from '../assets/uploads/aviora-security-gate2-night.png'
+import imgPerimeterRazor from '../assets/uploads/aviora-security-perimeter-razor-wire.png'
+import imgSiteVehicleNight from '../assets/uploads/aviora-security-site-vehicle-night.png'
+import imgYardNight from '../assets/uploads/aviora-security-yard-night.png'
 
 /** @typedef {'critical' | 'warning' | 'positive' | 'security' | 'structural' | 'weather'} SafetyTone */
 
@@ -34,13 +35,13 @@ export const AVIORA_SAFETY_FEED = [
     imageSrc: imgBlockedExit,
   },
   {
-    id: 'hot-work',
-    title: 'Hot work — PPE verified',
-    site: 'Fab shop · Bay 2',
-    when: '1 hr ago',
-    tone: 'positive',
-    summary: 'Hard hat, face shield, and FR vest confirmed before cut. Permit active.',
-    imageSrc: imgHotWork,
+    id: 'gate-open',
+    title: 'Vehicle gate held open',
+    site: 'North truck lane · Gate A',
+    when: '35 min ago',
+    tone: 'warning',
+    summary: 'Swing gates clear of lane per DO NOT BLOCK policy. Auto-timer reset; guard acknowledged.',
+    imageSrc: imgGateOpenNight,
   },
   {
     id: 'walkway',
@@ -52,30 +53,39 @@ export const AVIORA_SAFETY_FEED = [
     imageSrc: imgWalkway,
   },
   {
-    id: 'gate',
+    id: 'gate-2-check',
     title: 'After-hours gate check',
     site: 'Gate 2 · Perimeter',
     when: '3 hr ago',
     tone: 'security',
-    summary: 'Unauthorized approach cleared. Badge reader and camera triage complete.',
-    imageSrc: imgGate,
+    summary: 'Approach logged; badge reader and PTZ triage complete. No tailgate.',
+    imageSrc: imgGate2Night,
   },
   {
-    id: 'scaffold',
-    title: 'Scaffold inspection',
-    site: 'Tower 3 · East face',
+    id: 'perimeter-line',
+    title: 'Perimeter line scan',
+    site: 'East fence · Zones E1–E3',
+    when: '4 hr ago',
+    tone: 'security',
+    summary: 'Razor wire and motion grid nominal. Patrol path matched route plan.',
+    imageSrc: imgPerimeterRazor,
+  },
+  {
+    id: 'night-vehicle',
+    title: 'Night yard — vehicle on roster',
+    site: 'Laydown · Row 4',
+    when: '4 hr ago',
+    tone: 'positive',
+    summary: 'Plate and fleet decal match issued work order. Camera pair correlation OK.',
+    imageSrc: imgSiteVehicleNight,
+  },
+  {
+    id: 'yard-sweep',
+    title: 'Outdoor laydown sweep',
+    site: 'Beam storage · Yard 2',
     when: '5 hr ago',
-    tone: 'structural',
-    summary: 'Tie-ins and toe boards logged. Minor rust noted — PM scheduled.',
-    imageSrc: imgScaffold,
-  },
-  {
-    id: 'weather',
-    title: 'Slip risk — wet slab',
-    site: 'Podium pour · Zone D',
-    when: '6 hr ago',
-    tone: 'weather',
-    summary: 'Standing water after rain. Barriers extended; crews briefed at shift.',
-    imageSrc: imgWetSlab,
+    tone: 'security',
+    summary: 'Flood lighting within spec; stacks unchanged vs prior shift. Forklift idle, keys secured.',
+    imageSrc: imgYardNight,
   },
 ]
