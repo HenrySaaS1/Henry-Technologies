@@ -4621,7 +4621,7 @@ export default function ClientDashboard({ user, onSignOut }) {
         </aside>
 
         <main
-          className={`client-main${buildingPageActive ? ' client-main--building-route' : ''}${avioraPropertyPageActive ? ' client-main--aviora-property-route' : ''}`}
+          className={`client-main${buildingPageActive ? ' client-main--building-route' : ''}${avioraPropertyPageActive ? ' client-main--aviora-property-route' : ''}${effectiveTab === 'safety' && presetKey === 'aviora' ? ' client-main--aviora-hub' : ''}`}
         >
           {invalidBuildingRoute ? (
             <Navigate to="/" replace />
@@ -4644,10 +4644,12 @@ export default function ClientDashboard({ user, onSignOut }) {
             />
           ) : (
             <>
-          <div className="client-main-header">
-            <h1 className="client-main-title">{mainTitle}</h1>
-            <p className="client-main-sub">{mainSub}</p>
-          </div>
+          {!(effectiveTab === 'safety' && presetKey === 'aviora') ? (
+            <div className="client-main-header">
+              <h1 className="client-main-title">{mainTitle}</h1>
+              <p className="client-main-sub">{mainSub}</p>
+            </div>
+          ) : null}
 
           {effectiveTab === 'dashboard' || effectiveTab === 'locations' ? (
             effectiveTab === 'dashboard' && presetKey === 'aviora' ? (
@@ -5177,6 +5179,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             <AvioraSafetySecurityDashboard
               companyName={ctx.portfolioCompanyName || user.company}
               nowTick={nowTick}
+              onOpenStatus={() => setTab('dashboard')}
             />
           ) : null}
 

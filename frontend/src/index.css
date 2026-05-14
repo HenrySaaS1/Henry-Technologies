@@ -8321,6 +8321,12 @@ h3 {
   background: #ffffff;
 }
 
+.client-main.client-main--aviora-hub {
+  padding: 0;
+  overflow: auto;
+  background: #f4f7f6;
+}
+
 .client-main-header {
   margin-bottom: 1.25rem;
 }
@@ -12502,225 +12508,819 @@ h3 {
   background: linear-gradient(180deg, #818cf8, #4f46e5);
 }
 
-/* Aviora — Safety & Security tab (rounded reference-style cards) */
-.aviora-ss-root {
-  max-width: 72rem;
-  margin: 0 auto;
+/* Aviora — Safety / Security hub (reference layout) */
+.aviora-hub {
+  min-height: min(100vh, 48rem);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: #0f172a;
 }
 
-.aviora-ss-lead {
-  margin: 0 0 1rem;
-  font-size: 0.88rem;
-  line-height: 1.5;
-  color: #475569;
+.aviora-hub-top {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
 }
 
-.aviora-ss-code {
-  font-size: 0.78em;
-  padding: 0.08rem 0.28rem;
-  border-radius: 6px;
-  background: #f1f5f9;
-  color: #334155;
+.aviora-hub-top--safety {
+  background: linear-gradient(105deg, #005f69 0%, #006d77 42%, #0d9488 100%);
 }
 
-.aviora-ss-kpis {
-  list-style: none;
-  margin: 0 0 1.25rem;
-  padding: 0;
+.aviora-hub-top--security {
+  background: linear-gradient(105deg, #0a1628 0%, #0c2340 45%, #123458 100%);
+}
+
+.aviora-hub-top-skyline {
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath fill='%23ffffff' d='M0 120V80l40-20 40 25 50-35 45 30 60-40 55 45 70-50 65 55 80-45 75 50 90-60 85 65 100-55 95 70 110-65V120z'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 1200px 100%;
+  background-position: bottom;
+  pointer-events: none;
+}
+
+.aviora-hub-top-inner {
+  position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.25rem 1.15rem;
+  max-width: 100%;
+}
+
+@media (max-width: 960px) {
+  .aviora-hub-top-inner {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .aviora-hub-datetime {
+    justify-content: center;
+  }
+
+  .aviora-hub-brand {
+    justify-content: center;
+  }
+
+  .aviora-hub-title-block {
+    align-items: center;
+  }
+
+  .aviora-hub-loc {
+    justify-content: center;
+  }
+}
+
+.aviora-hub-brand {
+  display: flex;
+  align-items: center;
   gap: 0.65rem;
 }
 
-@media (max-width: 900px) {
-  .aviora-ss-kpis {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 480px) {
-  .aviora-ss-kpis {
-    grid-template-columns: 1fr;
-  }
-}
-
-.aviora-ss-kpi {
-  border-radius: 16px;
-  padding: 0.75rem 0.85rem;
-  border: 1px solid #e2e8f0;
-  background: linear-gradient(165deg, #ffffff 0%, #f8fafc 100%);
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+.aviora-hub-logo {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 0.45rem;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.15rem;
 }
 
-.aviora-ss-kpi--ok {
-  border-color: rgba(34, 197, 94, 0.35);
-}
-
-.aviora-ss-kpi--warn {
-  border-color: rgba(234, 88, 12, 0.4);
-}
-
-.aviora-ss-kpi--bad {
-  border-color: rgba(220, 38, 38, 0.4);
-}
-
-.aviora-ss-kpi-label {
-  font-size: 0.58rem;
+.aviora-hub-brand-line {
+  display: block;
+  font-size: 0.62rem;
   font-weight: 800;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: #64748b;
+  letter-spacing: 0.14em;
+  opacity: 0.92;
 }
 
-.aviora-ss-kpi-value {
-  font-size: 1.35rem;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  color: #0f172a;
-  line-height: 1.1;
-}
-
-.aviora-ss-kpi-hint {
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: #64748b;
-}
-
-.aviora-ss-feed-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 0.65rem;
-}
-
-.aviora-ss-feed-h {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 900;
-  color: #0f172a;
-}
-
-.aviora-ss-feed-stamp {
+.aviora-hub-brand-sub {
+  display: block;
   font-size: 0.72rem;
   font-weight: 600;
-  color: #64748b;
+  opacity: 0.85;
 }
 
-.aviora-ss-feed-grid {
+.aviora-hub-title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+
+.aviora-hub-title-ic {
+  display: flex;
+  margin-bottom: 0.1rem;
+  opacity: 0.95;
+}
+
+.aviora-hub-title {
+  margin: 0;
+  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.aviora-hub-loc {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  opacity: 0.92;
+}
+
+.aviora-hub-datetime {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.aviora-hub-dt-card {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 0.55rem;
+  padding: 0.4rem 0.65rem;
+}
+
+.aviora-hub-dt-k {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.aviora-hub-dt-v {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.aviora-hub-body {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: 15.5rem minmax(0, 1fr);
+  gap: 0;
+  min-height: 24rem;
 }
 
-@media (max-width: 800px) {
-  .aviora-ss-feed-grid {
+@media (max-width: 900px) {
+  .aviora-hub-body {
     grid-template-columns: 1fr;
   }
 }
 
-.aviora-ss-feed-card {
+.aviora-hub-side {
   background: #fff;
-  border-radius: 18px;
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.07);
+  border-right: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  padding-bottom: 0.75rem;
 }
 
-.aviora-ss-feed-visual {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  min-height: 10.5rem;
-  background: #f1f5f9;
+@media (max-width: 900px) {
+  .aviora-hub-side {
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+  }
 }
 
-.aviora-ss-feed-placeholder {
-  width: 100%;
-  height: 100%;
-  min-height: 10.5rem;
+.aviora-hub-side-hero {
+  aspect-ratio: 4 / 3;
+  background: #e2e8f0;
+  overflow: hidden;
 }
 
-.aviora-ss-feed-img {
+.aviora-hub-side-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.aviora-ss-feed-pill {
-  position: absolute;
-  top: 0.55rem;
-  left: 0.55rem;
-  font-size: 0.55rem;
-  font-weight: 900;
-  letter-spacing: 0.06em;
+.aviora-hub-side-block {
+  padding: 0.75rem 0.85rem;
+}
+
+.aviora-hub-side-block--tint {
+  background: #f8fafc;
+  margin: 0 0.5rem;
+  border-radius: 0.65rem;
+  border: 1px solid #e8eef3;
+}
+
+.aviora-hub-side-block--sec {
+  background: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 100%);
+}
+
+.aviora-hub-side-h {
+  margin: 0 0 0.45rem;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 0.28rem 0.5rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(226, 232, 240, 0.95);
-  color: #334155;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  color: #64748b;
 }
 
-.aviora-ss-feed-pill--ok {
-  color: #166534;
-  border-color: rgba(34, 197, 94, 0.45);
-  background: rgba(240, 253, 244, 0.97);
+.aviora-hub-prop-name {
+  margin: 0 0 0.25rem;
+  font-size: 0.88rem;
+  font-weight: 800;
 }
 
-.aviora-ss-feed-pill--warn {
-  color: #c2410c;
-  border-color: rgba(251, 146, 60, 0.5);
-  background: rgba(255, 247, 237, 0.97);
+.aviora-hub-prop-code {
+  font-weight: 700;
+  color: #006d77;
 }
 
-.aviora-ss-feed-pill--bad {
-  color: #b91c1c;
-  border-color: rgba(248, 113, 113, 0.55);
-  background: rgba(254, 242, 242, 0.97);
+.aviora-hub--security .aviora-hub-prop-code {
+  color: #0369a1;
 }
 
-.aviora-ss-feed-pill--neutral {
-  color: #3730a3;
-  border-color: rgba(129, 140, 248, 0.45);
-  background: rgba(238, 242, 255, 0.97);
+.aviora-hub-prop-desc {
+  margin: 0 0 0.55rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.4;
 }
 
-.aviora-ss-feed-body {
-  padding: 0.65rem 0.75rem 0.75rem;
+.aviora-hub-people {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
+  gap: 0.45rem;
+}
+
+.aviora-hub-people > li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.aviora-hub-av {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.aviora-hub-people-role {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.aviora-hub-people-name {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.aviora-hub-sum-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.aviora-hub-sum-row {
+  display: grid;
+  grid-template-columns: 1.5rem 1fr auto;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+}
+
+.aviora-hub-sum-ic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aviora-hub-sum-label {
+  color: #475569;
+  font-weight: 600;
+}
+
+.aviora-hub-sum-val {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.aviora-hub-clock-big {
+  margin: 0.65rem 0.85rem 0;
+  padding: 0.55rem 0.65rem;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0c2340;
+  background: #fff;
+  border-radius: 0.55rem;
+  border: 1px solid #e2e8f0;
+}
+
+.aviora-hub-side-nav {
+  margin-top: auto;
+  padding: 0.65rem 0.5rem 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+}
+
+.aviora-hub-navbtn {
+  border: none;
+  border-radius: 0.55rem;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: #fff;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.aviora-hub-navbtn:hover {
+  transform: translateY(-1px);
+}
+
+.aviora-hub-navbtn--status {
+  background: linear-gradient(180deg, #3b82f6, #2563eb);
+}
+
+.aviora-hub-navbtn--safety {
+  background: linear-gradient(180deg, #14b8a6, #0d9488);
+}
+
+.aviora-hub-navbtn--safety.is-active {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+  filter: brightness(1.08);
+}
+
+.aviora-hub-navbtn--sec {
+  background: linear-gradient(180deg, #1e3a5f, #0f2744);
+}
+
+.aviora-hub-navbtn--sec.is-active {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.45);
+  filter: brightness(1.12);
+}
+
+.aviora-hub-main {
+  padding: 1rem 1.1rem 1.5rem;
+  background: #f4f7f6;
+}
+
+.aviora-hub-kpis {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+@media (max-width: 1100px) {
+  .aviora-hub-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .aviora-hub-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.aviora-hub-kpi-card {
+  background: #fff;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
+  padding: 0.65rem 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+  align-items: stretch;
+}
+
+.aviora-hub-kpi-label {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+  display: flex;
+  align-items: center;
   gap: 0.25rem;
 }
 
-.aviora-ss-feed-title {
-  margin: 0;
-  font-size: 0.92rem;
-  font-weight: 800;
-  color: #0f172a;
-  line-height: 1.25;
+.aviora-hub-kpi-ic {
+  display: inline-flex;
+  color: #64748b;
 }
 
-.aviora-ss-feed-meta {
-  margin: 0;
+.aviora-hub-kpi-ic--bad {
+  color: #dc2626;
+}
+
+.aviora-hub-kpi-ic--inv {
+  color: #7c3aed;
+}
+
+.aviora-hub-kpi-num {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.aviora-hub-kpi-sub {
   font-size: 0.68rem;
   font-weight: 600;
   color: #64748b;
 }
 
-.aviora-ss-feed-summary {
-  margin: 0;
-  font-size: 0.78rem;
-  line-height: 1.45;
+.aviora-hub-kpi-foot {
+  font-size: 0.65rem;
+  font-weight: 600;
   color: #475569;
+}
+
+.aviora-hub-kpi-frac {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.aviora-hub-kpi-trend {
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.aviora-hub-kpi-trend--good {
+  color: #16a34a;
+}
+
+.aviora-hub-kpi-trend--bad {
+  color: #dc2626;
+}
+
+.aviora-hub-ring-wrap {
+  position: relative;
+  width: 6.5rem;
+  height: 6.5rem;
+  margin: 0.15rem auto 0;
+}
+
+.aviora-hub-ring-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.aviora-hub-ring-track {
+  stroke: #e5e7eb;
+}
+
+.aviora-hub-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.aviora-hub-ring-pct {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.aviora-hub-ring-lbl {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.aviora-hub-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.55rem;
+}
+
+.aviora-hub-section-h {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: #334155;
+}
+
+.aviora-hub-viewall {
+  border: none;
+  background: none;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #006d77;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.aviora-hub--security .aviora-hub-viewall {
+  color: #0369a1;
+}
+
+.aviora-hub-scroll {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  scroll-snap-type: x mandatory;
+}
+
+.aviora-hub-obs-card,
+.aviora-hub-sec-card {
+  flex: 0 0 min(15.5rem, 78vw);
+  scroll-snap-align: start;
+  background: #fff;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.aviora-hub-obs-visual,
+.aviora-hub-sec-visual {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #0f172a;
+}
+
+.aviora-hub-obs-img,
+.aviora-hub-sec-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.02) saturate(0.95);
+}
+
+.aviora-hub-obs-badge {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.45rem;
+  font-size: 0.52rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.45rem;
+  border-radius: 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.aviora-hub-obs-badge--vio {
+  background: rgba(220, 38, 38, 0.95);
+  color: #fff;
+}
+
+.aviora-hub-obs-badge--safe {
+  background: rgba(22, 163, 74, 0.95);
+  color: #fff;
+}
+
+.aviora-hub-obs-body {
+  padding: 0.55rem 0.65rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+}
+
+.aviora-hub-obs-title {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.aviora-hub-obs-loc {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.aviora-hub-obs-desc {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: #475569;
+  flex: 1;
+}
+
+.aviora-hub-obs-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.aviora-hub-risk {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.3rem;
+}
+
+.aviora-hub-risk--high {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.aviora-hub-risk--med {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.aviora-hub-risk--safe {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.aviora-hub-obs-st {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.aviora-hub-obs-st--open {
+  color: #b91c1c;
+}
+
+.aviora-hub-obs-st--prog {
+  color: #2563eb;
+}
+
+.aviora-hub-obs-st--safe {
+  color: #166534;
+}
+
+.aviora-hub-sev {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.45rem;
+  font-size: 0.52rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.45rem;
+  border-radius: 0.35rem;
+  color: #fff;
+}
+
+.aviora-hub-sev--high {
+  background: #dc2626;
+}
+
+.aviora-hub-sev--med {
+  background: #ea580c;
+}
+
+.aviora-hub-sev--low {
+  background: #2563eb;
+}
+
+.aviora-hub-sec-body {
+  padding: 0.55rem 0.65rem 0.65rem;
+}
+
+.aviora-hub-sec-title {
+  margin: 0 0 0.2rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.aviora-hub-sec-meta {
+  margin: 0 0 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.aviora-hub-sec-status {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.aviora-hub-sec-status--bad {
+  color: #b91c1c;
+}
+
+.aviora-hub-sec-status--warn {
+  color: #c2410c;
+}
+
+.aviora-hub-sec-status--ok {
+  color: #166534;
+}
+
+.aviora-hub-foot-row {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+@media (max-width: 960px) {
+  .aviora-hub-foot-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.aviora-hub-foot-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.aviora-hub-foot-ic {
+  color: #64748b;
+}
+
+.aviora-hub-foot-label {
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #64748b;
+  line-height: 1.25;
+}
+
+.aviora-hub-foot-val {
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.aviora-hub-foot-sub {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #94a3b8;
 }
