@@ -11846,13 +11846,18 @@ h3 {
 }
 
 .aviora-prop-status-line {
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.55rem;
   font-size: 0.8rem;
   color: #475569;
   display: flex;
   align-items: center;
   gap: 0.35rem;
   flex-wrap: wrap;
+  padding: 0.45rem 0.6rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
 }
 
 .aviora-prop-status-line strong {
@@ -11881,15 +11886,21 @@ h3 {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.38rem;
+  gap: 0.42rem;
 }
 
 .aviora-prop-kv li {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 0.5rem;
   font-size: 0.78rem;
   color: #475569;
+  padding: 0.45rem 0.6rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
 }
 
 .aviora-prop-kv strong {
@@ -11913,6 +11924,10 @@ h3 {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  padding: 0.38rem 0.55rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
 }
 
 .aviora-prop-delivery-dot {
@@ -12094,14 +12109,14 @@ h3 {
 .aviora-prop-pkg-photo {
   padding: 0.5rem 0.55rem;
   background: #fff;
-  border-radius: 10px;
+  border-radius: 14px;
   border: 1px solid #e2e8f0;
 }
 
 .aviora-prop-pkg-photo-inner {
   position: relative;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   aspect-ratio: 4 / 3;
   min-height: clamp(9rem, 24vw, 13rem);
@@ -12119,7 +12134,12 @@ h3 {
 .aviora-prop-pkg-metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.35rem;
+  gap: 0.4rem;
+  padding: 0.5rem 0.45rem 0.45rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
 @media (max-width: 520px) {
@@ -12136,6 +12156,7 @@ h3 {
   text-transform: uppercase;
   color: #64748b;
   margin-bottom: 0.06rem;
+  text-align: center;
 }
 
 .aviora-prop-pkg-pct {
@@ -12143,6 +12164,8 @@ h3 {
   font-weight: 800;
   color: #0f172a;
   letter-spacing: -0.02em;
+  text-align: center;
+  display: block;
 }
 
 .aviora-prop-pkg-metrics strong {
@@ -12150,6 +12173,8 @@ h3 {
   font-weight: 700;
   color: #0f172a;
   line-height: 1.25;
+  text-align: center;
+  display: block;
 }
 
 .aviora-prop-pkg-var--ok {
@@ -12164,18 +12189,25 @@ h3 {
   color: #dc2626;
 }
 
+.aviora-prop-pkg-metrics > div {
+  min-width: 0;
+  padding: 0.15rem 0.1rem 0;
+}
+
 .aviora-prop-pkg-bar-track {
-  height: 0.42rem;
+  height: 0.55rem;
   border-radius: 999px;
   background: #e2e8f0;
   overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
 }
 
 .aviora-prop-pkg-bar-fill {
   height: 100%;
   border-radius: 999px;
-  min-width: 4%;
+  min-width: 6%;
   transition: width 0.25s ease;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
 }
 
 .aviora-prop-pkg-bar-fill.aviora-prop-pkg-bar--ok {
@@ -12224,7 +12256,7 @@ h3 {
 .aviora-snap-card {
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  border-radius: 14px;
   padding: 0.45rem 0.4rem 0.4rem;
   text-align: center;
 }
@@ -12316,7 +12348,7 @@ h3 {
   width: 100%;
   max-width: 2.5rem;
   min-height: 18%;
-  border-radius: 6px 6px 2px 2px;
+  border-radius: 999px;
 }
 
 .aviora-snap-sch-bar--ahead {
@@ -12411,7 +12443,7 @@ h3 {
   max-width: 3rem;
   height: 4.5rem;
   background: #f1f5f9;
-  border-radius: 6px;
+  border-radius: 999px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -12421,7 +12453,7 @@ h3 {
 
 .aviora-snap-tva-fill {
   width: 100%;
-  border-radius: 4px 4px 0 0;
+  border-radius: 999px 999px 0 0;
   min-height: 12%;
   transition: height 0.2s ease;
 }
@@ -12465,7 +12497,7 @@ h3 {
 
 .aviora-snap-thru-bar > div {
   width: 100%;
-  border-radius: 4px 4px 0 0;
+  border-radius: 999px 999px 0 0;
   min-height: 8%;
   background: linear-gradient(180deg, #818cf8, #4f46e5);
 }
