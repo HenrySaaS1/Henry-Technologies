@@ -226,17 +226,17 @@ function formatSiteLocalTime(date, timeZone) {
   }
 }
 
-/** Short clock for footprint cards (matches reference “6:05 AM”). */
+/** Short clock for footprint cards (24-hour, site time zone). */
 function formatSiteShortTime(date, timeZone) {
-  if (!timeZone) return date.toLocaleTimeString(undefined, { timeStyle: 'short' })
+  const opts = { hour: '2-digit', minute: '2-digit', hour12: false }
+  if (!timeZone) return date.toLocaleTimeString(undefined, opts)
   try {
     return new Intl.DateTimeFormat(undefined, {
       timeZone,
-      hour: 'numeric',
-      minute: '2-digit',
+      ...opts,
     }).format(date)
   } catch {
-    return date.toLocaleTimeString(undefined, { timeStyle: 'short' })
+    return date.toLocaleTimeString(undefined, opts)
   }
 }
 
@@ -752,6 +752,8 @@ const GLOBAL_SITES = [
       omitTopbarLocal: true,
       // Site-specific floor plan image (user provided).
       floorPlanSrc: `${import.meta.env.BASE_URL}site-floor-plan-my.png`,
+      /** Artwork includes a top “Kuala Lumpur — planned facility” banner; clip it off in the viewer. */
+      floorPlanClipTopPct: 12,
       footerBlurb: {
         safety: '—',
         security: '—',
@@ -3576,6 +3578,11 @@ function BuildingSitePageView({
                   src={b.floorPlanSrc}
                   alt={`Floor plan — ${b.name}`}
                   draggable={false}
+                  style={
+                    b.floorPlanClipTopPct != null && Number(b.floorPlanClipTopPct) > 0
+                      ? { clipPath: `inset(${Number(b.floorPlanClipTopPct)}% 0 0 0)` }
+                      : undefined
+                  }
                 />
                 {b.zones.map((z) => (
                   <button
@@ -4582,8 +4589,9 @@ export default function ClientDashboard({ user, onSignOut }) {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
-    hour: 'numeric',
+    hour: '2-digit',
     minute: '2-digit',
+    hour12: false,
   })
   const avatarLetter = (user.email?.[0] || '?').toUpperCase()
 

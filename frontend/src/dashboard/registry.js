@@ -123,7 +123,7 @@ const PRESET_OVERRIDES = {
       sub: 'Multi-location & multi-site clients',
     },
     footprintSub:
-      'Global footprint — site leadership, local time, headcount, and efficiency by region.',
+      'Global footprint — site leadership, local time, and live safety, security, systems, and status overview.',
     locationsLeadSub:
       'Regional production sites — open a building map for zone-level monitoring.',
   },
