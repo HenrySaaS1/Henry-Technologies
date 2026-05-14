@@ -14,6 +14,123 @@ function initials(name) {
   return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
 }
 
+/** @param {{ label: string; value: string }[]} rows */
+function realtimeColumns(rows) {
+  const filtered = rows.filter((r) => !/overall completion/i.test(r.label))
+  return { left: filtered.slice(0, 2), right: filtered.slice(2) }
+}
+
+/** @param {{ label: string; value: string }[]} rows */
+function constructionColumns(rows) {
+  const mid = Math.ceil(rows.length / 2)
+  return { left: rows.slice(0, mid), right: rows.slice(mid) }
+}
+
+/** @param {string} label */
+function metricValueTone(label) {
+  const l = label.toLowerCase()
+  if (l.includes('delayed')) return 'bad'
+  if (l.includes('at risk')) return 'warn'
+  return undefined
+}
+
+function IconTrend() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" aria-hidden="true">
+      <path d="M4 18V6M9 18V10M14 18v-8M19 18v-12" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconBuilding() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+      <path d="M4 21V8l8-4v17M12 21V12h5v9M9 14h2M9 17h2M16 14h2M16 17h2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IconPackage() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" strokeLinejoin="round" />
+      <path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IconEye() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" aria-hidden="true">
+      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" strokeLinejoin="round" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  )
+}
+
+function IconDoc() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" strokeLinejoin="round" />
+      <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconUser() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconBar() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path d="M4 20V10M10 20V4M16 20v-6M22 20V8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconShield() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2l8 4v6c0 5-3.4 9.8-8 11-4.6-1.2-8-6-8-11V6l8-4z" opacity="0.92" />
+    </svg>
+  )
+}
+
+function IconLock() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <rect x="5" y="11" width="14" height="10" rx="2" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+/** @param {{ icon: unknown; title: string }} props */
+function SideSectionHead({ icon, title }) {
+  return (
+    <div className="aviora-prop-side-head">
+      <span className="aviora-prop-side-h-ic">{icon}</span>
+      <h2 className="aviora-prop-side-h">{title}</h2>
+    </div>
+  )
+}
+
+/** @param {{ label: string; value: string }} props */
+function StatRow({ label, value }) {
+  const tone = metricValueTone(label)
+  return (
+    <div className="aviora-prop-stat-row">
+      <span className="aviora-prop-stat-l">{label}</span>
+      <strong className={`aviora-prop-stat-v${tone ? ` aviora-prop-stat-v--${tone}` : ''}`}>{value}</strong>
+    </div>
+  )
+}
+
 function StatusBadge({ status }) {
   if (status === 'onTrack') {
     return (
@@ -98,6 +215,9 @@ function PersonRow({ label, person }) {
   const focus = person.photoFocus ?? '50% 16%'
   return (
     <div className="aviora-prop-person">
+      <span className="aviora-prop-person-lead-ic" aria-hidden="true">
+        <IconUser />
+      </span>
       <div className="aviora-prop-person-photo" aria-hidden="true">
         <div className="aviora-prop-person-photo-inner">
           {person.photo ? (
@@ -144,9 +264,17 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
     day: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
+    timeZoneName: 'short',
   })
 
   if (!d) return null
+
+  const rt = realtimeColumns(d.realtime)
+  const co = constructionColumns(d.construction)
+  const bullets = d.deliveryBullets || []
+  const deliveryLeft = bullets.filter((b) => b.tone !== 'bad')
+  const deliveryRight = bullets.filter((b) => b.tone === 'bad')
+  const footOk = /on track|monitoring|watch/i.test(String(d.deliveryFoot || ''))
 
   return (
     <div className="aviora-prop" aria-label={`Property ${d.name}`}>
@@ -220,87 +348,130 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
           <div className="aviora-prop-side-hero">
             <img src={d.heroImage} alt="" loading="lazy" decoding="async" />
           </div>
-          <p className="aviora-prop-desc">{d.description}</p>
 
           <div className="aviora-prop-side-block">
-            <PersonRow label="Project Manager" person={d.projectManager} />
-            <PersonRow label="Site Engineer" person={d.siteEngineer} />
+            <div className="aviora-prop-side-panel aviora-prop-side-panel--info">
+              <div className="aviora-prop-info-line">
+                <span className="aviora-prop-info-ic" aria-hidden="true">
+                  <IconDoc />
+                </span>
+                <div className="aviora-prop-info-body">
+                  <span className="aviora-prop-info-k">Description</span>
+                  <p className="aviora-prop-info-v">{d.description}</p>
+                </div>
+              </div>
+              <PersonRow label="Project Manager" person={d.projectManager} />
+              <PersonRow label="Site Engineer" person={d.siteEngineer} />
+            </div>
           </div>
 
           <div className="aviora-prop-side-block">
-            <h2 className="aviora-prop-side-h">Real-Time Status</h2>
-            <p className="aviora-prop-status-line">
-              <span className="aviora-prop-status-dot" aria-hidden="true" />
-              Current Status: <strong>{d.currentStatusLabel}</strong>
-            </p>
-            <ul className="aviora-prop-kv">
-              {d.realtime.map((row) => (
-                <li key={row.label}>
-                  <span>{row.label}</span>
-                  <strong>{row.value}</strong>
-                </li>
-              ))}
-            </ul>
+            <div className="aviora-prop-side-panel">
+              <SideSectionHead icon={<IconTrend />} title="Real-Time Status" />
+              <div className="aviora-prop-cols2">
+                <div className="aviora-prop-col">
+                  <p className="aviora-prop-current-status">
+                    Current Status:{' '}
+                    <strong className="aviora-prop-current-status-val">{d.currentStatusLabel}</strong>
+                  </p>
+                  {rt.left.map((row) => (
+                    <StatRow key={row.label} label={row.label} value={row.value} />
+                  ))}
+                </div>
+                <div className="aviora-prop-col">
+                  {rt.right.map((row) => (
+                    <StatRow key={row.label} label={row.label} value={row.value} />
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="aviora-prop-side-block">
-            <h2 className="aviora-prop-side-h">Construction Overview</h2>
-            <ul className="aviora-prop-kv">
-              {d.construction.map((row) => (
-                <li key={row.label}>
-                  <span>{row.label}</span>
-                  <strong>{row.value}</strong>
-                </li>
-              ))}
-            </ul>
+            <div className="aviora-prop-side-panel">
+              <SideSectionHead icon={<IconBuilding />} title="Construction Overview" />
+              <div className="aviora-prop-cols2">
+                <div className="aviora-prop-col">
+                  {co.left.map((row) => (
+                    <StatRow key={row.label} label={row.label} value={row.value} />
+                  ))}
+                </div>
+                <div className="aviora-prop-col">
+                  {co.right.map((row) => (
+                    <StatRow key={row.label} label={row.label} value={row.value} />
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="aviora-prop-side-block">
-            <h2 className="aviora-prop-side-h">Delivery Outlook</h2>
-            <ul className="aviora-prop-delivery-list">
-              {(d.deliveryBullets || []).map((b) => (
-                <li key={b.text}>
-                  <span className={`aviora-prop-delivery-dot aviora-prop-delivery-dot--${b.tone}`} aria-hidden="true" />
-                  {b.text}
-                </li>
-              ))}
-            </ul>
-            {d.deliveryFoot ? <p className="aviora-prop-delivery-foot">{d.deliveryFoot}</p> : null}
+            <div className="aviora-prop-side-panel">
+              <SideSectionHead icon={<IconPackage />} title="Delivery Outlook" />
+              <div className="aviora-prop-cols2 aviora-prop-cols2--delivery">
+                <div className="aviora-prop-col">
+                  {deliveryLeft.map((b) => (
+                    <div key={b.text} className="aviora-prop-delivery-inline">
+                      <span className={`aviora-prop-delivery-dot aviora-prop-delivery-dot--${b.tone}`} aria-hidden="true" />
+                      <span>{b.text}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="aviora-prop-col">
+                  {deliveryRight.map((b) => (
+                    <div key={b.text} className="aviora-prop-delivery-inline">
+                      <span className={`aviora-prop-delivery-dot aviora-prop-delivery-dot--${b.tone}`} aria-hidden="true" />
+                      <span>{b.text}</span>
+                    </div>
+                  ))}
+                  {d.deliveryFoot ? (
+                    <p className={`aviora-prop-delivery-foot${footOk ? ' aviora-prop-delivery-foot--ok' : ''}`}>{d.deliveryFoot}</p>
+                  ) : null}
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="aviora-prop-side-block aviora-prop-snap">
-            <h2 className="aviora-prop-side-h">Visual Snapshot</h2>
-            <AvioraPropertySnapshot snap={d.snapshot} />
+          <div className="aviora-prop-side-block">
+            <div className="aviora-prop-side-panel aviora-prop-snap">
+              <SideSectionHead icon={<IconEye />} title="Visual Snapshot" />
+              <AvioraPropertySnapshot snap={d.snapshot} />
+            </div>
           </div>
 
           <div className="aviora-prop-side-foot">
-            <p className="aviora-prop-side-clock">{clockLine}</p>
+            <p className="aviora-prop-side-clock">
+              <span className="aviora-prop-side-clock-k">Local Time:</span> {clockLine}
+            </p>
             <div className="aviora-prop-cta-row" role="tablist" aria-label="Property workspace">
               <button
                 type="button"
                 role="tab"
                 aria-selected={propView === 'status'}
-                className={`aviora-prop-cta aviora-prop-cta--fill${propView === 'status' ? ' is-active' : ''}`}
+                className={`aviora-prop-cta aviora-prop-cta--status${propView === 'status' ? ' is-active' : ''}`}
                 onClick={() => setPropView('status')}
               >
+                <IconBar />
                 Status
               </button>
               <button
                 type="button"
                 role="tab"
                 aria-selected={propView === 'safety'}
-                className={`aviora-prop-cta aviora-prop-cta--outline${propView === 'safety' ? ' is-active' : ''}`}
+                className={`aviora-prop-cta aviora-prop-cta--safety${propView === 'safety' ? ' is-active' : ''}`}
                 onClick={() => setPropView('safety')}
               >
+                <IconShield />
                 Safety
               </button>
               <button
                 type="button"
                 role="tab"
                 aria-selected={propView === 'security'}
-                className={`aviora-prop-cta aviora-prop-cta--green${propView === 'security' ? ' is-active' : ''}`}
+                className={`aviora-prop-cta aviora-prop-cta--security${propView === 'security' ? ' is-active' : ''}`}
                 onClick={() => setPropView('security')}
               >
+                <IconLock />
                 Security
               </button>
             </div>

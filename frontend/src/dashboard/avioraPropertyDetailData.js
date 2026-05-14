@@ -30,9 +30,9 @@ export const AVIORA_PROPERTY_DETAILS = {
       { label: 'On-Track Packages', value: '4' },
       { label: 'At Risk / Delayed', value: '2' },
       { label: 'Day', value: '72 of 120' },
-      { label: 'Overall Completion', value: '62%' },
     ],
     construction: [
+      { label: 'Overall Completion', value: '62%' },
       { label: 'Avg Daily Progress', value: '0.84%' },
       { label: 'Safety Score', value: '91%' },
       { label: 'Quality Score', value: '88%' },
@@ -142,9 +142,9 @@ export const AVIORA_PROPERTY_DETAILS = {
       { label: 'At Risk Packages', value: '2' },
       { label: 'Delayed Packages', value: '1' },
       { label: 'Day', value: '58 of 120' },
-      { label: 'Overall Completion', value: '48%' },
     ],
     construction: [
+      { label: 'Overall Completion', value: '48%' },
       { label: 'Target vs Actual', value: '52% vs 49%' },
       { label: 'Cycle Time', value: 'Steady' },
       { label: 'Safety Score', value: '87%' },
@@ -250,9 +250,9 @@ export const AVIORA_PROPERTY_DETAILS = {
       { label: 'At Risk Packages', value: '2' },
       { label: 'Delayed Packages', value: '2' },
       { label: 'Day', value: '39 of 120' },
-      { label: 'Overall Completion', value: '38%' },
     ],
     construction: [
+      { label: 'Overall Completion', value: '38%' },
       { label: 'Avg Days Remaining', value: '29' },
       { label: 'Avg Completion Rate', value: '0.8%/day' },
       { label: 'Quality Score', value: '87%' },
