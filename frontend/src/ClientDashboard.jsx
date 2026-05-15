@@ -7,6 +7,7 @@ import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/regi
 import AvioraConstructionPortfolio from './dashboard/AvioraConstructionPortfolio.jsx'
 import AvioraPropertyDetailPage from './dashboard/AvioraPropertyDetailPage.jsx'
 import AvioraSafetySecurityDashboard from './dashboard/AvioraSafetySecurityDashboard.jsx'
+import FactoryPulseChartsPanel from './FactoryPulseChartsPanel.jsx'
 import { isAvioraPropertyDetailId } from './dashboard/avioraPropertyDetailData.js'
 import { AVIORA_OLIVIA_LEAD_IMAGE_URL } from './dashboard/avioraPortfolioData.js'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
@@ -1342,7 +1343,7 @@ function workspaceSitesForUser(user) {
  * Single status lamp. `active` is which color to show; `label` is for a11y + search.
  * Green uses Harland web lime; red/amber are standard signal colors; off = dim grey.
  */
-function SiteTrafficLight({ active, label }) {
+function SiteTrafficLight({ active, label, blink = false }) {
   const safe = ['red', 'amber', 'green'].includes(active) ? active : null
   const signal =
     safe === 'red'
@@ -1365,7 +1366,7 @@ function SiteTrafficLight({ active, label }) {
     <span className="client-site-tl" role="img" aria-label={aria}>
       <span className="client-site-tl__track">
         <span
-          className={`client-site-tl__lamp client-site-tl__lamp--single ${colorClass}${safe ? ' is-on' : ''}`}
+          className={`client-site-tl__lamp client-site-tl__lamp--single ${colorClass}${safe ? ' is-on' : ''}${blink && safe === 'red' ? ' client-site-tl__lamp--blink' : ''}`}
           aria-hidden="true"
         />
       </span>
@@ -1668,14 +1669,7 @@ function HarlandFootprintSiteCard({ site, snap, nowTick, onOpenBuilding, onOpenA
     .join(' ')
   const secBars = harlandSecurityBarHeights(securityLevel)
   const stepFill = harlandStatusStepperFilled(light)
-  const cardMods = [
-    'client-site-card',
-    'client-site-card--fp',
-    'client-site-card--harland-fp',
-    inactive ? 'client-site-card--harland-fp-inactive' : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  const cardMods = ['client-site-card', 'client-site-card--fp', 'client-site-card--harland-fp'].join(' ')
 
   return (
     <article className={cardMods}>
@@ -1697,7 +1691,11 @@ function HarlandFootprintSiteCard({ site, snap, nowTick, onOpenBuilding, onOpenA
       >
         <div className="client-harland-fp-top">
           <div className="client-harland-fp-status">
-            <SiteTrafficLight active={light === 'off' ? null : light} label={opLabel} />
+            <SiteTrafficLight
+              active={light === 'off' ? null : light}
+              label={opLabel}
+              blink={light === 'red'}
+            />
             <span className={`client-harland-fp-status-txt client-harland-fp-status-txt--${light}`}>
               {opLabel}
             </span>
@@ -2761,6 +2759,15 @@ function ShieldIcon() {
   )
 }
 
+function SystemsIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 2v3M12 19v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M2 12h3M19 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function LockIcon() {
   return (
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -2995,6 +3002,18 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
   )
 }
 
+function UnitSystemsPanel({ unitPanel }) {
+  const embed = unitPanel?.powerBiEmbed
+  const reportUrl = typeof embed === 'string' ? embed : embed?.reportUrl
+  const unitLabel = unitPanel?.unit ? String(unitPanel.unit).replace(/^BU/i, 'BU ') : 'BU'
+  return (
+    <FactoryPulseChartsPanel
+      reportUrl={reportUrl}
+      heading={`Systems — ${unitLabel}`}
+    />
+  )
+}
+
 function UnitOverviewSide({
   unitPanel,
   statusLabel,
@@ -3050,7 +3069,8 @@ function UnitOverviewSide({
     { label: '3 PM', value: Math.max(28, Math.round(throughputNum * 0.99)) },
   ]
 
-  const showJobsSide = !onUnitViewChange || unitView === 'jobs'
+  const showStatusSide = !onUnitViewChange || unitView === 'jobs'
+  const showSystemsSide = onUnitViewChange && unitView === 'systems'
   const dashSafety = onUnitViewChange && scopeId ? safetyDashboardFor(scopeId, digits || '') : null
   const dashSec = onUnitViewChange && scopeId ? securityDashboardFor(scopeId, digits || '') : null
 
@@ -3071,7 +3091,7 @@ function UnitOverviewSide({
         <p><strong>Assistant:</strong> {unitPanel.assistant}</p>
       </div>
 
-      {!showJobsSide && unitView === 'safety' && dashSafety ? (
+      {onUnitViewChange && unitView === 'safety' && dashSafety ? (
         <section className="client-bu-section">
           <h5 className="client-bu-section-title"><ShieldIcon /> Safety Summary (Today):</h5>
           <ul className="client-bu-section-list client-hms-side-sum">
@@ -3099,7 +3119,7 @@ function UnitOverviewSide({
         </section>
       ) : null}
 
-      {!showJobsSide && unitView === 'security' && dashSec ? (
+      {onUnitViewChange && unitView === 'security' && dashSec ? (
         <section className="client-bu-section">
           <h5 className="client-bu-section-title"><LockIcon /> Security Summary (Today):</h5>
           <ul className="client-bu-section-list client-hms-side-sum">
@@ -3127,7 +3147,7 @@ function UnitOverviewSide({
         </section>
       ) : null}
 
-      {showJobsSide ? (
+      {showStatusSide ? (
       <>
       <section className="client-bu-section">
         <h5 className="client-bu-section-title"><PulseIcon /> Real-Time Status:</h5>
@@ -3178,10 +3198,10 @@ function UnitOverviewSide({
         </ul>
       </section>
 
+      {isBu120 ? (
       <section className="client-bu-section">
         <h5 className="client-bu-section-title"><EyeIcon /> Visual Snapshot</h5>
         <div className="client-bu-snap-grid">
-          {isBu120 ? (
             <>
               <div className="client-bu-snap-card">
                 <p className="client-bu-snap-card-title">Active Jobs</p>
@@ -3233,8 +3253,16 @@ function UnitOverviewSide({
                 />
               </div>
             </>
-          ) : (
-            <>
+        </div>
+      </section>
+      ) : null}
+      </>
+      ) : null}
+
+      {showSystemsSide ? (
+        <section className="client-bu-section">
+          <h5 className="client-bu-section-title"><SystemsIcon /> Systems Overview</h5>
+          <div className="client-bu-snap-grid">
               <div className="client-bu-snap-card">
                 <p className="client-bu-snap-card-title">Active Machines</p>
                 <div className="client-bu-snap-row">
@@ -3272,26 +3300,14 @@ function UnitOverviewSide({
                 <MiniBars data={throughputTrend.map((d) => ({ ...d, color: '#1e3a8a' }))} />
                 <p className="client-bu-snap-foot">{`Average: ${unitPanel.throughput}`}</p>
               </div>
-            </>
-          )}
         </div>
       </section>
-      </>
       ) : null}
 
       <div className="client-bu-local">{`Local Time: ${localLine}`}</div>
 
       {onUnitViewChange ? (
         <div className="client-bu-side-viewnav" role="tablist" aria-label="Business unit pages">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={unitView === 'jobs'}
-            className={`client-bu-side-viewbtn client-bu-side-viewbtn--status${unitView === 'jobs' ? ' is-active' : ''}`}
-            onClick={() => onUnitViewChange('jobs')}
-          >
-            STATUS
-          </button>
           <button
             type="button"
             role="tab"
@@ -3309,6 +3325,24 @@ function UnitOverviewSide({
             onClick={() => onUnitViewChange('security')}
           >
             SECURITY
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={unitView === 'systems'}
+            className={`client-bu-side-viewbtn client-bu-side-viewbtn--systems${unitView === 'systems' ? ' is-active' : ''}`}
+            onClick={() => onUnitViewChange('systems')}
+          >
+            SYSTEMS
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={unitView === 'jobs'}
+            className={`client-bu-side-viewbtn client-bu-side-viewbtn--status${unitView === 'jobs' ? ' is-active' : ''}`}
+            onClick={() => onUnitViewChange('jobs')}
+          >
+            STATUS
           </button>
         </div>
       ) : null}
@@ -3504,7 +3538,9 @@ function BuildingSitePageView({
               const scopeId = `${site.id}-bu-${unitDigits}`
               const scopeName = `BU ${unitDigits} · ${b.name}`
               const view =
-                unitView === 'safety' || unitView === 'security' ? unitView : 'jobs'
+                unitView === 'safety' || unitView === 'security' || unitView === 'systems'
+                  ? unitView
+                  : 'jobs'
               const handleView = (next) => onSelectUnitView && onSelectUnitView(next)
               return (
                 <div className="client-bu-view">
@@ -3520,7 +3556,7 @@ function BuildingSitePageView({
                     onClose={() => onSelectZone(null)}
                   />
                   <div
-                    className={`client-bu-image-wrap${activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? ' client-bu-image-wrap--analytics' : ''}${view !== 'jobs' ? ' client-bu-image-wrap--hms-dash' : ''}`}
+                    className={`client-bu-image-wrap${activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? ' client-bu-image-wrap--analytics' : ''}${view !== 'jobs' && view !== 'systems' ? ' client-bu-image-wrap--hms-dash' : ''}`}
                   >
                     {view === 'safety' ? (
                       <SafetyPanel
@@ -3536,6 +3572,8 @@ function BuildingSitePageView({
                         localLine={localLine}
                         unitDigits={unitDigits}
                       />
+                    ) : view === 'systems' ? (
+                      <UnitSystemsPanel unitPanel={activeZone.machinery.unitPanel} />
                     ) : (
                       <UnitJobsPanel user={user} unitLabel={activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, '')} />
                     )}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { AVIORA_PROPERTY_DETAILS } from './avioraPropertyDetailData.js'
 import AvioraPropertySnapshot from './AvioraPropertySnapshot.jsx'
 import AvioraSafetySecurityDashboard from './AvioraSafetySecurityDashboard.jsx'
+import FactoryPulseChartsPanel from '../FactoryPulseChartsPanel.jsx'
 
 /** @param {{ label: string; value: string }[]} rows */
 function realtimeColumns(rows) {
@@ -242,7 +243,7 @@ function PersonRow({ label, person, variant = 'pm' }) {
 export default function AvioraPropertyDetailPage({ propertyId, companyName, nowTick }) {
   const d = AVIORA_PROPERTY_DETAILS[propertyId]
   const [period, setPeriod] = useState('daily')
-  const [propView, setPropView] = useState(/** @type {'status' | 'safety' | 'security'} */ ('status'))
+  const [propView, setPropView] = useState(/** @type {'status' | 'safety' | 'security' | 'systems'} */ ('status'))
   const tick = nowTick ?? new Date()
   const today = tick.toLocaleDateString(undefined, { dateStyle: 'long' })
   const time = tick.toLocaleTimeString(undefined, {
@@ -444,16 +445,6 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
                   <button
                     type="button"
                     role="tab"
-                    aria-selected={propView === 'status'}
-                    className={`aviora-prop-cta aviora-prop-cta--status${propView === 'status' ? ' is-active' : ''}`}
-                    onClick={() => setPropView('status')}
-                  >
-                    <IconBar />
-                    Status
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
                     aria-selected={propView === 'safety'}
                     className={`aviora-prop-cta aviora-prop-cta--safety${propView === 'safety' ? ' is-active' : ''}`}
                     onClick={() => setPropView('safety')}
@@ -471,19 +462,43 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
                     <IconLock />
                     Security
                   </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={propView === 'systems'}
+                    className={`aviora-prop-cta aviora-prop-cta--systems${propView === 'systems' ? ' is-active' : ''}`}
+                    onClick={() => setPropView('systems')}
+                  >
+                    <IconBuildingCog />
+                    Systems
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={propView === 'status'}
+                    className={`aviora-prop-cta aviora-prop-cta--status${propView === 'status' ? ' is-active' : ''}`}
+                    onClick={() => setPropView('status')}
+                  >
+                    <IconBar />
+                    Status
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </aside>
 
-        <div className={`aviora-prop-main${propView !== 'status' ? ' aviora-prop-main--hub' : ''}`}>
+        <div
+          className={`aviora-prop-main${propView === 'safety' || propView === 'security' ? ' aviora-prop-main--hub' : ''}`}
+        >
           {propView === 'status' ? (
             <div className="aviora-prop-grid">
               {d.packages.map((pkg) => (
                 <PackageCard key={pkg.num} pkg={pkg} />
               ))}
             </div>
+          ) : propView === 'systems' ? (
+            <FactoryPulseChartsPanel heading={`Systems — ${d.name}`} />
           ) : (
             <AvioraSafetySecurityDashboard
               key={`${propertyId}-${propView}`}
@@ -493,6 +508,7 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
               layout="embedded"
               initialMode={propView === 'security' ? 'security' : 'safety'}
               onOpenStatus={() => setPropView('status')}
+              onOpenSystems={() => setPropView('systems')}
             />
           )}
         </div>

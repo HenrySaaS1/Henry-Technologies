@@ -98,6 +98,18 @@ function IconBar() {
   )
 }
 
+function IconSystems() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="3" />
+      <path
+        d="M12 2v3M12 19v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M2 12h3M19 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
 function IconLock() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -261,12 +273,13 @@ function sevClass(s) {
 }
 
 /**
- * @param {{ companyName: string; nowTick?: Date; onOpenStatus?: () => void; layout?: 'full' | 'embedded'; initialMode?: 'safety' | 'security'; propertyId?: string }} props
+ * @param {{ companyName: string; nowTick?: Date; onOpenStatus?: () => void; onOpenSystems?: () => void; layout?: 'full' | 'embedded'; initialMode?: 'safety' | 'security'; propertyId?: string }} props
  */
 export default function AvioraSafetySecurityDashboard({
   companyName,
   nowTick,
   onOpenStatus,
+  onOpenSystems,
   layout = 'full',
   initialMode,
   propertyId,
@@ -450,10 +463,6 @@ export default function AvioraSafetySecurityDashboard({
             className={`aviora-hub-side-nav aviora-hub-side-nav--${mode}`}
             aria-label="Hub sections"
           >
-            <button type="button" className="aviora-hub-navbtn aviora-hub-navbtn--status" onClick={() => onOpenStatus?.()}>
-              <IconBar />
-              Status
-            </button>
             <button
               type="button"
               className={`aviora-hub-navbtn aviora-hub-navbtn--safety${mode === 'safety' ? ' is-active' : ''}`}
@@ -469,6 +478,16 @@ export default function AvioraSafetySecurityDashboard({
             >
               <IconLock />
               Security
+            </button>
+            {onOpenSystems ? (
+              <button type="button" className="aviora-hub-navbtn aviora-hub-navbtn--systems" onClick={() => onOpenSystems()}>
+                <IconSystems />
+                Systems
+              </button>
+            ) : null}
+            <button type="button" className="aviora-hub-navbtn aviora-hub-navbtn--status" onClick={() => onOpenStatus?.()}>
+              <IconBar />
+              Status
             </button>
           </nav>
         </aside>

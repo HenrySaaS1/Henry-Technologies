@@ -4704,11 +4704,6 @@ h3 {
   padding: 0.95rem 0.85rem 1rem;
 }
 
-.client-site-card--harland-fp-inactive {
-  opacity: 0.78;
-  filter: saturate(0.55);
-}
-
 .client-site-card-main--harland-fp {
   width: 100%;
   margin: 0;
@@ -4873,13 +4868,14 @@ h3 {
   padding-left: 0;
 }
 
-.client-harland-fp-mcap {
-  font-size: 0.58rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
+.client-harland-fp-mcap,
+.aviora-port-pcap {
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #64748b;
-  margin-bottom: 0.25rem;
+  color: #0f172a;
+  margin-bottom: 0.3rem;
 }
 
 .client-harland-fp-mfoot {
@@ -5783,6 +5779,30 @@ h3 {
 
 .client-site-tl__lamp--red.is-on {
   background: linear-gradient(160deg, #e11d48 0%, #f43f5e 100%);
+}
+
+@keyframes client-site-tl-blink {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow:
+      0 0 0 1px rgba(15, 23, 42, 0.12),
+      0 0 18px #f43f5e,
+      0 0 28px rgba(244, 63, 94, 0.45);
+  }
+
+  50% {
+    opacity: 0.28;
+    box-shadow:
+      0 0 0 1px rgba(15, 23, 42, 0.08),
+      0 0 4px rgba(244, 63, 94, 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .client-site-tl__lamp--red.is-on.client-site-tl__lamp--blink {
+    animation: client-site-tl-blink 1.05s ease-in-out infinite;
+  }
 }
 
 .client-site-tl__lamp--amber {
@@ -7538,6 +7558,9 @@ h3 {
 }
 .client-bu-side-viewbtn--security {
   background: linear-gradient(90deg, #1e3a8a, #172554);
+}
+.client-bu-side-viewbtn--systems {
+  background: linear-gradient(90deg, #7c3aed, #5b21b6);
 }
 
 /* === Redesigned BU job card (v2) ============================== */
@@ -11801,15 +11824,6 @@ h3 {
   padding-left: 0;
 }
 
-.aviora-port-pcap {
-  font-size: 0.54rem;
-  font-weight: 800;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: #64748b;
-  margin-bottom: 0.22rem;
-}
-
 .aviora-port-pfoot {
   margin-top: 0.22rem;
   font-size: 0.64rem;
@@ -12566,7 +12580,7 @@ h3 {
 
 .aviora-prop-cta-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.3rem;
 }
 
@@ -12608,8 +12622,13 @@ h3 {
   background: linear-gradient(180deg, #22c55e, #15803d);
 }
 
+.aviora-prop-cta--systems {
+  background: linear-gradient(180deg, #7c3aed, #5b21b6);
+}
+
 .aviora-prop-cta--safety svg,
-.aviora-prop-cta--security svg {
+.aviora-prop-cta--security svg,
+.aviora-prop-cta--systems svg {
   color: #fff;
   stroke: #fff;
 }
@@ -13714,6 +13733,10 @@ h3 {
 .aviora-hub-navbtn--sec.is-active {
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.45);
   filter: brightness(1.12);
+}
+
+.aviora-hub-navbtn--systems {
+  background: linear-gradient(180deg, #7c3aed, #5b21b6);
 }
 
 .aviora-hub-side-nav--safety .aviora-hub-navbtn--status {

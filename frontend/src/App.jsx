@@ -834,6 +834,17 @@ function renderComparisonValue(value) {
   return <span className="pricing-compare-text">{value}</span>
 }
 
+/**
+ * Header + mobile “PRICING” link toggle. Pricing page (`/pricing`), `pricingTiers`, signup plans, etc. remain in this file.
+ * Set to `true` when you want PRICING back in the top nav.
+ */
+const SHOW_NAV_PRICING_LINK = false
+
+function NavPricingMenuLink() {
+  if (!SHOW_NAV_PRICING_LINK) return null
+  return <a href="/pricing">PRICING</a>
+}
+
 function App() {
   const isPricingPage =
     typeof window !== 'undefined' &&
@@ -1446,7 +1457,7 @@ function App() {
     { href: '/#products', label: 'PRODUCTS' },
     { href: '/products', label: '— SnapShot' },
     { href: '/case-studies', label: 'CASE STUDIES' },
-    { href: '/pricing', label: 'PRICING' },
+    ...(SHOW_NAV_PRICING_LINK ? [{ href: '/pricing', label: 'PRICING' }] : []),
     { href: '/#about', label: 'ABOUT' },
     { href: '/#contact', label: 'CONTACT' },
   ]
@@ -1894,7 +1905,7 @@ function App() {
             <nav className="menu">
               <ProductsMenuLink />
               <a href="/case-studies">CASE STUDIES</a>
-              <a href="/pricing">PRICING</a>
+              <NavPricingMenuLink />
               <a href="/#about">ABOUT</a>
               <a href="/#contact">CONTACT</a>
             </nav>
@@ -1966,7 +1977,7 @@ function App() {
             <nav className="menu">
               <ProductsMenuLink />
               <a href="/case-studies">CASE STUDIES</a>
-              <a href="/pricing">PRICING</a>
+              <NavPricingMenuLink />
               <a href="/#about">ABOUT</a>
               <a href="/#contact">CONTACT</a>
             </nav>
@@ -2038,7 +2049,7 @@ function App() {
             <nav className="menu">
               <ProductsMenuLink />
               <a href="/case-studies">CASE STUDIES</a>
-              <a href="/pricing">PRICING</a>
+              <NavPricingMenuLink />
               <a href="/#about">ABOUT</a>
               <a href="/#contact">CONTACT</a>
             </nav>
@@ -2174,7 +2185,7 @@ function App() {
           <nav className="menu">
             <ProductsMenuLink />
             <a href="/case-studies">CASE STUDIES</a>
-            <a href="/pricing">PRICING</a>
+            <NavPricingMenuLink />
             <a href="#about">ABOUT</a>
             <a href="#contact">CONTACT</a>
           </nav>

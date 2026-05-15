@@ -9,7 +9,7 @@ function gatePasswordFromEnv() {
 
 /**
  * Optional full-screen password prompt before the SPA loads.
- * Enabled only when VITE_SITE_GATE_PASSWORD is set at **build** time.
+ * Wrapped from `main.jsx` when `ENABLE_SITE_GATE` is true; also requires `VITE_SITE_GATE_PASSWORD` at **build** time.
  *
  * Limitations: the password is bundled in client JS; anyone can extract it or
  * bypass the UI. Use for casual preview only, not for real secrets or compliance.
