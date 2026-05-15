@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useId } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef, useId } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import ClientDashboard from './ClientDashboard.jsx'
 import ClientOnboarding from './ClientOnboarding.jsx'
@@ -45,8 +45,43 @@ import henryLogo from './assets/henry-logo.png'
 import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import HeroLiveChartsHud from './HeroLiveCharts.jsx'
 
+/** `/products#slug` for marketing CTAs; honors Vite `base` and current origin. */
+function marketingProductsHashHref(slug) {
+  const base = import.meta.env.BASE_URL || '/'
+  if (typeof window === 'undefined') {
+    return `${base}products#${slug}`
+  }
+  const normalizedBase =
+    base === '/' ? `${window.location.origin}/` : `${window.location.origin}${base.endsWith('/') ? base : `${base}/`}`
+  try {
+    const u = new URL(`products#${slug}`, normalizedBase)
+    return `${u.pathname}${u.search}${u.hash}`
+  } catch {
+    return `${base}products#${slug}`
+  }
+}
+
+/** `/products` top; honors Vite `base` and current origin. */
+function marketingProductsHref() {
+  const base = import.meta.env.BASE_URL || '/'
+  if (typeof window === 'undefined') {
+    return `${base}products`.replace(/\/{2,}/g, '/')
+  }
+  const normalizedBase =
+    base === '/' ? `${window.location.origin}/` : `${window.location.origin}${base.endsWith('/') ? base : `${base}/`}`
+  try {
+    return new URL('products', normalizedBase).pathname
+  } catch {
+    return `${base}products`.replace(/\/{2,}/g, '/')
+  }
+}
+
 const PRODUCTS_MENU_ITEMS = [
-  { href: '/products', label: 'SnapShot' },
+  { href: marketingProductsHref(), label: 'SnapShot' },
+  { href: marketingProductsHashHref('safety'), label: 'Safety' },
+  { href: marketingProductsHashHref('security'), label: 'Security' },
+  { href: marketingProductsHashHref('systems'), label: 'Systems' },
+  { href: marketingProductsHashHref('myhenry-agent'), label: 'MyHenry Agent' },
 ]
 
 function ProductsMenuLink() {
@@ -906,15 +941,71 @@ function App() {
         ? 'Aviora Construction'
         : null
 
-  useEffect(() => {
-    if (!isProductsPage || typeof window === 'undefined') return
-    const hash = String(window.location.hash || '').replace(/^#/, '')
-    if (!hash) return
-    const el = document.getElementById(hash)
-    if (el) {
-      setTimeout(() => {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }, 40)
+  useLayoutEffect(() => {
+    if (!isProductsPage || typeof window === 'undefined') return undefined
+
+    const hashId = () => {
+      const raw = String(window.location.hash || '').replace(/^#/, '')
+      return raw ? decodeURIComponent(raw) : ''
+    }
+
+    const topOffset = () => {
+      const topbar = document.querySelector('.topbar')
+      return (topbar ? topbar.getBoundingClientRect().height : 72) + 16
+    }
+
+    const scrollToId = (id, behavior) => {
+      const el = document.getElementById(id)
+      if (!el) return false
+      const top = el.getBoundingClientRect().top + window.scrollY - topOffset()
+      window.scrollTo({ top: Math.max(0, top), behavior })
+      return true
+    }
+
+    const prevRestoration = window.history.scrollRestoration
+    let attempts = 0
+    let cancelled = false
+    let timeoutId = 0
+
+    const finish = () => {
+      window.history.scrollRestoration = prevRestoration
+    }
+
+    const run = () => {
+      if (cancelled) return
+      const id = hashId()
+      if (!id) {
+        finish()
+        return
+      }
+      window.history.scrollRestoration = 'manual'
+      const behavior = attempts === 0 ? 'smooth' : 'auto'
+      if (scrollToId(id, behavior)) {
+        finish()
+        return
+      }
+      attempts += 1
+      if (attempts < 40) {
+        timeoutId = window.setTimeout(run, 50)
+      } else {
+        finish()
+      }
+    }
+
+    run()
+
+    const onHashChange = () => {
+      attempts = 0
+      if (timeoutId) window.clearTimeout(timeoutId)
+      run()
+    }
+    window.addEventListener('hashchange', onHashChange)
+
+    return () => {
+      cancelled = true
+      if (timeoutId) window.clearTimeout(timeoutId)
+      window.removeEventListener('hashchange', onHashChange)
+      window.history.scrollRestoration = prevRestoration
     }
   }, [isProductsPage])
 
@@ -1580,7 +1671,7 @@ function App() {
           </div>
         </div>
         <div className="snapshot-mobile-actions">
-          <a className="btn-primary snapshot-mobile-cta" href="/products#safety">
+          <a className="btn-primary snapshot-mobile-cta" href={marketingProductsHashHref('safety')}>
             Explore SnapShot
           </a>
           <span className="snapshot-mobile-hint-scroll" aria-hidden="true">
@@ -1604,17 +1695,9 @@ function App() {
             <img className="product-image" src={item.image} alt={item.title} />
             <h3>{item.title}</h3>
             <p>{item.text}</p>
-            <button
-              type="button"
-              className="btn-dark small btn-product-learn"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.open(`/products#${item.slug}`, '_blank', 'noopener,noreferrer')
-                }
-              }}
-            >
+            <a href={marketingProductsHashHref(item.slug)} className="btn-dark small btn-product-learn">
               Learn More
-            </button>
+            </a>
           </article>
         ))}
       </div>
@@ -1624,7 +1707,11 @@ function App() {
   const scrollToProductDetail = (slug) => {
     if (typeof window === 'undefined') return
     const el = document.getElementById(slug)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (!el) return
+    const topbar = document.querySelector('.topbar')
+    const offset = (topbar ? topbar.getBoundingClientRect().height : 72) + 16
+    const top = el.getBoundingClientRect().top + window.scrollY - offset
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
   }
 
   const productsDetailsSection = (

@@ -382,6 +382,13 @@ h3 {
   border: 2px solid #f1c45a;
 }
 
+a.btn-dark {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .btn-primary {
   background: linear-gradient(180deg, #1a74e8 0%, #0b63d1 100%);
   color: #fff;
@@ -1691,6 +1698,7 @@ h3 {
   grid-template-columns: 1fr 1.5fr;
   gap: 0.85rem;
   align-items: start;
+  scroll-margin-top: 6rem;
 }
 
 .product-detail-row.reverse {
