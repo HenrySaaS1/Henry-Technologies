@@ -3691,11 +3691,11 @@ function BuildingSitePageView({
 function BuildingSiteRouteShell({ site, now, onClose, user }) {
   const [buildingZoneId, setBuildingZoneId] = useState(null)
   const [buildingPanelTab, setBuildingPanelTab] = useState('safety')
-  const [unitView, setUnitView] = useState('jobs')
+  const [unitView, setUnitView] = useState('safety')
 
   const handleSelectZone = useCallback((next) => {
     setBuildingZoneId(next)
-    setUnitView('jobs')
+    setUnitView('safety')
   }, [])
 
   useEffect(() => {

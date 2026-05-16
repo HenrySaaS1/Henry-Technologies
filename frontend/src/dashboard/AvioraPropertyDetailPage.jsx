@@ -243,7 +243,7 @@ function PersonRow({ label, person, variant = 'pm' }) {
 export default function AvioraPropertyDetailPage({ propertyId, companyName, nowTick }) {
   const d = AVIORA_PROPERTY_DETAILS[propertyId]
   const [period, setPeriod] = useState('daily')
-  const [propView, setPropView] = useState(/** @type {'status' | 'safety' | 'security' | 'systems'} */ ('status'))
+  const [propView, setPropView] = useState(/** @type {'status' | 'safety' | 'security' | 'systems'} */ ('safety'))
   const tick = nowTick ?? new Date()
   const today = tick.toLocaleDateString(undefined, { dateStyle: 'long' })
   const time = tick.toLocaleTimeString(undefined, {
