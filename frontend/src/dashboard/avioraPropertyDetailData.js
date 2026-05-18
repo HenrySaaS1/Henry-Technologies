@@ -26,9 +26,10 @@ export const AVIORA_PROPERTY_DETAILS = {
     projectManager: { name: 'Olivia Carter', photo: AVIORA_OLIVIA_LEAD_IMAGE_URL, photoFocus: '50% 38%' },
     siteEngineer: { name: 'Daniel Perez', photo: null },
     realtime: [
-      { label: 'At Risk / Delayed', value: '2' },
       { label: 'Active Crews', value: '9' },
       { label: 'On-Track Packages', value: '4' },
+      { label: 'At Risk Packages', value: '1' },
+      { label: 'Delayed Packages', value: '1' },
       { label: 'Day', value: '72 of 120' },
     ],
     construction: [

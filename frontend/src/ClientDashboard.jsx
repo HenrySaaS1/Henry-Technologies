@@ -2820,13 +2820,22 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits }) {
 
   const inner = (
     <div className={`client-hms-dash${unitDigits ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} safety dashboard`}>
-      <header className="client-hms-dash-top client-hms-dash-top--safety">
-        <div className="client-hms-dash-top-left">
-          <ShieldPlusDashIcon />
-          <span className="client-hms-dash-title">Safety Dashboard</span>
-        </div>
-        <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="safety" />
-      </header>
+      {unitDigits ? (
+        <header className="client-hms-dash-strip client-hms-dash-strip--safety">
+          <div className="client-hms-dash-top-left">
+            <ShieldPlusDashIcon />
+            <span className="client-hms-dash-title">Safety Dashboard</span>
+          </div>
+        </header>
+      ) : (
+        <header className="client-hms-dash-top client-hms-dash-top--safety">
+          <div className="client-hms-dash-top-left">
+            <ShieldPlusDashIcon />
+            <span className="client-hms-dash-title">Safety Dashboard</span>
+          </div>
+          <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="safety" />
+        </header>
+      )}
 
       <div className="client-hms-dash-kpis">
         <div className="client-hms-dash-kpi client-hms-dash-kpi--score">
@@ -2901,8 +2910,17 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits }) {
     </div>
   )
 
+  if (unitDigits) {
+    return (
+      <section className="client-unit-dash-panel" aria-label={`BU ${unitDigits} safety`}>
+        <UnitHarlandPanelHeader unitDigits={unitDigits} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
+        <div className="client-hms-dash-wrap client-hms-dash-wrap--unit">{inner}</div>
+      </section>
+    )
+  }
+
   return (
-    <section className={unitDigits ? 'client-hms-dash-wrap client-hms-dash-wrap--unit' : 'client-hms-dash-wrap'} aria-label={`BU ${unitDigits || 'building'} safety`}>
+    <section className="client-hms-dash-wrap" aria-label="Building safety">
       {inner}
     </section>
   )
@@ -2915,13 +2933,22 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
 
   const inner = (
     <div className={`client-hms-dash${unitDigits ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} security dashboard`}>
-      <header className="client-hms-dash-top client-hms-dash-top--security">
-        <div className="client-hms-dash-top-left">
-          <ShieldIcon />
-          <span className="client-hms-dash-title">Security Dashboard</span>
-        </div>
-        <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="security" />
-      </header>
+      {unitDigits ? (
+        <header className="client-hms-dash-strip client-hms-dash-strip--security">
+          <div className="client-hms-dash-top-left">
+            <ShieldIcon />
+            <span className="client-hms-dash-title">Security Dashboard</span>
+          </div>
+        </header>
+      ) : (
+        <header className="client-hms-dash-top client-hms-dash-top--security">
+          <div className="client-hms-dash-top-left">
+            <ShieldIcon />
+            <span className="client-hms-dash-title">Security Dashboard</span>
+          </div>
+          <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="security" />
+        </header>
+      )}
 
       <div className="client-hms-dash-kpis">
         <div className="client-hms-dash-kpi client-hms-dash-kpi--score">
@@ -2995,8 +3022,17 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
     </div>
   )
 
+  if (unitDigits) {
+    return (
+      <section className="client-unit-dash-panel" aria-label={`BU ${unitDigits} security`}>
+        <UnitHarlandPanelHeader unitDigits={unitDigits} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
+        <div className="client-hms-dash-wrap client-hms-dash-wrap--unit">{inner}</div>
+      </section>
+    )
+  }
+
   return (
-    <section className={unitDigits ? 'client-hms-dash-wrap client-hms-dash-wrap--unit' : 'client-hms-dash-wrap'} aria-label={`BU ${unitDigits || 'building'} security`}>
+    <section className="client-hms-dash-wrap" aria-label="Building security">
       {inner}
     </section>
   )
@@ -3006,11 +3042,13 @@ function UnitSystemsPanel({ unitPanel }) {
   const embed = unitPanel?.powerBiEmbed
   const reportUrl = typeof embed === 'string' ? embed : embed?.reportUrl
   const unitLabel = unitPanel?.unit ? String(unitPanel.unit).replace(/^BU/i, 'BU ') : 'BU'
+  const unitDigits = digitsFromUnitLabel(String(unitPanel?.unit || '').replace(/^BU\s*/i, ''))
+  const [timeRange, setTimeRange] = useState('daily')
   return (
-    <FactoryPulseChartsPanel
-      reportUrl={reportUrl}
-      heading={`Systems — ${unitLabel}`}
-    />
+    <section className="client-unit-dash-panel" aria-label={`${unitLabel} systems`}>
+      <UnitHarlandPanelHeader unitDigits={unitDigits} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
+      <FactoryPulseChartsPanel reportUrl={reportUrl} heading={`Systems — ${unitLabel}`} />
+    </section>
   )
 }
 
@@ -3079,11 +3117,7 @@ function UnitOverviewSide({
       <button type="button" className="client-building-back" onClick={onClose}>
         ← Back to home page
       </button>
-      <h3
-        className={`client-bu-title${unitView === 'safety' ? ' client-bu-title--hms-safety' : unitView === 'security' ? ' client-bu-title--hms-security' : ''}`}
-      >
-        Business Unit: {unitPanel.unit}
-      </h3>
+      <h3 className="client-bu-title">Business Unit: {unitPanel.unit}</h3>
 
       <div className="client-bu-text client-bu-text--meta">
         <p><strong>Description:</strong> {unitPanel.description}</p>
@@ -3424,7 +3458,7 @@ function UnitJobsPanel({ user, unitLabel }) {
             >
               <header className="client-unit-job-head">
                 <h4>{card.title}</h4>
-                <p>{`Description: ${card.description}`}</p>
+                <p>{card.description}</p>
               </header>
 
               <div className="client-unit-job-body">
@@ -3556,7 +3590,13 @@ function BuildingSitePageView({
                     onClose={() => onSelectZone(null)}
                   />
                   <div
-                    className={`client-bu-image-wrap${activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl ? ' client-bu-image-wrap--analytics' : ''}${view !== 'jobs' && view !== 'systems' ? ' client-bu-image-wrap--hms-dash' : ''}`}
+                    className={`client-bu-image-wrap${
+                      activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl && view === 'systems'
+                        ? ' client-bu-image-wrap--analytics'
+                        : view === 'jobs' || view === 'systems'
+                          ? ' client-bu-image-wrap--status'
+                          : ' client-bu-image-wrap--hms-dash'
+                    }`}
                   >
                     {view === 'safety' ? (
                       <SafetyPanel
