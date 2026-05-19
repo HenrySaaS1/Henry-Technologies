@@ -10,6 +10,7 @@ import AvioraSafetySecurityDashboard from './dashboard/AvioraSafetySecurityDashb
 import FactoryPulseChartsPanel from './FactoryPulseChartsPanel.jsx'
 import { isAvioraPropertyDetailId } from './dashboard/avioraPropertyDetailData.js'
 import { AVIORA_OLIVIA_LEAD_IMAGE_URL } from './dashboard/avioraPortfolioData.js'
+import { formatSiteLocalTime } from './dashboard/siteLocalTime.js'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
 import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
 import harland528Coater from './assets/uploads/harland-528-coater.png'
@@ -207,24 +208,6 @@ const FACTORY_PULSE_REPORT_URL =
 const FACTORY_PULSE_UNIT_LINK = {
   title: 'Factory Pulse',
   reportUrl: FACTORY_PULSE_REPORT_URL,
-}
-
-/** Live clock in the site’s zone (IANA). Falls back if the runtime lacks the zone. */
-function formatSiteLocalTime(date, timeZone) {
-  if (!timeZone) return date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
-  try {
-    return new Intl.DateTimeFormat(undefined, {
-      timeZone,
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      timeZoneName: 'short',
-    }).format(date)
-  } catch {
-    return date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
-  }
 }
 
 /** Short clock for footprint cards (24-hour, site time zone). */
@@ -3338,9 +3321,10 @@ function UnitOverviewSide({
       </section>
       ) : null}
 
-      <div className="client-bu-local">{`Local Time: ${localLine}`}</div>
+      <div className="client-side-panel-foot">
+        <div className="client-bu-local">{`Local Time: ${localLine}`}</div>
 
-      {onUnitViewChange ? (
+        {onUnitViewChange ? (
         <div className="client-bu-side-viewnav" role="tablist" aria-label="Business unit pages">
           <button
             type="button"
@@ -3378,8 +3362,9 @@ function UnitOverviewSide({
           >
             STATUS
           </button>
-        </div>
-      ) : null}
+          </div>
+        ) : null}
+      </div>
     </aside>
   )
 }

@@ -6516,14 +6516,29 @@ a.btn-dark {
   line-height: 1.4;
 }
 
+/* Shared sidebar footer: local time + Safety/Security/Systems/Status nav */
+.client-side-panel-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.client-bu-side--v2 > .client-side-panel-foot {
+  margin-top: auto;
+}
+
 .client-bu-local {
-  margin-top: 0.4rem;
-  border-radius: 6px;
-  padding: 0.35rem 0.5rem;
+  margin-top: 0;
+  border-radius: 10px;
+  padding: 0.55rem 0.65rem;
   background: linear-gradient(90deg, #22d3ee, #14b8a6);
-  color: #083344;
+  color: #fff;
   font-size: 0.74rem;
-  font-weight: 700;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
 }
 
 .client-bu-actions {
@@ -7585,13 +7600,13 @@ a.btn-dark {
 }
 
 .client-bu-side-viewnav {
-  /* Push the view buttons block to the bottom of the sidebar. */
-  margin-top: auto;
-  padding-top: 0.55rem;
+  margin-top: 0;
+  padding-top: 0;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
 }
+
 .client-bu-side-viewbtn {
   border: none;
   border-radius: 10px;
@@ -12303,13 +12318,13 @@ a.btn-dark {
 }
 
 .aviora-prop-side-sheet-foot {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.42rem;
   padding: 0.48rem 0.55rem 0.52rem;
   border-top: 1px solid #eef2f7;
   background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+}
+
+.aviora-prop-side-sheet-foot.client-side-panel-foot {
+  gap: 0.4rem;
 }
 
 @media (max-width: 1100px) {

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AVIORA_PROPERTY_DETAILS } from './avioraPropertyDetailData.js'
+import { AVIORA_CONSTRUCTION_PROJECTS } from './avioraPortfolioData.js'
+import { formatSiteLocalTime } from './siteLocalTime.js'
 import AvioraPropertySnapshot from './AvioraPropertySnapshot.jsx'
 import AvioraSafetySecurityDashboard from './AvioraSafetySecurityDashboard.jsx'
 import FactoryPulseChartsPanel from '../FactoryPulseChartsPanel.jsx'
@@ -91,50 +93,12 @@ function IconUser() {
   )
 }
 
-/** Bar chart — reference Status control */
-function IconBar() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M4 20V10M10 20V4M16 20v-6M22 20V8" strokeLinecap="round" />
-    </svg>
-  )
-}
-
-function IconWrench() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path
-        d="M14.7 6.3a4 4 0 0 0-5.4 5.4l-5 5a2 2 0 0 0 2.8 2.8l5-5a4 4 0 0 0 5.4-5.4l-1.5-1.5z"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
 function IconBuildingCog() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M4 21V8l8-4v17M12 21V12h5v9M9 14h2M9 17h2M16 14h2M16 17h2" />
       <circle cx="18" cy="6" r="2.2" />
       <path d="M18 4.2v.65M18 7.15v.65M16.35 6h-.55M20.2 6h-.55M17.1 4.9l.4.4M18.5 6.3l.4.4M18.5 4.9l-.4.4M17.1 6.3l-.4.4" />
-    </svg>
-  )
-}
-
-function IconShield() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 2l8 4v6c0 5-3.4 9.8-8 11-4.6-1.2-8-6-8-11V6l8-4z" opacity="0.92" />
-    </svg>
-  )
-}
-
-function IconLock() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <rect x="5" y="11" width="14" height="10" rx="2" />
-      <path d="M8 11V8a4 4 0 0 1 8 0v3" strokeLinecap="round" />
     </svg>
   )
 }
@@ -412,14 +376,8 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
         ? 'aviora-prop-side--warn'
         : 'aviora-prop-side--risk'
 
-  const clockLine = tick.toLocaleString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZoneName: 'short',
-  })
+  const siteTimeZone = AVIORA_CONSTRUCTION_PROJECTS.find((p) => p.id === propertyId)?.siteTimeZone
+  const localLine = formatSiteLocalTime(tick, siteTimeZone)
 
   if (!d) return null
 
@@ -595,58 +553,44 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
                 </div>
               </div>
 
-              <div className="aviora-prop-side-sheet-foot">
-                <p className="aviora-prop-side-clock">
-                  <span className="aviora-prop-side-clock-ic" aria-hidden="true">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="9" />
-                      <path d="M12 7v5l3 2" strokeLinecap="round" />
-                    </svg>
-                  </span>
-                  <span>
-                    <span className="aviora-prop-side-clock-k">Local Time:</span> {clockLine}
-                  </span>
-                </p>
-                <nav className="aviora-prop-viewnav" role="tablist" aria-label="Property workspace">
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={propView === 'status'}
-                    className={`aviora-prop-cta aviora-prop-cta--status${propView === 'status' ? ' is-active' : ''}`}
-                    onClick={() => setPropView('status')}
-                  >
-                    <IconWrench />
-                    Status
-                  </button>
+              <div className="aviora-prop-side-sheet-foot client-side-panel-foot">
+                <div className="client-bu-local">{`Local Time: ${localLine}`}</div>
+                <nav className="client-bu-side-viewnav" role="tablist" aria-label="Property workspace">
                   <button
                     type="button"
                     role="tab"
                     aria-selected={propView === 'safety'}
-                    className={`aviora-prop-cta aviora-prop-cta--safety${propView === 'safety' ? ' is-active' : ''}`}
+                    className={`client-bu-side-viewbtn client-bu-side-viewbtn--safety${propView === 'safety' ? ' is-active' : ''}`}
                     onClick={() => setPropView('safety')}
                   >
-                    <IconShield />
-                    Safety
+                    SAFETY
                   </button>
                   <button
                     type="button"
                     role="tab"
                     aria-selected={propView === 'security'}
-                    className={`aviora-prop-cta aviora-prop-cta--security${propView === 'security' ? ' is-active' : ''}`}
+                    className={`client-bu-side-viewbtn client-bu-side-viewbtn--security${propView === 'security' ? ' is-active' : ''}`}
                     onClick={() => setPropView('security')}
                   >
-                    <IconLock />
-                    Security
+                    SECURITY
                   </button>
                   <button
                     type="button"
                     role="tab"
                     aria-selected={propView === 'systems'}
-                    className={`aviora-prop-cta aviora-prop-cta--systems${propView === 'systems' ? ' is-active' : ''}`}
+                    className={`client-bu-side-viewbtn client-bu-side-viewbtn--systems${propView === 'systems' ? ' is-active' : ''}`}
                     onClick={() => setPropView('systems')}
                   >
-                    <IconBuildingCog />
-                    Systems
+                    SYSTEMS
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={propView === 'status'}
+                    className={`client-bu-side-viewbtn client-bu-side-viewbtn--status${propView === 'status' ? ' is-active' : ''}`}
+                    onClick={() => setPropView('status')}
+                  >
+                    STATUS
                   </button>
                 </nav>
               </div>
