@@ -5,6 +5,7 @@ import { AVIORA_CONSTRUCTION_PROJECTS } from './avioraPortfolioData.js'
 import { formatSiteLocalTime } from './siteLocalTime.js'
 import AvioraPropertySnapshot from './AvioraPropertySnapshot.jsx'
 import AvioraSafetySecurityDashboard from './AvioraSafetySecurityDashboard.jsx'
+import WorkspaceViewTabs from './WorkspaceViewTabs.jsx'
 import FactoryPulseChartsPanel from '../FactoryPulseChartsPanel.jsx'
 
 /** @param {{ label: string; value: string }[]} rows */
@@ -555,44 +556,6 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
 
               <div className="aviora-prop-side-sheet-foot client-side-panel-foot">
                 <div className="client-bu-local">{`Local Time: ${localLine}`}</div>
-                <nav className="client-bu-side-viewnav" role="tablist" aria-label="Property workspace">
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={propView === 'safety'}
-                    className={`client-bu-side-viewbtn client-bu-side-viewbtn--safety${propView === 'safety' ? ' is-active' : ''}`}
-                    onClick={() => setPropView('safety')}
-                  >
-                    SAFETY
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={propView === 'security'}
-                    className={`client-bu-side-viewbtn client-bu-side-viewbtn--security${propView === 'security' ? ' is-active' : ''}`}
-                    onClick={() => setPropView('security')}
-                  >
-                    SECURITY
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={propView === 'systems'}
-                    className={`client-bu-side-viewbtn client-bu-side-viewbtn--systems${propView === 'systems' ? ' is-active' : ''}`}
-                    onClick={() => setPropView('systems')}
-                  >
-                    SYSTEMS
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={propView === 'status'}
-                    className={`client-bu-side-viewbtn client-bu-side-viewbtn--status${propView === 'status' ? ' is-active' : ''}`}
-                    onClick={() => setPropView('status')}
-                  >
-                    STATUS
-                  </button>
-                </nav>
               </div>
             </div>
           </div>
@@ -607,6 +570,7 @@ export default function AvioraPropertyDetailPage({ propertyId, companyName, nowT
                 : ''
           }`}
         >
+          <WorkspaceViewTabs value={propView} onChange={setPropView} className="aviora-prop-workspace-viewtabs" />
           {propView === 'status' ? (
             <PropertyStatusPanel packages={d.packages} />
           ) : propView === 'systems' ? (

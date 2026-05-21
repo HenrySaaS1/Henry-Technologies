@@ -7,6 +7,7 @@ import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/regi
 import AvioraConstructionPortfolio from './dashboard/AvioraConstructionPortfolio.jsx'
 import AvioraPropertyDetailPage from './dashboard/AvioraPropertyDetailPage.jsx'
 import AvioraSafetySecurityDashboard from './dashboard/AvioraSafetySecurityDashboard.jsx'
+import WorkspaceViewTabs from './dashboard/WorkspaceViewTabs.jsx'
 import FactoryPulseChartsPanel from './FactoryPulseChartsPanel.jsx'
 import { isAvioraPropertyDetailId } from './dashboard/avioraPropertyDetailData.js'
 import { AVIORA_OLIVIA_LEAD_IMAGE_URL } from './dashboard/avioraPortfolioData.js'
@@ -2795,7 +2796,7 @@ function HmsDashTimeRange({ value, onChange, variant }) {
   )
 }
 
-function SafetyPanel({ scopeId, scopeName, localLine, unitDigits }) {
+function SafetyPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unitView, onUnitViewChange }) {
   const ud = unitDigits || ''
   const [timeRange, setTimeRange] = useState('daily')
   const data = useMemo(() => safetyDashboardFor(scopeId, ud), [scopeId, ud])
@@ -2803,14 +2804,7 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits }) {
 
   const inner = (
     <div className={`client-hms-dash${unitDigits ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} safety dashboard`}>
-      {unitDigits ? (
-        <header className="client-hms-dash-strip client-hms-dash-strip--safety">
-          <div className="client-hms-dash-top-left">
-            <ShieldPlusDashIcon />
-            <span className="client-hms-dash-title">Safety Dashboard</span>
-          </div>
-        </header>
-      ) : (
+      {!unitDigits ? (
         <header className="client-hms-dash-top client-hms-dash-top--safety">
           <div className="client-hms-dash-top-left">
             <ShieldPlusDashIcon />
@@ -2818,7 +2812,7 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits }) {
           </div>
           <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="safety" />
         </header>
-      )}
+      ) : null}
 
       <div className="client-hms-dash-kpis">
         <div className="client-hms-dash-kpi client-hms-dash-kpi--score">
@@ -2895,10 +2889,17 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits }) {
 
   if (unitDigits) {
     return (
-      <section className="client-unit-dash-panel" aria-label={`BU ${unitDigits} safety`}>
-        <UnitHarlandPanelHeader unitDigits={unitDigits} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
+      <UnitHarlandPanelShell
+        unitDigits={unitDigits}
+        unitCode={unitCode}
+        timeRange={timeRange}
+        onTimeRangeChange={setTimeRange}
+        unitView={unitView}
+        onUnitViewChange={onUnitViewChange}
+        ariaLabel={`BU ${unitDigits} safety`}
+      >
         <div className="client-hms-dash-wrap client-hms-dash-wrap--unit">{inner}</div>
-      </section>
+      </UnitHarlandPanelShell>
     )
   }
 
@@ -2909,21 +2910,14 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits }) {
   )
 }
 
-function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
+function SecurityPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unitView, onUnitViewChange }) {
   const ud = unitDigits || ''
   const [timeRange, setTimeRange] = useState('daily')
   const data = useMemo(() => securityDashboardFor(scopeId, ud), [scopeId, ud])
 
   const inner = (
     <div className={`client-hms-dash${unitDigits ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} security dashboard`}>
-      {unitDigits ? (
-        <header className="client-hms-dash-strip client-hms-dash-strip--security">
-          <div className="client-hms-dash-top-left">
-            <ShieldIcon />
-            <span className="client-hms-dash-title">Security Dashboard</span>
-          </div>
-        </header>
-      ) : (
+      {!unitDigits ? (
         <header className="client-hms-dash-top client-hms-dash-top--security">
           <div className="client-hms-dash-top-left">
             <ShieldIcon />
@@ -2931,7 +2925,7 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
           </div>
           <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="security" />
         </header>
-      )}
+      ) : null}
 
       <div className="client-hms-dash-kpis">
         <div className="client-hms-dash-kpi client-hms-dash-kpi--score">
@@ -3007,10 +3001,17 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
 
   if (unitDigits) {
     return (
-      <section className="client-unit-dash-panel" aria-label={`BU ${unitDigits} security`}>
-        <UnitHarlandPanelHeader unitDigits={unitDigits} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
+      <UnitHarlandPanelShell
+        unitDigits={unitDigits}
+        unitCode={unitCode}
+        timeRange={timeRange}
+        onTimeRangeChange={setTimeRange}
+        unitView={unitView}
+        onUnitViewChange={onUnitViewChange}
+        ariaLabel={`BU ${unitDigits} security`}
+      >
         <div className="client-hms-dash-wrap client-hms-dash-wrap--unit">{inner}</div>
-      </section>
+      </UnitHarlandPanelShell>
     )
   }
 
@@ -3021,17 +3022,24 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits }) {
   )
 }
 
-function UnitSystemsPanel({ unitPanel }) {
+function UnitSystemsPanel({ unitPanel, unitView, onUnitViewChange }) {
   const embed = unitPanel?.powerBiEmbed
   const reportUrl = typeof embed === 'string' ? embed : embed?.reportUrl
   const unitLabel = unitPanel?.unit ? String(unitPanel.unit).replace(/^BU/i, 'BU ') : 'BU'
   const unitDigits = digitsFromUnitLabel(String(unitPanel?.unit || '').replace(/^BU\s*/i, ''))
   const [timeRange, setTimeRange] = useState('daily')
   return (
-    <section className="client-unit-dash-panel" aria-label={`${unitLabel} systems`}>
-      <UnitHarlandPanelHeader unitDigits={unitDigits} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
+    <UnitHarlandPanelShell
+      unitDigits={unitDigits}
+      unitCode={unitPanel?.unit}
+      timeRange={timeRange}
+      onTimeRangeChange={setTimeRange}
+      unitView={unitView}
+      onUnitViewChange={onUnitViewChange}
+      ariaLabel={`${unitLabel} systems`}
+    >
       <FactoryPulseChartsPanel reportUrl={reportUrl} heading={`Systems — ${unitLabel}`} />
-    </section>
+    </UnitHarlandPanelShell>
   )
 }
 
@@ -3323,58 +3331,64 @@ function UnitOverviewSide({
 
       <div className="client-side-panel-foot">
         <div className="client-bu-local">{`Local Time: ${localLine}`}</div>
-
-        {onUnitViewChange ? (
-        <div className="client-bu-side-viewnav" role="tablist" aria-label="Business unit pages">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={unitView === 'safety'}
-            className={`client-bu-side-viewbtn client-bu-side-viewbtn--safety${unitView === 'safety' ? ' is-active' : ''}`}
-            onClick={() => onUnitViewChange('safety')}
-          >
-            SAFETY
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={unitView === 'security'}
-            className={`client-bu-side-viewbtn client-bu-side-viewbtn--security${unitView === 'security' ? ' is-active' : ''}`}
-            onClick={() => onUnitViewChange('security')}
-          >
-            SECURITY
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={unitView === 'systems'}
-            className={`client-bu-side-viewbtn client-bu-side-viewbtn--systems${unitView === 'systems' ? ' is-active' : ''}`}
-            onClick={() => onUnitViewChange('systems')}
-          >
-            SYSTEMS
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={unitView === 'jobs'}
-            className={`client-bu-side-viewbtn client-bu-side-viewbtn--status${unitView === 'jobs' ? ' is-active' : ''}`}
-            onClick={() => onUnitViewChange('jobs')}
-          >
-            STATUS
-          </button>
-          </div>
-        ) : null}
       </div>
     </aside>
   )
 }
 
 /** Same top chrome as the jobs grid: BU chip, Harland logo, Daily / Weekly / Monthly (matches Harland unit screenshots). */
-function UnitHarlandPanelHeader({ unitDigits, timeRange, onTimeRangeChange, rangeGroupLabel = 'Report range' }) {
+/**
+ * BU main panel chrome: Harland header, period toggle, then top view tabs.
+ * @param {{
+ *   unitDigits: string
+ *   timeRange: string
+ *   onTimeRangeChange: (r: string) => void
+ *   unitView?: string
+ *   onUnitViewChange?: (v: string) => void
+ *   ariaLabel: string
+ *   children: import('react').ReactNode
+ * }} props
+ */
+function UnitHarlandPanelShell({
+  unitDigits,
+  unitCode,
+  timeRange,
+  onTimeRangeChange,
+  unitView,
+  onUnitViewChange,
+  ariaLabel,
+  children,
+}) {
+  const tabValue =
+    unitView === 'jobs' ? 'status' : unitView === 'safety' || unitView === 'security' || unitView === 'systems' ? unitView : 'safety'
+
+  return (
+    <section className="client-unit-dash-panel" aria-label={ariaLabel}>
+      <UnitHarlandPanelHeader
+        unitDigits={unitDigits}
+        unitCode={unitCode}
+        timeRange={timeRange}
+        onTimeRangeChange={onTimeRangeChange}
+      />
+      {onUnitViewChange ? (
+        <WorkspaceViewTabs
+          value={tabValue}
+          onChange={(next) => onUnitViewChange(next === 'status' ? 'jobs' : next)}
+        />
+      ) : null}
+      {children}
+    </section>
+  )
+}
+
+function UnitHarlandPanelHeader({ unitDigits, unitCode, timeRange, onTimeRangeChange, rangeGroupLabel = 'Report range' }) {
+  const buCode = unitCode || (unitDigits ? `BU${unitDigits}` : '')
   return (
     <header className="client-unit-jobs-head">
       <div className="client-unit-jobs-head-row1">
-        <span className="client-unit-chip">{`BU ${unitDigits}`}</span>
+        <span className="client-unit-chip client-unit-chip--bu-label">
+          {buCode ? `Business Unit: ${buCode}` : 'Business Unit'}
+        </span>
         <div className="client-unit-brand">
           <img
             src={harlandMedicalSystemsLogo}
@@ -3404,7 +3418,7 @@ function UnitHarlandPanelHeader({ unitDigits, timeRange, onTimeRangeChange, rang
   )
 }
 
-function UnitJobsPanel({ user, unitLabel }) {
+function UnitJobsPanel({ user, unitLabel, unitCode, unitView, onUnitViewChange }) {
   const [jobTimeRange, setJobTimeRange] = useState('daily')
   const [selectedJob, setSelectedJob] = useState(null)
   const count = locationDrivenCardCount(user)
@@ -3417,9 +3431,17 @@ function UnitJobsPanel({ user, unitLabel }) {
     setSelectedJob({ ...card, specs, stats, serial })
   }
   return (
-    <section className="client-unit-jobs-panel" aria-label={`BU ${digits} jobs`}>
-      <UnitHarlandPanelHeader unitDigits={digits} timeRange={jobTimeRange} onTimeRangeChange={setJobTimeRange} />
-      <div className="client-unit-jobs-grid">
+    <UnitHarlandPanelShell
+      unitDigits={digits}
+      unitCode={unitCode}
+      timeRange={jobTimeRange}
+      onTimeRangeChange={setJobTimeRange}
+      unitView={unitView}
+      onUnitViewChange={onUnitViewChange}
+      ariaLabel={`BU ${digits} jobs`}
+    >
+      <div className="client-unit-jobs-panel">
+        <div className="client-unit-jobs-grid">
         {cards.map((card) => {
           const stats = card.stats
           const tone = statusTone(card.status)
@@ -3502,8 +3524,9 @@ function UnitJobsPanel({ user, unitLabel }) {
           )
         })}
         {selectedJob ? <JobDetailModal job={selectedJob} onClose={() => setSelectedJob(null)} /> : null}
+        </div>
       </div>
-    </section>
+    </UnitHarlandPanelShell>
   )
 }
 
@@ -3552,8 +3575,9 @@ function BuildingSitePageView({
         {activeZone ? (
           activeZone.machinery.unitPanel ? (
             (() => {
-              const unitDigits = digitsFromUnitLabel(activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, ''))
-              const unitCards = unitJobsForPanel(activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, ''), locationDrivenCardCount(user))
+              const unitCode = activeZone.machinery.unitPanel.unit
+              const unitDigits = digitsFromUnitLabel(unitCode.replace(/^BU\s*/i, ''))
+              const unitCards = unitJobsForPanel(unitCode.replace(/^BU\s*/i, ''), locationDrivenCardCount(user))
               const scopeId = `${site.id}-bu-${unitDigits}`
               const scopeName = `BU ${unitDigits} · ${b.name}`
               const view =
@@ -3589,6 +3613,9 @@ function BuildingSitePageView({
                         scopeName={scopeName}
                         localLine={localLine}
                         unitDigits={unitDigits}
+                        unitCode={unitCode}
+                        unitView={view}
+                        onUnitViewChange={handleView}
                       />
                     ) : view === 'security' ? (
                       <SecurityPanel
@@ -3596,11 +3623,24 @@ function BuildingSitePageView({
                         scopeName={scopeName}
                         localLine={localLine}
                         unitDigits={unitDigits}
+                        unitCode={unitCode}
+                        unitView={view}
+                        onUnitViewChange={handleView}
                       />
                     ) : view === 'systems' ? (
-                      <UnitSystemsPanel unitPanel={activeZone.machinery.unitPanel} />
+                      <UnitSystemsPanel
+                        unitPanel={activeZone.machinery.unitPanel}
+                        unitView={view}
+                        onUnitViewChange={handleView}
+                      />
                     ) : (
-                      <UnitJobsPanel user={user} unitLabel={activeZone.machinery.unitPanel.unit.replace(/^BU\s*/i, '')} />
+                      <UnitJobsPanel
+                        user={user}
+                        unitLabel={unitCode.replace(/^BU\s*/i, '')}
+                        unitCode={unitCode}
+                        unitView={view}
+                        onUnitViewChange={handleView}
+                      />
                     )}
                   </div>
                 </div>
