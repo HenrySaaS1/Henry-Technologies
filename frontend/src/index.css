@@ -6131,23 +6131,17 @@ a.btn-dark {
 .client-building-topbar {
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   margin-bottom: 0.65rem;
-  padding: 0.1rem 2.85rem 0.15rem 0.35rem;
+  padding: 0.15rem 0.35rem;
   min-height: 2.75rem;
 }
 
-.client-building-topbar-brand {
-  flex: 1;
-  min-width: 0;
-  text-align: center;
-  padding: 0 0.25rem;
-}
-
 .client-building-name {
-  margin: 0 0 0.2rem;
-  font-size: 1.18rem;
+  margin: 0;
+  padding: 0 11rem;
+  font-size: clamp(0.95rem, 2.2vw, 1.18rem);
   font-weight: 900;
   letter-spacing: 0.03em;
   text-align: center;
@@ -6156,21 +6150,61 @@ a.btn-dark {
   line-height: 1.2;
 }
 
-.client-building-topbar-local {
+.client-building-topbar-end {
+  position: absolute;
+  top: 50%;
+  right: 0.1rem;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  max-width: min(52%, 22rem);
+}
+
+.client-building-updated {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   margin: 0;
   font-size: 0.72rem;
   font-weight: 600;
   line-height: 1.35;
   letter-spacing: 0.02em;
-  text-align: center;
-  color: rgba(248, 250, 252, 0.92);
+  color: rgba(248, 250, 252, 0.95);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.client-building-updated-ic {
+  flex-shrink: 0;
+  color: #7dd3fc;
+}
+
+@media (max-width: 720px) {
+  .client-building-name {
+    padding: 0 0.25rem 2.5rem;
+    font-size: 0.95rem;
+  }
+
+  .client-building-topbar-end {
+    top: auto;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    transform: none;
+    justify-content: flex-end;
+    max-width: none;
+  }
+
+  .client-building-updated {
+    white-space: normal;
+  }
 }
 
 .client-building-close {
-  position: absolute;
-  right: 0.1rem;
-  top: 0.1rem;
+  position: static;
+  flex-shrink: 0;
   width: 2.25rem;
   height: 2.25rem;
   display: flex;
@@ -7925,21 +7959,37 @@ a.btn-dark {
   gap: 0.55rem;
 }
 
-.client-unit-jobs-head-row1 {
-  display: grid;
-  grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, 1fr);
-  gap: 0.5rem;
+.client-unit-jobs-head--plant {
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
-.client-unit-jobs-head-row2 {
-  display: flex;
-  justify-content: center;
+.client-unit-plant-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: 0.02em;
 }
 
-.client-unit-jobs-head-spacer {
-  justify-self: end;
-  min-width: 0;
+.client-unit-plant-ic {
+  flex-shrink: 0;
+  color: #475569;
+}
+
+.client-bu-title--plant {
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #6b21a8, #7c3aed);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
 }
 
 .client-unit-chip {
@@ -8529,17 +8579,13 @@ a.btn-dark {
     grid-template-columns: 1fr;
   }
 
-  .client-unit-jobs-head-row1 {
-    grid-template-columns: 1fr;
-    justify-items: center;
+  .client-unit-jobs-head--plant {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .client-unit-jobs-head-spacer {
-    display: none;
-  }
-
-  .client-unit-range {
-    justify-self: center;
+  .client-unit-jobs-head--plant .client-unit-range {
+    align-self: center;
   }
 
   .client-unit-jobs-grid {

@@ -13,7 +13,6 @@ import { isAvioraPropertyDetailId } from './dashboard/avioraPropertyDetailData.j
 import { AVIORA_OLIVIA_LEAD_IMAGE_URL } from './dashboard/avioraPortfolioData.js'
 import { formatSiteLocalTime } from './dashboard/siteLocalTime.js'
 import snapshotWordmarkWhite from './assets/snapshot-wordmark-white.png'
-import harlandMedicalSystemsLogo from './assets/clients/harland-medical-systems-logo.png'
 import harland528Coater from './assets/uploads/harland-528-coater.png'
 import harlandTts1000 from './assets/uploads/harland-tts1000.png'
 import harlandCustomRig from './assets/uploads/harland-custom-rig.png'
@@ -264,6 +263,30 @@ function SiteFootprintClockIcon() {
   )
 }
 
+function BuildingTopbarClockIcon() {
+  return (
+    <svg className="client-building-updated-ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.75" />
+      <path d="M12 7v6l4 2" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function UnitPlantBuildingIcon() {
+  return (
+    <svg className="client-unit-plant-ic" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <path
+        d="M4 21V8l8-4v17M12 21V12h5v9M9 14h2M9 17h2M16 14h2M16 17h2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 function SiteFootprintPulseIcon() {
   return (
     <svg className="client-site-fp-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -286,6 +309,12 @@ function SiteFootprintNoAssetsIcon() {
   )
 }
 
+/** Harland building top bar: "Harland Medical Systems - {region} Operations". */
+function harlandOperationsBuildingName(regionLabel) {
+  const region = String(regionLabel || '').trim()
+  return region ? `Harland Medical Systems - ${region} Operations` : 'Harland Medical Systems'
+}
+
 /** Demo global sites — replace with API data for your tenant. */
 const GLOBAL_SITES = [
   {
@@ -303,7 +332,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+1-952-941-0475',
     phoneTel: '+19529410475',
     building: {
-      name: 'Harland United States',
+      name: harlandOperationsBuildingName('US'),
       // Client-approved US building visual
       floorPlanSrc: HARLAND_US_FLOOR_PLAN_SRC,
       footerBlurb: {
@@ -557,7 +586,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+353 (0) 21 555 0173',
     phoneTel: '+353215550173',
     building: {
-      name: 'Harland Ireland',
+      name: harlandOperationsBuildingName('Ireland'),
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
         safety: 'Chemical store inspection due tomorrow · eyewash tested today.',
@@ -612,7 +641,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+506 4002 8840',
     phoneTel: '+50640028840',
     building: {
-      name: 'Harland Costa Rica',
+      name: harlandOperationsBuildingName('Costa Rica'),
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
         safety: 'Ergonomics audit scheduled next week.',
@@ -652,7 +681,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+972 549 985610',
     phoneTel: '+972549985610',
     building: {
-      name: 'Harland Israel',
+      name: harlandOperationsBuildingName('Israel'),
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
         safety: 'Laser enclosure interlocks tested.',
@@ -692,7 +721,7 @@ const GLOBAL_SITES = [
     phoneDisplay: '+1 (952) 941-0475',
     phoneTel: '+19529410475',
     building: {
-      name: 'Harland India',
+      name: harlandOperationsBuildingName('India'),
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
       footerBlurb: {
         safety: 'Fire drill logged last quarter.',
@@ -732,9 +761,7 @@ const GLOBAL_SITES = [
     phoneTel: '+19529410475',
     operationalLabel: 'WATCH',
     building: {
-      name: 'Harland Malaysia',
-      /** Top bar shows building name only (no date/time line under the title). */
-      omitTopbarLocal: true,
+      name: harlandOperationsBuildingName('Malaysia'),
       // Site-specific floor plan image (user provided).
       floorPlanSrc: `${import.meta.env.BASE_URL}site-floor-plan-my.png`,
       /** Artwork includes a top “Kuala Lumpur — planned facility” banner; clip it off in the viewer. */
@@ -3108,7 +3135,9 @@ function UnitOverviewSide({
       <button type="button" className="client-building-back" onClick={onClose}>
         ← Back to home page
       </button>
-      <h3 className="client-bu-title">Business Unit: {unitPanel.unit}</h3>
+      <h3 className="client-bu-title client-bu-title--plant">
+        Business Unit / Department / Plant: {unitPanel.unit}
+      </h3>
 
       <div className="client-bu-text client-bu-text--meta">
         <p><strong>Description:</strong> {unitPanel.description}</p>
@@ -3384,35 +3413,23 @@ function UnitHarlandPanelShell({
 function UnitHarlandPanelHeader({ unitDigits, unitCode, timeRange, onTimeRangeChange, rangeGroupLabel = 'Report range' }) {
   const buCode = unitCode || (unitDigits ? `BU${unitDigits}` : '')
   return (
-    <header className="client-unit-jobs-head">
-      <div className="client-unit-jobs-head-row1">
-        <span className="client-unit-chip client-unit-chip--bu-label">
-          {buCode ? `Business Unit: ${buCode}` : 'Business Unit'}
-        </span>
-        <div className="client-unit-brand">
-          <img
-            src={harlandMedicalSystemsLogo}
-            alt="Harland Medical Systems"
-            className="client-unit-brand-logo"
-            decoding="async"
-          />
-        </div>
-        <span className="client-unit-jobs-head-spacer" aria-hidden="true" />
+    <header className="client-unit-jobs-head client-unit-jobs-head--plant">
+      <div className="client-unit-plant-label">
+        <UnitPlantBuildingIcon />
+        <span>{buCode ? `Business Unit / Plant: ${buCode}` : 'Business Unit / Plant'}</span>
       </div>
-      <div className="client-unit-jobs-head-row2">
-        <div className="client-unit-range" role="group" aria-label={rangeGroupLabel}>
-          {(['daily', 'weekly', 'monthly']).map((r) => (
-            <button
-              key={r}
-              type="button"
-              className={timeRange === r ? 'is-active' : ''}
-              aria-pressed={timeRange === r}
-              onClick={() => onTimeRangeChange && onTimeRangeChange(r)}
-            >
-              {r === 'daily' ? 'Daily' : r === 'weekly' ? 'Weekly' : 'Monthly'}
-            </button>
-          ))}
-        </div>
+      <div className="client-unit-range" role="group" aria-label={rangeGroupLabel}>
+        {(['daily', 'weekly', 'monthly']).map((r) => (
+          <button
+            key={r}
+            type="button"
+            className={timeRange === r ? 'is-active' : ''}
+            aria-pressed={timeRange === r}
+            onClick={() => onTimeRangeChange && onTimeRangeChange(r)}
+          >
+            {r === 'daily' ? 'Daily' : r === 'weekly' ? 'Weekly' : 'Monthly'}
+          </button>
+        ))}
       </div>
     </header>
   )
@@ -3557,19 +3574,20 @@ function BuildingSitePageView({
         aria-describedby={b.omitTopbarLocal ? undefined : 'client-building-local'}
       >
         <div className="client-building-topbar">
-          <div className="client-building-topbar-brand">
-            <h2 id="client-building-title" className="client-building-name">
-              {b.name}
-            </h2>
+          <h2 id="client-building-title" className="client-building-name">
+            {b.name}
+          </h2>
+          <div className="client-building-topbar-end">
             {!b.omitTopbarLocal ? (
-              <p id="client-building-local" className="client-building-topbar-local">
-                {localLine}
+              <p id="client-building-local" className="client-building-updated">
+                <BuildingTopbarClockIcon />
+                <span>{`Updated — ${localLine}`}</span>
               </p>
             ) : null}
+            <button type="button" className="client-building-close" onClick={onClose} aria-label="Back to workspace overview">
+              ×
+            </button>
           </div>
-          <button type="button" className="client-building-close" onClick={onClose} aria-label="Back to workspace overview">
-            ×
-          </button>
         </div>
 
         {activeZone ? (
