@@ -880,6 +880,70 @@ function NavPricingMenuLink() {
   return <a href="/pricing">PRICING</a>
 }
 
+function SiteFooter() {
+  return (
+    <footer className="site-footer" aria-label="Site footer">
+      <div className="site-footer-inner">
+        <div className="site-footer-brand">
+          <img
+            className="site-footer-logo-img"
+            src={henryLogo}
+            alt="HENRY Technologies"
+          />
+          <p>
+            Real-time operational intelligence for safety, security, systems, and smarter business decisions.
+          </p>
+        </div>
+
+        <div className="site-footer-column">
+          <h3>Quick Links</h3>
+          <a href="/">Home</a>
+          <a href={marketingProductsHref()}>Products</a>
+          <a href="/case-studies">Case Studies</a>
+          <a href="/#contact">Contact</a>
+        </div>
+
+        <div className="site-footer-column">
+          <h3>What We Do</h3>
+          <a href={marketingProductsHref()}>HENRY SnapShot</a>
+          <a href={marketingProductsHashHref('safety')}>HENRY Safety</a>
+          <a href={marketingProductsHashHref('security')}>HENRY Security</a>
+          <a href={marketingProductsHashHref('systems')}>HENRY Systems</a>
+          <a href={marketingProductsHashHref('myhenry-agent')}>MyHenry AI Agent</a>
+        </div>
+
+        <div className="site-footer-column site-footer-contact">
+  <h3>Contact</h3>
+
+  <p className="site-footer-contact-item">
+    <span className="site-footer-contact-icon" aria-hidden="true">📍</span>
+    United States · India
+  </p>
+
+  <a className="site-footer-contact-item" href="mailto:info@goaskhenry.com">
+    <span className="site-footer-contact-icon" aria-hidden="true">✉️</span>
+    info@goaskhenry.com
+  </a>
+
+  <a
+    className="site-footer-contact-item"
+    href="https://www.linkedin.com/company/henry-tech-inc"
+    target="_blank"
+    rel="noreferrer"
+  >
+    <span className="site-footer-contact-icon site-footer-linkedin-icon" aria-hidden="true">in</span>
+    LinkedIn
+  </a>
+</div>
+      </div>
+
+      <div className="site-footer-bottom">
+        <p>© 2026 HENRY Technologies, Inc. All rights reserved.</p>
+      </div>
+    </footer>
+  )
+}
+
 function App() {
   const isPricingPage =
     typeof window !== 'undefined' &&
@@ -1907,17 +1971,17 @@ function App() {
               <dt>Hours</dt>
               <dd>Monday–Friday, 9:00 a.m.–6:00 p.m. US Eastern</dd>
             </div>
-            <div className="contact-info-row">
+            {/* <div className="contact-info-row">
               <dt>Response time</dt>
               <dd>We aim to reply within one business day. Include your company and time zone for faster scheduling.</dd>
-            </div>
-            <div className="contact-info-row">
+            </div> */}
+            {/* <div className="contact-info-row">
               <dt>Existing customers</dt>
               <dd>
                 Sign in to your workspace for in-app alerts and reports. For account changes, email us from your
                 registered address and mention your organization name.
               </dd>
-            </div>
+            </div> */}
           </dl>
         </aside>
       </div>
@@ -2029,9 +2093,7 @@ function App() {
         {requestDemoIntroSection}
         {requestDemoSection}
         {contactSection}
-        <footer className="site-footer" aria-label="Site footer">
-          <p>@2026 HENRY Technologies, Inc. All rights reserved</p>
-        </footer>
+        <SiteFooter />
       </div>
     )
   }
@@ -2101,9 +2163,7 @@ function App() {
         {requestDemoIntroSection}
         {requestDemoSection}
         {contactSection}
-        <footer className="site-footer" aria-label="Site footer">
-          <p>@2026 HENRY Technologies, Inc. All rights reserved</p>
-        </footer>
+        <SiteFooter />
       </div>
     )
   }
@@ -2176,9 +2236,7 @@ function App() {
         {requestDemoIntroSection}
         {requestDemoSection}
         {contactSection}
-        <footer className="site-footer" aria-label="Site footer">
-          <p>@2026 HENRY Technologies, Inc. All rights reserved</p>
-        </footer>
+        <SiteFooter />
         {showCaseDemo ? (
           <section
             className="case-demo-overlay"
@@ -2317,7 +2375,7 @@ function App() {
           <div className="overlay">
             <h1>When You Need Answers Now</h1>
             <p>
-              With HENRY SnapShot, you can have real-time insights, reduce downtime, and make smarter business decisions.
+              HENRY Technologies Gathers and Transforms Visual Information Into Actionable Data.
             </p>
             <button
               className="btn-primary"
@@ -3160,9 +3218,7 @@ function App() {
       {requestDemoSection}
       {contactSection}
 
-      <footer className="site-footer" aria-label="Site footer">
-        <p>@2026 HENRY Technologies, Inc. All rights reserved</p>
-      </footer>
+      <SiteFooter />
     </div>
   )
 }
