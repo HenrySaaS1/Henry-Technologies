@@ -41,8 +41,8 @@ import safetyProductImage from './assets/uploads/product-safety-new.png'
 import securityProductImage from './assets/uploads/product-security-new.png'
 import myhenryProductImage from './assets/uploads/product-myhenry-new.png'
 import aboutHenryImage from './assets/about-henry.png'
-import henryLogo from './assets/henry-logo.png'
-import { LogoSpreadLine } from './LogoSpreadLine.jsx'
+import henryLogo from './assets/henry-full-logo.png'
+// import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import HeroLiveChartsHud from './HeroLiveCharts.jsx'
 
 /** `/products#slug` for marketing CTAs; honors Vite `base` and current origin. */
@@ -884,14 +884,19 @@ function SiteFooter() {
   return (
     <footer className="site-footer" aria-label="Site footer">
       <div className="site-footer-inner">
+
         <div className="site-footer-brand">
-          <img
-            className="site-footer-logo-img"
-            src={henryLogo}
-            alt="HENRY Technologies"
-          />
+          
+          <div className="site-footer-logo-lockup">
+            <img
+              className="site-footer-logo-img"
+              src={henryLogo}
+              alt="HENRY Technologies"
+            />
+          </div>
+
           <p>
-            Real-time operational intelligence for safety, security, systems, and smarter business decisions.
+            Gathers and Transforms Visual Information Into Actionable Data.
           </p>
         </div>
 
@@ -900,7 +905,7 @@ function SiteFooter() {
           <a href="/">Home</a>
           <a href={marketingProductsHref()}>Products</a>
           <a href="/case-studies">Case Studies</a>
-          <a href="/#contact">Contact</a>
+          <a href="/#request-demo">Contact</a>
         </div>
 
         <div className="site-footer-column">
@@ -913,34 +918,123 @@ function SiteFooter() {
         </div>
 
         <div className="site-footer-column site-footer-contact">
-  <h3>Contact</h3>
+          <h3>Contact</h3>
 
-  <p className="site-footer-contact-item">
-    <span className="site-footer-contact-icon" aria-hidden="true">📍</span>
-    United States · India
-  </p>
+          <p className="site-footer-contact-item">
+            <span className="site-footer-contact-icon" aria-hidden="true">📍</span>
+            United States · India
+          </p>
 
-  <a className="site-footer-contact-item" href="mailto:info@goaskhenry.com">
-    <span className="site-footer-contact-icon" aria-hidden="true">✉️</span>
-    info@goaskhenry.com
-  </a>
+          <a className="site-footer-contact-item" href="mailto:info@goaskhenry.com">
+            <span className="site-footer-contact-icon" aria-hidden="true">✉️</span>
+            info@goaskhenry.com
+          </a>
 
-  <a
-    className="site-footer-contact-item"
-    href="https://www.linkedin.com/company/henry-tech-inc"
-    target="_blank"
-    rel="noreferrer"
-  >
-    <span className="site-footer-contact-icon site-footer-linkedin-icon" aria-hidden="true">in</span>
-    LinkedIn
-  </a>
-</div>
+          <a
+            className="site-footer-contact-item"
+            href="https://www.linkedin.com/company/henry-tech-inc"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span className="site-footer-contact-icon site-footer-linkedin-icon" aria-hidden="true">in</span>
+            LinkedIn
+          </a>
+        </div>
       </div>
 
       <div className="site-footer-bottom">
         <p>© 2026 HENRY Technologies, Inc. All rights reserved.</p>
       </div>
     </footer>
+  )
+}
+
+function SiteHeader({
+  currentUser,
+  mobileMenuOpen,
+  setMobileMenuOpen,
+  mobileNavLinks,
+  renderMobileMenu,
+  openAuthFromAnyPage,
+  signOut,
+}) {
+  return (
+    <>
+      <header className="topbar">
+        <div className="topbar-start">
+          <button
+            type="button"
+            className="logo"
+            aria-label="Go to HENRY Technologies home"
+            onClick={() => {
+              if (typeof window !== 'undefined') window.location.assign('/')
+            }}
+          >
+            <span className="logo-lockup">
+              <img
+                src={henryLogo}
+                alt="HENRY Technologies"
+                className="logo-mark logo-mark--full"
+                width={320}
+                height={100}
+                decoding="async"
+              />
+            </span>
+          </button>
+        </div>
+
+        <nav className="topbar-left menu" aria-label="Primary navigation">
+          <ProductsMenuLink />
+          <a href="/case-studies">CASE STUDIES</a>
+          <NavPricingMenuLink />
+          <a href="/#about">ABOUT</a>
+          <a href="/#request-demo">CONTACT</a>
+        </nav>
+
+        <div className="topbar-right">
+          <div className="topbar-actions">
+            <a className="btn-contact-nav" href="/#request-demo">
+              Request a demo
+            </a>
+
+            {currentUser ? (
+              <button type="button" className="btn-signin-nav" onClick={signOut}>
+                Sign Out
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="btn-signin-nav"
+                  onClick={() => openAuthFromAnyPage('signup')}
+                >
+                  Sign Up
+                </button>
+                <button
+                  type="button"
+                  className="btn-dark small"
+                  onClick={() => openAuthFromAnyPage('signin')}
+                >
+                  Sign In
+                </button>
+              </>
+            )}
+          </div>
+
+          <button
+            type="button"
+            className="mobile-menu-toggle"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((v) => !v)}
+          >
+            {mobileMenuOpen ? '×' : '☰'}
+          </button>
+        </div>
+      </header>
+
+      {renderMobileMenu(mobileNavLinks)}
+    </>
   )
 }
 
@@ -1078,27 +1172,27 @@ function App() {
 
     const ac = new AbortController()
 
-    ;(async () => {
-      const tokenSnapshot = getToken()
-      if (!tokenSnapshot) return
+      ; (async () => {
+        const tokenSnapshot = getToken()
+        if (!tokenSnapshot) return
 
-      if (isDemoDashboardToken(tokenSnapshot)) {
-        setCurrentUser(dashboardDemoUser(readPersistedDemoPresetKey()))
-        return
-      }
+        if (isDemoDashboardToken(tokenSnapshot)) {
+          setCurrentUser(dashboardDemoUser(readPersistedDemoPresetKey()))
+          return
+        }
 
-      try {
-        const data = await apiJson('/api/auth/me', { signal: ac.signal })
-        if (ac.signal.aborted) return
-        // Ignore stale responses if the user signed in/out while this request was in flight
-        if (getToken() !== tokenSnapshot) return
-        const u = mapUserFromApi(data.user)
-        if (u) setCurrentUser(u)
-      } catch (e) {
-        if (ac.signal.aborted || e?.name === 'AbortError') return
-        if (getToken() === tokenSnapshot) clearAuth()
-      }
-    })()
+        try {
+          const data = await apiJson('/api/auth/me', { signal: ac.signal })
+          if (ac.signal.aborted) return
+          // Ignore stale responses if the user signed in/out while this request was in flight
+          if (getToken() !== tokenSnapshot) return
+          const u = mapUserFromApi(data.user)
+          if (u) setCurrentUser(u)
+        } catch (e) {
+          if (ac.signal.aborted || e?.name === 'AbortError') return
+          if (getToken() === tokenSnapshot) clearAuth()
+        }
+      })()
 
     return () => ac.abort()
   }, [])
@@ -1614,7 +1708,7 @@ function App() {
     { href: '/case-studies', label: 'CASE STUDIES' },
     ...(SHOW_NAV_PRICING_LINK ? [{ href: '/pricing', label: 'PRICING' }] : []),
     { href: '/#about', label: 'ABOUT' },
-    { href: '/#contact', label: 'CONTACT' },
+    { href: '/#request-demo', label: 'CONTACT' },
   ]
 
   const pricingSection = (
@@ -1656,7 +1750,7 @@ function App() {
       </div>
       <p className="pricing-footnote">
         Volume pricing and annual billing available. <a href="#request-demo">Request a demo</a> or{' '}
-        <a href="#contact">contact sales</a> for a tailored quote.
+        <a href="#request-demo">contact sales</a> for a tailored quote.
       </p>
       <section className="pricing-compare" aria-label="Pricing feature comparison">
         <h3 className="pricing-compare-title">PRICING</h3>
@@ -1946,47 +2040,7 @@ function App() {
     </section>
   )
 
-  const contactSection = (
-    <section id="contact" className="contact">
-      <h2>Contact us</h2>
-      <p className="contact-intro">
-        Talk to the HENRY team. From onboarding to optimization, we&apos;re here to help.
-        Whether you&apos;re exploring HENRY, need a custom setup, or require support, our team will get you the answers you need.
-      </p>
-      <div className="contact-info-wrap">
-        <aside className="contact-info-panel" aria-labelledby="contact-info-heading">
-          <h3 id="contact-info-heading">HENRY Technologies</h3>
-          <p className="contact-info-lead">
-            Cloud manufacturing intelligence — onboarding, billing questions, and technical evaluations all start
-            here.
-          </p>
-          <dl className="contact-info-list">
-            <div className="contact-info-row">
-              <dt>Email</dt>
-              <dd>
-                <a href="mailto:info@goaskhenry.com">info@goaskhenry.com</a>
-              </dd>
-            </div>
-            <div className="contact-info-row">
-              <dt>Hours</dt>
-              <dd>Monday–Friday, 9:00 a.m.–6:00 p.m. US Eastern</dd>
-            </div>
-            {/* <div className="contact-info-row">
-              <dt>Response time</dt>
-              <dd>We aim to reply within one business day. Include your company and time zone for faster scheduling.</dd>
-            </div> */}
-            {/* <div className="contact-info-row">
-              <dt>Existing customers</dt>
-              <dd>
-                Sign in to your workspace for in-app alerts and reports. For account changes, email us from your
-                registered address and mention your organization name.
-              </dd>
-            </div> */}
-          </dl>
-        </aside>
-      </div>
-    </section>
-  )
+  const contactSection = null
 
   if (currentUser && isOnboardingPage && !currentUser.onboardingComplete) {
     return (
@@ -2031,64 +2085,15 @@ function App() {
   if (isPricingPage) {
     return (
       <div className="page">
-        <header className="topbar">
-          <div className="topbar-start">
-            <button
-              type="button"
-              className="logo"
-              aria-label="HENRY — Home"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.location.assign('/')
-                }
-              }}
-            >
-              <span className="logo-lockup">
-                <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
-                <span className="logo-text-col">
-                  <LogoSpreadLine className="logo-word" text="HENRY" />
-                  <LogoSpreadLine className="logo-sub" text="TECHNOLOGIES" />
-                </span>
-              </span>
-            </button>
-          </div>
-          <div className="topbar-left">
-            <nav className="menu">
-              <ProductsMenuLink />
-              <a href="/case-studies">CASE STUDIES</a>
-              <NavPricingMenuLink />
-              <a href="/#about">ABOUT</a>
-              <a href="/#contact">CONTACT</a>
-            </nav>
-          </div>
-          <div className="topbar-right">
-            <div className="topbar-actions">
-              <a className="btn-contact-nav" href="/#request-demo">
-                Request a demo
-              </a>
-              {!AUTH_BYPASS ? (
-                <>
-                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signup')}>
-                    Sign Up
-                  </button>
-                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
-                    Sign In
-                  </button>
-                </>
-              ) : null}
-            </div>
-            <button
-              type="button"
-              className="mobile-menu-toggle mobile-menu-toggle--standalone"
-              aria-label="Toggle menu"
-              aria-expanded={mobileMenuOpen}
-              onClick={() => setMobileMenuOpen((current) => !current)}
-            >
-              ☰
-            </button>
-          </div>
-        </header>
-        {renderMobileMenu(mobileNavLinks)}
+        <SiteHeader
+          currentUser={currentUser}
+          mobileMenuOpen={mobileMenuOpen}
+          setMobileMenuOpen={setMobileMenuOpen}
+          mobileNavLinks={mobileNavLinks}
+          renderMobileMenu={renderMobileMenu}
+          openAuthFromAnyPage={openAuthFromAnyPage}
+          signOut={signOut}
+        />
         {pricingSection}
         {requestDemoIntroSection}
         {requestDemoSection}
@@ -2101,64 +2106,15 @@ function App() {
   if (isProductsPage) {
     return (
       <div className="page">
-        <header className="topbar">
-          <div className="topbar-start">
-            <button
-              type="button"
-              className="logo"
-              aria-label="HENRY — Home"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.location.assign('/')
-                }
-              }}
-            >
-              <span className="logo-lockup">
-                <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
-                <span className="logo-text-col">
-                  <LogoSpreadLine className="logo-word" text="HENRY" />
-                  <LogoSpreadLine className="logo-sub" text="TECHNOLOGIES" />
-                </span>
-              </span>
-            </button>
-          </div>
-          <div className="topbar-left">
-            <nav className="menu">
-              <ProductsMenuLink />
-              <a href="/case-studies">CASE STUDIES</a>
-              <NavPricingMenuLink />
-              <a href="/#about">ABOUT</a>
-              <a href="/#contact">CONTACT</a>
-            </nav>
-          </div>
-          <div className="topbar-right">
-            <div className="topbar-actions">
-              <a className="btn-contact-nav" href="/#request-demo">
-                Request a demo
-              </a>
-              {!AUTH_BYPASS ? (
-                <>
-                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signup')}>
-                    Sign Up
-                  </button>
-                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
-                    Sign In
-                  </button>
-                </>
-              ) : null}
-            </div>
-            <button
-              type="button"
-              className="mobile-menu-toggle mobile-menu-toggle--standalone"
-              aria-label="Toggle menu"
-              aria-expanded={mobileMenuOpen}
-              onClick={() => setMobileMenuOpen((current) => !current)}
-            >
-              ☰
-            </button>
-          </div>
-        </header>
-        {renderMobileMenu(mobileNavLinks)}
+        <SiteHeader
+          currentUser={currentUser}
+          mobileMenuOpen={mobileMenuOpen}
+          setMobileMenuOpen={setMobileMenuOpen}
+          mobileNavLinks={mobileNavLinks}
+          renderMobileMenu={renderMobileMenu}
+          openAuthFromAnyPage={openAuthFromAnyPage}
+          signOut={signOut}
+        />
         {productsDetailsSection}
         {requestDemoIntroSection}
         {requestDemoSection}
@@ -2171,64 +2127,15 @@ function App() {
   if (isCaseStudiesPage) {
     return (
       <div className="page page-case-studies">
-        <header className="topbar">
-          <div className="topbar-start">
-            <button
-              type="button"
-              className="logo"
-              aria-label="HENRY — Home"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.location.assign('/')
-                }
-              }}
-            >
-              <span className="logo-lockup">
-                <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
-                <span className="logo-text-col">
-                  <LogoSpreadLine className="logo-word" text="HENRY" />
-                  <LogoSpreadLine className="logo-sub" text="TECHNOLOGIES" />
-                </span>
-              </span>
-            </button>
-          </div>
-          <div className="topbar-left">
-            <nav className="menu">
-              <ProductsMenuLink />
-              <a href="/case-studies">CASE STUDIES</a>
-              <NavPricingMenuLink />
-              <a href="/#about">ABOUT</a>
-              <a href="/#contact">CONTACT</a>
-            </nav>
-          </div>
-          <div className="topbar-right">
-            <div className="topbar-actions">
-              <a className="btn-contact-nav" href="/#request-demo">
-                Request a demo
-              </a>
-              {!AUTH_BYPASS ? (
-                <>
-                  <button type="button" className="btn-signin-nav" onClick={() => openAuthFromAnyPage('signup')}>
-                    Sign Up
-                  </button>
-                  <button type="button" className="btn-dark" onClick={() => openAuthFromAnyPage('signin')}>
-                    Sign In
-                  </button>
-                </>
-              ) : null}
-            </div>
-            <button
-              type="button"
-              className="mobile-menu-toggle mobile-menu-toggle--standalone"
-              aria-label="Toggle menu"
-              aria-expanded={mobileMenuOpen}
-              onClick={() => setMobileMenuOpen((current) => !current)}
-            >
-              ☰
-            </button>
-          </div>
-        </header>
-        {renderMobileMenu(mobileNavLinks)}
+        <SiteHeader
+          currentUser={currentUser}
+          mobileMenuOpen={mobileMenuOpen}
+          setMobileMenuOpen={setMobileMenuOpen}
+          mobileNavLinks={mobileNavLinks}
+          renderMobileMenu={renderMobileMenu}
+          openAuthFromAnyPage={openAuthFromAnyPage}
+          signOut={signOut}
+        />
         <section className="case-studies-page-top-strip" aria-label="Case Studies page title">
           <h1>CASE STUDIES</h1>
         </section>
@@ -2305,69 +2212,15 @@ function App() {
 
   return (
     <div className="page">
-      <header className="topbar">
-        <div className="topbar-start">
-          <button
-            type="button"
-            className="logo"
-            aria-label="HENRY — Home"
-            onClick={() => {
-              if (typeof window !== 'undefined') {
-                window.location.assign('/')
-              }
-            }}
-          >
-            <span className="logo-lockup">
-              <img src={henryLogo} alt="" className="logo-mark" width={220} height={220} decoding="async" />
-              <span className="logo-text-col">
-                <LogoSpreadLine className="logo-word" text="HENRY" />
-                <LogoSpreadLine className="logo-sub" text="TECHNOLOGIES" />
-              </span>
-            </span>
-          </button>
-        </div>
-        <div className="topbar-left">
-          <nav className="menu">
-            <ProductsMenuLink />
-            <a href="/case-studies">CASE STUDIES</a>
-            <NavPricingMenuLink />
-            <a href="#about">ABOUT</a>
-            <a href="#contact">CONTACT</a>
-          </nav>
-        </div>
-        <div className="topbar-right">
-          <div className="topbar-actions">
-            {AUTH_BYPASS ? (
-              <button type="button" className="btn-dark" onClick={enterBypassWorkspace}>
-                Open workspace
-              </button>
-            ) : null}
-            <a className="btn-contact-nav" href="#request-demo">
-              Request a demo
-            </a>
-            {!AUTH_BYPASS ? (
-              <>
-                <button type="button" className="btn-signin-nav" onClick={() => openAuthModal('signup')}>
-                  Sign Up
-                </button>
-                <button type="button" className="btn-dark" onClick={() => openAuthModal('signin')}>
-                  Sign In
-                </button>
-              </>
-            ) : null}
-          </div>
-          <button
-            type="button"
-            className="mobile-menu-toggle mobile-menu-toggle--standalone"
-            aria-label="Toggle menu"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((current) => !current)}
-          >
-            ☰
-          </button>
-        </div>
-      </header>
-      {renderMobileMenu(mobileNavLinks)}
+      <SiteHeader
+        currentUser={currentUser}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
+        mobileNavLinks={mobileNavLinks}
+        renderMobileMenu={renderMobileMenu}
+        openAuthFromAnyPage={openAuthFromAnyPage}
+        signOut={signOut}
+      />
 
       <section className="hero" style={{ '--hero-url': `url(${heroMainImage})` }}>
         <div className="hero-inner">
@@ -2474,18 +2327,16 @@ function App() {
                       ) : null}
                       <div className="onboarding-stepper onboarding-stepper--3" aria-label="Signup steps">
                         <span
-                          className={`onboarding-step-node ${signupStep > 0 ? 'done' : ''} ${
-                            signupStep === 0 ? 'active' : ''
-                          }`}
+                          className={`onboarding-step-node ${signupStep > 0 ? 'done' : ''} ${signupStep === 0 ? 'active' : ''
+                            }`}
                         >
                           <span className="onboarding-step-dot">{signupStep > 0 ? '✓' : '1'}</span>
                           <span className="onboarding-step-caption">Personal Information</span>
                         </span>
                         <span className="onboarding-stepper-line" aria-hidden="true" />
                         <span
-                          className={`onboarding-step-node ${signupStep > 1 ? 'done' : ''} ${
-                            signupStep === 1 ? 'active' : ''
-                          }`}
+                          className={`onboarding-step-node ${signupStep > 1 ? 'done' : ''} ${signupStep === 1 ? 'active' : ''
+                            }`}
                         >
                           <span className="onboarding-step-dot">{signupStep > 1 ? '✓' : '2'}</span>
                           <span className="onboarding-step-caption">Operational Questions</span>
@@ -2515,299 +2366,299 @@ function App() {
                       <form className="signup-form-new" onSubmit={submitSignup}>
                         {signupStep === 0 ? (
                           <>
-                        <label className="signup-field signup-field--stack">
-                          <span className="signup-field-label">Full Name</span>
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
+                            <label className="signup-field signup-field--stack">
+                              <span className="signup-field-label">Full Name</span>
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <input
+                                name="name"
+                                type="text"
+                                autoComplete="name"
+                                value={signupForm.name}
+                                onChange={updateSignupField}
+                                placeholder="Enter your full name"
                               />
-                            </svg>
-                          </span>
-                          <input
-                            name="name"
-                            type="text"
-                            autoComplete="name"
-                            value={signupForm.name}
-                            onChange={updateSignupField}
-                            placeholder="Enter your full name"
-                          />
-                        </label>
-                        <label className="signup-field signup-field--stack">
-                          <span className="signup-field-label">Phone Number</span>
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
+                            </label>
+                            <label className="signup-field signup-field--stack">
+                              <span className="signup-field-label">Phone Number</span>
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <div className="signup-phone-row">
+                                <select
+                                  className="signup-phone-code"
+                                  name="phoneCountryCode"
+                                  aria-label="Phone country code"
+                                  value={signupForm.phoneCountryCode}
+                                  onChange={updateSignupField}
+                                >
+                                  {PHONE_COUNTRY_OPTIONS.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                      {option.label}
+                                    </option>
+                                  ))}
+                                </select>
+                                <input
+                                  name="phone"
+                                  type="tel"
+                                  autoComplete="tel"
+                                  value={signupForm.phone}
+                                  onChange={updateSignupField}
+                                  placeholder="98765 43210"
+                                />
+                              </div>
+                            </label>
+                            <label className="signup-field signup-field--stack">
+                              <span className="signup-field-label">Company Email</span>
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <input
+                                name="email"
+                                type="email"
+                                autoComplete="email"
+                                value={signupForm.email}
+                                onChange={updateSignupField}
+                                placeholder="name@company.com"
                               />
-                            </svg>
-                          </span>
-                          <div className="signup-phone-row">
-                            <select
-                              className="signup-phone-code"
-                              name="phoneCountryCode"
-                              aria-label="Phone country code"
-                              value={signupForm.phoneCountryCode}
-                              onChange={updateSignupField}
-                            >
-                              {PHONE_COUNTRY_OPTIONS.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                  {option.label}
-                                </option>
-                              ))}
-                            </select>
-                            <input
-                              name="phone"
-                              type="tel"
-                              autoComplete="tel"
-                              value={signupForm.phone}
-                              onChange={updateSignupField}
-                              placeholder="98765 43210"
-                            />
-                          </div>
-                        </label>
-                        <label className="signup-field signup-field--stack">
-                          <span className="signup-field-label">Company Email</span>
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
+                            </label>
+                            <label className="signup-field signup-field--stack">
+                              <span className="signup-field-label">Company Name</span>
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <input
+                                name="companyName"
+                                type="text"
+                                autoComplete="organization"
+                                value={signupForm.companyName}
+                                onChange={updateSignupField}
+                                placeholder="Enter your company name"
                               />
-                            </svg>
-                          </span>
-                          <input
-                            name="email"
-                            type="email"
-                            autoComplete="email"
-                            value={signupForm.email}
-                            onChange={updateSignupField}
-                            placeholder="name@company.com"
-                          />
-                        </label>
-                        <label className="signup-field signup-field--stack">
-                          <span className="signup-field-label">Company Name</span>
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
+                            </label>
+                            <label className="signup-field signup-field--stack">
+                              <span className="signup-field-label">Website (Optional)</span>
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <input
+                                name="website"
+                                type="url"
+                                autoComplete="url"
+                                value={signupForm.website}
+                                onChange={updateSignupField}
+                                placeholder="Website (optional)"
                               />
-                            </svg>
-                          </span>
-                          <input
-                            name="companyName"
-                            type="text"
-                            autoComplete="organization"
-                            value={signupForm.companyName}
-                            onChange={updateSignupField}
-                            placeholder="Enter your company name"
-                          />
-                        </label>
-                        <label className="signup-field signup-field--stack">
-                          <span className="signup-field-label">Website (Optional)</span>
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
+                            </label>
+                            <label className="signup-field signup-field--stack">
+                              <span className="signup-field-label">Country</span>
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <select
+                                name="country"
+                                autoComplete="country-name"
+                                value={signupForm.country}
+                                onChange={updateSignupField}
+                              >
+                                <option value="">Select country</option>
+                                {COUNTRY_OPTIONS.map((country) => (
+                                  <option key={country.code} value={country.name}>
+                                    {country.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label className="signup-field signup-field--stack">
+                              <span className="signup-field-label">Password</span>
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 8V7a3 3 0 116 0v3H9z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <input
+                                name="password"
+                                type="password"
+                                autoComplete="new-password"
+                                value={signupForm.password}
+                                onChange={updateSignupField}
+                                placeholder="Password"
                               />
-                            </svg>
-                          </span>
-                          <input
-                            name="website"
-                            type="url"
-                            autoComplete="url"
-                            value={signupForm.website}
-                            onChange={updateSignupField}
-                            placeholder="Website (optional)"
-                          />
-                        </label>
-                        <label className="signup-field signup-field--stack">
-                          <span className="signup-field-label">Country</span>
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
+                            </label>
+                            <label className="signup-field signup-field--stack">
+                              <span className="signup-field-label">Confirm Password</span>
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 8V7a3 3 0 116 0v3H9z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <input
+                                name="confirmPassword"
+                                type="password"
+                                autoComplete="new-password"
+                                value={signupForm.confirmPassword}
+                                onChange={updateSignupField}
+                                placeholder="Confirm password"
                               />
-                            </svg>
-                          </span>
-                          <select
-                            name="country"
-                            autoComplete="country-name"
-                            value={signupForm.country}
-                            onChange={updateSignupField}
-                          >
-                            <option value="">Select country</option>
-                            {COUNTRY_OPTIONS.map((country) => (
-                              <option key={country.code} value={country.name}>
-                                {country.name}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <label className="signup-field signup-field--stack">
-                          <span className="signup-field-label">Password</span>
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 8V7a3 3 0 116 0v3H9z"
-                                fill="currentColor"
-                                opacity=".85"
-                              />
-                            </svg>
-                          </span>
-                          <input
-                            name="password"
-                            type="password"
-                            autoComplete="new-password"
-                            value={signupForm.password}
-                            onChange={updateSignupField}
-                            placeholder="Password"
-                          />
-                        </label>
-                        <label className="signup-field signup-field--stack">
-                          <span className="signup-field-label">Confirm Password</span>
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 8V7a3 3 0 116 0v3H9z"
-                                fill="currentColor"
-                                opacity=".85"
-                              />
-                            </svg>
-                          </span>
-                          <input
-                            name="confirmPassword"
-                            type="password"
-                            autoComplete="new-password"
-                            value={signupForm.confirmPassword}
-                            onChange={updateSignupField}
-                            placeholder="Confirm password"
-                          />
-                        </label>
+                            </label>
                           </>
                         ) : null}
                         {signupStep === 1 ? (
                           <>
-                        <label className="signup-field">
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
+                            <label className="signup-field">
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <select name="industry" value={signupForm.industry} onChange={updateSignupField}>
+                                {INDUSTRY_OPTIONS.map((opt) => (
+                                  <option key={opt.value || 'none'} value={opt.value}>
+                                    {opt.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label className="signup-field">
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <input
+                                name="locationCount"
+                                type="number"
+                                min="1"
+                                value={signupForm.locationCount}
+                                onChange={updateSignupField}
+                                placeholder="Number of locations"
                               />
-                            </svg>
-                          </span>
-                          <select name="industry" value={signupForm.industry} onChange={updateSignupField}>
-                            {INDUSTRY_OPTIONS.map((opt) => (
-                              <option key={opt.value || 'none'} value={opt.value}>
-                                {opt.label}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <label className="signup-field">
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
-                              />
-                            </svg>
-                          </span>
-                          <input
-                            name="locationCount"
-                            type="number"
-                            min="1"
-                            value={signupForm.locationCount}
-                            onChange={updateSignupField}
-                            placeholder="Number of locations"
-                          />
-                        </label>
-                        <label className="signup-field">
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
-                              />
-                            </svg>
-                          </span>
-                          <select name="facilityType" value={signupForm.facilityType} onChange={updateSignupField}>
-                            <option value="">Facility type</option>
-                            {FACILITY_OPTIONS.map((opt) => (
-                              <option key={opt.value} value={opt.value}>
-                                {opt.label}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <label className="signup-field">
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
-                              />
-                            </svg>
-                          </span>
-                          <select name="setupStructure" value={signupForm.setupStructure} onChange={updateSignupField}>
-                            <option value="">Setup structure</option>
-                            {SETUP_OPTIONS.map((opt) => (
-                              <option key={opt.value} value={opt.value}>
-                                {opt.label}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <label className="signup-field">
-                          <span className="signup-field-icon" aria-hidden="true">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <path
-                                d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
-                                fill="currentColor"
-                                opacity=".85"
-                              />
-                            </svg>
-                          </span>
-                          <select name="operationSize" value={signupForm.operationSize} onChange={updateSignupField}>
-                            <option value="">Operation size</option>
-                            {OPERATION_SIZE_OPTIONS.map((opt) => (
-                              <option key={opt.value} value={opt.value}>
-                                {opt.label}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                        <fieldset className="signup-field">
-                          <legend>What do you want to monitor?</legend>
-                          <div>
-                            {MONITOR_OPTIONS.map((o) => (
-                              <label key={o.id} style={{ display: 'block', marginBottom: '0.25rem' }}>
-                                <input
-                                  type="checkbox"
-                                  checked={signupForm.monitorAreas.includes(o.id)}
-                                  onChange={() => toggleSignupMonitorArea(o.id)}
-                                />{' '}
-                                {o.label}
-                              </label>
-                            ))}
-                          </div>
-                        </fieldset>
+                            </label>
+                            <label className="signup-field">
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <select name="facilityType" value={signupForm.facilityType} onChange={updateSignupField}>
+                                <option value="">Facility type</option>
+                                {FACILITY_OPTIONS.map((opt) => (
+                                  <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label className="signup-field">
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <select name="setupStructure" value={signupForm.setupStructure} onChange={updateSignupField}>
+                                <option value="">Setup structure</option>
+                                {SETUP_OPTIONS.map((opt) => (
+                                  <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label className="signup-field">
+                              <span className="signup-field-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                  <path
+                                    d="M4 6h16v12H4V6zm2 2v8h12V8H6zm4 2h4v1h-4v-1z"
+                                    fill="currentColor"
+                                    opacity=".85"
+                                  />
+                                </svg>
+                              </span>
+                              <select name="operationSize" value={signupForm.operationSize} onChange={updateSignupField}>
+                                <option value="">Operation size</option>
+                                {OPERATION_SIZE_OPTIONS.map((opt) => (
+                                  <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <fieldset className="signup-field">
+                              <legend>What do you want to monitor?</legend>
+                              <div>
+                                {MONITOR_OPTIONS.map((o) => (
+                                  <label key={o.id} style={{ display: 'block', marginBottom: '0.25rem' }}>
+                                    <input
+                                      type="checkbox"
+                                      checked={signupForm.monitorAreas.includes(o.id)}
+                                      onChange={() => toggleSignupMonitorArea(o.id)}
+                                    />{' '}
+                                    {o.label}
+                                  </label>
+                                ))}
+                              </div>
+                            </fieldset>
                           </>
                         ) : null}
                         {signupStep === 2 ? (
@@ -2818,9 +2669,8 @@ function App() {
                                 {PRIMARY_GOAL_OPTIONS.map((opt) => (
                                   <label
                                     key={opt.value}
-                                    className={`signup-outcome-goal-card ${
-                                      signupForm.primaryGoal === opt.value ? 'is-selected' : ''
-                                    }`}
+                                    className={`signup-outcome-goal-card ${signupForm.primaryGoal === opt.value ? 'is-selected' : ''
+                                      }`}
                                   >
                                     <input
                                       type="radio"
@@ -2847,9 +2697,8 @@ function App() {
                                 {INSIGHT_FREQUENCY_OPTIONS.map((opt) => (
                                   <label
                                     key={opt.value}
-                                    className={`signup-outcome-frequency-card ${
-                                      signupForm.insightFrequency === opt.value ? 'is-selected' : ''
-                                    }`}
+                                    className={`signup-outcome-frequency-card ${signupForm.insightFrequency === opt.value ? 'is-selected' : ''
+                                      }`}
                                   >
                                     <input
                                       type="radio"
