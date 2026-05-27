@@ -886,7 +886,7 @@ function SiteFooter() {
       <div className="site-footer-inner">
 
         <div className="site-footer-brand">
-          
+
           <div className="site-footer-logo-lockup">
             <img
               className="site-footer-logo-img"
@@ -896,7 +896,7 @@ function SiteFooter() {
           </div>
 
           <p>
-            Gathers and Transforms Visual Information Into Actionable Data.
+            Transforming Visual Information Into Actionable Data.
           </p>
         </div>
 
@@ -2228,7 +2228,7 @@ function App() {
           <div className="overlay">
             <h1>When You Need Answers Now</h1>
             <p>
-              HENRY Technologies Gathers and Transforms Visual Information Into Actionable Data.
+              Transforming Visual Information Into Actionable Data.
             </p>
             <button
               className="btn-primary"
