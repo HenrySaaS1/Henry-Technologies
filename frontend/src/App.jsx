@@ -77,11 +77,16 @@ function marketingProductsHref() {
 }
 
 const PRODUCTS_MENU_ITEMS = [
-  { href: marketingProductsHref(), label: 'SnapShot' },
-  { href: marketingProductsHashHref('safety'), label: 'Safety' },
-  { href: marketingProductsHashHref('security'), label: 'Security' },
-  { href: marketingProductsHashHref('systems'), label: 'Systems' },
-  { href: marketingProductsHashHref('myhenry-agent'), label: 'MyHenry Agent' },
+  {
+    href: marketingProductsHref(),
+    label: 'SnapShot',
+    children: [
+      { href: marketingProductsHashHref('safety'), label: 'Safety' },
+      { href: marketingProductsHashHref('security'), label: 'Security' },
+      { href: marketingProductsHashHref('systems'), label: 'Systems' },
+    ],
+  },
+  { href: marketingProductsHashHref('myhenry-agent'), label: 'MyHenry' },
 ]
 
 function ProductsMenuLink() {
@@ -168,15 +173,34 @@ function ProductsMenuLink() {
         aria-hidden={!open}
       >
         {PRODUCTS_MENU_ITEMS.map((item) => (
-          <a
-            key={item.label}
-            href={item.href}
-            role="menuitem"
-            tabIndex={open ? 0 : -1}
-            onClick={() => setOpen(false)}
-          >
-            {item.label}
-          </a>
+          <div key={item.label} className="menu-products-group">
+            <a
+              href={item.href}
+              role="menuitem"
+              tabIndex={open ? 0 : -1}
+              onClick={() => setOpen(false)}
+              className="menu-products-parent"
+            >
+              {item.label}
+            </a>
+
+            {item.children?.length ? (
+              <div className="menu-products-subitems">
+                {item.children.map((child) => (
+                  <a
+                    key={child.label}
+                    href={child.href}
+                    role="menuitem"
+                    tabIndex={open ? 0 : -1}
+                    onClick={() => setOpen(false)}
+                    className="menu-products-child"
+                  >
+                    {child.label}
+                  </a>
+                ))}
+              </div>
+            ) : null}
+          </div>
         ))}
       </div>
     </div>
@@ -1702,14 +1726,18 @@ function App() {
     )
   }
 
-  const mobileNavLinks = [
-    { href: '/#products', label: 'PRODUCTS' },
-    { href: '/products', label: '— SnapShot' },
-    { href: '/case-studies', label: 'CASE STUDIES' },
-    ...(SHOW_NAV_PRICING_LINK ? [{ href: '/pricing', label: 'PRICING' }] : []),
-    { href: '/#about', label: 'ABOUT' },
-    { href: '/#request-demo', label: 'CONTACT' },
-  ]
+const mobileNavLinks = [
+  { href: '/products', label: 'Products' },
+  { href: '/products', label: '• SnapShot' },
+  { href: '/products#safety', label: '   ◦ Safety' },
+  { href: '/products#security', label: '   ◦ Security' },
+  { href: '/products#systems', label: '   ◦ Systems' },
+  { href: '/products#myhenry-agent', label: '• MyHenry' },
+  { href: '/case-studies', label: 'CASE STUDIES' },
+  ...(SHOW_NAV_PRICING_LINK ? [{ href: '/pricing', label: 'PRICING' }] : []),
+  { href: '/#about', label: 'ABOUT' },
+  { href: '/#request-demo', label: 'CONTACT' },
+]
 
   const pricingSection = (
     <section id="pricing" className="pricing-section">
