@@ -29,6 +29,7 @@ import {
   DASHBOARD_DEMO_PRESETS_ORDER,
 } from './dashboard/dashboardDemo.js'
 import heroMainImage from './assets/hero-main.png'
+import heroMainSecondImage from './assets/hero-image-2.jpeg'
 import aiIconImage from './assets/uploads/img-1.png'
 import securityIconImage from './assets/uploads/img-3.png'
 import analyticsIconImage from './assets/uploads/img-4.png'
@@ -44,6 +45,8 @@ import aboutHenryImage from './assets/about-henry.png'
 import henryLogo from './assets/henry-full-logo.png'
 // import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import HeroLiveChartsHud from './HeroLiveCharts.jsx'
+import linkedinLogo from './assets/linkedin-logo.png'
+import youtubeLogo from './assets/youtube-logo.png'
 
 /** `/products#slug` for marketing CTAs; honors Vite `base` and current origin. */
 function marketingProductsHashHref(slug) {
@@ -526,8 +529,8 @@ const snapshotMobileCards = [
 
 const solutions = [
   {
-    title: 'Real-Time Data Monitoring',
-    text: 'Track your production performance and key metrics in real-time to ensure everything runs smoothly and efficiently.',
+    title: 'Continuous Data Monitoring',
+    text: 'Track production performance and key metrics continuously to keep operations running smoothly and efficiently.',
     image: securityIconImage,
   },
   {
@@ -558,7 +561,7 @@ const products = [
   {
     slug: 'systems',
     title: 'Systems',
-    text: 'A unified view of your entire plant, powered by IIoT. Monitor machines, equipment, and workflows in real time to optimize performance and reduce downtime.',
+    text: 'A unified view of your entire plant, powered by IIoT. Monitor machines, equipment, and workflows in on-demand time to optimize performance and reduce downtime.',
     image: PRODUCT_IMAGES.systems,
   },
   {
@@ -580,7 +583,7 @@ const productDetails = [
     bullets: [
       'Boundary Violation Detection: Identify safety line breaches instantly',
       'Unsafe Behaviour Alerts: Monitor and flag risky actions',
-      'Real-time Notifications: Get immediate alerts for safety issues',
+      'Immediate Notifications: Get immediate alerts for safety issues',
       'Compliance Monitoring: Ensure adherence to safety standards',
       'Incident Prevention: Reduce risks before they escalate',
     ],
@@ -600,11 +603,11 @@ const productDetails = [
     body:
       'Built for modern industrial environments, Security keeps your operations protected 24/7.',
     bullets: [
-      'Access Monitoring: Detect unauthorised entry in real time',
+      'Access Monitoring: On-demand detection of unauthorised entry',
       'Anomaly Detection: Identify unusual activities instantly',
       'Smart Surveillance Integration: Connect cameras and sensors seamlessly',
       'Alert System: Get notified of security breaches immediately',
-      '24/7 Protection: Continuous monitoring for complete peace of mind',
+      '24/7 Protection: Consistent monitoring for complete peace of mind',
     ],
     benefits: [
       'Improve operational efficiency',
@@ -618,11 +621,11 @@ const productDetails = [
     slug: 'systems',
     title: 'Systems',
     intro:
-      'HENRY Systems connects your entire plant through IIoT, providing a unified operational view. From machines to workflows, monitor everything in real time to optimise efficiency and reduce downtime.',
+      'HENRY Systems connects your entire plant through IIoT, providing a unified operational view. Monitor machines, workflows, and operations with on-demand visibility to improve efficiency and reduce downtime.',
     body:
       'Designed for modern manufacturing, Systems brings clarity and control to complex operations.',
     bullets: [
-      'Machine Monitoring: Track equipment performance in real time',
+      'Machine Monitoring: Track equipment health and performance whenever needed',
       'IIoT Integration: Seamlessly connect sensors, PLCs, and devices',
       'Downtime Analysis: Identify and reduce operational inefficiencies',
       'Centralised Dashboard: View all systems in one unified interface',
@@ -647,7 +650,7 @@ const productDetails = [
       'AI-Powered Assistance: Get instant answers to business queries',
       'Custom Knowledge Base: Trained on your workflows, data, and processes',
       'Cross-Functional Support: Covers HR, finance, operations, and more',
-      'Smart Recommendations: Receive actionable insights in real time',
+      'Smart Recommendations: Access actionable insights on demand',
       'Continuous Learning: Improves over time with usage and data',
     ],
     benefits: [
@@ -668,7 +671,7 @@ const caseStudies = [
     details: {
       heading: 'Medical Equipment & Devices',
       intro:
-        'Precision, compliance, and zero-defect manufacturing are critical in medical device production. A leading manufacturer partnered with HENRY to gain real-time visibility across assembly lines and ensure consistent product quality.',
+        'Precision, compliance, and zero-defect manufacturing are critical in medical device production. A leading manufacturer partnered with HENRY to gain on-demand visibility across assembly lines and ensure consistent product quality.',
       body:
         'With HENRY Core and Factory Analytics, they monitored every stage of production, detected defects instantly, and maintained strict regulatory standards without slowing down operations.',
       highlights: [
@@ -687,7 +690,7 @@ const caseStudies = [
       intro:
         'A fast-growing healthcare provider faced challenges in managing patient flow, optimizing equipment usage, and maintaining operational efficiency across multiple locations.',
       body:
-        'By implementing HENRY intelligent analytics and automation tools, they gained real-time insights into hospital operations, streamlined workflows, and improved decision-making across departments.',
+        'By implementing HENRY intelligent analytics and automation tools, they gained on-demand insights into hospital operations, streamlined workflows, and improved decision-making across departments.',
       highlights: [
         '40% increase in operational efficiency',
         '30% reduction in patient wait times',
@@ -697,14 +700,14 @@ const caseStudies = [
   },
   {
     title: 'Pharmaceuticals',
-    text: 'Ensuring compliance, batch traceability, and contamination-free production with real-time monitoring.',
+    text: 'Ensuring compliance, batch traceability, and contamination-free production with continuous monitoring.',
     image: pharmaImage,
     details: {
       heading: 'Pharmaceuticals',
       intro:
         'Maintaining compliance, ensuring batch traceability, and preventing contamination are top priorities in pharmaceutical manufacturing. One company leveraged HENRY to digitize their monitoring systems and automate compliance reporting.',
       body:
-        'With real-time tracking and intelligent alerts, they improved production safety while significantly reducing manual workload.',
+        'With continuous tracking and intelligent alerts, they improved production safety while significantly reducing manual workload.',
       highlights: [
         '50% faster compliance reporting',
         'Zero contamination incidents',
@@ -778,7 +781,7 @@ const pricingTiers = [
         items: [
           {
             ok: true,
-            text: 'Advanced analytics: real-time alerts and visual insights from camera + machine data.',
+            text: 'Advanced analytics: Immediate alerts and visual insights from camera + machine data.',
           },
           { ok: true, text: 'Event-based alerts for safety and operational anomalies.' },
           {
@@ -812,7 +815,7 @@ const pricingTiers = [
         kind: 'nested',
         items: [
           'Natural language queries (e.g. “Which machine had the highest downtime today?”)',
-          'Real-time insights & recommendations trained on your factory data',
+          'On-demand insights & recommendations trained on your factory data',
           'Expandable modules: HR, Maintenance, Production, Compliance',
         ],
       },
@@ -920,7 +923,7 @@ function SiteFooter() {
           </div>
 
           <p>
-            Transforming Visual Information Into Actionable Data.
+            Transforming Visual Information <br /> Into Actionable Data
           </p>
         </div>
 
@@ -960,9 +963,30 @@ function SiteFooter() {
             target="_blank"
             rel="noreferrer"
           >
-            <span className="site-footer-contact-icon site-footer-linkedin-icon" aria-hidden="true">in</span>
+            <img
+              className="site-footer-social-logo"
+              src={linkedinLogo}
+              alt=""
+              aria-hidden="true" />
             LinkedIn
           </a>
+
+          <a
+            className="site-footer-contact-item"
+            href="https://www.youtube.com/@henry-tech-inc"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img
+              className="site-footer-social-logo"
+              src={youtubeLogo}
+              alt=""
+              aria-hidden="true" />
+            YouTube
+          </a>
+
+
+
         </div>
       </div>
 
@@ -1726,18 +1750,18 @@ function App() {
     )
   }
 
-const mobileNavLinks = [
-  { href: '/products', label: 'Products' },
-  { href: '/products', label: '• SnapShot' },
-  { href: '/products#safety', label: '   ◦ Safety' },
-  { href: '/products#security', label: '   ◦ Security' },
-  { href: '/products#systems', label: '   ◦ Systems' },
-  { href: '/products#myhenry-agent', label: '• MyHenry' },
-  { href: '/case-studies', label: 'CASE STUDIES' },
-  ...(SHOW_NAV_PRICING_LINK ? [{ href: '/pricing', label: 'PRICING' }] : []),
-  { href: '/#about', label: 'ABOUT' },
-  { href: '/#request-demo', label: 'CONTACT' },
-]
+  const mobileNavLinks = [
+    { href: '/products', label: 'Products' },
+    { href: '/products', label: '• SnapShot' },
+    { href: '/products#safety', label: '   ◦ Safety' },
+    { href: '/products#security', label: '   ◦ Security' },
+    { href: '/products#systems', label: '   ◦ Systems' },
+    { href: '/products#myhenry-agent', label: '• MyHenry' },
+    { href: '/case-studies', label: 'CASE STUDIES' },
+    ...(SHOW_NAV_PRICING_LINK ? [{ href: '/pricing', label: 'PRICING' }] : []),
+    { href: '/#about', label: 'ABOUT' },
+    { href: '/#request-demo', label: 'CONTACT' },
+  ]
 
   const pricingSection = (
     <section id="pricing" className="pricing-section">
@@ -1872,7 +1896,7 @@ const mobileNavLinks = [
     <section id="products" className="products">
       <h2 className="products-title">HENRY SnapShot</h2>
       <p className="products-subtitle">
-        Streamline your operations with smart automation. From monitoring to predictive maintenance, automate
+        Streamline your operations with smart automation. From consistent monitoring to predictive maintenance, automate
         processes and save valuable time.
       </p>
       <div className="card-grid four">
@@ -2021,7 +2045,7 @@ const mobileNavLinks = [
         <input name="companyName" value={form.companyName} onChange={updateField} placeholder="Company Name" />
         <select name="interest" value={form.interest} onChange={updateField}>
           <option>Smart Monitoring Setup</option>
-          <option>Real-time Data &amp; Dashboard</option>
+          <option>On-Demand Data &amp; Dashboard</option>
           <option>System Integration (Machines, Devices, APIs)</option>
           <option>Data Processing &amp; Cloud Setup</option>
           <option>Performance Optimization</option>
@@ -2209,7 +2233,7 @@ const mobileNavLinks = [
                   Area of Interest <span aria-hidden="true">*</span>
                   <select name="interest" value={form.interest} onChange={updateField}>
                     <option>Smart Monitoring Setup</option>
-                    <option>Real-time Data &amp; Dashboard</option>
+                    <option>On-Demand Data &amp; Dashboard</option>
                     <option>System Integration (Machines, Devices, APIs)</option>
                     <option>Data Processing &amp; Cloud Setup</option>
                     <option>Performance Optimization</option>
@@ -2250,13 +2274,13 @@ const mobileNavLinks = [
         signOut={signOut}
       />
 
-      <section className="hero" style={{ '--hero-url': `url(${heroMainImage})` }}>
+      <section className="hero" style={{ '--hero-url': `url(${heroMainSecondImage})` }}>
         <div className="hero-inner">
           <HeroLiveChartsHud />
           <div className="overlay">
             <h1>When You Need Answers Now</h1>
             <p>
-              Transforming Visual Information Into Actionable Data.
+              Transforming Visual Information <br className="mobile-hero-break" /> Into Actionable Data
             </p>
             <button
               className="btn-primary"
@@ -3001,7 +3025,7 @@ const mobileNavLinks = [
       ) : null}
 
       <section className="solutions">
-        <h2>Smart Business Solutions with Real-Time Data & Insights</h2>
+        <h2>Business Intelligence Tools with Actionable Insights</h2>
         <div className="card-grid three">
           {solutions.map((item) => (
             <article key={item.title} className="card">
@@ -3080,11 +3104,11 @@ const mobileNavLinks = [
             Starts Here
           </h3>
           <p>
-            HENRY Technologies helps your business make faster, smarter decisions using real-time data and AI-powered insights.
-            From monitoring operations to optimizing performance, everything you need is in one powerful platform.
+            HENRY Technologies helps your business make faster, smarter decisions using on-demand data and AI-powered insights.
+            From consistent monitoring operations to optimizing performance, everything you need is in one powerful platform.
           </p>
           <ul>
-            <li>Real-Time Factory Visibility</li>
+            <li>On-Demand Factory Visibility</li>
             <li>AI-Driven Decision Making</li>
             <li>Improved Efficiency & Productivity</li>
           </ul>

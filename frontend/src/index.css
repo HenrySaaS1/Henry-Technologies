@@ -482,6 +482,16 @@ a.btn-dark {
   align-items: stretch;
 }
 
+.mobile-hero-break {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mobile-hero-break{
+    display: block;
+  }
+}
+
 /* Laptop / desktop: first screen is hero only — fill viewport below sticky topbar (~5.5rem). */
 @media (min-width: 901px) {
   .hero {
@@ -490,7 +500,7 @@ a.btn-dark {
     background-size: cover, cover;
     background-position:
       center,
-      center 22%;
+      center -320px;
   }
 }
 
@@ -10968,6 +10978,13 @@ a.btn-dark {
   gap: 10px;
 }
 
+.site-footer-social-logo {
+  width: 1rem;
+  height: 1rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .site-footer-contact-icon {
   display: inline-flex;
   align-items: center;
@@ -10989,6 +11006,20 @@ a.btn-dark {
   font-size: 0.7rem;
   font-weight: 900;
   font-family: Arial, sans-serif;
+}
+
+.site-footer-youtube-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 4px;
+  background: #ff0000;
+  color: #ffffff;
+  font-size: 0.58rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .site-footer-logo-lockup {
@@ -11216,7 +11247,7 @@ a.btn-dark {
     background-size: cover, cover;
     background-position:
       center,
-      center 8%;
+      center top;
   }
 
   .hero-inner {
@@ -11661,7 +11692,7 @@ a.btn-dark {
     min-height: max(600px, calc(100dvh - 4.5rem));
     background-position:
       center,
-      center 5%;
+      center top;
   }
 
   .hero-live-charts {
