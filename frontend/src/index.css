@@ -487,7 +487,7 @@ a.btn-dark {
 }
 
 @media (max-width: 900px) {
-  .mobile-hero-break{
+  .mobile-hero-break {
     display: block;
   }
 }
@@ -15751,4 +15751,655 @@ a.btn-dark {
   font-size: 0.62rem;
   font-weight: 600;
   color: #94a3b8;
+}
+/* LOCO Manufacturing plant detail demo */
+.loco-detail {
+  min-height: 100vh;
+  background: #edf4f8;
+  color: #07152f;
+}
+
+.loco-detail-top {
+  min-height: 112px;
+  padding: 18px 28px;
+  background: linear-gradient(135deg, #061426 0%, #0a2f51 100%);
+  color: #fff;
+  display: grid;
+  grid-template-columns: 360px 1fr 360px;
+  gap: 24px;
+  align-items: center;
+}
+
+.loco-detail-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.loco-detail-brand span {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #c6d8ef;
+  text-transform: none;
+}
+
+.loco-detail-logo-img {
+  width: 160px;
+  height: 62px;
+  object-fit: contain;
+  display: block;
+  background: #fff;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.loco-detail-title {
+  text-align: center;
+}
+
+.loco-detail-title h1 {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 52px);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+}
+
+.loco-detail-title p {
+  margin: 10px 0 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #e7f5ff;
+}
+
+.loco-detail-time {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.loco-detail-time div {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 18px;
+  padding: 14px 18px;
+  min-width: 150px;
+}
+
+.loco-detail-time span {
+  display: block;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #cbd5e1;
+  font-weight: 800;
+}
+
+.loco-detail-time strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 15px;
+}
+
+.loco-detail-body {
+  display: grid;
+  grid-template-columns: 330px 1fr;
+  gap: 16px;
+  padding: 16px;
+}
+
+.loco-detail-side {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid #dbe7f0;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.loco-detail-back {
+  display: inline-block;
+  margin-bottom: 18px;
+  color: #0057d8;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.loco-detail-side-card {
+  border-bottom: 1px solid #dbe7f0;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+}
+
+.loco-detail-side-card h2 {
+  margin: 0 0 14px;
+  color: #067481;
+  text-transform: uppercase;
+  font-size: 18px;
+}
+
+.loco-detail-side-card strong {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.loco-detail-k {
+  margin: 10px 0 3px;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.loco-detail-side-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 10px 0;
+  font-weight: 700;
+}
+
+.loco-detail-tabs-top button {
+  border: 0;
+  cursor: pointer;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.loco-detail-local-time {
+  width: 100%;
+  margin-top: 18px;
+  border-radius: 14px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #25c6da, #17b26a);
+  color: #fff;
+  text-align: center;
+  font-weight: 900;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+}
+
+.loco-detail-main {
+  min-width: 0;
+}
+
+.loco-detail-tabs-top {
+  background: #f8fbff;
+  border: 1px solid #dbe7f0;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.loco-detail-tabs-top button {
+  padding: 15px;
+  background: transparent;
+  color: #475569;
+  border-right: 1px solid #dbe7f0;
+}
+
+.loco-detail-tabs-top button:last-child {
+  border-right: 0;
+}
+
+.loco-detail-tabs-top button.is-active {
+  background: #e8fff1;
+  color: #16a34a;
+  box-shadow: inset 0 -3px 0 #16a34a;
+}
+
+.loco-detail-kpis {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.loco-detail-kpi {
+  background: #fff;
+  border: 1px solid #dbe7f0;
+  border-radius: 16px;
+  min-height: 132px;
+  padding: 18px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.loco-detail-kpi span {
+  display: block;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 900;
+  color: #475569;
+}
+
+.loco-detail-kpi strong {
+  display: block;
+  font-size: 42px;
+  line-height: 1;
+  margin: 18px 0 8px;
+}
+
+.loco-detail-kpi p {
+  margin: 0;
+  color: #334155;
+  font-weight: 700;
+}
+
+.loco-detail-events {
+  background: #fff;
+  border: 1px solid #dbe7f0;
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.loco-detail-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.loco-detail-section-head h2 {
+  margin: 0;
+  font-size: 20px;
+  text-transform: uppercase;
+}
+
+.loco-detail-section-head button {
+  border: 0;
+  background: transparent;
+  color: #0057d8;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.loco-detail-card-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.loco-detail-card {
+  border: 1px solid #dbe7f0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.loco-detail-card-img {
+  height: 150px;
+  background:
+    linear-gradient(135deg, rgba(3, 16, 39, 0.2), rgba(82, 196, 26, 0.2)),
+    url("https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&w=600&q=80");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.loco-detail-badge {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.loco-detail-badge--good {
+  background: #16a34a;
+}
+.loco-detail-badge--warn {
+  background: #f97316;
+}
+.loco-detail-badge--bad {
+  background: #dc2626;
+}
+.loco-detail-badge--neutral {
+  background: #2563eb;
+}
+
+.loco-detail-card-body {
+  padding: 14px;
+}
+
+.loco-detail-card-body h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+
+.loco-detail-card-body p {
+  margin: 8px 0;
+  color: #26364f;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.loco-detail-card-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: #2563eb !important;
+  font-size: 13px;
+}
+
+.loco-detail-card-foot {
+  border-top: 1px solid #e2e8f0;
+  margin-top: 12px;
+  padding-top: 10px;
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.loco-detail-card-foot span {
+  color: #f97316;
+}
+
+.loco-detail-card-foot strong {
+  color: #0057d8;
+}
+
+.loco-detail-bottom-metrics {
+  background: #fff;
+  border: 1px solid #dbe7f0;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  overflow: hidden;
+}
+
+.loco-detail-bottom-metrics div {
+  padding: 18px;
+  border-right: 1px solid #dbe7f0;
+}
+
+.loco-detail-bottom-metrics div:last-child {
+  border-right: 0;
+}
+
+.loco-detail-bottom-metrics span {
+  display: block;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: #475569;
+  font-weight: 900;
+}
+
+.loco-detail-bottom-metrics strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 28px;
+}
+
+@media (max-width: 1100px) {
+  .loco-detail-top {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .loco-detail-title {
+    text-align: left;
+  }
+
+  .loco-detail-time {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .loco-detail-body {
+    grid-template-columns: 1fr;
+  }
+
+  .loco-detail-kpis,
+  .loco-detail-card-grid,
+  .loco-detail-bottom-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Hide global workspace sidebar across client dashboards */
+.client-sidebar {
+  display: none !important;
+}
+
+.client-body {
+  grid-template-columns: 1fr !important;
+}
+
+.client-main {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* LOCO detail page compact polish */
+.loco-detail-top {
+  min-height: 96px;
+  padding: 14px 26px;
+  grid-template-columns: 380px 1fr 330px;
+}
+
+.loco-detail-title h1 {
+  font-size: clamp(30px, 2.3vw, 42px);
+  letter-spacing: -0.035em;
+}
+
+.loco-detail-title p {
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.loco-detail-logo-img {
+  width: 150px;
+  height: 56px;
+}
+
+.loco-detail-brand {
+  gap: 14px;
+}
+
+.loco-detail-brand strong {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.loco-detail-brand span {
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.loco-detail-time div {
+  min-width: 138px;
+  padding: 12px 16px;
+  border-radius: 16px;
+}
+
+.loco-detail-time strong {
+  font-size: 14px;
+}
+
+.loco-detail-body {
+  gap: 14px;
+  padding: 14px 18px;
+}
+
+.loco-detail-side {
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.loco-detail-side-card h2 {
+  font-size: 16px;
+}
+
+.loco-detail-side-card strong {
+  font-size: 14px;
+}
+
+.loco-detail-side-card p {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.loco-detail-k {
+  font-size: 11px;
+}
+
+.loco-detail-tabs-top {
+  margin-bottom: 12px;
+  border-radius: 14px;
+}
+
+.loco-detail-tabs-top button {
+  padding: 13px;
+  font-size: 13px;
+}
+
+.loco-detail-kpis {
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.loco-detail-kpi {
+  min-height: 112px;
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.loco-detail-kpi span {
+  font-size: 11px;
+}
+
+.loco-detail-kpi strong {
+  font-size: 30px;
+  margin: 14px 0 6px;
+}
+
+.loco-detail-kpi p {
+  font-size: 14px;
+}
+
+.loco-detail-events {
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.loco-detail-section-head h2 {
+  font-size: 18px;
+}
+
+.loco-detail-card-grid {
+  gap: 12px;
+}
+
+.loco-detail-card {
+  border-radius: 13px;
+}
+
+.loco-detail-card-img {
+  height: 132px;
+}
+
+.loco-detail-card-body {
+  padding: 12px;
+}
+
+.loco-detail-card-body h3 {
+  font-size: 15px;
+  margin-bottom: 7px;
+}
+
+.loco-detail-card-body p {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.loco-detail-card-meta {
+  font-size: 12px;
+}
+
+.loco-detail-card-foot {
+  font-size: 12px;
+  margin-top: 10px;
+  padding-top: 9px;
+}
+
+.loco-detail-badge {
+  padding: 5px 9px;
+  font-size: 11px;
+  border-radius: 7px;
+}
+
+.loco-detail-bottom-metrics div {
+  padding: 14px 16px;
+}
+
+.loco-detail-bottom-metrics span {
+  font-size: 11px;
+}
+
+.loco-detail-bottom-metrics strong {
+  font-size: 24px;
+}
+
+/* Reduce LOCO detail page main title size */
+.loco-detail-title h1 {
+  font-size: clamp(28px, 2vw, 36px) !important;
+  letter-spacing: -0.03em;
+}
+
+/* LOCO overview output ring alignment */
+.aviora-port-ring-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  min-width: 150px;
+  text-align: center;
+}
+
+.aviora-port-completion {
+  display: grid !important;
+  place-items: center !important;
+  position: relative;
+}
+
+.aviora-port-completion svg {
+  display: block;
+}
+
+.aviora-port-completion-label {
+  margin-top: 4px;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #334155;
+}
+
+.aviora-port-completion-caption {
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.aviora-port-completion-caption--good {
+  color: #16a34a !important;
+}
+
+.aviora-port-completion-caption--warn {
+  color: #f97316 !important;
+}
+
+.aviora-port-completion-caption--bad {
+  color: #dc2626 !important;
 }

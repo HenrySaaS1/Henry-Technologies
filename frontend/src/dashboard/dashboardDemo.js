@@ -5,13 +5,14 @@ import { PRESET_DEMO_EMAILS } from './registry.js'
 /** Bearer value stored locally — never sent to `/api`; apiClient skips Authorization for this marker. */
 export const DEMO_DASHBOARD_TOKEN = '__HENRY_DASHBOARD_DEMO_V1'
 
-/** Preset keys for the Henry product dashboards, Harland, and Aviora (no API / DB). */
+/** Preset keys for the Henry product dashboards, Harland, Aviora and Loco (no API / DB). */
 export const DASHBOARD_DEMO_PRESETS_ORDER = /** @type {const} */ [
   ['henry1', 'Dashboard #2 · single-site'],
   ['henry3', 'Dashboard #3 · three-site'],
   ['henry10', 'Dashboard #10 · ten-site'],
   ['harland', 'Harland Medical'],
   ['aviora', 'Aviora Construction'],
+  ['loco', 'Loco Manufacturing'],
 ]
 
 const PRESET_META = {
@@ -49,6 +50,13 @@ const PRESET_META = {
     slug: 'aviora',
     planId: 'premium',
     dashboardPreset: 'aviora',
+  },
+    loco: {
+    email: 'landerson@locomanufacturing.com',
+    company: 'LOCO MANUFACTURING, INC.',
+    slug: 'loco',
+    planId: 'premium',
+    dashboardPreset: 'loco',
   },
 }
 

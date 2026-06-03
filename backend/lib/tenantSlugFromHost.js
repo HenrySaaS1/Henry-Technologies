@@ -4,21 +4,38 @@
  * Path-based `/harland` and `/aviora` on the apex site are resolved in the browser only (see `getTenantSlug` there).
  */
 export function tenantSlugFromHost(hostname) {
-  let host = String(hostname || '')
+  let host = String(hostname || "")
     .trim()
-    .toLowerCase()
-  if (!host) return null
-  while (host.startsWith('www.')) host = host.slice(4)
-  if (host === 'harland.goaskhenry.com' || host === 'harlandmedical.goaskhenry.com') return 'harland'
+    .toLowerCase();
+  if (!host) return null;
+  while (host.startsWith("www.")) host = host.slice(4);
   if (
-    (host.startsWith('harland.') || host.startsWith('harlandmedical.')) &&
-    host.endsWith('.goaskhenry.com')
+    host === "harland.goaskhenry.com" ||
+    host === "harlandmedical.goaskhenry.com"
+  )
+    return "harland";
+  if (
+    (host.startsWith("harland.") || host.startsWith("harlandmedical.")) &&
+    host.endsWith(".goaskhenry.com")
   ) {
-    return 'harland'
+    return "harland";
   }
-  if (host === 'aviora.goaskhenry.com') return 'aviora'
-  if (host.startsWith('aviora.') && host.endsWith('.goaskhenry.com')) {
-    return 'aviora'
+  if (host === "aviora.goaskhenry.com") return "aviora";
+  if (host.startsWith("aviora.") && host.endsWith(".goaskhenry.com")) {
+    return "aviora";
   }
-  return null
+
+  if (
+    host === "loco.goaskhenry.com" ||
+    host === "locomanufacturing.goaskhenry.com"
+  )
+    return "loco";
+  if (
+    (host.startsWith("loco.") || host.startsWith("locomanufacturing.")) &&
+    host.endsWith(".goaskhenry.com")
+  ) {
+    return "loco";
+  }
+
+  return null;
 }
