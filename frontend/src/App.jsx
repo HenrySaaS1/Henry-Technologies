@@ -40,7 +40,8 @@ import snapshotProductImage from './assets/uploads/product-snapshot-new.png'
 import systemsProductImage from './assets/uploads/product-systems-new.png'
 import safetyProductImage from './assets/uploads/product-safety-new.png'
 import securityProductImage from './assets/uploads/product-security-new.png'
-import myhenryProductImage from './assets/uploads/product-myhenry-new.png'
+import statusProductImage from './assets/uploads/product-status-new.jpg'
+// import myhenryProductImage from './assets/uploads/product-myhenry-new.png'
 import aboutHenryImage from './assets/about-henry.png'
 import henryLogo from './assets/henry-full-logo.png'
 // import { LogoSpreadLine } from './LogoSpreadLine.jsx'
@@ -84,12 +85,12 @@ const PRODUCTS_MENU_ITEMS = [
     href: marketingProductsHref(),
     label: 'SnapShot',
     children: [
-      { href: marketingProductsHashHref('safety'), label: 'Safety' },
-      { href: marketingProductsHashHref('security'), label: 'Security' },
-      { href: marketingProductsHashHref('systems'), label: 'Systems' },
+      { href: marketingProductsHashHref('safety'), label: 'SAFETY' },
+      { href: marketingProductsHashHref('security'), label: 'SECURITY' },
+      { href: marketingProductsHashHref('systems'), label: 'SYSTEMS' },
+      { href: marketingProductsHashHref('status'), label: 'STATUS' },
     ],
   },
-  { href: marketingProductsHashHref('myhenry-agent'), label: 'MyHenry' },
 ]
 
 function ProductsMenuLink() {
@@ -383,7 +384,8 @@ const PRODUCT_IMAGES = {
   systems: systemsProductImage,
   safety: safetyProductImage,
   security: securityProductImage,
-  myhenry: myhenryProductImage,
+  status: statusProductImage,
+  // myhenry: myhenryProductImage,
 }
 
 /** Default HENRY modules suggested when registering from a pricing tier. */
@@ -548,34 +550,34 @@ const solutions = [
 const products = [
   {
     slug: 'safety',
-    title: 'Safety',
+    title: 'SAFETY',
     text: 'Proactively detect and prevent safety risks on the factory floor. From boundary violations to unsafe behaviors, stay compliant and protect your workforce at all times.',
     image: PRODUCT_IMAGES.safety,
   },
   {
     slug: 'security',
-    title: 'Security',
+    title: 'SECURITY',
     text: 'Keep your facility secure with intelligent monitoring. Detect anomalies like unauthorized access, unlocked doors, or suspicious activity, before they become problems.',
     image: PRODUCT_IMAGES.security,
   },
   {
     slug: 'systems',
-    title: 'Systems',
+    title: 'SYSTEMS',
     text: 'A unified view of your entire plant, powered by IIoT. Monitor machines, equipment, and workflows in on-demand time to optimize performance and reduce downtime.',
     image: PRODUCT_IMAGES.systems,
   },
   {
-    slug: 'myhenry-agent',
-    title: 'MyHenry Agent',
-    text: 'Your personalised AI agent trained on your business. Get instant answers, insights, and recommendations across operations, HR, finance, and more, tailored to your workflows.',
-    image: PRODUCT_IMAGES.myhenry,
+    slug: 'status',
+    title: 'STATUS',
+    text: 'Get a clear operational status view of your plant, machines, workflows, and key activities so teams can quickly understand what needs attention.',
+    image: PRODUCT_IMAGES.status,
   },
 ]
 
 const productDetails = [
   {
     slug: 'safety',
-    title: 'Safety',
+    title: 'SAFETY',
     intro:
       'HENRY Safety ensures a safer workplace through intelligent monitoring and alerts. Detects risks proactively and enforce safety protocols across your factory floor.',
     body:
@@ -597,7 +599,7 @@ const productDetails = [
   },
   {
     slug: 'security',
-    title: 'Security',
+    title: 'SECURITY',
     intro:
       'HENRY Security provides advanced monitoring to safeguard your facility. Detects threats, prevents unauthorised access, and maintains full control over your premises.',
     body:
@@ -619,7 +621,7 @@ const productDetails = [
   },
   {
     slug: 'systems',
-    title: 'Systems',
+    title: 'SYSTEMS',
     intro:
       'HENRY Systems connects your entire plant through IIoT, providing a unified operational view. Monitor machines, workflows, and operations with on-demand visibility to improve efficiency and reduce downtime.',
     body:
@@ -640,26 +642,26 @@ const productDetails = [
     image: PRODUCT_IMAGES.systems,
   },
   {
-    slug: 'myhenry-agent',
-    title: 'MyHenry Agent',
+    slug: 'status',
+    title: 'STATUS',
     intro:
-      'MyHenry is your personalised AI agent trained specifically on your business. It delivers instant answers, insights, and recommendations across all functions, helping teams work smarter and faster.',
+      'HENRY Status gives your team a clear operational view of what is running, what needs attention, and where action is required across your plant.',
     body:
-      'From operations to strategy, MyHenry becomes your intelligent decision-making partner.',
+      'From machines to workflows, Status keeps critical updates visible so teams can respond faster and maintain smoother operations.',
     bullets: [
-      'AI-Powered Assistance: Get instant answers to business queries',
-      'Custom Knowledge Base: Trained on your workflows, data, and processes',
-      'Cross-Functional Support: Covers HR, finance, operations, and more',
-      'Smart Recommendations: Access actionable insights on demand',
-      'Continuous Learning: Improves over time with usage and data',
+      'Live Operational View: See key plant activities in one place',
+      'Equipment Status: Track machine health, uptime, and alerts',
+      'Workflow Visibility: Monitor production flow and process updates',
+      'Issue Detection: Identify delays, faults, or abnormal activity quickly',
+      'Actionable Updates: Help teams respond faster with clear status indicators',
     ],
     benefits: [
-      'Improve operational efficiency',
-      'Reduce downtime and errors',
-      'Make faster, smarter decisions',
-      'Gain full control over business performance',
+      'Improve response time',
+      'Reduce operational delays',
+      'Increase visibility across workflows',
+      'Maintain smoother plant operations',
     ],
-    image: PRODUCT_IMAGES.myhenry,
+    image: PRODUCT_IMAGES.status,
   },
 ]
 
@@ -941,7 +943,7 @@ function SiteFooter() {
           <a href={marketingProductsHashHref('safety')}>HENRY Safety</a>
           <a href={marketingProductsHashHref('security')}>HENRY Security</a>
           <a href={marketingProductsHashHref('systems')}>HENRY Systems</a>
-          <a href={marketingProductsHashHref('myhenry-agent')}>MyHenry AI Agent</a>
+          <a href={marketingProductsHashHref('status')}>HENRY Status</a>
         </div>
 
         <div className="site-footer-column site-footer-contact">
@@ -1756,7 +1758,7 @@ function App() {
     { href: '/products#safety', label: '   ◦ Safety' },
     { href: '/products#security', label: '   ◦ Security' },
     { href: '/products#systems', label: '   ◦ Systems' },
-    { href: '/products#myhenry-agent', label: '• MyHenry' },
+    { href: '/products#status', label: '   ◦ Status' },
     { href: '/case-studies', label: 'CASE STUDIES' },
     ...(SHOW_NAV_PRICING_LINK ? [{ href: '/pricing', label: 'PRICING' }] : []),
     { href: '/#about', label: 'ABOUT' },
@@ -2124,9 +2126,20 @@ function App() {
     )
   }
 
-  if (currentUser && !isOnboardingPage && !isPricingPage && !isProductsPage && !isCaseStudiesPage) {
+  const currentPath =
+    typeof window !== 'undefined'
+      ? window.location.pathname.replace(/\/+$/, '') || '/'
+      : '/'
+
+  const dashboardBase = currentUser ? clientDashboardBasename(currentUser) : ''
+  const isDashboardPage =
+    currentUser &&
+    dashboardBase &&
+    (currentPath === dashboardBase || currentPath.startsWith(`${dashboardBase}/`))
+
+  if (isDashboardPage && !isOnboardingPage && !isPricingPage && !isProductsPage && !isCaseStudiesPage) {
     return (
-      <BrowserRouter basename={clientDashboardBasename(currentUser)}>
+      <BrowserRouter basename={dashboardBase}>
         <div className="page page--client">
           <ClientDashboard key={currentUser.email} user={currentUser} onSignOut={signOut} />
         </div>
