@@ -569,7 +569,7 @@ const products = [
   {
     slug: 'status',
     title: 'STATUS',
-    text: 'Get a clear operational status view of your plant, machines, workflows, and key activities so teams can quickly understand what needs attention.',
+    text: 'Get a clear view of work in process across your plant, projects, and operations. Track what is being built, current completion status, and whether progress is on schedule against the projected completion date.',
     image: PRODUCT_IMAGES.status,
   },
 ]
@@ -645,15 +645,15 @@ const productDetails = [
     slug: 'status',
     title: 'STATUS',
     intro:
-      'HENRY Status gives your team a clear operational view of what is running, what needs attention, and where action is required across your plant.',
+      'HENRY Status gives your team a clear, near real-time view of work in process across your operations, including machines, boats, yachts, houses, buildings, and other active projects.',
     body:
-      'From machines to workflows, Status keeps critical updates visible so teams can respond faster and maintain smoother operations.',
+      'Track what is being built, where each job stands, and how actual progress compares against the projected completion timeline on an hourly or daily basis.',
     bullets: [
-      'Live Operational View: See key plant activities in one place',
-      'Equipment Status: Track machine health, uptime, and alerts',
-      'Workflow Visibility: Monitor production flow and process updates',
-      'Issue Detection: Identify delays, faults, or abnormal activity quickly',
-      'Actionable Updates: Help teams respond faster with clear status indicators',
+      'Work-in-Process View: See active builds, jobs, and project stages in one place',
+      'Progress Tracking: Monitor hourly or daily completion status against planned timelines',
+      'Projected Completion: Compare current progress with expected completion dates',
+      'Status Updates: Help teams identify delays, stay aligned, and keep projects moving forward',
+      'Operational Visibility: Track updates across machines, boats, yachts, houses, buildings, and more',
     ],
     benefits: [
       'Improve response time',
