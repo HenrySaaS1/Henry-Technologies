@@ -23,11 +23,11 @@ import harlandFts7000 from './assets/uploads/harland-fts7000.png'
 import harlandCts1100 from './assets/uploads/harland-cts1100.png'
 // Safety observation thumbnails (user-supplied mock images).
 // Save these five PNGs into frontend/src/assets/uploads with the exact filenames.
-import safetyTripHazard from './assets/uploads/safety-trip-hazard.png'
-import safetyFloorSpill from './assets/uploads/safety-floor-spill.png'
-import safetyGuardMissing from './assets/uploads/safety-guard-missing.png'
-import safetyClearWalkway from './assets/uploads/safety-clear-walkway.png'
-import safetyBlockedExit from './assets/uploads/safety-blocked-exit.png'
+import safety1 from './assets/uploads/BU125-safety-1.jpeg'
+import safety2 from './assets/uploads/BU125-safety-2.jpeg'
+import safety3 from './assets/uploads/BU125-safety-3.jpeg'
+import safetyClearWalkway from './assets/uploads/safety-clear-walkway.jpeg'
+import safetyBlockedExit from './assets/uploads/safety-blocked-exit.jpeg'
 // Security CCTV-style thumbnails (user-supplied mock images).
 // Save the five PNGs into frontend/src/assets/uploads with these exact filenames.
 import secUnauthorized from './assets/uploads/security-unauthorized.png'
@@ -2504,7 +2504,7 @@ const SECURITY_LEADS = [
  * Fixed five-card image strip for Safety observations row — matches Trip Hazard → Floor Spill → Guard Missing → Clear Walkway → Blocked Exit.
  * Uses the five user-supplied safety photos.
  */
-const HMS_DASH_CARD_IMAGES = [safetyTripHazard, safetyFloorSpill, safetyGuardMissing, safetyClearWalkway, safetyBlockedExit]
+const HMS_DASH_CARD_IMAGES = [safety1, safety2, safety3, safetyClearWalkway, safetyBlockedExit] 
 
 /** Fixed CCTV-style thumbnails for security events row (Unauthorized → Vehicle in Zone). */
 const SECURITY_CARD_IMAGES = [secUnauthorized, secAfterHours, secPerimeter, secDoorHeld, secVehicle]

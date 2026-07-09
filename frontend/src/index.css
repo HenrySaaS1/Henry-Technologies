@@ -7802,18 +7802,23 @@ a.btn-dark {
   flex-direction: column;
   min-width: 0;
 }
-.client-hms-dash-obs-imgwrap {
-  position: relative;
-}
 .client-hms-dash-obs-imgwrap--sec .client-hms-dash-obs-img {
   filter: grayscale(1) contrast(1.05);
 }
+
+.client-hms-dash-obs-imgwrap {
+  position: relative;
+  background: #f1f5f9;
+}
+
 .client-hms-dash-obs-img {
   display: block;
   width: 100%;
-  height: 5.5rem;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
+  object-position: center center;
 }
+
 .client-hms-tag {
   position: absolute;
   top: 0.35rem;
