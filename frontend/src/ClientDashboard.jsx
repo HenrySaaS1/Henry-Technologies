@@ -2514,7 +2514,7 @@ const SAFETY_OBS_MOCKUP_ROWS = [
   {
     category: 'Violation',
     catTone: 'bad',
-    title: 'Assembly Area 1',
+    title: 'Rear Aisle',
     where: 'Monday',
     timeLabel: '6:08 AM',
     body: 'Hoses creating a trip hazard; access panel blocked and bucket obstructing the walkway.',
@@ -2526,7 +2526,7 @@ const SAFETY_OBS_MOCKUP_ROWS = [
   {
     category: 'Violation',
     catTone: 'bad',
-    title: 'Coater Line B',
+    title: 'Maintenance Area',
     where: 'Monday',
     timeLabel: '5:52 AM',
     body: 'Equipment and materials stored in the walkway, creating obstructions and reducing safe aisle clearance.',
@@ -2538,7 +2538,7 @@ const SAFETY_OBS_MOCKUP_ROWS = [
   {
     category: 'Violation',
     catTone: 'bad',
-    title: 'Cell 2 Wrap Station',
+    title: 'Main Aisle',
     where: 'Tuesday',
     timeLabel: '5:41 AM',
     body: 'A ladder, desks, and a chair are obstructing or encroaching on the aisle, reducing safe walkway clearance.',
@@ -2550,7 +2550,7 @@ const SAFETY_OBS_MOCKUP_ROWS = [
   {
     category: 'Violation',
     catTone: 'warn',
-    title: 'Main Aisle B',
+    title: 'Work Cell',
     where: 'Sunday',
     timeLabel: '5:35 AM',
     body: 'A ladder is positioned within the marked walkway, obstructing the path and reducing safe aisle clearance.',
@@ -2562,7 +2562,7 @@ const SAFETY_OBS_MOCKUP_ROWS = [
   {
     category: 'Violation',
     catTone: 'warn',
-    title: 'Warehouse East',
+    title: 'Production Area',
     where: 'Tuesday',
     timeLabel: '5:22 AM',
     body: 'A desk and chair are blocking the walkway, while another desk is encroaching on the marked aisle and reducing safe clearance.',
