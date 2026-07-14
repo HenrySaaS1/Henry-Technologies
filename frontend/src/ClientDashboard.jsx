@@ -23,11 +23,11 @@ import harlandFts7000 from './assets/uploads/harland-fts7000.png'
 import harlandCts1100 from './assets/uploads/harland-cts1100.png'
 // Safety observation thumbnails (user-supplied mock images).
 // Save these five PNGs into frontend/src/assets/uploads with the exact filenames.
-import safety1 from './assets/uploads/BU125-safety-1.jpeg'
-import safety2 from './assets/uploads/BU125-safety-2.jpeg'
-import safety3 from './assets/uploads/BU125-safety-3.jpeg'
-import safetyClearWalkway from './assets/uploads/safety-clear-walkway.jpeg'
-import safetyBlockedExit from './assets/uploads/safety-blocked-exit.jpeg'
+import safety1 from './assets/uploads/BU125-safety-1.png'
+import safety2 from './assets/uploads/BU125-safety-2.png'
+import safety3 from './assets/uploads/BU125-safety-3.png'
+import safety4 from './assets/uploads/BU125-safety-4.png'
+import safety5 from './assets/uploads/BU125-safety-5.png'
 // Security CCTV-style thumbnails (user-supplied mock images).
 // Save the five PNGs into frontend/src/assets/uploads with these exact filenames.
 import secUnauthorized from './assets/uploads/security-unauthorized.png'
@@ -2504,7 +2504,7 @@ const SECURITY_LEADS = [
  * Fixed five-card image strip for Safety observations row — matches Trip Hazard → Floor Spill → Guard Missing → Clear Walkway → Blocked Exit.
  * Uses the five user-supplied safety photos.
  */
-const HMS_DASH_CARD_IMAGES = [safety1, safety2, safety3, safetyClearWalkway, safetyBlockedExit] 
+const HMS_DASH_CARD_IMAGES = [safety1, safety2, safety3, safety4, safety5] 
 
 /** Fixed CCTV-style thumbnails for security events row (Unauthorized → Vehicle in Zone). */
 const SECURITY_CARD_IMAGES = [secUnauthorized, secAfterHours, secPerimeter, secDoorHeld, secVehicle]
@@ -2514,46 +2514,46 @@ const SAFETY_OBS_MOCKUP_ROWS = [
   {
     category: 'Violation',
     catTone: 'bad',
-    title: 'Trip Hazard in Aisle',
-    where: 'Assembly Area 1',
+    title: 'Assembly Area 1',
+    where: 'Monday',
     timeLabel: '6:08 AM',
-    body: 'Loose cord across walkway; cord cover staged for install.',
+    body: 'Hoses creating a trip hazard; access panel blocked and bucket obstructing the walkway.',
     risk: 'High Risk',
     riskTone: 'bad',
     status: 'Open',
     stTone: 'bad',
   },
   {
-    category: 'Observation',
-    catTone: 'warn',
-    title: 'Floor Spill',
-    where: 'Coater Line B',
+    category: 'Violation',
+    catTone: 'bad',
+    title: 'Coater Line B',
+    where: 'Monday',
     timeLabel: '5:52 AM',
-    body: 'Small coolant sheen near drain; absorbent applied.',
+    body: 'Equipment and materials stored in the walkway, creating obstructions and reducing safe aisle clearance.',
     risk: 'Medium Risk',
     riskTone: 'warn',
     status: 'In Progress',
     stTone: 'warn',
   },
   {
-    category: 'Observation',
-    catTone: 'warn',
-    title: 'Guard Missing',
-    where: 'Cell 2 wrap station',
+    category: 'Violation',
+    catTone: 'bad',
+    title: 'Cell 2 Wrap Station',
+    where: 'Tuesday',
     timeLabel: '5:41 AM',
-    body: 'Fixed guard panel absent on conveyor pinch point; LOTO applied and parts ordered.',
+    body: 'A ladder, desks, and a chair are obstructing or encroaching on the aisle, reducing safe walkway clearance.',
     risk: 'Medium Risk',
     riskTone: 'warn',
     status: 'In Progress',
     stTone: 'warn',
   },
   {
-    category: 'Safe',
-    catTone: 'good',
-    title: 'Clear Walkway',
-    where: 'Main aisle B',
+    category: 'Violation',
+    catTone: 'warn',
+    title: 'Main Aisle B',
+    where: 'Sunday',
     timeLabel: '5:35 AM',
-    body: 'Aisles clear; floor markings visible; no pallets in egress path.',
+    body: 'A ladder is positioned within the marked walkway, obstructing the path and reducing safe aisle clearance.',
     risk: 'Low Risk',
     riskTone: 'good',
     status: 'Safe',
@@ -2561,13 +2561,13 @@ const SAFETY_OBS_MOCKUP_ROWS = [
   },
   {
     category: 'Violation',
-    catTone: 'bad',
-    title: 'Blocked Exit',
-    where: 'Warehouse east',
+    catTone: 'warn',
+    title: 'Warehouse East',
+    where: 'Tuesday',
     timeLabel: '5:22 AM',
-    body: 'Cartons staged in front of designated egress; crew relocating per permit.',
-    risk: 'High Risk',
-    riskTone: 'bad',
+    body: 'A desk and chair are blocking the walkway, while another desk is encroaching on the marked aisle and reducing safe clearance.',
+    risk: 'Low Risk',
+    riskTone: 'warn',
     status: 'Open',
     stTone: 'bad',
   },
