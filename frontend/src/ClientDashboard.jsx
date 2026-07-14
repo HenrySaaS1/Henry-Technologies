@@ -2526,7 +2526,7 @@ const SAFETY_OBS_MOCKUP_ROWS = [
   {
     category: 'Violation',
     catTone: 'bad',
-    title: 'Maintenance Area',
+    title: 'Shipping Area',
     where: 'Monday',
     timeLabel: '5:52 AM',
     body: 'Equipment and materials stored in the walkway, creating obstructions and reducing safe aisle clearance.',
