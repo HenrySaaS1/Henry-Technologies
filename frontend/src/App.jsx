@@ -28,7 +28,6 @@ import {
   dashboardDemoUser,
   DASHBOARD_DEMO_PRESETS_ORDER,
 } from './dashboard/dashboardDemo.js'
-import heroMainImage from './assets/hero-main.png'
 import heroMainSecondImage from './assets/hero-image-2.jpeg'
 import aiIconImage from './assets/uploads/img-1.png'
 import securityIconImage from './assets/uploads/img-3.png'

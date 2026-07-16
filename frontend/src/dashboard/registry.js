@@ -231,7 +231,6 @@ export function resolveDashboardPresetKey(user) {
   if (typeof company === "string" && company.toLowerCase().includes("loco"))
     return "loco";
   return "";
-  return "";
 }
 
 export function getDashboardContext(presetKey) {
