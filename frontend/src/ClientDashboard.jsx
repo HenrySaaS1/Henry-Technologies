@@ -1,3 +1,11 @@
+import {
+  HARLAND_SAFETY_DATA,
+  HARLAND_SECURITY_DATA,
+  HARLAND_SYSTEMS_DATA,
+} from './dashboard/harland/harlandUnitData.js'
+
+import { HARLAND_SAFETY_IMAGES } from './dashboard/harland/harlandSafetyImages.js'
+
 import { useCallback, useState, useEffect, useId, useRef, useMemo } from 'react'
 import { matchPath, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { titlesForProductIds } from './productCatalog.js'
@@ -22,12 +30,28 @@ import harlandRdx195 from './assets/uploads/harland-rdx-195.png'
 import harlandFts7000 from './assets/uploads/harland-fts7000.png'
 import harlandCts1100 from './assets/uploads/harland-cts1100.png'
 // Safety observation thumbnails (user-supplied mock images).
-// Save these five PNGs into frontend/src/assets/uploads with the exact filenames.
-import safety1 from './assets/uploads/BU125-safety-1.png'
-import safety2 from './assets/uploads/BU125-safety-2.png'
-import safety3 from './assets/uploads/BU125-safety-3.png'
-import safety4 from './assets/uploads/BU125-safety-4.png'
-import safety5 from './assets/uploads/BU125-safety-5.png'
+
+// Harland BU120 Safety images
+// import bu120Safety1 from './assets/uploads/harland/bu120/bu120-safety/bu120-safety-1.png'
+// import bu120Safety2 from './assets/uploads/harland/bu120/bu120-safety/bu120-safety-2.png'
+// import bu120Safety3 from './assets/uploads/harland/bu120/bu120-safety/bu120-safety-3.png'
+// import bu120Safety4 from './assets/uploads/harland/bu120/bu120-safety/bu120-safety-4.png'
+// import bu120Safety5 from './assets/uploads/harland/bu120/bu120-safety/bu120-safety-5.png'
+
+// // Harland BU125 Safety images
+// import bu125Safety1 from './assets/uploads/harland/bu125/bu125-safety/bu125-safety-1.png'
+// import bu125Safety2 from './assets/uploads/harland/bu125/bu125-safety/bu125-safety-2.png'
+// import bu125Safety3 from './assets/uploads/harland/bu125/bu125-safety/bu125-safety-3.png'
+// import bu125Safety4 from './assets/uploads/harland/bu125/bu125-safety/bu125-safety-4.png'
+// import bu125Safety5 from './assets/uploads/harland/bu125/bu125-safety/bu125-safety-5.png'
+
+// // Harland Warehouse Safety images
+// import warehouseSafety1 from './assets/uploads/harland/warehouse/warehouse-safety/warehouse-safety-1.png'
+// import warehouseSafety2 from './assets/uploads/harland/warehouse/warehouse-safety/warehouse-safety-2.png'
+// import warehouseSafety3 from './assets/uploads/harland/warehouse/warehouse-safety/warehouse-safety-3.png'
+// import warehouseSafety4 from './assets/uploads/harland/warehouse/warehouse-safety/warehouse-safety-4.png'
+// import warehouseSafety5 from './assets/uploads/harland/warehouse/warehouse-safety/warehouse-safety-5.png'
+
 // Security CCTV-style thumbnails (user-supplied mock images).
 // Save the five PNGs into frontend/src/assets/uploads with these exact filenames.
 import secUnauthorized from './assets/uploads/security-unauthorized.png'
@@ -353,6 +377,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU125',
+              unitKey: '125',
               description: 'Machines Commercialization',
               manager: 'Alex Anderson',
               assistant: 'Nikolai Zorichev',
@@ -384,6 +409,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU120',
+              unitKey: '120',
               description: 'Machines Commercialization',
               manager: 'Kevin Langeberg',
               assistant: 'Mikhail Shimko',
@@ -413,6 +439,22 @@ const GLOBAL_SITES = [
           machinery: {
             title: 'Warehouse (WH)',
             status: 'running',
+            unitPanel: {
+              unit: 'Warehouse',
+              unitKey: 'warehouse',
+              description: 'Warehouse and Logistics Operations',
+              manager: 'Carlos Mendoza',
+              assistant: 'Emily Carter',
+              activeMachines: '12/14',
+              activeOperators: '24',
+              updatedAt: 'Timestamp',
+              todaysOutput: '624 pallets moved',
+              targetVsActual: '680 vs 624',
+              cycleTime: '7 min',
+              throughput: '168 pallets/hr',
+              focus: { x: 42, y: 45 },
+              powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
+            },
             lines: [
               { k: 'Inbound today', v: '14 trucks · 92 pallets' },
               { k: 'Outbound today', v: '11 trucks · 68 pallets' },
@@ -433,6 +475,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU190',
+              unitKey: '190',
               description: 'Sub-Assembly & Kitting',
               manager: 'Lina Park',
               assistant: 'Tomás Ribeiro',
@@ -464,6 +507,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU180',
+              unitKey: '180',
               description: 'Coating & Curing',
               manager: 'Marcus Reilly',
               assistant: 'Sofía Navarro',
@@ -495,6 +539,7 @@ const GLOBAL_SITES = [
             status: 'alert',
             unitPanel: {
               unit: 'BU140',
+              unitKey: '140',
               description: 'Production',
               manager: 'Ravi Deshpande',
               assistant: 'Tessa Brooks',
@@ -526,6 +571,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU150',
+              unitKey: '150',
               description: 'Final Assembly',
               manager: 'Diego Alvarez',
               assistant: 'Hannah Cole',
@@ -557,6 +603,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU220',
+              unitKey: '220',
               description: 'Quality Lab & Test',
               manager: 'Priya Mehta',
               assistant: 'Marcus Reilly',
@@ -2228,26 +2275,54 @@ const EXACT_JOBS_BY_BU = {
     { description: 'TTS1000', status: 'Moderate' },
     { description: 'CUSTOM', status: 'Stable' },
   ],
+  warehouse: [
+    { description: 'Inbound Receiving', status: 'Stable' },
+    { description: 'Pallet Putaway', status: 'Stable' },
+    { description: 'Inventory Replenishment', status: 'Moderate' },
+    { description: 'Order Picking', status: 'Stable' },
+    { description: 'Outbound Staging', status: 'Critical' },
+    { description: 'Trailer Loading', status: 'Moderate' },
+  ],
+}
+
+function unitKeyFromLabel(unitLabel) {
+  const compact = String(unitLabel || '')
+    .replace(/\s/g, '')
+    .toLowerCase()
+
+  if (compact === 'wh' || compact.includes('warehouse')) {
+    return 'warehouse'
+  }
+
+  const match = compact.match(/(\d{2,})/)
+  return match ? match[1] : ''
 }
 
 function digitsFromUnitLabel(unitLabel) {
-  const compact = String(unitLabel || '').replace(/\s/g, '')
-  const match = compact.match(/(\d{2,})/)
-  return match ? match[1] : '125'
+  const key = unitKeyFromLabel(unitLabel)
+  return /^\d+$/.test(key) ? key : ''
 }
 
 function unitJobsForPanel(unitLabel, count) {
-  const digits = digitsFromUnitLabel(unitLabel)
-  const template = EXACT_JOBS_BY_BU[digits] || EXACT_JOBS_BY_BU['125']
+  const unitKey = unitKeyFromLabel(unitLabel) || '125'
+  const template =
+    EXACT_JOBS_BY_BU[unitKey] ||
+    EXACT_JOBS_BY_BU['125']
+
   const n = Math.max(1, Math.min(12, count))
+
   return Array.from({ length: n }, (_, idx) => {
     const row = template[idx % template.length]
     const jobNum = idx + 1
-    const id = `${digits}-${jobNum}`
+    const id = `${unitKey}-${jobNum}`
     const stats = jobRuntimeStats(id, row.status)
+
     return {
       id,
-      title: `Job ${digits}-${jobNum}`,
+      title:
+        unitKey === 'warehouse'
+          ? `Warehouse Task ${jobNum}`
+          : `Job ${unitKey}-${jobNum}`,
       description: row.description,
       status: row.status,
       machinePhotoSrc: JOB_MACHINE_IMAGES[id] ?? null,
@@ -2509,10 +2584,38 @@ const SECURITY_LEADS = [
 ]
 
 /**
- * Fixed five-card image strip for Safety observations row — matches Trip Hazard → Floor Spill → Guard Missing → Clear Walkway → Blocked Exit.
- * Uses the five user-supplied safety photos.
+ * Safety images assigned to their respective Harland business units.
+ *
+ * The keys correspond to unitKey values:
+ * BU120     = "120"
+ * BU125     = "125"
+ * Warehouse = "warehouse"
  */
-const HMS_DASH_CARD_IMAGES = [safety1, safety2, safety3, safety4, safety5] 
+// const HARLAND_SAFETY_IMAGES = {
+//   '120': [
+//     bu120Safety1,
+//     bu120Safety2,
+//     bu120Safety3,
+//     bu120Safety4,
+//     bu120Safety5,
+//   ],
+
+//   '125': [
+//     bu125Safety1,
+//     bu125Safety2,
+//     bu125Safety3,
+//     bu125Safety4,
+//     bu125Safety5,
+//   ],
+
+//   warehouse: [
+//     warehouseSafety1,
+//     warehouseSafety2,
+//     warehouseSafety3,
+//     warehouseSafety4,
+//     warehouseSafety5,
+//   ],
+// }
 
 /** Fixed CCTV-style thumbnails for security events row (Unauthorized → Vehicle in Zone). */
 const SECURITY_CARD_IMAGES = [secUnauthorized, secAfterHours, secPerimeter, secDoorHeld, secVehicle]
@@ -2644,130 +2747,223 @@ function fmtTrend(arrow, pct, isGood) {
 }
 
 /** Harland-style safety dashboard (BU120 / BU125 + building scope). */
-function safetyDashboardFor(scopeId, unitDigits) {
+function safetyDashboardFor(scopeId, unitKey) {
   const h = hashId(`safety-dash-${scopeId || 'all'}`)
-  const bu = unitDigits === '120' ? 120 : unitDigits === '125' ? 125 : 0
-  const shift = bu === 120 ? 101 : bu === 125 ? 0 : 37
-  const hx = (h + shift) >>> 0
-  const observations = SAFETY_OBS_MOCKUP_ROWS.map((row, i) => ({
-    ...row,
-    id: `so-${i}-${hx}`,
-    img: HMS_DASH_CARD_IMAGES[i],
-  }))
-  const lead = SAFETY_LEADS[hx % SAFETY_LEADS.length]
+  const configured = HARLAND_SAFETY_DATA[unitKey]
 
-  if (bu === 125) {
+  const areas = configured?.areas ?? []
+
+  // const businessUnitSafetyImages =
+  //   HARLAND_SAFETY_IMAGES[unitKey]
+
+  const selectedSafetyImages =
+    HARLAND_SAFETY_IMAGES[unitKey]?.length
+      ? HARLAND_SAFETY_IMAGES[unitKey]
+      : HARLAND_SAFETY_IMAGES['125']
+
+  const observations = SAFETY_OBS_MOCKUP_ROWS.map(
+    (row, index) => ({
+      ...row,
+      id: `so-${unitKey || 'all'}-${index}-${h}`,
+      where: areas[index] ?? row.where,
+      img:
+        selectedSafetyImages[
+        index % selectedSafetyImages.length
+        ],
+    }),
+  )
+
+  if (configured) {
     return {
-      scorePct: 91,
-      scoreWord: 'Excellent',
-      totalObservations: 17,
-      violations: 6,
-      safeConditions: 10,
-      actionsTaken: 4,
-      openActions: 3,
-      areasInspected: 9,
-      areasTotal: 12,
-      trends: {
-        obs: fmtTrend('up', 15, true),
-        viol: fmtTrend('down', 13, false),
-        open: fmtTrend('down', 27, false),
-      },
+      scorePct: configured.scorePct,
+      scoreWord: configured.scoreWord,
+      totalObservations: configured.totalObservations,
+      violations: configured.violations,
+      safeConditions: configured.safeConditions,
+      actionsTaken: configured.actionsTaken,
+      openActions: configured.openActions,
+      areasInspected: configured.areasInspected,
+      areasTotal: configured.areasTotal,
+      lead: configured.lead,
       observations,
-      lead,
+      trends: {
+        obs: fmtTrend(
+          configured.trends.obs.arrow,
+          configured.trends.obs.pct,
+          configured.trends.obs.isGood,
+        ),
+        viol: fmtTrend(
+          configured.trends.viol.arrow,
+          configured.trends.viol.pct,
+          configured.trends.viol.isGood,
+        ),
+        open: fmtTrend(
+          configured.trends.open.arrow,
+          configured.trends.open.pct,
+          configured.trends.open.isGood,
+        ),
+      },
     }
   }
 
-  if (bu === 120) {
-    return {
-      scorePct: 83,
-      scoreWord: 'Good',
-      totalObservations: 18,
-      violations: 6,
-      safeConditions: 12,
-      actionsTaken: 5,
-      openActions: 3,
-      areasInspected: 8,
-      areasTotal: 12,
-      trends: {
-        obs: fmtTrend('up', 12, true),
-        viol: fmtTrend('down', 14, false),
-        open: fmtTrend('down', 25, false),
-      },
-      observations,
-      lead,
-    }
-  }
-
-  const totalObs = 14 + (hx % 9)
-  const violations = 4 + (hx % 5)
-  const safeCond = Math.max(2, totalObs - violations - ((hx >> 3) % 3))
-  const actionsTaken = 3 + ((hx >> 2) % 5)
-  const openActions = 2 + ((hx >> 4) % 4)
+  // Building-level fallback.
+  const totalObservations = 14 + (h % 9)
+  const violations = 4 + (h % 5)
+  const safeConditions = Math.max(
+    2,
+    totalObservations - violations - ((h >> 3) % 3),
+  )
+  const actionsTaken = 3 + ((h >> 2) % 5)
+  const openActions = 2 + ((h >> 4) % 4)
   const areasTotal = 12
-  const areasInspected = 6 + ((hx >> 1) % 5)
-  const scorePct = 78 + (hx % 14)
-  const scoreWord = scorePct >= 90 ? 'Excellent' : scorePct >= 82 ? 'Good' : 'Watch'
+  const areasInspected = 6 + ((h >> 1) % 5)
+  const scorePct = 78 + (h % 14)
 
   return {
     scorePct,
-    scoreWord,
-    totalObservations: totalObs,
+    scoreWord:
+      scorePct >= 90
+        ? 'Excellent'
+        : scorePct >= 82
+          ? 'Good'
+          : 'Watch',
+    totalObservations,
     violations,
-    safeConditions: safeCond,
+    safeConditions,
     actionsTaken,
     openActions,
     areasInspected,
     areasTotal,
-    trends: {
-      obs: fmtTrend('up', 8 + (hx % 8), true),
-      viol: fmtTrend('down', 10 + (hx % 12), false),
-      open: fmtTrend('down', 15 + (hx % 15), false),
-    },
     observations,
-    lead,
+    lead: SAFETY_LEADS[h % SAFETY_LEADS.length],
+    trends: {
+      obs: fmtTrend('up', 8 + (h % 8), true),
+      viol: fmtTrend('down', 10 + (h % 12), false),
+      open: fmtTrend('down', 15 + (h % 15), false),
+    },
   }
 }
 
 /** Harland-style security dashboard (BU120 / BU125 + building scope). */
-function securityDashboardFor(scopeId, unitDigits) {
-  const h = hashId(`sec-dash-${scopeId || 'all'}`)
-  const bu = unitDigits === '120' ? 120 : unitDigits === '125' ? 125 : 0
-  const shift = bu === 120 ? 59 : bu === 125 ? 0 : 23
-  const hx = (h + shift) >>> 0
-  const totalEvents = 11 + (hx % 10)
-  const highSev = Math.min(2, (hx >> 3) % 3)
-  const medSev = 2 + ((hx >> 1) % 4)
-  const lowSev = Math.max(0, totalEvents - highSev - medSev)
-  const openInv = 1 + ((hx >> 3) % 3)
-  const cameraTotal = 48 + (hx % 6)
-  const cameraOnline = Math.max(cameraTotal - 2, cameraTotal - ((hx >> 4) % 3))
-  const cameraPct = Math.round((cameraOnline / cameraTotal) * 100)
-  const scorePct = 88 + (hx % 10)
-  const scoreWord = scorePct >= 91 ? 'Excellent' : scorePct >= 84 ? 'Good' : 'Watch'
-  const events = SECURITY_EVENTS_MOCKUP_ROWS.map((row, i) => ({
+function securityDashboardFor(scopeId, unitKey) {
+  const h = hashId(`security-dash-${scopeId || 'all'}`)
+  const configured = HARLAND_SECURITY_DATA[unitKey]
+
+  const imageOffset = configured?.imageOffset ?? 0
+  const locations = configured?.locations ?? []
+
+  const events = SECURITY_EVENTS_MOCKUP_ROWS.map((row, index) => ({
     ...row,
-    id: `se-${i}-${hx}`,
-    img: SECURITY_CARD_IMAGES[i] || SECURITY_CARD_IMAGES[SECURITY_CARD_IMAGES.length - 1],
+    id: `se-${unitKey || 'all'}-${index}-${h}`,
+    where: locations[index] ?? row.where,
+    img:
+      SECURITY_CARD_IMAGES[
+        (index + imageOffset) % SECURITY_CARD_IMAGES.length
+      ],
   }))
-  const lead = SECURITY_LEADS[hx % SECURITY_LEADS.length]
+
+  if (configured) {
+    const cameraPct = Math.round(
+      (
+        configured.cameraOnline /
+        Math.max(1, configured.cameraTotal)
+      ) * 100,
+    )
+
+    return {
+      scorePct: configured.scorePct,
+      scoreWord: configured.scoreWord,
+      totalEvents: configured.totalEvents,
+      highSev: configured.highSev,
+      medSev: configured.medSev,
+      lowSev: configured.lowSev,
+      openInvestigations: configured.openInvestigations,
+      cameraOnline: configured.cameraOnline,
+      cameraTotal: configured.cameraTotal,
+      cameraPct,
+      events,
+      lead: configured.lead,
+      trends: {
+        events: fmtTrend(
+          'down',
+          8 + (h % 8),
+          true,
+        ),
+        high: fmtTrend(
+          'flat',
+          0,
+          true,
+        ),
+        open: fmtTrend(
+          configured.openInvestigations > 3
+            ? 'up'
+            : 'down',
+          10 + (h % 10),
+          configured.openInvestigations <= 3,
+        ),
+      },
+    }
+  }
+
+  // Building-level fallback.
+  const totalEvents = 11 + (h % 10)
+  const highSev = Math.min(2, (h >> 3) % 3)
+  const medSev = 2 + ((h >> 1) % 4)
+
+  const lowSev = Math.max(
+    0,
+    totalEvents - highSev - medSev,
+  )
+
+  const openInvestigations = 1 + ((h >> 3) % 3)
+  const cameraTotal = 48 + (h % 6)
+
+  const cameraOnline = Math.max(
+    cameraTotal - 2,
+    cameraTotal - ((h >> 4) % 3),
+  )
+
+  const cameraPct = Math.round(
+    (cameraOnline / cameraTotal) * 100,
+  )
+
+  const scorePct = 88 + (h % 10)
+
   return {
     scorePct,
-    scoreWord,
+    scoreWord:
+      scorePct >= 91
+        ? 'Excellent'
+        : scorePct >= 84
+          ? 'Good'
+          : 'Watch',
     totalEvents,
     highSev,
     medSev,
     lowSev,
-    openInvestigations: openInv,
+    openInvestigations,
     cameraOnline,
     cameraTotal,
     cameraPct,
-    trends: {
-      events: fmtTrend('down', 8 + (hx % 12), true),
-      high: fmtTrend('flat', 0, true),
-      inv: fmtTrend('down', 20 + (hx % 20), true),
-    },
     events,
-    lead,
+    lead: SECURITY_LEADS[h % SECURITY_LEADS.length],
+    trends: {
+      events: fmtTrend(
+        'down',
+        8 + (h % 12),
+        true,
+      ),
+      high: fmtTrend(
+        'flat',
+        0,
+        true,
+      ),
+      open: fmtTrend(
+        'down',
+        10 + (h % 10),
+        true,
+      ),
+    },
   }
 }
 
@@ -2833,15 +3029,33 @@ function HmsDashTimeRange({ value, onChange, variant }) {
   )
 }
 
-function SafetyPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unitView, onUnitViewChange }) {
-  const ud = unitDigits || ''
+function SafetyPanel({
+  scopeId,
+  scopeName,
+  localLine,
+  unitDigits,
+  unitKey,
+  unitCode,
+  unitView,
+  onUnitViewChange,
+}) {
+  const resolvedUnitKey = unitKey || unitDigits || ''
+  const isUnit = Boolean(resolvedUnitKey)
+
   const [timeRange, setTimeRange] = useState('daily')
-  const data = useMemo(() => safetyDashboardFor(scopeId, ud), [scopeId, ud])
-  const areasPct = Math.round((data.areasInspected / Math.max(1, data.areasTotal)) * 100)
+
+  const data = useMemo(
+    () => safetyDashboardFor(scopeId, resolvedUnitKey),
+    [scopeId, resolvedUnitKey],
+  )
+
+  const areasPct = Math.round(
+    (data.areasInspected / Math.max(1, data.areasTotal)) * 100,
+  )
 
   const inner = (
-    <div className={`client-hms-dash${unitDigits ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} safety dashboard`}>
-      {!unitDigits ? (
+    <div className={`client-hms-dash${isUnit ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} safety dashboard`}>
+      {!isUnit ? (
         <header className="client-hms-dash-top client-hms-dash-top--safety">
           <div className="client-hms-dash-top-left">
             <ShieldPlusDashIcon />
@@ -2924,7 +3138,7 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unit
     </div>
   )
 
-  if (unitDigits) {
+  if (isUnit) {
     return (
       <UnitHarlandPanelShell
         unitDigits={unitDigits}
@@ -2933,7 +3147,7 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unit
         onTimeRangeChange={setTimeRange}
         unitView={unitView}
         onUnitViewChange={onUnitViewChange}
-        ariaLabel={`BU ${unitDigits} safety`}
+        ariaLabel={`${unitCode || resolvedUnitKey} safety`}
       >
         <div className="client-hms-dash-wrap client-hms-dash-wrap--unit">{inner}</div>
       </UnitHarlandPanelShell>
@@ -2947,20 +3161,42 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unit
   )
 }
 
-function SecurityPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unitView, onUnitViewChange }) {
-  const ud = unitDigits || ''
+function SecurityPanel({
+  scopeId,
+  scopeName,
+  localLine,
+  unitDigits,
+  unitKey,
+  unitCode,
+  unitView,
+  onUnitViewChange,
+}) {
+  const resolvedUnitKey = unitKey || unitDigits || ''
+  const isUnit = Boolean(resolvedUnitKey)
+
   const [timeRange, setTimeRange] = useState('daily')
-  const data = useMemo(() => securityDashboardFor(scopeId, ud), [scopeId, ud])
+
+  const data = useMemo(
+    () => securityDashboardFor(scopeId, resolvedUnitKey),
+    [scopeId, resolvedUnitKey],
+  )
 
   const inner = (
-    <div className={`client-hms-dash${unitDigits ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} security dashboard`}>
-      {!unitDigits ? (
+    <div
+      className={`client-hms-dash${isUnit ? ' client-hms-dash--in-unit' : ''}`}
+      aria-label={`${scopeName} security dashboard`}
+    >
+      {!isUnit ? (
         <header className="client-hms-dash-top client-hms-dash-top--security">
           <div className="client-hms-dash-top-left">
             <ShieldIcon />
             <span className="client-hms-dash-title">Security Dashboard</span>
           </div>
-          <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="security" />
+          <HmsDashTimeRange
+            value={timeRange}
+            onChange={setTimeRange}
+            variant="security"
+          />
         </header>
       ) : null}
 
@@ -2976,51 +3212,86 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, un
             sub={data.scoreWord}
           />
         </div>
+
         <div className="client-hms-dash-kpi">
           <p className="client-hms-dash-kpi-value">{data.totalEvents}</p>
           <p className="client-hms-dash-kpi-label">Total Events</p>
           <p className="client-hms-dash-kpi-sub">Today</p>
-          <p className={`client-hms-dash-kpi-trend ${data.trends.events.cls}`}>{data.trends.events.text}</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.events.cls}`}>
+            {data.trends.events.text}
+          </p>
         </div>
+
         <div className="client-hms-dash-kpi">
           <p className="client-hms-dash-kpi-value">{data.highSev}</p>
           <p className="client-hms-dash-kpi-label">High Severity</p>
           <p className="client-hms-dash-kpi-sub">Today</p>
-          <p className={`client-hms-dash-kpi-trend ${data.trends.high.cls}`}>{data.trends.high.text}</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.high.cls}`}>
+            {data.trends.high.text}
+          </p>
         </div>
+
         <div className="client-hms-dash-kpi">
           <p className="client-hms-dash-kpi-value">{data.openInvestigations}</p>
           <p className="client-hms-dash-kpi-label">Open Investigations</p>
           <p className="client-hms-dash-kpi-sub">Requires Attention</p>
-          <p className={`client-hms-dash-kpi-trend ${data.trends.inv.cls}`}>{data.trends.inv.text}</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.open.cls}`}>
+            {data.trends.open.text}
+          </p>
         </div>
+
         <div className="client-hms-dash-kpi">
-          <p className="client-hms-dash-kpi-value">{`${data.cameraOnline} / ${data.cameraTotal}`}</p>
+          <p className="client-hms-dash-kpi-value">
+            {`${data.cameraOnline} / ${data.cameraTotal}`}
+          </p>
           <p className="client-hms-dash-kpi-label">Cameras Online</p>
           <p className="client-hms-dash-kpi-sub">Cameras</p>
-          <p className="client-hms-dash-kpi-trend client-hms-trend--neutral">{`${data.cameraPct}% Online`}</p>
+          <p className="client-hms-dash-kpi-trend client-hms-trend--neutral">
+            {`${data.cameraPct}% Online`}
+          </p>
         </div>
       </div>
 
       <section className="client-hms-dash-section">
         <div className="client-hms-dash-section-head">
-          <h3 className="client-hms-dash-section-title">Latest Security Events (Today)</h3>
+          <h3 className="client-hms-dash-section-title">
+            Latest Security Events (Today)
+          </h3>
           <button type="button" className="client-hms-dash-viewall">
             View All
           </button>
         </div>
+
         <div className="client-hms-dash-card-row">
-          {data.events.map((ev) => (
-            <article key={ev.id} className="client-hms-dash-obs-card client-hms-dash-obs-card--sec">
+          {data.events.map((event) => (
+            <article
+              key={event.id}
+              className="client-hms-dash-obs-card client-hms-dash-obs-card--sec"
+            >
               <div className="client-hms-dash-obs-imgwrap client-hms-dash-obs-imgwrap--sec">
-                <img src={ev.img} alt="" className="client-hms-dash-obs-img" loading="lazy" decoding="async" />
-                <span className={`client-hms-tag client-hms-tag--${ev.sevTone}`}>{ev.severity}</span>
+                <img
+                  src={event.img}
+                  alt=""
+                  className="client-hms-dash-obs-img"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span className={`client-hms-tag client-hms-tag--${event.sevTone}`}>
+                  {event.severity}
+                </span>
               </div>
+
               <div className="client-hms-dash-obs-body">
-                <h4 className="client-hms-dash-obs-title">{ev.title}</h4>
-                <p className="client-hms-dash-obs-meta">{`${ev.where}  ${ev.timeLabel}`}</p>
-                <p className="client-hms-dash-obs-desc">{ev.body}</p>
-                <p className={`client-hms-dash-obs-status client-hms-dash-obs-status--${ev.stTone}`}>{`Status: ${ev.status}`}</p>
+                <h4 className="client-hms-dash-obs-title">{event.title}</h4>
+                <p className="client-hms-dash-obs-meta">
+                  {`${event.where}  ${event.timeLabel}`}
+                </p>
+                <p className="client-hms-dash-obs-desc">{event.body}</p>
+                <p
+                  className={`client-hms-dash-obs-status client-hms-dash-obs-status--${event.stTone}`}
+                >
+                  {`Status: ${event.status}`}
+                </p>
               </div>
             </article>
           ))}
@@ -3036,7 +3307,7 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, un
     </div>
   )
 
-  if (unitDigits) {
+  if (isUnit) {
     return (
       <UnitHarlandPanelShell
         unitDigits={unitDigits}
@@ -3045,9 +3316,11 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, un
         onTimeRangeChange={setTimeRange}
         unitView={unitView}
         onUnitViewChange={onUnitViewChange}
-        ariaLabel={`BU ${unitDigits} security`}
+        ariaLabel={`${unitCode || resolvedUnitKey} security`}
       >
-        <div className="client-hms-dash-wrap client-hms-dash-wrap--unit">{inner}</div>
+        <div className="client-hms-dash-wrap client-hms-dash-wrap--unit">
+          {inner}
+        </div>
       </UnitHarlandPanelShell>
     )
   }
@@ -3059,12 +3332,55 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, un
   )
 }
 
-function UnitSystemsPanel({ unitPanel, unitView, onUnitViewChange }) {
+function UnitSystemsPanel({
+  unitPanel,
+  unitKey,
+  unitView,
+  onUnitViewChange,
+}) {
   const embed = unitPanel?.powerBiEmbed
-  const reportUrl = typeof embed === 'string' ? embed : embed?.reportUrl
-  const unitLabel = unitPanel?.unit ? String(unitPanel.unit).replace(/^BU/i, 'BU ') : 'BU'
-  const unitDigits = digitsFromUnitLabel(String(unitPanel?.unit || '').replace(/^BU\s*/i, ''))
+  const reportUrl =
+    typeof embed === 'string'
+      ? embed
+      : embed?.reportUrl
+
+  const unitLabel = unitPanel?.unit
+    ? String(unitPanel.unit).replace(/^BU/i, 'BU ')
+    : 'Business Unit'
+
+  const unitDigits = digitsFromUnitLabel(
+    String(unitPanel?.unit || ''),
+  )
+
+  const systemsData =
+    HARLAND_SYSTEMS_DATA[unitKey] || {
+      heading: `Systems — ${unitLabel}`,
+      metrics: [
+        {
+          label: 'Active Machines',
+          value: unitPanel?.activeMachines || '—',
+          hint: 'Current availability',
+        },
+        {
+          label: 'Throughput',
+          value: unitPanel?.throughput || '—',
+          hint: 'Current rate',
+        },
+        {
+          label: 'Cycle Time',
+          value: unitPanel?.cycleTime || '—',
+          hint: 'Current average',
+        },
+        {
+          label: 'Output',
+          value: unitPanel?.todaysOutput || '—',
+          hint: 'Today',
+        },
+      ],
+    }
+
   const [timeRange, setTimeRange] = useState('daily')
+
   return (
     <UnitHarlandPanelShell
       unitDigits={unitDigits}
@@ -3075,7 +3391,29 @@ function UnitSystemsPanel({ unitPanel, unitView, onUnitViewChange }) {
       onUnitViewChange={onUnitViewChange}
       ariaLabel={`${unitLabel} systems`}
     >
-      <FactoryPulseChartsPanel reportUrl={reportUrl} heading={`Systems — ${unitLabel}`} />
+      <div className="client-unit-systems-summary">
+        {systemsData.metrics.map((metric) => (
+          <article
+            key={metric.label}
+            className="client-unit-systems-card"
+          >
+            <p className="client-unit-systems-label">
+              {metric.label}
+            </p>
+            <strong className="client-unit-systems-value">
+              {metric.value}
+            </strong>
+            <p className="client-unit-systems-hint">
+              {metric.hint}
+            </p>
+          </article>
+        ))}
+      </div>
+
+      <FactoryPulseChartsPanel
+        reportUrl={reportUrl}
+        heading={systemsData.heading}
+      />
     </UnitHarlandPanelShell>
   )
 }
@@ -3087,6 +3425,7 @@ function UnitOverviewSide({
   localLine,
   onClose,
   digits,
+  unitKey,
   scopeId,
   unitView = 'jobs',
   onUnitViewChange,
@@ -3137,8 +3476,15 @@ function UnitOverviewSide({
 
   const showStatusSide = !onUnitViewChange || unitView === 'jobs'
   const showSystemsSide = onUnitViewChange && unitView === 'systems'
-  const dashSafety = onUnitViewChange && scopeId ? safetyDashboardFor(scopeId, digits || '') : null
-  const dashSec = onUnitViewChange && scopeId ? securityDashboardFor(scopeId, digits || '') : null
+  const resolvedUnitKey = unitKey || digits || ''
+  const dashSafety =
+    onUnitViewChange && scopeId
+      ? safetyDashboardFor(scopeId, resolvedUnitKey)
+      : null
+  const dashSec =
+    onUnitViewChange && scopeId
+      ? securityDashboardFor(scopeId, resolvedUnitKey)
+      : null
 
   return (
     <aside className="client-bu-side client-bu-side--v2">
@@ -3465,7 +3811,7 @@ function UnitJobsPanel({ user, unitLabel, unitCode, unitView, onUnitViewChange }
       onTimeRangeChange={setJobTimeRange}
       unitView={unitView}
       onUnitViewChange={onUnitViewChange}
-      ariaLabel={`BU ${digits} jobs`}
+      ariaLabel={`${unitCode || unitLabel} jobs`}
     >
       <div className="client-unit-jobs-panel">
         <div className="client-unit-jobs-grid">
@@ -3603,11 +3949,25 @@ function BuildingSitePageView({
         {activeZone ? (
           activeZone.machinery.unitPanel ? (
             (() => {
-              const unitCode = activeZone.machinery.unitPanel.unit
-              const unitDigits = digitsFromUnitLabel(unitCode.replace(/^BU\s*/i, ''))
-              const unitCards = unitJobsForPanel(unitCode.replace(/^BU\s*/i, ''), locationDrivenCardCount(user))
-              const scopeId = `${site.id}-bu-${unitDigits}`
-              const scopeName = `BU ${unitDigits} · ${b.name}`
+              const unitPanel = activeZone.machinery.unitPanel
+              const unitCode = unitPanel.unit
+
+              const unitKey =
+                unitPanel.unitKey ||
+                unitKeyFromLabel(unitCode)
+
+              const unitDigits =
+                /^\d+$/.test(unitKey) ? unitKey : ''
+              const unitCards = unitJobsForPanel(
+                unitKey,
+                locationDrivenCardCount(user),
+              )
+              const scopeId = `${site.id}-unit-${unitKey}`
+
+              const scopeName =
+                unitKey === 'warehouse'
+                  ? `Warehouse · ${b.name}`
+                  : `BU ${unitDigits} · ${b.name}`
               const view =
                 unitView === 'safety' || unitView === 'security' || unitView === 'systems'
                   ? unitView
@@ -3616,11 +3976,12 @@ function BuildingSitePageView({
               return (
                 <div className="client-bu-view">
                   <UnitOverviewSide
-                    unitPanel={activeZone.machinery.unitPanel}
+                    unitPanel={unitPanel}
                     statusLabel={activeZone.machinery.status}
                     cards={unitCards}
                     localLine={localLine}
                     digits={unitDigits}
+                    unitKey={unitKey}
                     scopeId={scopeId}
                     unitView={view}
                     onUnitViewChange={handleView}
@@ -3640,6 +4001,7 @@ function BuildingSitePageView({
                         scopeName={scopeName}
                         localLine={localLine}
                         unitDigits={unitDigits}
+                        unitKey={unitKey}
                         unitCode={unitCode}
                         unitView={view}
                         onUnitViewChange={handleView}
@@ -3650,20 +4012,22 @@ function BuildingSitePageView({
                         scopeName={scopeName}
                         localLine={localLine}
                         unitDigits={unitDigits}
+                        unitKey={unitKey}
                         unitCode={unitCode}
                         unitView={view}
                         onUnitViewChange={handleView}
                       />
                     ) : view === 'systems' ? (
                       <UnitSystemsPanel
-                        unitPanel={activeZone.machinery.unitPanel}
+                        unitPanel={unitPanel}
+                        unitKey={unitKey}
                         unitView={view}
                         onUnitViewChange={handleView}
                       />
                     ) : (
                       <UnitJobsPanel
                         user={user}
-                        unitLabel={unitCode.replace(/^BU\s*/i, '')}
+                        unitLabel={unitKey}
                         unitCode={unitCode}
                         unitView={view}
                         onUnitViewChange={handleView}
@@ -3791,17 +4155,10 @@ function BuildingSiteRouteShell({
   const [buildingPanelTab, setBuildingPanelTab] = useState('safety')
   const [unitView, setUnitView] = useState('safety')
 
-  const handleSelectZone = useCallback(
-    (nextZoneId) => {
-      setUnitView('safety')
-      onSelectZone(nextZoneId)
-    },
-    [onSelectZone],
-  )
-
-  useEffect(() => {
+  const handleSelectZone = (nextZoneId) => {
     setUnitView('safety')
-  }, [zoneId])
+    onSelectZone(nextZoneId)
+  }
 
   useEffect(() => {
     const onKey = (event) => {
@@ -3810,7 +4167,8 @@ function BuildingSiteRouteShell({
       event.preventDefault()
 
       if (zoneId) {
-        handleSelectZone(null)
+        setUnitView('safety')
+        onSelectZone(null)
       } else {
         onClose()
       }
@@ -3821,7 +4179,7 @@ function BuildingSiteRouteShell({
     return () => {
       document.removeEventListener('keydown', onKey)
     }
-  }, [zoneId, handleSelectZone, onClose])
+  }, [zoneId, onSelectZone, onClose])
 
   return (
     <BuildingSitePageView
@@ -4659,32 +5017,32 @@ export default function ClientDashboard({ user, onSignOut }) {
       : '/'
 
   const buildingUnitRouteMatch =
-  matchPath(
-    { path: '/building/:siteId/:unitSlug', end: true },
-    pathnameForMatch,
-  ) ??
-  matchPath(
-    { path: 'building/:siteId/:unitSlug', end: true },
-    pathnameForMatch,
-  )
+    matchPath(
+      { path: '/building/:siteId/:unitSlug', end: true },
+      pathnameForMatch,
+    ) ??
+    matchPath(
+      { path: 'building/:siteId/:unitSlug', end: true },
+      pathnameForMatch,
+    )
 
-const buildingRouteMatch =
-  matchPath(
-    { path: '/building/:siteId', end: true },
-    pathnameForMatch,
-  ) ??
-  matchPath(
-    { path: 'building/:siteId', end: true },
-    pathnameForMatch,
-  )
+  const buildingRouteMatch =
+    matchPath(
+      { path: '/building/:siteId', end: true },
+      pathnameForMatch,
+    ) ??
+    matchPath(
+      { path: 'building/:siteId', end: true },
+      pathnameForMatch,
+    )
 
-const routeBuildingSiteId =
-  buildingUnitRouteMatch?.params?.siteId ??
-  buildingRouteMatch?.params?.siteId ??
-  null
+  const routeBuildingSiteId =
+    buildingUnitRouteMatch?.params?.siteId ??
+    buildingRouteMatch?.params?.siteId ??
+    null
 
-const routeBuildingUnitSlug =
-  buildingUnitRouteMatch?.params?.unitSlug ?? null
+  const routeBuildingUnitSlug =
+    buildingUnitRouteMatch?.params?.unitSlug ?? null
 
   const routeAvioraPropertyId =
     matchPath({ path: '/property/:propertyId', end: true }, pathnameForMatch)?.params?.propertyId ??
@@ -4695,39 +5053,37 @@ const routeBuildingUnitSlug =
     routeBuildingSiteId != null ? workspaceSites.find((s) => s.id === routeBuildingSiteId) ?? null : null
 
   const routeBuildingZone =
-  routeBuildingUnitSlug && buildingSiteOnRoute?.building
-    ? buildingSiteOnRoute.building.zones.find(
+    routeBuildingUnitSlug && buildingSiteOnRoute?.building
+      ? buildingSiteOnRoute.building.zones.find(
         (zone) => zone.slug === routeBuildingUnitSlug,
       ) ?? null
-    : null
+      : null
 
-const routeBuildingZoneId = routeBuildingZone?.id ?? null
+  const routeBuildingZoneId = routeBuildingZone?.id ?? null
 
   const buildingRouteRequested = Boolean(routeBuildingSiteId)
 
-const invalidBuildingUnitRoute = Boolean(
-  routeBuildingUnitSlug && !routeBuildingZone,
-)
+  const invalidBuildingUnitRoute = Boolean(
+    routeBuildingUnitSlug && !routeBuildingZone,
+  )
 
-const invalidBuildingRoute =
-  buildingRouteRequested &&
-  (!buildingSiteOnRoute?.building || invalidBuildingUnitRoute)
+  const invalidBuildingRoute =
+    buildingRouteRequested &&
+    (!buildingSiteOnRoute?.building || invalidBuildingUnitRoute)
 
-const buildingPageActive = Boolean(
-  buildingRouteRequested && buildingSiteOnRoute?.building,
-)
+  const buildingPageActive = Boolean(
+    buildingRouteRequested && buildingSiteOnRoute?.building,
+  )
 
   const openBuilding = (site) => {
     navigate(`/building/${encodeURIComponent(site.id)}`)
   }
 
-  const selectBuildingZone = useCallback(
-  (zoneId) => {
+  const selectBuildingZone = (zoneId) => {
     if (!buildingSiteOnRoute?.building) return
 
     const sitePath = encodeURIComponent(buildingSiteOnRoute.id)
 
-    // Return from the BU dashboard to the building floor plan.
     if (!zoneId) {
       navigate(`/building/${sitePath}`)
       return
@@ -4742,9 +5098,7 @@ const buildingPageActive = Boolean(
     navigate(
       `/building/${sitePath}/${encodeURIComponent(selectedZone.slug)}`,
     )
-  },
-  [buildingSiteOnRoute, navigate],
-)
+  }
 
   const closeBuilding = useCallback(() => {
     navigate('/')
@@ -5185,14 +5539,14 @@ const buildingPageActive = Boolean(
             <Navigate to="/" replace />
           ) : buildingPageActive ? (
             <BuildingSiteRouteShell
-  key={`${routeBuildingSiteId}:${routeBuildingUnitSlug || 'floor'}`}
-  site={buildingSiteOnRoute}
-  zoneId={routeBuildingZoneId}
-  onSelectZone={selectBuildingZone}
-  now={nowTick}
-  onClose={closeBuilding}
-  user={user}
-/>
+              key={`${routeBuildingSiteId}:${routeBuildingUnitSlug || 'floor'}`}
+              site={buildingSiteOnRoute}
+              zoneId={routeBuildingZoneId}
+              onSelectZone={selectBuildingZone}
+              now={nowTick}
+              onClose={closeBuilding}
+              user={user}
+            />
           ) : avioraPropertyPageActive ? (
             <AvioraPropertyDetailPage
               key={routeAvioraPropertyId}

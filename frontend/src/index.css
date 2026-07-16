@@ -16408,3 +16408,55 @@ a.btn-dark {
 .aviora-port-completion-caption--bad {
   color: #dc2626 !important;
 }
+
+.client-unit-systems-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 0.9rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #dbe3ef;
+}
+
+.client-unit-systems-card {
+  min-width: 0;
+  padding: 0.85rem;
+  background: #ffffff;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.client-unit-systems-label {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.client-unit-systems-value {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 1.3rem;
+  color: #0f172a;
+}
+
+.client-unit-systems-hint {
+  margin: 0.3rem 0 0;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+@media (max-width: 900px) {
+  .client-unit-systems-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .client-unit-systems-summary {
+    grid-template-columns: 1fr;
+  }
+}
