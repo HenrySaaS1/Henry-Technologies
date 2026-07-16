@@ -345,6 +345,7 @@ const GLOBAL_SITES = [
       zones: [
         {
           id: 'us-bu-125',
+          slug: 'bu125',
           label: '125',
           pct: { left: 15, top: 21, width: 7.8, height: 19 },
           machinery: {
@@ -375,6 +376,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-120',
+          slug: 'bu120',
           label: '120',
           pct: { left: 23.2, top: 21, width: 7.2, height: 19 },
           machinery: {
@@ -405,6 +407,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-wh',
+          slug: 'warehouse',
           label: 'WH',
           pct: { left: 30.8, top: 21, width: 12.6, height: 19 },
           machinery: {
@@ -422,6 +425,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-190',
+          slug: 'bu190',
           label: '190',
           pct: { left: 43.8, top: 21, width: 7.4, height: 19 },
           machinery: {
@@ -452,6 +456,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-180',
+          slug: 'bu180',
           label: '180',
           pct: { left: 62, top: 21, width: 7.2, height: 19 },
           machinery: {
@@ -482,6 +487,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-140',
+          slug: 'bu140',
           label: '140',
           pct: { left: 73, top: 21, width: 6.8, height: 19 },
           machinery: {
@@ -512,6 +518,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-150',
+          slug: 'bu150',
           label: '150',
           pct: { left: 80.4, top: 21, width: 7, height: 19 },
           machinery: {
@@ -542,6 +549,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-220',
+          slug: 'bu220',
           label: '220',
           pct: { left: 88, top: 21, width: 8.5, height: 19 },
           machinery: {
@@ -3772,31 +3780,53 @@ function BuildingSitePageView({
   )
 }
 
-function BuildingSiteRouteShell({ site, now, onClose, user }) {
-  const [buildingZoneId, setBuildingZoneId] = useState(null)
+function BuildingSiteRouteShell({
+  site,
+  now,
+  onClose,
+  user,
+  zoneId,
+  onSelectZone,
+}) {
   const [buildingPanelTab, setBuildingPanelTab] = useState('safety')
   const [unitView, setUnitView] = useState('safety')
 
-  const handleSelectZone = useCallback((next) => {
-    setBuildingZoneId(next)
-    setUnitView('safety')
-  }, [])
+  const handleSelectZone = useCallback(
+    (nextZoneId) => {
+      setUnitView('safety')
+      onSelectZone(nextZoneId)
+    },
+    [onSelectZone],
+  )
 
   useEffect(() => {
-    const onKey = (e) => {
-      if (e.key !== 'Escape') return
-      e.preventDefault()
-      if (buildingZoneId) handleSelectZone(null)
-      else onClose()
+    setUnitView('safety')
+  }, [zoneId])
+
+  useEffect(() => {
+    const onKey = (event) => {
+      if (event.key !== 'Escape') return
+
+      event.preventDefault()
+
+      if (zoneId) {
+        handleSelectZone(null)
+      } else {
+        onClose()
+      }
     }
+
     document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [buildingZoneId, handleSelectZone, onClose])
+
+    return () => {
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [zoneId, handleSelectZone, onClose])
 
   return (
     <BuildingSitePageView
       site={site}
-      zoneId={buildingZoneId}
+      zoneId={zoneId}
       panelTab={buildingPanelTab}
       now={now}
       onClose={onClose}
@@ -4628,10 +4658,33 @@ export default function ClientDashboard({ user, onSignOut }) {
       ? location.pathname.replace(/\/+$/, '') || '/'
       : '/'
 
-  const routeBuildingSiteId =
-    matchPath({ path: '/building/:siteId', end: true }, pathnameForMatch)?.params?.siteId ??
-    matchPath({ path: 'building/:siteId', end: true }, pathnameForMatch)?.params?.siteId ??
-    null
+  const buildingUnitRouteMatch =
+  matchPath(
+    { path: '/building/:siteId/:unitSlug', end: true },
+    pathnameForMatch,
+  ) ??
+  matchPath(
+    { path: 'building/:siteId/:unitSlug', end: true },
+    pathnameForMatch,
+  )
+
+const buildingRouteMatch =
+  matchPath(
+    { path: '/building/:siteId', end: true },
+    pathnameForMatch,
+  ) ??
+  matchPath(
+    { path: 'building/:siteId', end: true },
+    pathnameForMatch,
+  )
+
+const routeBuildingSiteId =
+  buildingUnitRouteMatch?.params?.siteId ??
+  buildingRouteMatch?.params?.siteId ??
+  null
+
+const routeBuildingUnitSlug =
+  buildingUnitRouteMatch?.params?.unitSlug ?? null
 
   const routeAvioraPropertyId =
     matchPath({ path: '/property/:propertyId', end: true }, pathnameForMatch)?.params?.propertyId ??
@@ -4641,13 +4694,57 @@ export default function ClientDashboard({ user, onSignOut }) {
   const buildingSiteOnRoute =
     routeBuildingSiteId != null ? workspaceSites.find((s) => s.id === routeBuildingSiteId) ?? null : null
 
+  const routeBuildingZone =
+  routeBuildingUnitSlug && buildingSiteOnRoute?.building
+    ? buildingSiteOnRoute.building.zones.find(
+        (zone) => zone.slug === routeBuildingUnitSlug,
+      ) ?? null
+    : null
+
+const routeBuildingZoneId = routeBuildingZone?.id ?? null
+
   const buildingRouteRequested = Boolean(routeBuildingSiteId)
-  const invalidBuildingRoute = buildingRouteRequested && !buildingSiteOnRoute?.building
-  const buildingPageActive = Boolean(buildingRouteRequested && buildingSiteOnRoute?.building)
+
+const invalidBuildingUnitRoute = Boolean(
+  routeBuildingUnitSlug && !routeBuildingZone,
+)
+
+const invalidBuildingRoute =
+  buildingRouteRequested &&
+  (!buildingSiteOnRoute?.building || invalidBuildingUnitRoute)
+
+const buildingPageActive = Boolean(
+  buildingRouteRequested && buildingSiteOnRoute?.building,
+)
 
   const openBuilding = (site) => {
     navigate(`/building/${encodeURIComponent(site.id)}`)
   }
+
+  const selectBuildingZone = useCallback(
+  (zoneId) => {
+    if (!buildingSiteOnRoute?.building) return
+
+    const sitePath = encodeURIComponent(buildingSiteOnRoute.id)
+
+    // Return from the BU dashboard to the building floor plan.
+    if (!zoneId) {
+      navigate(`/building/${sitePath}`)
+      return
+    }
+
+    const selectedZone = buildingSiteOnRoute.building.zones.find(
+      (zone) => zone.id === zoneId,
+    )
+
+    if (!selectedZone?.slug) return
+
+    navigate(
+      `/building/${sitePath}/${encodeURIComponent(selectedZone.slug)}`,
+    )
+  },
+  [buildingSiteOnRoute, navigate],
+)
 
   const closeBuilding = useCallback(() => {
     navigate('/')
@@ -5088,12 +5185,14 @@ export default function ClientDashboard({ user, onSignOut }) {
             <Navigate to="/" replace />
           ) : buildingPageActive ? (
             <BuildingSiteRouteShell
-              key={`${routeBuildingSiteId}:${location.key}`}
-              site={buildingSiteOnRoute}
-              now={nowTick}
-              onClose={closeBuilding}
-              user={user}
-            />
+  key={`${routeBuildingSiteId}:${routeBuildingUnitSlug || 'floor'}`}
+  site={buildingSiteOnRoute}
+  zoneId={routeBuildingZoneId}
+  onSelectZone={selectBuildingZone}
+  now={nowTick}
+  onClose={closeBuilding}
+  user={user}
+/>
           ) : avioraPropertyPageActive ? (
             <AvioraPropertyDetailPage
               key={routeAvioraPropertyId}
