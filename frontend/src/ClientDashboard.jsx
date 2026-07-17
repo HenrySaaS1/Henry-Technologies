@@ -2623,26 +2623,26 @@ const SECURITY_CARD_IMAGES = [secUnauthorized, secAfterHours, secPerimeter, secD
 /** Safety observation row copy aligned to reference “Safety Observations (Today)” cards. */
 const SAFETY_OBS_MOCKUP_ROWS = [
   {
-    category: 'Violation',
+    category: '',
     catTone: 'bad',
     title: 'Rear Aisle',
     where: 'Monday',
     timeLabel: '6:08 AM',
-    body: 'Hoses creating a trip hazard; access panel blocked and bucket obstructing the walkway.',
-    risk: 'High Risk',
-    riskTone: 'bad',
+    body: 'Aisleway is clear and free of obstructions, providing safe and unrestricted passage through the area.',
+    risk: 'Medium Risk',
+    riskTone: 'good',
     status: 'Open',
-    stTone: 'bad',
+    stTone: 'good',
   },
   {
     category: 'Violation',
     catTone: 'bad',
-    title: 'Shipping Area',
+    title: 'Main Aisle',
     where: 'Monday',
     timeLabel: '5:52 AM',
-    body: 'Equipment and materials stored in the walkway, creating obstructions and reducing safe aisle clearance.',
-    risk: 'Medium Risk',
-    riskTone: 'warn',
+    body: 'Shelving cart, fan, floor blower, copier, and printer obstructing the designated aisle, reducing safe clearance and creating trip hazards.',
+    risk: 'High Risk',
+    riskTone: 'bad',
     status: 'In Progress',
     stTone: 'warn',
   },
@@ -2652,7 +2652,7 @@ const SAFETY_OBS_MOCKUP_ROWS = [
     title: 'Main Aisle',
     where: 'Tuesday',
     timeLabel: '5:41 AM',
-    body: 'A ladder, desks, and a chair are obstructing or encroaching on the aisle, reducing safe walkway clearance.',
+    body: 'Ladder, chair, and work desks obstructing or encroaching on the designated aisle, restricting safe passage and creating trip hazards.',
     risk: 'Medium Risk',
     riskTone: 'warn',
     status: 'In Progress',
@@ -2661,24 +2661,24 @@ const SAFETY_OBS_MOCKUP_ROWS = [
   {
     category: 'Violation',
     catTone: 'warn',
-    title: 'Work Cell',
+    title: 'Main Aisle',
     where: 'Sunday',
     timeLabel: '5:35 AM',
     body: 'A ladder is positioned within the marked walkway, obstructing the path and reducing safe aisle clearance.',
-    risk: 'Low Risk',
-    riskTone: 'good',
-    status: 'Safe',
-    stTone: 'good',
+    risk: 'medium Risk',
+    riskTone: 'warn',
+    status: 'In Progress',
+    stTone: 'warn',
   },
   {
     category: 'Violation',
     catTone: 'warn',
-    title: 'Production Area',
+    title: 'Main Aisle',
     where: 'Tuesday',
     timeLabel: '5:22 AM',
     body: 'A desk and chair are blocking the walkway, while another desk is encroaching on the marked aisle and reducing safe clearance.',
     risk: 'Low Risk',
-    riskTone: 'warn',
+    riskTone: 'good',
     status: 'Open',
     stTone: 'bad',
   },
@@ -2761,7 +2761,12 @@ function safetyDashboardFor(scopeId, unitKey) {
       ? HARLAND_SAFETY_IMAGES[unitKey]
       : HARLAND_SAFETY_IMAGES['125']
 
-  const observations = SAFETY_OBS_MOCKUP_ROWS.map(
+  const observationRows =
+    configured?.observations?.length
+      ? configured.observations
+      : SAFETY_OBS_MOCKUP_ROWS
+
+  const observations = observationRows.map(
     (row, index) => ({
       ...row,
       id: `so-${unitKey || 'all'}-${index}-${h}`,
@@ -2858,7 +2863,7 @@ function securityDashboardFor(scopeId, unitKey) {
     where: locations[index] ?? row.where,
     img:
       SECURITY_CARD_IMAGES[
-        (index + imageOffset) % SECURITY_CARD_IMAGES.length
+      (index + imageOffset) % SECURITY_CARD_IMAGES.length
       ],
   }))
 
@@ -3114,15 +3119,21 @@ function SafetyPanel({
           {data.observations.map((o) => (
             <article key={o.id} className="client-hms-dash-obs-card">
               <div className="client-hms-dash-obs-imgwrap">
-                <img src={o.img} alt="" className="client-hms-dash-obs-img" loading="lazy" decoding="async" />
-                <span className={`client-hms-tag client-hms-tag--${o.catTone}`}>{o.category}</span>
+                <img
+                  src={o.img}
+                  alt=""
+                  className="client-hms-dash-obs-img"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
               <div className="client-hms-dash-obs-body">
                 <h4 className="client-hms-dash-obs-title">{o.title}</h4>
                 <p className="client-hms-dash-obs-meta">{`${o.where}  ${o.timeLabel}`}</p>
                 <p className="client-hms-dash-obs-desc">{o.body}</p>
-                <span className={`client-hms-risk client-hms-risk--${o.riskTone}`}>{o.risk}</span>
-                <p className={`client-hms-dash-obs-status client-hms-dash-obs-status--${o.stTone}`}>{`Status: ${o.status}`}</p>
+                <span className={`client-hms-risk client-hms-risk--${o.riskTone}`}>
+                  {o.risk}
+                </span>
               </div>
             </article>
           ))}
@@ -3287,11 +3298,6 @@ function SecurityPanel({
                   {`${event.where}  ${event.timeLabel}`}
                 </p>
                 <p className="client-hms-dash-obs-desc">{event.body}</p>
-                <p
-                  className={`client-hms-dash-obs-status client-hms-dash-obs-status--${event.stTone}`}
-                >
-                  {`Status: ${event.status}`}
-                </p>
               </div>
             </article>
           ))}
