@@ -3121,9 +3121,9 @@ function SafetyPanel({
               <div className="client-hms-dash-obs-imgwrap">
                 <img
                   src={o.img}
-                  alt=""
+                  alt={o.title}
                   className="client-hms-dash-obs-img"
-                  loading="lazy"
+                  loading="eager"
                   decoding="async"
                 />
               </div>

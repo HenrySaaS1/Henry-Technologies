@@ -7779,6 +7779,7 @@ a.btn-dark {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.5rem;
   margin-top: 0.55rem;
+  align-items: start;
 }
 .client-hms-dash-wrap--unit .client-hms-dash-card-row {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -7808,6 +7809,8 @@ a.btn-dark {
 
 .client-hms-dash-obs-imgwrap {
   position: relative;
+  width: 100%;
+  overflow: hidden;
   background: #f1f5f9;
 }
 
@@ -7815,8 +7818,6 @@ a.btn-dark {
   display: block;
   width: 100%;
   height: auto;
-  object-fit: contain;
-  object-position: center center;
 }
 
 .client-hms-tag {
