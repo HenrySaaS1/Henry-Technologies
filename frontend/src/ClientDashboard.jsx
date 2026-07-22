@@ -3123,6 +3123,8 @@ function SafetyPanel({
                   src={o.img}
                   alt={o.title}
                   className="client-hms-dash-obs-img"
+                  width="720"
+                  height="1280"
                   loading="eager"
                   decoding="async"
                 />
