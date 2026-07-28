@@ -59,7 +59,7 @@ import secAfterHours from './assets/uploads/security-after-hours.png'
 import secPerimeter from './assets/uploads/security-perimeter.png'
 import secDoorHeld from './assets/uploads/security-door-held.png'
 import secVehicle from './assets/uploads/security-vehicle.png'
-import leadMarkStockhowe from './assets/uploads/lead-mark-stockhowe.png'
+import leadMarkStockhowe from './assets/uploads/lead-mark-stockhowe2.jpg'
 import leadKevinConlon from './assets/uploads/lead-kevin-conlon.png'
 import leadMiguelZaballa from './assets/uploads/lead-miguel-zaballa.png'
 import avioraLeadEthan from './assets/uploads/aviora-lead-ethan-brooks.jpg'
@@ -351,11 +351,12 @@ const GLOBAL_SITES = [
     leadRole: 'Site Director',
     leadName: 'Mark Stockhowe',
     leadPhoto: leadMarkStockhowe,
+    leadEmail: 'info@harlandmedical.com',
     timeZone: 'America/Chicago',
     employees: 118,
     efficiency: 89,
     address: '7418 Washington Ave. South, Eden Prairie, MN 55344',
-    phoneDisplay: '+1-952-941-0475',
+    phoneDisplay: '+1 (952) 941-0475',
     phoneTel: '+19529410475',
     building: {
       name: harlandOperationsBuildingName('US'),
@@ -636,12 +637,13 @@ const GLOBAL_SITES = [
     leadRole: 'Site Lead',
     leadName: 'Kevin Conlon',
     leadPhoto: leadMiguelZaballa,
+    leadEmail: 'ie@harlandmedical.com',
     timeZone: 'Europe/Dublin',
     employees: 64,
     efficiency: 87,
-    address: 'Ringmahon Industrial Estate, Block C, Cork, Ireland T23 V6F2',
-    phoneDisplay: '+353 (0) 21 555 0173',
-    phoneTel: '+353215550173',
+    address: 'Unit 1 Cherrywood Business Park, Little Island, Cork, Ireland T45 XP70',
+    phoneDisplay: '+353 (0) 21 242 7228',
+    phoneTel: '+3530212427228',
     building: {
       name: harlandOperationsBuildingName('Ireland'),
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
@@ -691,12 +693,13 @@ const GLOBAL_SITES = [
     leadRole: 'Site Lead',
     leadName: 'Miguel Zaballa',
     leadPhoto: leadKevinConlon,
+    leadEmail: 'cr@harlandmedical.com',
     timeZone: 'America/Costa_Rica',
     employees: 71,
     efficiency: 82,
-    address: 'La Aurora Free Zone, Heredia 40105, Costa Rica',
-    phoneDisplay: '+506 4002 8840',
-    phoneTel: '+50640028840',
+    address: 'The Greenpark Free Zone San Antonio, Alajuela, Costa Rica',
+    phoneDisplay: '+1 (952) 941-0475',
+    phoneTel: '+19529410475',
     building: {
       name: harlandOperationsBuildingName('Costa Rica'),
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
@@ -731,6 +734,7 @@ const GLOBAL_SITES = [
     leadRole: 'Site Lead',
     leadName: 'Itamar Haran',
     leadPhoto: leadItamarHaran,
+    leadEmail: 'il@harlandmedical.com',
     timeZone: 'Asia/Jerusalem',
     employees: 34,
     efficiency: 75,
@@ -771,6 +775,7 @@ const GLOBAL_SITES = [
     leadRole: 'Site Lead',
     leadName: 'Deepak Teja',
     leadPhoto: leadDeepakTeja,
+    leadEmail: 'in@harlandmedical.com',
     timeZone: 'Asia/Kolkata',
     employees: 78,
     efficiency: 84,
@@ -810,6 +815,7 @@ const GLOBAL_SITES = [
     flagEmoji: '🇲🇾',
     leadRole: 'Site Lead',
     leadName: 'KS',
+    leadEmail: 'my@harlandmedical.com',
     timeZone: 'Asia/Kuala_Lumpur',
     employees: 56,
     efficiency: 78,
