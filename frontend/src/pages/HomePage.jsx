@@ -137,9 +137,9 @@ const targetClients = [
     text: 'HENRY helps manufacturing teams monitor production activity, workplace safety, machine systems, and work-in-progress from one unified view. It improves operational visibility, supports faster issue detection, and helps teams make better decisions across the factory floor.',
   },
   {
-    title: 'Warehouse',
+    title: 'Distribution',
     image: targetWarehouseImage,
-    text: 'HENRY gives warehouse operations better visibility across inventory movement, aisle safety, loading areas, and day-to-day workflows. It helps reduce blind spots, improve coordination, and keep warehouse environments safer, faster, and more efficient.',
+    text: 'HENRY gives distribution operations better visibility across inventory movement, aisle safety, loading areas, and day-to-day workflows. It helps reduce blind spots, improve coordination, and keep distribution environments safer, faster, and more efficient.',
   },
   {
     title: 'Construction',
@@ -358,7 +358,7 @@ function HomePage({
         className="target-clients"
       >
         <h2 className="target-clients-title">
-          TARGET CLIENTS
+          FOCUS INDUSTRIES
         </h2>
 
         <p className="target-clients-subtitle">
