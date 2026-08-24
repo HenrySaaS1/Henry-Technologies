@@ -9537,6 +9537,34 @@ a.btn-dark {
   color: #475569;
 }
 
+.client-odoo-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 0.82rem;
+}
+
+.client-odoo-bar-label {
+  font-weight: 650;
+  color: #0f172a;
+}
+
+.client-odoo-bar-link {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.client-odoo-bar-link:hover {
+  text-decoration: underline;
+}
+
 .client-alert-list {
   margin: 0;
   padding: 0;

@@ -14,6 +14,7 @@ import {
   resolveDashboardPresetForCreate,
   VALID_DASHBOARD_PRESETS,
 } from './lib/dashboardPreset.js'
+import { isOdooConfigured, listHenryEvents, syncEventsToOdoo } from './lib/odooClient.js'
 
 dotenv.config()
 assertProductionEnv()
@@ -337,7 +338,58 @@ app.get('/api/health', (_req, res) => {
     service: 'henry-api',
     message: 'HENRY backend is running',
     time: new Date().toISOString(),
+    odooConfigured: isOdooConfigured(),
   })
+})
+
+app.get('/api/integrations/odoo/status', (_req, res) => {
+  const base = String(process.env.ODOO_URL || 'https://henrytechnologies.odoo.com').replace(/\/+$/, '')
+  res.json({
+    ok: true,
+    configured: isOdooConfigured(),
+    url: base,
+    model: process.env.ODOO_EVENTS_MODEL || 'x_henry_events',
+    eventsAppUrl: process.env.ODOO_EVENTS_APP_URL || `${base}/odoo/action-361`,
+    snapshotUrl: process.env.ODOO_SNAPSHOT_URL || 'https://www.goaskhenry.com',
+  })
+})
+
+function allowOdooIntegration(req) {
+  if (readBearerAuth(req)?.userId) return true
+  // Local preview (auth bypass) has no JWT. Production still requires sign-in.
+  return process.env.NODE_ENV !== 'production'
+}
+
+app.get('/api/integrations/odoo/events', async (req, res) => {
+  if (!allowOdooIntegration(req)) {
+    return res.status(401).json({ ok: false, message: 'Not signed in.' })
+  }
+  if (!isOdooConfigured()) {
+    return res.status(503).json({ ok: false, code: 'ODOO_NOT_CONFIGURED', message: 'Set ODOO_API_KEY on the API.' })
+  }
+  try {
+    const events = await listHenryEvents({ limit: 50 })
+    res.json({ ok: true, events })
+  } catch (e) {
+    console.error('[odoo] list failed', e)
+    res.status(502).json({ ok: false, message: 'Could not read HENRY Events from Odoo.' })
+  }
+})
+
+app.post('/api/integrations/odoo/sync', async (req, res) => {
+  if (!allowOdooIntegration(req)) {
+    return res.status(401).json({ ok: false, message: 'Not signed in.' })
+  }
+  if (!isOdooConfigured()) {
+    return res.status(503).json({ ok: false, code: 'ODOO_NOT_CONFIGURED', message: 'Set ODOO_API_KEY on the API.' })
+  }
+  try {
+    const results = await syncEventsToOdoo(req.body?.events)
+    res.json({ ok: true, results })
+  } catch (e) {
+    console.error('[odoo] sync failed', e)
+    res.status(502).json({ ok: false, message: 'Could not sync events to Odoo.' })
+  }
 })
 
 /** Returns 503 if Postgres is down or Henry tables are missing (migrations not applied). */

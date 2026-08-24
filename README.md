@@ -71,6 +71,9 @@ Frontend runs at `http://localhost:5173` and API runs at `http://localhost:5000`
 ## API endpoints
 
 - `GET /api/health`
+- `GET /api/integrations/odoo/status` — Odoo connection flags (no secrets)
+- `GET /api/integrations/odoo/events` — HENRY Events rows from Odoo (signed-in, or local preview)
+- `POST /api/integrations/odoo/sync` — upsert dashboard alerts into Odoo `x_henry_events`
 - `GET /api/auth/check-email?email=`
 - `POST /api/auth/register` — body: `email`, `password`, `company`, `productIds[]`, optional `planId`
 - `POST /api/auth/login` — body: `email`, `password`
@@ -98,6 +101,9 @@ You get a **Static Web App** URL for the React site and an **App Service** URL f
      | `DATABASE_URL` | `postgresql://...?sslmode=require` |
      | `JWT_SECRET` | long random string |
      | `CORS_ORIGIN` | your Static Web App URL (no trailing slash), e.g. `https://happy-rock-012345678.azurestaticapps.net` |
+     | `ODOO_URL` | `https://henrytechnologies.odoo.com` |
+     | `ODOO_API_KEY` | Odoo user API key (Preferences → Account Security) |
+     | `ODOO_EVENTS_MODEL` | `x_henry_events` |
      | `NODE_ENV` | `production` |
 
    - **Configuration → General settings → Startup Command**: `npm run start`  
