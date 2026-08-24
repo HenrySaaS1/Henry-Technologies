@@ -1,3 +1,11 @@
+import {
+  HARLAND_SAFETY_DATA,
+  HARLAND_SECURITY_DATA,
+  HARLAND_SYSTEMS_DATA,
+} from './dashboard/harland/harlandUnitData.js'
+
+import { HARLAND_SAFETY_IMAGES } from './dashboard/harland/harlandSafetyImages.js'
+
 import { useCallback, useState, useEffect, useId, useRef, useMemo } from 'react'
 import { matchPath, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { titlesForProductIds } from './productCatalog.js'
@@ -7,6 +15,8 @@ import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/regi
 import { getToken, isDemoDashboardToken } from './apiClient.js'
 import { pushDashboardAlertsToOdoo, fetchOdooIntegrationStatus, DEFAULT_ODOO_EVENTS_APP_URL, DEFAULT_ODOO_SNAPSHOT_URL } from './dashboard/odooEvents.js'
 import AvioraConstructionPortfolio from './dashboard/AvioraConstructionPortfolio.jsx'
+import LocoManufacturingPortfolio from './dashboard/LocoManufacturingPortfolio.jsx'
+import LocoPlantDetailPage from './dashboard/LocoPlantDetailPage.jsx'
 import AvioraPropertyDetailPage from './dashboard/AvioraPropertyDetailPage.jsx'
 import AvioraSafetySecurityDashboard from './dashboard/AvioraSafetySecurityDashboard.jsx'
 import WorkspaceViewTabs from './dashboard/WorkspaceViewTabs.jsx'
@@ -22,12 +32,28 @@ import harlandRdx195 from './assets/uploads/harland-rdx-195.png'
 import harlandFts7000 from './assets/uploads/harland-fts7000.png'
 import harlandCts1100 from './assets/uploads/harland-cts1100.png'
 // Safety observation thumbnails (user-supplied mock images).
-// Save these five PNGs into frontend/src/assets/uploads with the exact filenames.
-import safetyTripHazard from './assets/uploads/safety-trip-hazard.png'
-import safetyFloorSpill from './assets/uploads/safety-floor-spill.png'
-import safetyGuardMissing from './assets/uploads/safety-guard-missing.png'
-import safetyClearWalkway from './assets/uploads/safety-clear-walkway.png'
-import safetyBlockedExit from './assets/uploads/safety-blocked-exit.png'
+
+// Harland BU120 Safety images
+// import bu120Safety1 from './assets/uploads/harland/bu120/bu120-safety/bu120-safety-1.png'
+// import bu120Safety2 from './assets/uploads/harland/bu120/bu120-safety/bu120-safety-2.png'
+// import bu120Safety3 from './assets/uploads/harland/bu120/bu120-safety/bu120-safety-3.png'
+// import bu120Safety4 from './assets/uploads/harland/bu120/bu120-safety/bu120-safety-4.png'
+// import bu120Safety5 from './assets/uploads/harland/bu120/bu120-safety/bu120-safety-5.png'
+
+// // Harland BU125 Safety images
+// import bu125Safety1 from './assets/uploads/harland/bu125/bu125-safety/bu125-safety-1.png'
+// import bu125Safety2 from './assets/uploads/harland/bu125/bu125-safety/bu125-safety-2.png'
+// import bu125Safety3 from './assets/uploads/harland/bu125/bu125-safety/bu125-safety-3.png'
+// import bu125Safety4 from './assets/uploads/harland/bu125/bu125-safety/bu125-safety-4.png'
+// import bu125Safety5 from './assets/uploads/harland/bu125/bu125-safety/bu125-safety-5.png'
+
+// // Harland Warehouse Safety images
+// import warehouseSafety1 from './assets/uploads/harland/warehouse/warehouse-safety/warehouse-safety-1.png'
+// import warehouseSafety2 from './assets/uploads/harland/warehouse/warehouse-safety/warehouse-safety-2.png'
+// import warehouseSafety3 from './assets/uploads/harland/warehouse/warehouse-safety/warehouse-safety-3.png'
+// import warehouseSafety4 from './assets/uploads/harland/warehouse/warehouse-safety/warehouse-safety-4.png'
+// import warehouseSafety5 from './assets/uploads/harland/warehouse/warehouse-safety/warehouse-safety-5.png'
+
 // Security CCTV-style thumbnails (user-supplied mock images).
 // Save the five PNGs into frontend/src/assets/uploads with these exact filenames.
 import secUnauthorized from './assets/uploads/security-unauthorized.png'
@@ -35,7 +61,7 @@ import secAfterHours from './assets/uploads/security-after-hours.png'
 import secPerimeter from './assets/uploads/security-perimeter.png'
 import secDoorHeld from './assets/uploads/security-door-held.png'
 import secVehicle from './assets/uploads/security-vehicle.png'
-import leadMarkStockhowe from './assets/uploads/lead-mark-stockhowe.png'
+import leadMarkStockhowe from './assets/uploads/lead-mark-stockhowe2.jpg'
 import leadKevinConlon from './assets/uploads/lead-kevin-conlon.png'
 import leadMiguelZaballa from './assets/uploads/lead-miguel-zaballa.png'
 import avioraLeadEthan from './assets/uploads/aviora-lead-ethan-brooks.jpg'
@@ -202,7 +228,7 @@ const BUILDING_FOOTER_TABS = [
 
 const FACTORY_PULSE_REPORT_URL =
   typeof import.meta.env.VITE_POWERBI_FACTORY_PULSE_URL === 'string' &&
-  import.meta.env.VITE_POWERBI_FACTORY_PULSE_URL.trim()
+    import.meta.env.VITE_POWERBI_FACTORY_PULSE_URL.trim()
     ? import.meta.env.VITE_POWERBI_FACTORY_PULSE_URL.trim()
     : 'https://app.powerbi.com/groups/e404cc31-4af3-4c05-9633-5e21eb2f9afc/reports/c8bb3fe2-c9d5-440d-a803-048a3682ea8f/bdab7bb7e177ab11e652?experience=power-bi'
 
@@ -327,11 +353,12 @@ const GLOBAL_SITES = [
     leadRole: 'Site Director',
     leadName: 'Mark Stockhowe',
     leadPhoto: leadMarkStockhowe,
+    leadEmail: 'info@harlandmedical.com',
     timeZone: 'America/Chicago',
     employees: 118,
     efficiency: 89,
     address: '7418 Washington Ave. South, Eden Prairie, MN 55344',
-    phoneDisplay: '+1-952-941-0475',
+    phoneDisplay: '+1 (952) 941-0475',
     phoneTel: '+19529410475',
     building: {
       name: harlandOperationsBuildingName('US'),
@@ -345,6 +372,7 @@ const GLOBAL_SITES = [
       zones: [
         {
           id: 'us-bu-125',
+          slug: 'bu125',
           label: '125',
           pct: { left: 15, top: 21, width: 7.8, height: 19 },
           machinery: {
@@ -352,6 +380,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU125',
+              unitKey: '125',
               description: 'Machines Commercialization',
               manager: 'Alex Anderson',
               assistant: 'Nikolai Zorichev',
@@ -375,6 +404,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-120',
+          slug: 'bu120',
           label: '120',
           pct: { left: 23.2, top: 21, width: 7.2, height: 19 },
           machinery: {
@@ -382,6 +412,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU120',
+              unitKey: '120',
               description: 'Machines Commercialization',
               manager: 'Kevin Langeberg',
               assistant: 'Mikhail Shimko',
@@ -405,11 +436,28 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-wh',
+          slug: 'warehouse',
           label: 'WH',
           pct: { left: 30.8, top: 21, width: 12.6, height: 19 },
           machinery: {
             title: 'Warehouse (WH)',
             status: 'running',
+            unitPanel: {
+              unit: 'Warehouse',
+              unitKey: 'warehouse',
+              description: 'Warehouse and Logistics Operations',
+              manager: 'Carlos Mendoza',
+              assistant: 'Emily Carter',
+              activeMachines: '12/14',
+              activeOperators: '24',
+              updatedAt: 'Timestamp',
+              todaysOutput: '624 pallets moved',
+              targetVsActual: '680 vs 624',
+              cycleTime: '7 min',
+              throughput: '168 pallets/hr',
+              focus: { x: 42, y: 45 },
+              powerBiEmbed: FACTORY_PULSE_UNIT_LINK,
+            },
             lines: [
               { k: 'Inbound today', v: '14 trucks · 92 pallets' },
               { k: 'Outbound today', v: '11 trucks · 68 pallets' },
@@ -422,6 +470,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-190',
+          slug: 'bu190',
           label: '190',
           pct: { left: 43.8, top: 21, width: 7.4, height: 19 },
           machinery: {
@@ -429,6 +478,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU190',
+              unitKey: '190',
               description: 'Sub-Assembly & Kitting',
               manager: 'Lina Park',
               assistant: 'Tomás Ribeiro',
@@ -452,6 +502,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-180',
+          slug: 'bu180',
           label: '180',
           pct: { left: 62, top: 21, width: 7.2, height: 19 },
           machinery: {
@@ -459,6 +510,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU180',
+              unitKey: '180',
               description: 'Coating & Curing',
               manager: 'Marcus Reilly',
               assistant: 'Sofía Navarro',
@@ -482,6 +534,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-140',
+          slug: 'bu140',
           label: '140',
           pct: { left: 73, top: 21, width: 6.8, height: 19 },
           machinery: {
@@ -489,6 +542,7 @@ const GLOBAL_SITES = [
             status: 'alert',
             unitPanel: {
               unit: 'BU140',
+              unitKey: '140',
               description: 'Production',
               manager: 'Ravi Deshpande',
               assistant: 'Tessa Brooks',
@@ -512,6 +566,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-150',
+          slug: 'bu150',
           label: '150',
           pct: { left: 80.4, top: 21, width: 7, height: 19 },
           machinery: {
@@ -519,6 +574,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU150',
+              unitKey: '150',
               description: 'Final Assembly',
               manager: 'Diego Alvarez',
               assistant: 'Hannah Cole',
@@ -542,6 +598,7 @@ const GLOBAL_SITES = [
         },
         {
           id: 'us-bu-220',
+          slug: 'bu220',
           label: '220',
           pct: { left: 88, top: 21, width: 8.5, height: 19 },
           machinery: {
@@ -549,6 +606,7 @@ const GLOBAL_SITES = [
             status: 'running',
             unitPanel: {
               unit: 'BU220',
+              unitKey: '220',
               description: 'Quality Lab & Test',
               manager: 'Priya Mehta',
               assistant: 'Marcus Reilly',
@@ -581,12 +639,13 @@ const GLOBAL_SITES = [
     leadRole: 'Site Lead',
     leadName: 'Kevin Conlon',
     leadPhoto: leadMiguelZaballa,
+    leadEmail: 'ie@harlandmedical.com',
     timeZone: 'Europe/Dublin',
     employees: 64,
     efficiency: 87,
-    address: 'Ringmahon Industrial Estate, Block C, Cork, Ireland T23 V6F2',
-    phoneDisplay: '+353 (0) 21 555 0173',
-    phoneTel: '+353215550173',
+    address: 'Unit 1 Cherrywood Business Park, Little Island, Cork, Ireland T45 XP70',
+    phoneDisplay: '+353 (0) 21 242 7228',
+    phoneTel: '+3530212427228',
     building: {
       name: harlandOperationsBuildingName('Ireland'),
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
@@ -636,12 +695,13 @@ const GLOBAL_SITES = [
     leadRole: 'Site Lead',
     leadName: 'Miguel Zaballa',
     leadPhoto: leadKevinConlon,
+    leadEmail: 'cr@harlandmedical.com',
     timeZone: 'America/Costa_Rica',
     employees: 71,
     efficiency: 82,
-    address: 'La Aurora Free Zone, Heredia 40105, Costa Rica',
-    phoneDisplay: '+506 4002 8840',
-    phoneTel: '+50640028840',
+    address: 'The Greenpark Free Zone San Antonio, Alajuela, Costa Rica',
+    phoneDisplay: '+1 (952) 941-0475',
+    phoneTel: '+19529410475',
     building: {
       name: harlandOperationsBuildingName('Costa Rica'),
       floorPlanSrc: DEFAULT_FLOOR_PLAN_SRC,
@@ -676,6 +736,7 @@ const GLOBAL_SITES = [
     leadRole: 'Site Lead',
     leadName: 'Itamar Haran',
     leadPhoto: leadItamarHaran,
+    leadEmail: 'il@harlandmedical.com',
     timeZone: 'Asia/Jerusalem',
     employees: 34,
     efficiency: 75,
@@ -716,6 +777,7 @@ const GLOBAL_SITES = [
     leadRole: 'Site Lead',
     leadName: 'Deepak Teja',
     leadPhoto: leadDeepakTeja,
+    leadEmail: 'in@harlandmedical.com',
     timeZone: 'Asia/Kolkata',
     employees: 78,
     efficiency: 84,
@@ -755,6 +817,7 @@ const GLOBAL_SITES = [
     flagEmoji: '🇲🇾',
     leadRole: 'Site Lead',
     leadName: 'KS',
+    leadEmail: 'my@harlandmedical.com',
     timeZone: 'Asia/Kuala_Lumpur',
     employees: 56,
     efficiency: 78,
@@ -2220,26 +2283,54 @@ const EXACT_JOBS_BY_BU = {
     { description: 'TTS1000', status: 'Moderate' },
     { description: 'CUSTOM', status: 'Stable' },
   ],
+  warehouse: [
+    { description: 'Inbound Receiving', status: 'Stable' },
+    { description: 'Pallet Putaway', status: 'Stable' },
+    { description: 'Inventory Replenishment', status: 'Moderate' },
+    { description: 'Order Picking', status: 'Stable' },
+    { description: 'Outbound Staging', status: 'Critical' },
+    { description: 'Trailer Loading', status: 'Moderate' },
+  ],
+}
+
+function unitKeyFromLabel(unitLabel) {
+  const compact = String(unitLabel || '')
+    .replace(/\s/g, '')
+    .toLowerCase()
+
+  if (compact === 'wh' || compact.includes('warehouse')) {
+    return 'warehouse'
+  }
+
+  const match = compact.match(/(\d{2,})/)
+  return match ? match[1] : ''
 }
 
 function digitsFromUnitLabel(unitLabel) {
-  const compact = String(unitLabel || '').replace(/\s/g, '')
-  const match = compact.match(/(\d{2,})/)
-  return match ? match[1] : '125'
+  const key = unitKeyFromLabel(unitLabel)
+  return /^\d+$/.test(key) ? key : ''
 }
 
 function unitJobsForPanel(unitLabel, count) {
-  const digits = digitsFromUnitLabel(unitLabel)
-  const template = EXACT_JOBS_BY_BU[digits] || EXACT_JOBS_BY_BU['125']
+  const unitKey = unitKeyFromLabel(unitLabel) || '125'
+  const template =
+    EXACT_JOBS_BY_BU[unitKey] ||
+    EXACT_JOBS_BY_BU['125']
+
   const n = Math.max(1, Math.min(12, count))
+
   return Array.from({ length: n }, (_, idx) => {
     const row = template[idx % template.length]
     const jobNum = idx + 1
-    const id = `${digits}-${jobNum}`
+    const id = `${unitKey}-${jobNum}`
     const stats = jobRuntimeStats(id, row.status)
+
     return {
       id,
-      title: `Job ${digits}-${jobNum}`,
+      title:
+        unitKey === 'warehouse'
+          ? `Warehouse Task ${jobNum}`
+          : `Job ${unitKey}-${jobNum}`,
       description: row.description,
       status: row.status,
       machinePhotoSrc: JOB_MACHINE_IMAGES[id] ?? null,
@@ -2501,10 +2592,38 @@ const SECURITY_LEADS = [
 ]
 
 /**
- * Fixed five-card image strip for Safety observations row — matches Trip Hazard → Floor Spill → Guard Missing → Clear Walkway → Blocked Exit.
- * Uses the five user-supplied safety photos.
+ * Safety images assigned to their respective Harland business units.
+ *
+ * The keys correspond to unitKey values:
+ * BU120     = "120"
+ * BU125     = "125"
+ * Warehouse = "warehouse"
  */
-const HMS_DASH_CARD_IMAGES = [safetyTripHazard, safetyFloorSpill, safetyGuardMissing, safetyClearWalkway, safetyBlockedExit]
+// const HARLAND_SAFETY_IMAGES = {
+//   '120': [
+//     bu120Safety1,
+//     bu120Safety2,
+//     bu120Safety3,
+//     bu120Safety4,
+//     bu120Safety5,
+//   ],
+
+//   '125': [
+//     bu125Safety1,
+//     bu125Safety2,
+//     bu125Safety3,
+//     bu125Safety4,
+//     bu125Safety5,
+//   ],
+
+//   warehouse: [
+//     warehouseSafety1,
+//     warehouseSafety2,
+//     warehouseSafety3,
+//     warehouseSafety4,
+//     warehouseSafety5,
+//   ],
+// }
 
 /** Fixed CCTV-style thumbnails for security events row (Unauthorized → Vehicle in Zone). */
 const SECURITY_CARD_IMAGES = [secUnauthorized, secAfterHours, secPerimeter, secDoorHeld, secVehicle]
@@ -2512,62 +2631,62 @@ const SECURITY_CARD_IMAGES = [secUnauthorized, secAfterHours, secPerimeter, secD
 /** Safety observation row copy aligned to reference “Safety Observations (Today)” cards. */
 const SAFETY_OBS_MOCKUP_ROWS = [
   {
-    category: 'Violation',
+    category: '',
     catTone: 'bad',
-    title: 'Trip Hazard in Aisle',
-    where: 'Assembly Area 1',
+    title: 'Rear Aisle',
+    where: 'Monday',
     timeLabel: '6:08 AM',
-    body: 'Loose cord across walkway; cord cover staged for install.',
-    risk: 'High Risk',
-    riskTone: 'bad',
-    status: 'Open',
-    stTone: 'bad',
-  },
-  {
-    category: 'Observation',
-    catTone: 'warn',
-    title: 'Floor Spill',
-    where: 'Coater Line B',
-    timeLabel: '5:52 AM',
-    body: 'Small coolant sheen near drain; absorbent applied.',
+    body: 'Aisleway is clear and free of obstructions, providing safe and unrestricted passage through the area.',
     risk: 'Medium Risk',
-    riskTone: 'warn',
-    status: 'In Progress',
-    stTone: 'warn',
-  },
-  {
-    category: 'Observation',
-    catTone: 'warn',
-    title: 'Guard Missing',
-    where: 'Cell 2 wrap station',
-    timeLabel: '5:41 AM',
-    body: 'Fixed guard panel absent on conveyor pinch point; LOTO applied and parts ordered.',
-    risk: 'Medium Risk',
-    riskTone: 'warn',
-    status: 'In Progress',
-    stTone: 'warn',
-  },
-  {
-    category: 'Safe',
-    catTone: 'good',
-    title: 'Clear Walkway',
-    where: 'Main aisle B',
-    timeLabel: '5:35 AM',
-    body: 'Aisles clear; floor markings visible; no pallets in egress path.',
-    risk: 'Low Risk',
     riskTone: 'good',
-    status: 'Safe',
+    status: 'Open',
     stTone: 'good',
   },
   {
     category: 'Violation',
     catTone: 'bad',
-    title: 'Blocked Exit',
-    where: 'Warehouse east',
-    timeLabel: '5:22 AM',
-    body: 'Cartons staged in front of designated egress; crew relocating per permit.',
+    title: 'Main Aisle',
+    where: 'Monday',
+    timeLabel: '5:52 AM',
+    body: 'Shelving cart, fan, floor blower, copier, and printer obstructing the designated aisle, reducing safe clearance and creating trip hazards.',
     risk: 'High Risk',
     riskTone: 'bad',
+    status: 'In Progress',
+    stTone: 'warn',
+  },
+  {
+    category: 'Violation',
+    catTone: 'bad',
+    title: 'Main Aisle',
+    where: 'Tuesday',
+    timeLabel: '5:41 AM',
+    body: 'Ladder, chair, and work desks obstructing or encroaching on the designated aisle, restricting safe passage and creating trip hazards.',
+    risk: 'Medium Risk',
+    riskTone: 'warn',
+    status: 'In Progress',
+    stTone: 'warn',
+  },
+  {
+    category: 'Violation',
+    catTone: 'warn',
+    title: 'Main Aisle',
+    where: 'Sunday',
+    timeLabel: '5:35 AM',
+    body: 'A ladder is positioned within the marked walkway, obstructing the path and reducing safe aisle clearance.',
+    risk: 'medium Risk',
+    riskTone: 'warn',
+    status: 'In Progress',
+    stTone: 'warn',
+  },
+  {
+    category: 'Violation',
+    catTone: 'warn',
+    title: 'Main Aisle',
+    where: 'Tuesday',
+    timeLabel: '5:22 AM',
+    body: 'A desk and chair are blocking the walkway, while another desk is encroaching on the marked aisle and reducing safe clearance.',
+    risk: 'Low Risk',
+    riskTone: 'good',
     status: 'Open',
     stTone: 'bad',
   },
@@ -2636,130 +2755,228 @@ function fmtTrend(arrow, pct, isGood) {
 }
 
 /** Harland-style safety dashboard (BU120 / BU125 + building scope). */
-function safetyDashboardFor(scopeId, unitDigits) {
+function safetyDashboardFor(scopeId, unitKey) {
   const h = hashId(`safety-dash-${scopeId || 'all'}`)
-  const bu = unitDigits === '120' ? 120 : unitDigits === '125' ? 125 : 0
-  const shift = bu === 120 ? 101 : bu === 125 ? 0 : 37
-  const hx = (h + shift) >>> 0
-  const observations = SAFETY_OBS_MOCKUP_ROWS.map((row, i) => ({
-    ...row,
-    id: `so-${i}-${hx}`,
-    img: HMS_DASH_CARD_IMAGES[i],
-  }))
-  const lead = SAFETY_LEADS[hx % SAFETY_LEADS.length]
+  const configured = HARLAND_SAFETY_DATA[unitKey]
 
-  if (bu === 125) {
+  const areas = configured?.areas ?? []
+
+  // const businessUnitSafetyImages =
+  //   HARLAND_SAFETY_IMAGES[unitKey]
+
+  const selectedSafetyImages =
+    HARLAND_SAFETY_IMAGES[unitKey]?.length
+      ? HARLAND_SAFETY_IMAGES[unitKey]
+      : HARLAND_SAFETY_IMAGES['125']
+
+  const observationRows =
+    configured?.observations?.length
+      ? configured.observations
+      : SAFETY_OBS_MOCKUP_ROWS
+
+  const observations = observationRows.map(
+    (row, index) => ({
+      ...row,
+      id: `so-${unitKey || 'all'}-${index}-${h}`,
+      where: areas[index] ?? row.where,
+      img:
+        selectedSafetyImages[
+        index % selectedSafetyImages.length
+        ],
+    }),
+  )
+
+  if (configured) {
     return {
-      scorePct: 91,
-      scoreWord: 'Excellent',
-      totalObservations: 17,
-      violations: 6,
-      safeConditions: 10,
-      actionsTaken: 4,
-      openActions: 3,
-      areasInspected: 9,
-      areasTotal: 12,
-      trends: {
-        obs: fmtTrend('up', 15, true),
-        viol: fmtTrend('down', 13, false),
-        open: fmtTrend('down', 27, false),
-      },
+      scorePct: configured.scorePct,
+      scoreWord: configured.scoreWord,
+      totalObservations: configured.totalObservations,
+      violations: configured.violations,
+      safeConditions: configured.safeConditions,
+      actionsTaken: configured.actionsTaken,
+      openActions: configured.openActions,
+      areasInspected: configured.areasInspected,
+      areasTotal: configured.areasTotal,
+      lead: configured.lead,
       observations,
-      lead,
+      trends: {
+        obs: fmtTrend(
+          configured.trends.obs.arrow,
+          configured.trends.obs.pct,
+          configured.trends.obs.isGood,
+        ),
+        viol: fmtTrend(
+          configured.trends.viol.arrow,
+          configured.trends.viol.pct,
+          configured.trends.viol.isGood,
+        ),
+        open: fmtTrend(
+          configured.trends.open.arrow,
+          configured.trends.open.pct,
+          configured.trends.open.isGood,
+        ),
+      },
     }
   }
 
-  if (bu === 120) {
-    return {
-      scorePct: 83,
-      scoreWord: 'Good',
-      totalObservations: 18,
-      violations: 6,
-      safeConditions: 12,
-      actionsTaken: 5,
-      openActions: 3,
-      areasInspected: 8,
-      areasTotal: 12,
-      trends: {
-        obs: fmtTrend('up', 12, true),
-        viol: fmtTrend('down', 14, false),
-        open: fmtTrend('down', 25, false),
-      },
-      observations,
-      lead,
-    }
-  }
-
-  const totalObs = 14 + (hx % 9)
-  const violations = 4 + (hx % 5)
-  const safeCond = Math.max(2, totalObs - violations - ((hx >> 3) % 3))
-  const actionsTaken = 3 + ((hx >> 2) % 5)
-  const openActions = 2 + ((hx >> 4) % 4)
+  // Building-level fallback.
+  const totalObservations = 14 + (h % 9)
+  const violations = 4 + (h % 5)
+  const safeConditions = Math.max(
+    2,
+    totalObservations - violations - ((h >> 3) % 3),
+  )
+  const actionsTaken = 3 + ((h >> 2) % 5)
+  const openActions = 2 + ((h >> 4) % 4)
   const areasTotal = 12
-  const areasInspected = 6 + ((hx >> 1) % 5)
-  const scorePct = 78 + (hx % 14)
-  const scoreWord = scorePct >= 90 ? 'Excellent' : scorePct >= 82 ? 'Good' : 'Watch'
+  const areasInspected = 6 + ((h >> 1) % 5)
+  const scorePct = 78 + (h % 14)
 
   return {
     scorePct,
-    scoreWord,
-    totalObservations: totalObs,
+    scoreWord:
+      scorePct >= 90
+        ? 'Excellent'
+        : scorePct >= 82
+          ? 'Good'
+          : 'Watch',
+    totalObservations,
     violations,
-    safeConditions: safeCond,
+    safeConditions,
     actionsTaken,
     openActions,
     areasInspected,
     areasTotal,
-    trends: {
-      obs: fmtTrend('up', 8 + (hx % 8), true),
-      viol: fmtTrend('down', 10 + (hx % 12), false),
-      open: fmtTrend('down', 15 + (hx % 15), false),
-    },
     observations,
-    lead,
+    lead: SAFETY_LEADS[h % SAFETY_LEADS.length],
+    trends: {
+      obs: fmtTrend('up', 8 + (h % 8), true),
+      viol: fmtTrend('down', 10 + (h % 12), false),
+      open: fmtTrend('down', 15 + (h % 15), false),
+    },
   }
 }
 
 /** Harland-style security dashboard (BU120 / BU125 + building scope). */
-function securityDashboardFor(scopeId, unitDigits) {
-  const h = hashId(`sec-dash-${scopeId || 'all'}`)
-  const bu = unitDigits === '120' ? 120 : unitDigits === '125' ? 125 : 0
-  const shift = bu === 120 ? 59 : bu === 125 ? 0 : 23
-  const hx = (h + shift) >>> 0
-  const totalEvents = 11 + (hx % 10)
-  const highSev = Math.min(2, (hx >> 3) % 3)
-  const medSev = 2 + ((hx >> 1) % 4)
-  const lowSev = Math.max(0, totalEvents - highSev - medSev)
-  const openInv = 1 + ((hx >> 3) % 3)
-  const cameraTotal = 48 + (hx % 6)
-  const cameraOnline = Math.max(cameraTotal - 2, cameraTotal - ((hx >> 4) % 3))
-  const cameraPct = Math.round((cameraOnline / cameraTotal) * 100)
-  const scorePct = 88 + (hx % 10)
-  const scoreWord = scorePct >= 91 ? 'Excellent' : scorePct >= 84 ? 'Good' : 'Watch'
-  const events = SECURITY_EVENTS_MOCKUP_ROWS.map((row, i) => ({
+function securityDashboardFor(scopeId, unitKey) {
+  const h = hashId(`security-dash-${scopeId || 'all'}`)
+  const configured = HARLAND_SECURITY_DATA[unitKey]
+
+  const imageOffset = configured?.imageOffset ?? 0
+  const locations = configured?.locations ?? []
+
+  const events = SECURITY_EVENTS_MOCKUP_ROWS.map((row, index) => ({
     ...row,
-    id: `se-${i}-${hx}`,
-    img: SECURITY_CARD_IMAGES[i] || SECURITY_CARD_IMAGES[SECURITY_CARD_IMAGES.length - 1],
+    id: `se-${unitKey || 'all'}-${index}-${h}`,
+    where: locations[index] ?? row.where,
+    img:
+      SECURITY_CARD_IMAGES[
+      (index + imageOffset) % SECURITY_CARD_IMAGES.length
+      ],
   }))
-  const lead = SECURITY_LEADS[hx % SECURITY_LEADS.length]
+
+  if (configured) {
+    const cameraPct = Math.round(
+      (
+        configured.cameraOnline /
+        Math.max(1, configured.cameraTotal)
+      ) * 100,
+    )
+
+    return {
+      scorePct: configured.scorePct,
+      scoreWord: configured.scoreWord,
+      totalEvents: configured.totalEvents,
+      highSev: configured.highSev,
+      medSev: configured.medSev,
+      lowSev: configured.lowSev,
+      openInvestigations: configured.openInvestigations,
+      cameraOnline: configured.cameraOnline,
+      cameraTotal: configured.cameraTotal,
+      cameraPct,
+      events,
+      lead: configured.lead,
+      trends: {
+        events: fmtTrend(
+          'down',
+          8 + (h % 8),
+          true,
+        ),
+        high: fmtTrend(
+          'flat',
+          0,
+          true,
+        ),
+        open: fmtTrend(
+          configured.openInvestigations > 3
+            ? 'up'
+            : 'down',
+          10 + (h % 10),
+          configured.openInvestigations <= 3,
+        ),
+      },
+    }
+  }
+
+  // Building-level fallback.
+  const totalEvents = 11 + (h % 10)
+  const highSev = Math.min(2, (h >> 3) % 3)
+  const medSev = 2 + ((h >> 1) % 4)
+
+  const lowSev = Math.max(
+    0,
+    totalEvents - highSev - medSev,
+  )
+
+  const openInvestigations = 1 + ((h >> 3) % 3)
+  const cameraTotal = 48 + (h % 6)
+
+  const cameraOnline = Math.max(
+    cameraTotal - 2,
+    cameraTotal - ((h >> 4) % 3),
+  )
+
+  const cameraPct = Math.round(
+    (cameraOnline / cameraTotal) * 100,
+  )
+
+  const scorePct = 88 + (h % 10)
+
   return {
     scorePct,
-    scoreWord,
+    scoreWord:
+      scorePct >= 91
+        ? 'Excellent'
+        : scorePct >= 84
+          ? 'Good'
+          : 'Watch',
     totalEvents,
     highSev,
     medSev,
     lowSev,
-    openInvestigations: openInv,
+    openInvestigations,
     cameraOnline,
     cameraTotal,
     cameraPct,
-    trends: {
-      events: fmtTrend('down', 8 + (hx % 12), true),
-      high: fmtTrend('flat', 0, true),
-      inv: fmtTrend('down', 20 + (hx % 20), true),
-    },
     events,
-    lead,
+    lead: SECURITY_LEADS[h % SECURITY_LEADS.length],
+    trends: {
+      events: fmtTrend(
+        'down',
+        8 + (h % 12),
+        true,
+      ),
+      high: fmtTrend(
+        'flat',
+        0,
+        true,
+      ),
+      open: fmtTrend(
+        'down',
+        10 + (h % 10),
+        true,
+      ),
+    },
   }
 }
 
@@ -2825,15 +3042,33 @@ function HmsDashTimeRange({ value, onChange, variant }) {
   )
 }
 
-function SafetyPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unitView, onUnitViewChange }) {
-  const ud = unitDigits || ''
+function SafetyPanel({
+  scopeId,
+  scopeName,
+  localLine,
+  unitDigits,
+  unitKey,
+  unitCode,
+  unitView,
+  onUnitViewChange,
+}) {
+  const resolvedUnitKey = unitKey || unitDigits || ''
+  const isUnit = Boolean(resolvedUnitKey)
+
   const [timeRange, setTimeRange] = useState('daily')
-  const data = useMemo(() => safetyDashboardFor(scopeId, ud), [scopeId, ud])
-  const areasPct = Math.round((data.areasInspected / Math.max(1, data.areasTotal)) * 100)
+
+  const data = useMemo(
+    () => safetyDashboardFor(scopeId, resolvedUnitKey),
+    [scopeId, resolvedUnitKey],
+  )
+
+  const areasPct = Math.round(
+    (data.areasInspected / Math.max(1, data.areasTotal)) * 100,
+  )
 
   const inner = (
-    <div className={`client-hms-dash${unitDigits ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} safety dashboard`}>
-      {!unitDigits ? (
+    <div className={`client-hms-dash${isUnit ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} safety dashboard`}>
+      {!isUnit ? (
         <header className="client-hms-dash-top client-hms-dash-top--safety">
           <div className="client-hms-dash-top-left">
             <ShieldPlusDashIcon />
@@ -2892,15 +3127,23 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unit
           {data.observations.map((o) => (
             <article key={o.id} className="client-hms-dash-obs-card">
               <div className="client-hms-dash-obs-imgwrap">
-                <img src={o.img} alt="" className="client-hms-dash-obs-img" loading="lazy" decoding="async" />
-                <span className={`client-hms-tag client-hms-tag--${o.catTone}`}>{o.category}</span>
+                <img
+                  src={o.img}
+                  alt={o.title}
+                  className="client-hms-dash-obs-img"
+                  width="720"
+                  height="1280"
+                  loading="eager"
+                  decoding="async"
+                />
               </div>
               <div className="client-hms-dash-obs-body">
                 <h4 className="client-hms-dash-obs-title">{o.title}</h4>
                 <p className="client-hms-dash-obs-meta">{`${o.where}  ${o.timeLabel}`}</p>
                 <p className="client-hms-dash-obs-desc">{o.body}</p>
-                <span className={`client-hms-risk client-hms-risk--${o.riskTone}`}>{o.risk}</span>
-                <p className={`client-hms-dash-obs-status client-hms-dash-obs-status--${o.stTone}`}>{`Status: ${o.status}`}</p>
+                <span className={`client-hms-risk client-hms-risk--${o.riskTone}`}>
+                  {o.risk}
+                </span>
               </div>
             </article>
           ))}
@@ -2916,7 +3159,7 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unit
     </div>
   )
 
-  if (unitDigits) {
+  if (isUnit) {
     return (
       <UnitHarlandPanelShell
         unitDigits={unitDigits}
@@ -2925,7 +3168,7 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unit
         onTimeRangeChange={setTimeRange}
         unitView={unitView}
         onUnitViewChange={onUnitViewChange}
-        ariaLabel={`BU ${unitDigits} safety`}
+        ariaLabel={`${unitCode || resolvedUnitKey} safety`}
       >
         <div className="client-hms-dash-wrap client-hms-dash-wrap--unit">{inner}</div>
       </UnitHarlandPanelShell>
@@ -2939,20 +3182,42 @@ function SafetyPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unit
   )
 }
 
-function SecurityPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, unitView, onUnitViewChange }) {
-  const ud = unitDigits || ''
+function SecurityPanel({
+  scopeId,
+  scopeName,
+  localLine,
+  unitDigits,
+  unitKey,
+  unitCode,
+  unitView,
+  onUnitViewChange,
+}) {
+  const resolvedUnitKey = unitKey || unitDigits || ''
+  const isUnit = Boolean(resolvedUnitKey)
+
   const [timeRange, setTimeRange] = useState('daily')
-  const data = useMemo(() => securityDashboardFor(scopeId, ud), [scopeId, ud])
+
+  const data = useMemo(
+    () => securityDashboardFor(scopeId, resolvedUnitKey),
+    [scopeId, resolvedUnitKey],
+  )
 
   const inner = (
-    <div className={`client-hms-dash${unitDigits ? ' client-hms-dash--in-unit' : ''}`} aria-label={`${scopeName} security dashboard`}>
-      {!unitDigits ? (
+    <div
+      className={`client-hms-dash${isUnit ? ' client-hms-dash--in-unit' : ''}`}
+      aria-label={`${scopeName} security dashboard`}
+    >
+      {!isUnit ? (
         <header className="client-hms-dash-top client-hms-dash-top--security">
           <div className="client-hms-dash-top-left">
             <ShieldIcon />
             <span className="client-hms-dash-title">Security Dashboard</span>
           </div>
-          <HmsDashTimeRange value={timeRange} onChange={setTimeRange} variant="security" />
+          <HmsDashTimeRange
+            value={timeRange}
+            onChange={setTimeRange}
+            variant="security"
+          />
         </header>
       ) : null}
 
@@ -2968,51 +3233,81 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, un
             sub={data.scoreWord}
           />
         </div>
+
         <div className="client-hms-dash-kpi">
           <p className="client-hms-dash-kpi-value">{data.totalEvents}</p>
           <p className="client-hms-dash-kpi-label">Total Events</p>
           <p className="client-hms-dash-kpi-sub">Today</p>
-          <p className={`client-hms-dash-kpi-trend ${data.trends.events.cls}`}>{data.trends.events.text}</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.events.cls}`}>
+            {data.trends.events.text}
+          </p>
         </div>
+
         <div className="client-hms-dash-kpi">
           <p className="client-hms-dash-kpi-value">{data.highSev}</p>
           <p className="client-hms-dash-kpi-label">High Severity</p>
           <p className="client-hms-dash-kpi-sub">Today</p>
-          <p className={`client-hms-dash-kpi-trend ${data.trends.high.cls}`}>{data.trends.high.text}</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.high.cls}`}>
+            {data.trends.high.text}
+          </p>
         </div>
+
         <div className="client-hms-dash-kpi">
           <p className="client-hms-dash-kpi-value">{data.openInvestigations}</p>
           <p className="client-hms-dash-kpi-label">Open Investigations</p>
           <p className="client-hms-dash-kpi-sub">Requires Attention</p>
-          <p className={`client-hms-dash-kpi-trend ${data.trends.inv.cls}`}>{data.trends.inv.text}</p>
+          <p className={`client-hms-dash-kpi-trend ${data.trends.open.cls}`}>
+            {data.trends.open.text}
+          </p>
         </div>
+
         <div className="client-hms-dash-kpi">
-          <p className="client-hms-dash-kpi-value">{`${data.cameraOnline} / ${data.cameraTotal}`}</p>
+          <p className="client-hms-dash-kpi-value">
+            {`${data.cameraOnline} / ${data.cameraTotal}`}
+          </p>
           <p className="client-hms-dash-kpi-label">Cameras Online</p>
           <p className="client-hms-dash-kpi-sub">Cameras</p>
-          <p className="client-hms-dash-kpi-trend client-hms-trend--neutral">{`${data.cameraPct}% Online`}</p>
+          <p className="client-hms-dash-kpi-trend client-hms-trend--neutral">
+            {`${data.cameraPct}% Online`}
+          </p>
         </div>
       </div>
 
       <section className="client-hms-dash-section">
         <div className="client-hms-dash-section-head">
-          <h3 className="client-hms-dash-section-title">Latest Security Events (Today)</h3>
+          <h3 className="client-hms-dash-section-title">
+            Latest Security Events (Today)
+          </h3>
           <button type="button" className="client-hms-dash-viewall">
             View All
           </button>
         </div>
+
         <div className="client-hms-dash-card-row">
-          {data.events.map((ev) => (
-            <article key={ev.id} className="client-hms-dash-obs-card client-hms-dash-obs-card--sec">
+          {data.events.map((event) => (
+            <article
+              key={event.id}
+              className="client-hms-dash-obs-card client-hms-dash-obs-card--sec"
+            >
               <div className="client-hms-dash-obs-imgwrap client-hms-dash-obs-imgwrap--sec">
-                <img src={ev.img} alt="" className="client-hms-dash-obs-img" loading="lazy" decoding="async" />
-                <span className={`client-hms-tag client-hms-tag--${ev.sevTone}`}>{ev.severity}</span>
+                <img
+                  src={event.img}
+                  alt=""
+                  className="client-hms-dash-obs-img"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span className={`client-hms-tag client-hms-tag--${event.sevTone}`}>
+                  {event.severity}
+                </span>
               </div>
+
               <div className="client-hms-dash-obs-body">
-                <h4 className="client-hms-dash-obs-title">{ev.title}</h4>
-                <p className="client-hms-dash-obs-meta">{`${ev.where}  ${ev.timeLabel}`}</p>
-                <p className="client-hms-dash-obs-desc">{ev.body}</p>
-                <p className={`client-hms-dash-obs-status client-hms-dash-obs-status--${ev.stTone}`}>{`Status: ${ev.status}`}</p>
+                <h4 className="client-hms-dash-obs-title">{event.title}</h4>
+                <p className="client-hms-dash-obs-meta">
+                  {`${event.where}  ${event.timeLabel}`}
+                </p>
+                <p className="client-hms-dash-obs-desc">{event.body}</p>
               </div>
             </article>
           ))}
@@ -3028,7 +3323,7 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, un
     </div>
   )
 
-  if (unitDigits) {
+  if (isUnit) {
     return (
       <UnitHarlandPanelShell
         unitDigits={unitDigits}
@@ -3037,9 +3332,11 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, un
         onTimeRangeChange={setTimeRange}
         unitView={unitView}
         onUnitViewChange={onUnitViewChange}
-        ariaLabel={`BU ${unitDigits} security`}
+        ariaLabel={`${unitCode || resolvedUnitKey} security`}
       >
-        <div className="client-hms-dash-wrap client-hms-dash-wrap--unit">{inner}</div>
+        <div className="client-hms-dash-wrap client-hms-dash-wrap--unit">
+          {inner}
+        </div>
       </UnitHarlandPanelShell>
     )
   }
@@ -3051,12 +3348,55 @@ function SecurityPanel({ scopeId, scopeName, localLine, unitDigits, unitCode, un
   )
 }
 
-function UnitSystemsPanel({ unitPanel, unitView, onUnitViewChange }) {
+function UnitSystemsPanel({
+  unitPanel,
+  unitKey,
+  unitView,
+  onUnitViewChange,
+}) {
   const embed = unitPanel?.powerBiEmbed
-  const reportUrl = typeof embed === 'string' ? embed : embed?.reportUrl
-  const unitLabel = unitPanel?.unit ? String(unitPanel.unit).replace(/^BU/i, 'BU ') : 'BU'
-  const unitDigits = digitsFromUnitLabel(String(unitPanel?.unit || '').replace(/^BU\s*/i, ''))
+  const reportUrl =
+    typeof embed === 'string'
+      ? embed
+      : embed?.reportUrl
+
+  const unitLabel = unitPanel?.unit
+    ? String(unitPanel.unit).replace(/^BU/i, 'BU ')
+    : 'Business Unit'
+
+  const unitDigits = digitsFromUnitLabel(
+    String(unitPanel?.unit || ''),
+  )
+
+  const systemsData =
+    HARLAND_SYSTEMS_DATA[unitKey] || {
+      heading: `Systems — ${unitLabel}`,
+      metrics: [
+        {
+          label: 'Active Machines',
+          value: unitPanel?.activeMachines || '—',
+          hint: 'Current availability',
+        },
+        {
+          label: 'Throughput',
+          value: unitPanel?.throughput || '—',
+          hint: 'Current rate',
+        },
+        {
+          label: 'Cycle Time',
+          value: unitPanel?.cycleTime || '—',
+          hint: 'Current average',
+        },
+        {
+          label: 'Output',
+          value: unitPanel?.todaysOutput || '—',
+          hint: 'Today',
+        },
+      ],
+    }
+
   const [timeRange, setTimeRange] = useState('daily')
+
   return (
     <UnitHarlandPanelShell
       unitDigits={unitDigits}
@@ -3067,7 +3407,29 @@ function UnitSystemsPanel({ unitPanel, unitView, onUnitViewChange }) {
       onUnitViewChange={onUnitViewChange}
       ariaLabel={`${unitLabel} systems`}
     >
-      <FactoryPulseChartsPanel reportUrl={reportUrl} heading={`Systems — ${unitLabel}`} />
+      <div className="client-unit-systems-summary">
+        {systemsData.metrics.map((metric) => (
+          <article
+            key={metric.label}
+            className="client-unit-systems-card"
+          >
+            <p className="client-unit-systems-label">
+              {metric.label}
+            </p>
+            <strong className="client-unit-systems-value">
+              {metric.value}
+            </strong>
+            <p className="client-unit-systems-hint">
+              {metric.hint}
+            </p>
+          </article>
+        ))}
+      </div>
+
+      <FactoryPulseChartsPanel
+        reportUrl={reportUrl}
+        heading={systemsData.heading}
+      />
     </UnitHarlandPanelShell>
   )
 }
@@ -3079,6 +3441,7 @@ function UnitOverviewSide({
   localLine,
   onClose,
   digits,
+  unitKey,
   scopeId,
   unitView = 'jobs',
   onUnitViewChange,
@@ -3129,8 +3492,15 @@ function UnitOverviewSide({
 
   const showStatusSide = !onUnitViewChange || unitView === 'jobs'
   const showSystemsSide = onUnitViewChange && unitView === 'systems'
-  const dashSafety = onUnitViewChange && scopeId ? safetyDashboardFor(scopeId, digits || '') : null
-  const dashSec = onUnitViewChange && scopeId ? securityDashboardFor(scopeId, digits || '') : null
+  const resolvedUnitKey = unitKey || digits || ''
+  const dashSafety =
+    onUnitViewChange && scopeId
+      ? safetyDashboardFor(scopeId, resolvedUnitKey)
+      : null
+  const dashSec =
+    onUnitViewChange && scopeId
+      ? securityDashboardFor(scopeId, resolvedUnitKey)
+      : null
 
   return (
     <aside className="client-bu-side client-bu-side--v2">
@@ -3204,160 +3574,160 @@ function UnitOverviewSide({
       ) : null}
 
       {showStatusSide ? (
-      <>
-      <section className="client-bu-section">
-        <h5 className="client-bu-section-title"><PulseIcon /> Real-Time Status:</h5>
-        {isBu120 ? (
-          <ul className="client-bu-section-list">
-            <li>Current Status: {String(statusLabel).charAt(0).toUpperCase() + String(statusLabel).slice(1)}</li>
-            <li>Active Jobs: {cards.length}</li>
-            <li>On-Track to Ship: {tally.onTrack}</li>
-            <li>At Risk / Delayed: {tally.atRisk + tally.delayed}</li>
-            <li>Active Operators: {unitPanel.activeOperators}</li>
-            <li>Last Updated: {localLine}</li>
-          </ul>
-        ) : (
-          <ul className="client-bu-section-list">
-            <li>Current Status: {String(statusLabel).charAt(0).toUpperCase() + String(statusLabel).slice(1)}</li>
-            <li>Active Machines: {unitPanel.activeMachines}</li>
-            <li>Active Operators: {unitPanel.activeOperators}</li>
-            <li>Last Updated: {localLine}</li>
-          </ul>
-        )}
-      </section>
+        <>
+          <section className="client-bu-section">
+            <h5 className="client-bu-section-title"><PulseIcon /> Real-Time Status:</h5>
+            {isBu120 ? (
+              <ul className="client-bu-section-list">
+                <li>Current Status: {String(statusLabel).charAt(0).toUpperCase() + String(statusLabel).slice(1)}</li>
+                <li>Active Jobs: {cards.length}</li>
+                <li>On-Track to Ship: {tally.onTrack}</li>
+                <li>At Risk / Delayed: {tally.atRisk + tally.delayed}</li>
+                <li>Active Operators: {unitPanel.activeOperators}</li>
+                <li>Last Updated: {localLine}</li>
+              </ul>
+            ) : (
+              <ul className="client-bu-section-list">
+                <li>Current Status: {String(statusLabel).charAt(0).toUpperCase() + String(statusLabel).slice(1)}</li>
+                <li>Active Machines: {unitPanel.activeMachines}</li>
+                <li>Active Operators: {unitPanel.activeOperators}</li>
+                <li>Last Updated: {localLine}</li>
+              </ul>
+            )}
+          </section>
 
-      <section className="client-bu-section">
-        <h5 className="client-bu-section-title"><ClipboardIcon /> {isBu120 ? 'Production Overview:' : 'Production Details:'}</h5>
-        {isBu120 ? (
-          <ul className="client-bu-section-list">
-            <li>Avg Completion: {avgCompletion}%</li>
-            <li>Ahead / On Time / Behind: {aheadCount} / {onTimeCount} / {behindCount}</li>
-            <li>Avg Days Remaining: {avgDaysRemaining}</li>
-            <li>Daily Throughput: {cards.length} active builds</li>
-          </ul>
-        ) : (
-          <ul className="client-bu-section-list">
-            <li>Today&apos;s Output: {unitPanel.todaysOutput}</li>
-            <li>Target vs Actual: {unitPanel.targetVsActual}</li>
-            <li>Cycle Time (Avg): {unitPanel.cycleTime}</li>
-            <li>Throughput: {unitPanel.throughput}</li>
-          </ul>
-        )}
-      </section>
+          <section className="client-bu-section">
+            <h5 className="client-bu-section-title"><ClipboardIcon /> {isBu120 ? 'Production Overview:' : 'Production Details:'}</h5>
+            {isBu120 ? (
+              <ul className="client-bu-section-list">
+                <li>Avg Completion: {avgCompletion}%</li>
+                <li>Ahead / On Time / Behind: {aheadCount} / {onTimeCount} / {behindCount}</li>
+                <li>Avg Days Remaining: {avgDaysRemaining}</li>
+                <li>Daily Throughput: {cards.length} active builds</li>
+              </ul>
+            ) : (
+              <ul className="client-bu-section-list">
+                <li>Today&apos;s Output: {unitPanel.todaysOutput}</li>
+                <li>Target vs Actual: {unitPanel.targetVsActual}</li>
+                <li>Cycle Time (Avg): {unitPanel.cycleTime}</li>
+                <li>Throughput: {unitPanel.throughput}</li>
+              </ul>
+            )}
+          </section>
 
-      <section className="client-bu-section">
-        <h5 className="client-bu-section-title"><TruckIcon /> Shipping Outlook:</h5>
-        <ul className="client-bu-section-list client-bu-shipout">
-          <li><span className="client-bu-shipdot tone-good" />On Track: <strong>{tally.onTrack}</strong></li>
-          <li><span className="client-bu-shipdot tone-warn" />At Risk: <strong>{tally.atRisk}</strong></li>
-          <li><span className="client-bu-shipdot tone-bad" />Delayed: <strong>{tally.delayed}</strong></li>
-        </ul>
-      </section>
+          <section className="client-bu-section">
+            <h5 className="client-bu-section-title"><TruckIcon /> Shipping Outlook:</h5>
+            <ul className="client-bu-section-list client-bu-shipout">
+              <li><span className="client-bu-shipdot tone-good" />On Track: <strong>{tally.onTrack}</strong></li>
+              <li><span className="client-bu-shipdot tone-warn" />At Risk: <strong>{tally.atRisk}</strong></li>
+              <li><span className="client-bu-shipdot tone-bad" />Delayed: <strong>{tally.delayed}</strong></li>
+            </ul>
+          </section>
 
-      {isBu120 ? (
-      <section className="client-bu-section">
-        <h5 className="client-bu-section-title"><EyeIcon /> Visual Snapshot</h5>
-        <div className="client-bu-snap-grid">
-            <>
-              <div className="client-bu-snap-card">
-                <p className="client-bu-snap-card-title">Active Jobs</p>
-                <div className="client-bu-snap-row">
-                  <MiniDonut
-                    value={cards.length}
-                    max={Math.max(cards.length, 6)}
-                    color="#5b21b6"
-                    track="#ede9fe"
-                    label={String(cards.length)}
-                    sub="Active Jobs"
-                  />
-                  <div className="client-bu-snap-aux">
-                    <strong>{unitPanel.activeOperators}</strong>
-                    <span>Operators</span>
+          {isBu120 ? (
+            <section className="client-bu-section">
+              <h5 className="client-bu-section-title"><EyeIcon /> Visual Snapshot</h5>
+              <div className="client-bu-snap-grid">
+                <>
+                  <div className="client-bu-snap-card">
+                    <p className="client-bu-snap-card-title">Active Jobs</p>
+                    <div className="client-bu-snap-row">
+                      <MiniDonut
+                        value={cards.length}
+                        max={Math.max(cards.length, 6)}
+                        color="#5b21b6"
+                        track="#ede9fe"
+                        label={String(cards.length)}
+                        sub="Active Jobs"
+                      />
+                      <div className="client-bu-snap-aux">
+                        <strong>{unitPanel.activeOperators}</strong>
+                        <span>Operators</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                  <div className="client-bu-snap-card">
+                    <p className="client-bu-snap-card-title">Average Completion</p>
+                    <div className="client-bu-snap-row">
+                      <MiniDonut
+                        value={avgCompletion}
+                        color="#5b21b6"
+                        track="#ede9fe"
+                        label={`${avgCompletion}%`}
+                      />
+                    </div>
+                    <p className="client-bu-snap-foot">{`Avg Days Remaining: ${avgDaysRemaining}`}</p>
+                  </div>
+                  <div className="client-bu-snap-card">
+                    <p className="client-bu-snap-card-title">Build Schedule Status</p>
+                    <MiniHBar
+                      rows={[
+                        { label: 'Ahead', value: aheadCount, color: '#16a34a' },
+                        { label: 'On Time', value: onTimeCount, color: '#1e3a8a' },
+                        { label: 'Behind', value: behindCount, color: '#dc2626' },
+                      ]}
+                    />
+                  </div>
+                  <div className="client-bu-snap-card">
+                    <p className="client-bu-snap-card-title">Shipping Outlook</p>
+                    <MiniHBar
+                      rows={[
+                        { label: 'On Track', value: tally.onTrack, color: '#16a34a' },
+                        { label: 'At Risk', value: tally.atRisk, color: '#f59e0b' },
+                        { label: 'Delayed', value: tally.delayed, color: '#dc2626' },
+                      ]}
+                    />
+                  </div>
+                </>
               </div>
-              <div className="client-bu-snap-card">
-                <p className="client-bu-snap-card-title">Average Completion</p>
-                <div className="client-bu-snap-row">
-                  <MiniDonut
-                    value={avgCompletion}
-                    color="#5b21b6"
-                    track="#ede9fe"
-                    label={`${avgCompletion}%`}
-                  />
-                </div>
-                <p className="client-bu-snap-foot">{`Avg Days Remaining: ${avgDaysRemaining}`}</p>
-              </div>
-              <div className="client-bu-snap-card">
-                <p className="client-bu-snap-card-title">Build Schedule Status</p>
-                <MiniHBar
-                  rows={[
-                    { label: 'Ahead', value: aheadCount, color: '#16a34a' },
-                    { label: 'On Time', value: onTimeCount, color: '#1e3a8a' },
-                    { label: 'Behind', value: behindCount, color: '#dc2626' },
-                  ]}
-                />
-              </div>
-              <div className="client-bu-snap-card">
-                <p className="client-bu-snap-card-title">Shipping Outlook</p>
-                <MiniHBar
-                  rows={[
-                    { label: 'On Track', value: tally.onTrack, color: '#16a34a' },
-                    { label: 'At Risk', value: tally.atRisk, color: '#f59e0b' },
-                    { label: 'Delayed', value: tally.delayed, color: '#dc2626' },
-                  ]}
-                />
-              </div>
-            </>
-        </div>
-      </section>
-      ) : null}
-      </>
+            </section>
+          ) : null}
+        </>
       ) : null}
 
       {showSystemsSide ? (
         <section className="client-bu-section">
           <h5 className="client-bu-section-title"><SystemsIcon /> Systems Overview</h5>
           <div className="client-bu-snap-grid">
-              <div className="client-bu-snap-card">
-                <p className="client-bu-snap-card-title">Active Machines</p>
-                <div className="client-bu-snap-row">
-                  <MiniDonut
-                    value={activeMachinesParts[0]}
-                    max={activeMachinesParts[1] || activeMachinesParts[0] || 1}
-                    color="#5b21b6"
-                    track="#ede9fe"
-                    label={`${activeMachinesParts[0]}/${activeMachinesParts[1]}`}
-                    sub="Active"
-                  />
-                  <div className="client-bu-snap-aux">
-                    <strong>{unitPanel.activeOperators}</strong>
-                    <span>Operators</span>
-                  </div>
+            <div className="client-bu-snap-card">
+              <p className="client-bu-snap-card-title">Active Machines</p>
+              <div className="client-bu-snap-row">
+                <MiniDonut
+                  value={activeMachinesParts[0]}
+                  max={activeMachinesParts[1] || activeMachinesParts[0] || 1}
+                  color="#5b21b6"
+                  track="#ede9fe"
+                  label={`${activeMachinesParts[0]}/${activeMachinesParts[1]}`}
+                  sub="Active"
+                />
+                <div className="client-bu-snap-aux">
+                  <strong>{unitPanel.activeOperators}</strong>
+                  <span>Operators</span>
                 </div>
               </div>
-              <div className="client-bu-snap-card">
-                <p className="client-bu-snap-card-title">Target vs Actual</p>
-                <MiniBars
-                  data={[
-                    { label: 'Target', value: targetNum, color: '#1e3a8a' },
-                    { label: 'Actual', value: actualNum, color: '#7c3aed' },
-                  ]}
-                />
-                <p className="client-bu-snap-foot">{unitPanel.targetVsActual}</p>
-              </div>
-              <div className="client-bu-snap-card">
-                <p className="client-bu-snap-card-title">Cycle Time Trend (sec)</p>
-                <MiniLine data={cycleTrend} color="#5b21b6" />
-                <p className="client-bu-snap-foot">{`Average: ${unitPanel.cycleTime}`}</p>
-              </div>
-              <div className="client-bu-snap-card">
-                <p className="client-bu-snap-card-title">Throughput (units/hr)</p>
-                <MiniBars data={throughputTrend.map((d) => ({ ...d, color: '#1e3a8a' }))} />
-                <p className="client-bu-snap-foot">{`Average: ${unitPanel.throughput}`}</p>
-              </div>
-        </div>
-      </section>
+            </div>
+            <div className="client-bu-snap-card">
+              <p className="client-bu-snap-card-title">Target vs Actual</p>
+              <MiniBars
+                data={[
+                  { label: 'Target', value: targetNum, color: '#1e3a8a' },
+                  { label: 'Actual', value: actualNum, color: '#7c3aed' },
+                ]}
+              />
+              <p className="client-bu-snap-foot">{unitPanel.targetVsActual}</p>
+            </div>
+            <div className="client-bu-snap-card">
+              <p className="client-bu-snap-card-title">Cycle Time Trend (sec)</p>
+              <MiniLine data={cycleTrend} color="#5b21b6" />
+              <p className="client-bu-snap-foot">{`Average: ${unitPanel.cycleTime}`}</p>
+            </div>
+            <div className="client-bu-snap-card">
+              <p className="client-bu-snap-card-title">Throughput (units/hr)</p>
+              <MiniBars data={throughputTrend.map((d) => ({ ...d, color: '#1e3a8a' }))} />
+              <p className="client-bu-snap-foot">{`Average: ${unitPanel.throughput}`}</p>
+            </div>
+          </div>
+        </section>
       ) : null}
 
       <div className="client-side-panel-foot">
@@ -3457,92 +3827,92 @@ function UnitJobsPanel({ user, unitLabel, unitCode, unitView, onUnitViewChange }
       onTimeRangeChange={setJobTimeRange}
       unitView={unitView}
       onUnitViewChange={onUnitViewChange}
-      ariaLabel={`BU ${digits} jobs`}
+      ariaLabel={`${unitCode || unitLabel} jobs`}
     >
       <div className="client-unit-jobs-panel">
         <div className="client-unit-jobs-grid">
-        {cards.map((card) => {
-          const stats = card.stats
-          const tone = statusTone(card.status)
-          const tv = formatTimeVariance(stats.timeVarianceDays)
-          const shipLabel = SHIP_STATUS_LABEL[stats.shipStatus]
-          const shipTone = SHIP_STATUS_TONE[stats.shipStatus]
-          return (
-            <article
-              key={card.id}
-              className="client-unit-job-card client-unit-job-card--clickable client-unit-job-card--v2"
-              role="button"
-              tabIndex={0}
-              aria-label={`Open details for ${card.title}`}
-              onClick={() => openJob(card)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  openJob(card)
-                }
-              }}
-            >
-              <header className="client-unit-job-head">
-                <h4>{card.title}</h4>
-                <p>{card.description}</p>
-              </header>
+          {cards.map((card) => {
+            const stats = card.stats
+            const tone = statusTone(card.status)
+            const tv = formatTimeVariance(stats.timeVarianceDays)
+            const shipLabel = SHIP_STATUS_LABEL[stats.shipStatus]
+            const shipTone = SHIP_STATUS_TONE[stats.shipStatus]
+            return (
+              <article
+                key={card.id}
+                className="client-unit-job-card client-unit-job-card--clickable client-unit-job-card--v2"
+                role="button"
+                tabIndex={0}
+                aria-label={`Open details for ${card.title}`}
+                onClick={() => openJob(card)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    openJob(card)
+                  }
+                }}
+              >
+                <header className="client-unit-job-head">
+                  <h4>{card.title}</h4>
+                  <p>{card.description}</p>
+                </header>
 
-              <div className="client-unit-job-body">
-                {card.machinePhotoSrc ? (
-                  <div className="client-unit-job-photo">
-                    <img
-                      src={card.machinePhotoSrc}
-                      alt={`Harland equipment for ${card.title}`}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                ) : (
-                  <div className="client-unit-job-photo client-unit-job-photo--empty" aria-hidden="true" />
-                )}
+                <div className="client-unit-job-body">
+                  {card.machinePhotoSrc ? (
+                    <div className="client-unit-job-photo">
+                      <img
+                        src={card.machinePhotoSrc}
+                        alt={`Harland equipment for ${card.title}`}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  ) : (
+                    <div className="client-unit-job-photo client-unit-job-photo--empty" aria-hidden="true" />
+                  )}
 
-                <div className="client-unit-job-tiles">
-                  <div className="client-unit-job-tile">
-                    <span className="client-unit-job-tile-label">Percent Complete</span>
-                    <span className={`client-unit-job-tile-value tone-${tone}`}>{`${stats.completion}%`}</span>
-                  </div>
-                  <div className="client-unit-job-tile">
-                    <span className="client-unit-job-tile-label">Ship Status</span>
-                    <span className={`client-unit-job-ship tone-${shipTone}`}>
-                      <ShipStatusIcon status={stats.shipStatus} />
-                      <strong>{shipLabel}</strong>
-                    </span>
-                  </div>
-                  <div className="client-unit-job-tile">
-                    <span className="client-unit-job-tile-label">Time Variance</span>
-                    <span className={`client-unit-job-variance tone-${tv.dir === 'up' ? 'good' : tv.dir === 'down' ? 'bad' : 'neutral'}`}>
-                      <VarianceArrow direction={tv.dir} />
-                      <strong>{tv.primary}</strong>
-                    </span>
-                    <span className="client-unit-job-variance-foot">{tv.label}</span>
-                  </div>
-                  <div className="client-unit-job-tile">
-                    <span className="client-unit-job-tile-label">Days Remaining</span>
-                    <span className="client-unit-job-days">
-                      <CalendarIcon />
-                      <strong>{stats.daysRemaining}</strong>
-                    </span>
-                    <span className="client-unit-job-days-foot">days left</span>
+                  <div className="client-unit-job-tiles">
+                    <div className="client-unit-job-tile">
+                      <span className="client-unit-job-tile-label">Percent Complete</span>
+                      <span className={`client-unit-job-tile-value tone-${tone}`}>{`${stats.completion}%`}</span>
+                    </div>
+                    <div className="client-unit-job-tile">
+                      <span className="client-unit-job-tile-label">Ship Status</span>
+                      <span className={`client-unit-job-ship tone-${shipTone}`}>
+                        <ShipStatusIcon status={stats.shipStatus} />
+                        <strong>{shipLabel}</strong>
+                      </span>
+                    </div>
+                    <div className="client-unit-job-tile">
+                      <span className="client-unit-job-tile-label">Time Variance</span>
+                      <span className={`client-unit-job-variance tone-${tv.dir === 'up' ? 'good' : tv.dir === 'down' ? 'bad' : 'neutral'}`}>
+                        <VarianceArrow direction={tv.dir} />
+                        <strong>{tv.primary}</strong>
+                      </span>
+                      <span className="client-unit-job-variance-foot">{tv.label}</span>
+                    </div>
+                    <div className="client-unit-job-tile">
+                      <span className="client-unit-job-tile-label">Days Remaining</span>
+                      <span className="client-unit-job-days">
+                        <CalendarIcon />
+                        <strong>{stats.daysRemaining}</strong>
+                      </span>
+                      <span className="client-unit-job-days-foot">days left</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <footer className="client-unit-job-foot">
-                <span className="client-unit-job-foot-label">Build Progress</span>
-                <div className={`client-unit-job-progress tone-${tone}`}>
-                  <span style={{ width: `${stats.completion}%` }} />
-                </div>
-                <span className={`client-unit-job-foot-value tone-${tone}`}>{`${stats.completion}%`}</span>
-              </footer>
-            </article>
-          )
-        })}
-        {selectedJob ? <JobDetailModal job={selectedJob} onClose={() => setSelectedJob(null)} /> : null}
+                <footer className="client-unit-job-foot">
+                  <span className="client-unit-job-foot-label">Build Progress</span>
+                  <div className={`client-unit-job-progress tone-${tone}`}>
+                    <span style={{ width: `${stats.completion}%` }} />
+                  </div>
+                  <span className={`client-unit-job-foot-value tone-${tone}`}>{`${stats.completion}%`}</span>
+                </footer>
+              </article>
+            )
+          })}
+          {selectedJob ? <JobDetailModal job={selectedJob} onClose={() => setSelectedJob(null)} /> : null}
         </div>
       </div>
     </UnitHarlandPanelShell>
@@ -3595,11 +3965,25 @@ function BuildingSitePageView({
         {activeZone ? (
           activeZone.machinery.unitPanel ? (
             (() => {
-              const unitCode = activeZone.machinery.unitPanel.unit
-              const unitDigits = digitsFromUnitLabel(unitCode.replace(/^BU\s*/i, ''))
-              const unitCards = unitJobsForPanel(unitCode.replace(/^BU\s*/i, ''), locationDrivenCardCount(user))
-              const scopeId = `${site.id}-bu-${unitDigits}`
-              const scopeName = `BU ${unitDigits} · ${b.name}`
+              const unitPanel = activeZone.machinery.unitPanel
+              const unitCode = unitPanel.unit
+
+              const unitKey =
+                unitPanel.unitKey ||
+                unitKeyFromLabel(unitCode)
+
+              const unitDigits =
+                /^\d+$/.test(unitKey) ? unitKey : ''
+              const unitCards = unitJobsForPanel(
+                unitKey,
+                locationDrivenCardCount(user),
+              )
+              const scopeId = `${site.id}-unit-${unitKey}`
+
+              const scopeName =
+                unitKey === 'warehouse'
+                  ? `Warehouse · ${b.name}`
+                  : `BU ${unitDigits} · ${b.name}`
               const view =
                 unitView === 'safety' || unitView === 'security' || unitView === 'systems'
                   ? unitView
@@ -3608,24 +3992,24 @@ function BuildingSitePageView({
               return (
                 <div className="client-bu-view">
                   <UnitOverviewSide
-                    unitPanel={activeZone.machinery.unitPanel}
+                    unitPanel={unitPanel}
                     statusLabel={activeZone.machinery.status}
                     cards={unitCards}
                     localLine={localLine}
                     digits={unitDigits}
+                    unitKey={unitKey}
                     scopeId={scopeId}
                     unitView={view}
                     onUnitViewChange={handleView}
                     onClose={() => onSelectZone(null)}
                   />
                   <div
-                    className={`client-bu-image-wrap${
-                      activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl && view === 'systems'
-                        ? ' client-bu-image-wrap--analytics'
-                        : view === 'jobs' || view === 'systems'
-                          ? ' client-bu-image-wrap--status'
-                          : ' client-bu-image-wrap--hms-dash'
-                    }`}
+                    className={`client-bu-image-wrap${activeZone.machinery.unitPanel.powerBiEmbed?.reportUrl && view === 'systems'
+                      ? ' client-bu-image-wrap--analytics'
+                      : view === 'jobs' || view === 'systems'
+                        ? ' client-bu-image-wrap--status'
+                        : ' client-bu-image-wrap--hms-dash'
+                      }`}
                   >
                     {view === 'safety' ? (
                       <SafetyPanel
@@ -3633,6 +4017,7 @@ function BuildingSitePageView({
                         scopeName={scopeName}
                         localLine={localLine}
                         unitDigits={unitDigits}
+                        unitKey={unitKey}
                         unitCode={unitCode}
                         unitView={view}
                         onUnitViewChange={handleView}
@@ -3643,20 +4028,22 @@ function BuildingSitePageView({
                         scopeName={scopeName}
                         localLine={localLine}
                         unitDigits={unitDigits}
+                        unitKey={unitKey}
                         unitCode={unitCode}
                         unitView={view}
                         onUnitViewChange={handleView}
                       />
                     ) : view === 'systems' ? (
                       <UnitSystemsPanel
-                        unitPanel={activeZone.machinery.unitPanel}
+                        unitPanel={unitPanel}
+                        unitKey={unitKey}
                         unitView={view}
                         onUnitViewChange={handleView}
                       />
                     ) : (
                       <UnitJobsPanel
                         user={user}
-                        unitLabel={unitCode.replace(/^BU\s*/i, '')}
+                        unitLabel={unitKey}
                         unitCode={unitCode}
                         unitView={view}
                         onUnitViewChange={handleView}
@@ -3773,31 +4160,47 @@ function BuildingSitePageView({
   )
 }
 
-function BuildingSiteRouteShell({ site, now, onClose, user }) {
-  const [buildingZoneId, setBuildingZoneId] = useState(null)
+function BuildingSiteRouteShell({
+  site,
+  now,
+  onClose,
+  user,
+  zoneId,
+  onSelectZone,
+}) {
   const [buildingPanelTab, setBuildingPanelTab] = useState('safety')
   const [unitView, setUnitView] = useState('safety')
 
-  const handleSelectZone = useCallback((next) => {
-    setBuildingZoneId(next)
+  const handleSelectZone = (nextZoneId) => {
     setUnitView('safety')
-  }, [])
+    onSelectZone(nextZoneId)
+  }
 
   useEffect(() => {
-    const onKey = (e) => {
-      if (e.key !== 'Escape') return
-      e.preventDefault()
-      if (buildingZoneId) handleSelectZone(null)
-      else onClose()
+    const onKey = (event) => {
+      if (event.key !== 'Escape') return
+
+      event.preventDefault()
+
+      if (zoneId) {
+        setUnitView('safety')
+        onSelectZone(null)
+      } else {
+        onClose()
+      }
     }
+
     document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [buildingZoneId, handleSelectZone, onClose])
+
+    return () => {
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [zoneId, onSelectZone, onClose])
 
   return (
     <BuildingSitePageView
       site={site}
-      zoneId={buildingZoneId}
+      zoneId={zoneId}
       panelTab={buildingPanelTab}
       now={now}
       onClose={onClose}
@@ -4331,9 +4734,8 @@ function FootprintSitesSection({
             <div className="client-sites-dash-hero-alerts">{topAlerts}</div>
             <div className="client-sites-dash-hero-cards">
               <div
-                className={`client-sites-grid${
-                  footprintLayout === 'harland' ? ' client-sites-grid--harland-fp' : ''
-                }`}
+                className={`client-sites-grid${footprintLayout === 'harland' ? ' client-sites-grid--harland-fp' : ''
+                  }`}
               >
                 {siteList}
               </div>
@@ -4350,9 +4752,8 @@ function FootprintSitesSection({
   return (
     <section className={sectionMods.join(' ')} aria-labelledby="global-sites-title">
       <div
-        className={`client-sites-section-head${
-          isWorkspaceSingle ? ' client-sites-section-head--single' : ''
-        }`}
+        className={`client-sites-section-head${isWorkspaceSingle ? ' client-sites-section-head--single' : ''
+          }`}
       >
         {isWorkspaceSingle ? (
           hideSnapshotBranding ? null : (
@@ -4636,10 +5037,33 @@ export default function ClientDashboard({ user, onSignOut }) {
       ? location.pathname.replace(/\/+$/, '') || '/'
       : '/'
 
+  const buildingUnitRouteMatch =
+    matchPath(
+      { path: '/building/:siteId/:unitSlug', end: true },
+      pathnameForMatch,
+    ) ??
+    matchPath(
+      { path: 'building/:siteId/:unitSlug', end: true },
+      pathnameForMatch,
+    )
+
+  const buildingRouteMatch =
+    matchPath(
+      { path: '/building/:siteId', end: true },
+      pathnameForMatch,
+    ) ??
+    matchPath(
+      { path: 'building/:siteId', end: true },
+      pathnameForMatch,
+    )
+
   const routeBuildingSiteId =
-    matchPath({ path: '/building/:siteId', end: true }, pathnameForMatch)?.params?.siteId ??
-    matchPath({ path: 'building/:siteId', end: true }, pathnameForMatch)?.params?.siteId ??
+    buildingUnitRouteMatch?.params?.siteId ??
+    buildingRouteMatch?.params?.siteId ??
     null
+
+  const routeBuildingUnitSlug =
+    buildingUnitRouteMatch?.params?.unitSlug ?? null
 
   const routeAvioraPropertyId =
     matchPath({ path: '/property/:propertyId', end: true }, pathnameForMatch)?.params?.propertyId ??
@@ -4649,12 +5073,52 @@ export default function ClientDashboard({ user, onSignOut }) {
   const buildingSiteOnRoute =
     routeBuildingSiteId != null ? workspaceSites.find((s) => s.id === routeBuildingSiteId) ?? null : null
 
+  const routeBuildingZone =
+    routeBuildingUnitSlug && buildingSiteOnRoute?.building
+      ? buildingSiteOnRoute.building.zones.find(
+        (zone) => zone.slug === routeBuildingUnitSlug,
+      ) ?? null
+      : null
+
+  const routeBuildingZoneId = routeBuildingZone?.id ?? null
+
   const buildingRouteRequested = Boolean(routeBuildingSiteId)
-  const invalidBuildingRoute = buildingRouteRequested && !buildingSiteOnRoute?.building
-  const buildingPageActive = Boolean(buildingRouteRequested && buildingSiteOnRoute?.building)
+
+  const invalidBuildingUnitRoute = Boolean(
+    routeBuildingUnitSlug && !routeBuildingZone,
+  )
+
+  const invalidBuildingRoute =
+    buildingRouteRequested &&
+    (!buildingSiteOnRoute?.building || invalidBuildingUnitRoute)
+
+  const buildingPageActive = Boolean(
+    buildingRouteRequested && buildingSiteOnRoute?.building,
+  )
 
   const openBuilding = (site) => {
     navigate(`/building/${encodeURIComponent(site.id)}`)
+  }
+
+  const selectBuildingZone = (zoneId) => {
+    if (!buildingSiteOnRoute?.building) return
+
+    const sitePath = encodeURIComponent(buildingSiteOnRoute.id)
+
+    if (!zoneId) {
+      navigate(`/building/${sitePath}`)
+      return
+    }
+
+    const selectedZone = buildingSiteOnRoute.building.zones.find(
+      (zone) => zone.id === zoneId,
+    )
+
+    if (!selectedZone?.slug) return
+
+    navigate(
+      `/building/${sitePath}/${encodeURIComponent(selectedZone.slug)}`,
+    )
   }
 
   const closeBuilding = useCallback(() => {
@@ -4684,6 +5148,9 @@ export default function ClientDashboard({ user, onSignOut }) {
   }, [toast])
 
   const presetKey = resolveDashboardPresetKey(user)
+  const locoPlantPageActive =
+    presetKey === 'loco' &&
+    Boolean(matchPath({ path: 'plant', end: true }, pathnameForMatch))
   const navItemsForPreset = useMemo(
     () => NAV_ITEMS.filter((item) => !item.avioraOnly || presetKey === 'aviora'),
     [presetKey],
@@ -5065,8 +5532,8 @@ export default function ClientDashboard({ user, onSignOut }) {
       </header>
 
       {ctx.dashboardTemplate ||
-      (user.planId && SUBSCRIPTION_PLAN_LABEL[user.planId]) ||
-      activeProductTitles.length ? (
+        (user.planId && SUBSCRIPTION_PLAN_LABEL[user.planId]) ||
+        activeProductTitles.length ? (
         <div className="client-meta-strip" role="status">
           {ctx.dashboardTemplate ? (
             <div
@@ -5109,7 +5576,7 @@ export default function ClientDashboard({ user, onSignOut }) {
               type="button"
               className={`client-nav-item${effectiveTab === item.id ? ' active' : ''}`}
               onClick={() => {
-                if (routeBuildingSiteId || routeAvioraPropertyId) navigate('/')
+                if (routeBuildingSiteId || routeAvioraPropertyId || locoPlantPageActive) navigate('/')
                 setTab(item.id)
               }}
             >
@@ -5130,8 +5597,10 @@ export default function ClientDashboard({ user, onSignOut }) {
             <Navigate to="/" replace />
           ) : buildingPageActive ? (
             <BuildingSiteRouteShell
-              key={`${routeBuildingSiteId}:${location.key}`}
+              key={`${routeBuildingSiteId}:${routeBuildingUnitSlug || 'floor'}`}
               site={buildingSiteOnRoute}
+              zoneId={routeBuildingZoneId}
+              onSelectZone={selectBuildingZone}
               now={nowTick}
               onClose={closeBuilding}
               user={user}
@@ -5143,832 +5612,843 @@ export default function ClientDashboard({ user, onSignOut }) {
               companyName={ctx.portfolioCompanyName || user.company}
               nowTick={nowTick}
             />
-          ) : (
-            <>
-          {!(effectiveTab === 'safety' && presetKey === 'aviora') ? (
-            <div className="client-main-header">
-              <h1 className="client-main-title">{mainTitle}</h1>
-              <p className="client-main-sub">{mainSub}</p>
-            </div>
-          ) : null}
 
-          {effectiveTab === 'dashboard' || effectiveTab === 'locations' ? (
-            effectiveTab === 'dashboard' && presetKey === 'aviora' ? (
-              <AvioraConstructionPortfolio
-                companyName={ctx.portfolioCompanyName || user.company}
-                nowTick={nowTick}
-              />
-            ) : effectiveTab === 'dashboard' && useHenry1InsetAiAlerts && workspaceSites.length === 1 ? (
-              <FootprintSitesSection
-                workspaceSites={workspaceSites}
-                filteredGlobalSites={filteredGlobalSites}
-                company={user.company}
-                footprintBlurb={footprintBlurb}
-                searchQ={searchQ}
-                nowTick={nowTick}
-                onOpenBuilding={openBuilding}
-                hideSnapshotBranding={presetKey === 'aviora'}
-                footprintLayout={presetKey === 'harland' ? 'harland' : 'classic'}
-                onOpenAvioraProperty={
-                  presetKey === 'aviora'
-                    ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
-                    : undefined
-                }
-                topAlerts={
-                  <OverviewAiAlertsAside
-                    variant="inset"
-                    mirrorSite={workspaceSites[0]}
-                    nowTick={nowTick}
-                    ctx={ctx}
-                    visibleAlerts={visibleAlerts}
-                    alertFilter={alertFilter}
-                    onFilterChange={setAlertFilter}
-                    onAcknowledge={acknowledgeAlert}
-                    ackedIds={ackedIds}
-                    onViewAllAlerts={() => setTab('alerts')}
-                  />
-                }
-              />
-            ) : effectiveTab === 'dashboard' ? (
-              <div className="client-sites-ribbon-wrap">
-                <FootprintSitesSection
-                  workspaceSites={workspaceSites}
-                  filteredGlobalSites={filteredGlobalSites}
-                  company={user.company}
-                  footprintBlurb={footprintBlurb}
-                  searchQ={searchQ}
-                  nowTick={nowTick}
-                  onOpenBuilding={openBuilding}
-                  hideSnapshotBranding={presetKey === 'aviora'}
-                  footprintLayout={presetKey === 'harland' ? 'harland' : 'classic'}
-                  onOpenAvioraProperty={
-                    presetKey === 'aviora'
-                      ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
-                      : undefined
-                  }
-                />
-                {/* Full-width AI alerts below footprint; Henry1 uses inset alerts inside purple band */}
-                <OverviewAiAlertsAside
-                  variant="ribbon"
-                  ctx={ctx}
-                  visibleAlerts={visibleAlerts}
-                  alertFilter={alertFilter}
-                  onFilterChange={setAlertFilter}
-                  onAcknowledge={acknowledgeAlert}
-                  ackedIds={ackedIds}
-                  onViewAllAlerts={() => setTab('alerts')}
-                />
-              </div>
-            ) : (
-              <FootprintSitesSection
-                workspaceSites={workspaceSites}
-                filteredGlobalSites={filteredGlobalSites}
-                company={user.company}
-                footprintBlurb={footprintBlurb}
-                searchQ={searchQ}
-                nowTick={nowTick}
-                onOpenBuilding={openBuilding}
-                hideSnapshotBranding={presetKey === 'aviora'}
-                footprintLayout={presetKey === 'harland' ? 'harland' : 'classic'}
-                onOpenAvioraProperty={
-                  presetKey === 'aviora'
-                    ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
-                    : undefined
-                }
-              />
-            )
-          ) : null}
-
-          {effectiveTab === 'dashboard' ? (
-            <div
-              className={`client-welcome${workspaceSites.length === 1 ? ' client-welcome--narrow' : ''}`}
-              role="status"
-            >
-              <div className="client-welcome-inner">
-                <p className="client-welcome-greet">Welcome back, {greetName}</p>
-                <p className="client-welcome-meta">
-                  Signed in as <strong>{user.email}</strong>
-                  {user.lastLoginAt ? (
-                    <>
-                      {' '}
-                      · Last session {formatSessionDate(user.lastLoginAt)}
-                    </>
-                  ) : null}
-                  . Demo data below — wire to your historians and MES when you go live.
-                </p>
-              </div>
-            </div>
-          ) : null}
-
-          {effectiveTab === 'dashboard' ? (
-            <div className="client-demo-dashes" aria-label="Demo snapshot: three health signals">
-              <div className="client-demo-dashes-head">
-                <span className="client-demo-dashes-badge">Demo</span>
-                <span className="client-demo-dashes-title">Operational pulse</span>
-                <span className="client-demo-dashes-caption">Synthetic signals · all corridors green</span>
-              </div>
-              <ul className="client-demo-dashes-grid">
-                {[
-                  { id: 'oee', label: 'Throughput & OEE', sub: 'Line blend vs shift target' },
-                  { id: 'q', label: 'Quality & yield', sub: 'SPC checkpoints clear' },
-                  { id: 'u', label: 'Uptime & energy', sub: 'Voltage / load nominal' },
-                ].map((row) => (
-                  <li key={row.id} className="client-demo-dashes-cell">
-                    <div className="client-demo-dashes-bars" aria-hidden="true">
-                      <span className="client-demo-dashes-bar client-demo-dashes-bar--long" />
-                      <span className="client-demo-dashes-bar client-demo-dashes-bar--mid" />
-                      <span className="client-demo-dashes-bar client-demo-dashes-bar--short" />
-                    </div>
-                    <div className="client-demo-dashes-body">
-                      <div className="client-demo-dashes-text">
-                        <strong>{row.label}</strong>
-                        <span>{row.sub}</span>
-                      </div>
-                      <span className="client-demo-dashes-good">
-                        <span className="client-demo-dashes-good-dot" aria-hidden="true" />
-                        Good
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
-          {effectiveTab === 'dashboard' && !onboard.hidden ? (
-            onboardAllDone ? (
-              <div className="client-onboard-complete">
-                <div>
-                  <strong>You&apos;re set.</strong>
-                  <span> You&apos;ve opened every area of this demo workspace.</span>
-                </div>
-                <button type="button" className="client-onboard-dismiss" onClick={dismissOnboard}>
-                  Hide checklist
-                </button>
-              </div>
-            ) : (
-              <section className="client-onboard" aria-labelledby="client-onboard-title">
-                <div className="client-onboard-head">
-                  <div>
-                    <h2 id="client-onboard-title" className="client-onboard-title">
-                      Getting started
-                    </h2>
-                    <p className="client-onboard-sub">
-                      Five quick steps — each jumps to the right place in your workspace.
-                    </p>
-                  </div>
-                  <button type="button" className="client-onboard-dismiss" onClick={dismissOnboard}>
-                    Dismiss
-                  </button>
-                </div>
-                <ol className="client-onboard-list">
-                  {ONBOARD_STEPS.map((step, idx) => {
-                    const done = onboard.done.includes(step.id)
-                    return (
-                      <li key={step.id} className={`client-onboard-step${done ? ' client-onboard-step--done' : ''}`}>
-                        <span className="client-onboard-idx" aria-hidden="true">
-                          {done ? '✓' : idx + 1}
-                        </span>
-                        <div className="client-onboard-step-body">
-                          <h3 className="client-onboard-step-title">{step.title}</h3>
-                          <p className="client-onboard-step-text">{step.body}</p>
-                        </div>
-                        {done ? (
-                          <span className="client-onboard-done-label">Done</span>
-                        ) : (
-                          <button
-                            type="button"
-                            className="client-onboard-go"
-                            onClick={() => runOnboardStep(step)}
-                          >
-                            {step.action === 'export' ? 'Run demo' : 'Go there'}
-                          </button>
-                        )}
-                      </li>
-                    )
-                  })}
-                </ol>
-              </section>
-            )
-          ) : null}
-
-          {effectiveTab === 'dashboard' ? (
-            <>
-              <div className="client-kpi-grid" aria-label="Key performance indicators">
-                {DASH_KPIS.map((k) => (
-                  <div key={k.label} className="client-kpi-card">
-                    <span className="client-kpi-label">{k.label}</span>
-                    <span className="client-kpi-value">{k.value}</span>
-                    <span className="client-kpi-hint">{k.hint}</span>
-                    {k.trend ? (
-                      <span
-                        className={`client-kpi-trend${k.up === true ? ' client-kpi-trend--up' : ''}${k.up === false ? ' client-kpi-trend--down' : ''}`}
-                      >
-                        {k.trend}
-                      </span>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-
-              <div className="client-line-snapshot" aria-label="Line health snapshot">
-                {PRODUCTION_LINES.slice(0, 3).map((line) => (
-                  <article key={line.id} className="client-line-mini">
-                    <span className={`client-line-pill client-line-pill--${line.status}`}>{line.status}</span>
-                    <div className="client-line-mini-body">
-                      <strong>{line.name}</strong>
-                      <span className="client-line-mini-oee">{line.oee} OEE</span>
-                    </div>
-                    <button
-                      type="button"
-                      className="client-line-mini-link"
-                      onClick={() => {
-                        setSearchQ('')
-                        setTab('lines')
-                      }}
-                    >
-                      Lines →
-                    </button>
-                  </article>
-                ))}
-              </div>
-
-              <div className="client-quick-actions" aria-label="Quick actions">
-                {QUICK_ACTIONS.map((a) => (
-                  <button
-                    key={a.id}
-                    type="button"
-                    className="client-quick-action"
-                    onClick={() => runQuickAction(a.id)}
-                  >
-                    <span className="client-quick-action-label">{a.label}</span>
-                    <span className="client-quick-action-detail">{a.detail}</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="client-dash-extras">
-                <section className="client-priorities" aria-labelledby="pri-title">
-                  <div className="client-priorities-head">
-                    <h2 id="pri-title" className="client-panel-title">
-                      Today&apos;s priorities
-                    </h2>
-                    <span className="client-panel-badge">{priorities.filter((p) => !p.done).length} open</span>
-                  </div>
-                  <ul className="client-priority-list">
-                    {priorities.map((p) => (
-                      <li key={p.id} className={`client-priority-row${p.done ? ' client-priority-row--done' : ''}`}>
-                        <button
-                          type="button"
-                          className={`client-priority-check${p.done ? ' is-done' : ''}`}
-                          aria-pressed={p.done}
-                          onClick={() => togglePriority(p.id)}
-                          aria-label={p.done ? 'Mark not done' : 'Mark done'}
-                        >
-                          {p.done ? '✓' : ''}
-                        </button>
-                        <span className="client-priority-label">{p.label}</span>
-                        <span className="client-priority-due">{p.due}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-                <section className="client-shift-panel" aria-labelledby="shift-title">
-                  <h2 id="shift-title" className="client-panel-title">
-                    Shift mix (rolling)
-                  </h2>
-                  <div
-                    className="client-shift-bar"
-                    role="img"
-                    aria-label="Shift A thirty-five percent, B forty, C twenty-five"
-                  >
-                    {SHIFT_SEGMENTS.map((s) => (
-                      <div
-                        key={s.label}
-                        className={`client-shift-seg client-shift-seg--${s.tone}`}
-                        style={{ width: `${s.pct}%` }}
-                        title={`${s.label} · ${s.pct}%`}
-                      />
-                    ))}
-                  </div>
-                  <ul className="client-shift-legend">
-                    {SHIFT_SEGMENTS.map((s) => (
-                      <li key={s.label}>
-                        <span className={`client-shift-dot client-shift-dot--${s.tone}`} aria-hidden="true" />
-                        {s.label} · {s.pct}%
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              </div>
-
-              <div className="client-dash-split">
-                <div className="client-dash-primary">
-                  <div className="client-pills">
-                    {ctx.pills.map((p) => (
-                      <span key={p.label} className={`client-pill ${p.className}`}>
-                        {p.label}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="client-charts-row">
-                    <div className="client-chart-card">
-                      <span className="client-chart-label">{ctx.unitsLabel}</span>
-                      <svg className="client-svg" viewBox="0 0 100 48" preserveAspectRatio="xMidYMid meet">
-                        <defs>
-                          <linearGradient id={`${chartUid}-bar`} x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#60a5fa" />
-                            <stop offset="100%" stopColor="#3b82f6" />
-                          </linearGradient>
-                        </defs>
-                        <rect
-                          x="8"
-                          y="28"
-                          width="14"
-                          height="16"
-                          rx="2"
-                          fill={`url(#${chartUid}-bar)`}
-                          opacity="0.9"
-                        />
-                        <rect x="28" y="18" width="14" height="26" rx="2" fill={`url(#${chartUid}-bar)`} />
-                        <rect
-                          x="48"
-                          y="22"
-                          width="14"
-                          height="22"
-                          rx="2"
-                          fill={`url(#${chartUid}-bar)`}
-                          opacity="0.85"
-                        />
-                        <rect
-                          x="68"
-                          y="12"
-                          width="14"
-                          height="32"
-                          rx="2"
-                          fill={`url(#${chartUid}-bar)`}
-                          opacity="0.95"
-                        />
-                      </svg>
-                    </div>
-                    <div className="client-chart-card">
-                      <span className="client-chart-label">Sensor trend</span>
-                      <svg className="client-svg" viewBox="0 0 100 48" preserveAspectRatio="xMidYMid meet">
-                        <defs>
-                          <linearGradient id={`${chartUid}-area`} x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.45" />
-                            <stop offset="100%" stopColor="#6366f1" stopOpacity="0.05" />
-                          </linearGradient>
-                          <linearGradient id={`${chartUid}-line`} x1="0" y1="0" x2="1" y2="0">
-                            <stop offset="0%" stopColor="#8b5cf6" />
-                            <stop offset="100%" stopColor="#22d3ee" />
-                          </linearGradient>
-                        </defs>
-                    <path
-                      d="M 4 38 L 18 32 L 32 36 L 46 22 L 60 26 L 74 14 L 88 18 L 96 12 L 96 44 L 4 44 Z"
-                      fill={`url(#${chartUid}-area)`}
-                    />
-                    <path
-                      d="M 4 38 L 18 32 L 32 36 L 46 22 L 60 26 L 74 14 L 88 18 L 96 12"
-                      fill="none"
-                      stroke={`url(#${chartUid}-line)`}
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div className="client-anomaly">{ctx.anomaly}</div>
-              <div className="client-chart-footer">
-                <svg className="client-spark" viewBox="0 0 120 28" preserveAspectRatio="none">
-                  <line x1="0" y1="14" x2="120" y2="14" stroke="rgba(148,163,184,0.15)" strokeWidth="1" />
-                  <polyline
-                    fill="none"
-                    stroke="#38bdf8"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    points="0,20 12,18 24,22 36,14 48,16 60,8 72,12 84,6 96,10 108,4 120,7"
-                  />
-                  <polyline
-                    fill="none"
-                    stroke="#a78bfa"
-                    strokeWidth="1.2"
-                    strokeOpacity="0.85"
-                    strokeLinecap="round"
-                    points="0,24 15,20 30,22 45,18 60,20 75,14 90,16 105,12 120,14"
-                  />
-                </svg>
-                <div className="client-metrics">
-                  <span>
-                    OEE <strong>{ctx.oee}</strong>
-                  </span>
-                  <span>
-                    MTBF <strong>{ctx.mtbf}</strong>
-                  </span>
-                </div>
-              </div>
-                </div>
-
-                <aside className="client-activity-panel" aria-label="Recent activity">
-                  <h2 className="client-activity-title">Recent activity</h2>
-                  <ul className="client-activity-list">
-                    {ACTIVITY_FEED.map((row, i) => (
-                      <li key={i} className="client-activity-item">
-                        <span className="client-activity-dot" aria-hidden="true" />
-                        <div>
-                          <span className="client-activity-when">{row.when}</span>
-                          <p className="client-activity-text">{row.text}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </aside>
-              </div>
-            </>
-          ) : null}
-
-          {effectiveTab === 'lines' ? (
-            <div className="client-lines-page">
-              <p className="client-lines-lead">
-                {searchQ.trim()
-                  ? `${filteredLines.length} line(s) match “${searchQ.trim()}”. Clear the search bar to see all.`
-                  : `${PRODUCTION_LINES.length} assets at this site. Use the top search to filter by name, SKU, or line ID.`}
-              </p>
-              <div className="client-line-grid">
-                {filteredLines.map((line) => (
-                  <article key={line.id} className="client-line-card">
-                    <header className="client-line-card-head">
-                      <span className={`client-line-pill client-line-pill--${line.status}`}>{line.status}</span>
-                      <span className="client-line-id">{line.id}</span>
-                    </header>
-                    <h3 className="client-line-name">{line.name}</h3>
-                    <dl className="client-line-dl">
-                      <div>
-                        <dt>OEE</dt>
-                        <dd>{line.oee}</dd>
-                      </div>
-                      <div>
-                        <dt>Target</dt>
-                        <dd>{line.target}</dd>
-                      </div>
-                      <div className="client-line-dl-span">
-                        <dt>SKU / job</dt>
-                        <dd>{line.sku}</dd>
-                      </div>
-                    </dl>
-                    <p className="client-line-note">{line.note}</p>
-                    <button
-                      type="button"
-                      className="client-line-cta"
-                      onClick={() =>
-                        setToast(`Detail view for ${line.name} — trends, alarms, and work orders (demo).`)
-                      }
-                    >
-                      Open detail
-                    </button>
-                  </article>
-                ))}
-              </div>
-              {filteredLines.length === 0 ? (
-                <p className="client-lines-empty">No lines match that search.</p>
-              ) : null}
-            </div>
-          ) : null}
-
-          {effectiveTab === 'alerts' ? (
-            <div className="client-alerts-panel">
-              <p className="client-alerts-lead">{ctx.alertsLead}</p>
-              <div className="client-odoo-bar">
-                <span className="client-odoo-bar-label">
-                  {odooLink.configured ? 'Odoo connected' : 'Odoo'}
-                </span>
-                <a className="client-odoo-bar-link" href={odooLink.eventsAppUrl} target="_blank" rel="noreferrer">
-                  Open HENRY Events
-                </a>
-                <a className="client-odoo-bar-link" href={odooLink.snapshotUrl} target="_blank" rel="noreferrer">
-                  Open SnapShot site
-                </a>
-              </div>
-              <div className="client-filter-row" role="toolbar" aria-label="Filter alerts by severity">
-                {(['all', 'high', 'med', 'low']).map((f) => (
-                  <button
-                    key={f}
-                    type="button"
-                    className={`client-filter-chip${alertFilter === f ? ' active' : ''}`}
-                    onClick={() => setAlertFilter(f)}
-                  >
-                    {f === 'all' ? 'All' : f === 'high' ? 'High' : f === 'med' ? 'Medium' : 'Low'}
-                  </button>
-                ))}
-              </div>
-              <ul className="client-alert-list">
-                {visibleAlerts.map((a) => (
-                  <li key={a.id} className="client-alert-row">
-                    <span className={`client-sev client-sev--${a.severity}`}>
-                      {a.severity === 'high' ? 'High' : a.severity === 'med' ? 'Med' : 'Low'}
-                    </span>
-                    <div className="client-alert-body">
-                      <strong>{a.title}</strong>
-                      <p>{a.detail}</p>
-                      <span className="client-alert-when">{a.when}</span>
-                    </div>
-                    <button type="button" className="client-alert-ack" onClick={() => acknowledgeAlert(a.id)}>
-                      Acknowledge
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              {visibleAlerts.length === 0 ? (
-                <p className="client-alerts-empty">
-                  {ackedIds.size > 0
-                    ? 'No alerts in this filter — try another severity or you’ve acknowledged them all.'
-                    : 'No alerts match this filter.'}
-                </p>
-              ) : null}
-              <p className="client-alerts-foot">{ctx.alertsFoot}</p>
-            </div>
-          ) : null}
-
-          {effectiveTab === 'safety' ? (
-            <AvioraSafetySecurityDashboard
+          ) : locoPlantPageActive ? (
+            <LocoPlantDetailPage
               companyName={ctx.portfolioCompanyName || user.company}
               nowTick={nowTick}
-              onOpenStatus={() => setTab('dashboard')}
             />
-          ) : null}
-
-          {effectiveTab === 'reports' ? (
-            <div className="client-text-panel">
-              <div className="client-reports-toolbar">
-                <div className="client-filter-row" role="toolbar" aria-label="Report time range">
-                  {REPORT_RANGE_PRESETS.map((p) => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      className={`client-filter-chip${reportRange === p.id ? ' active' : ''}`}
-                      onClick={() => setReportRange(p.id)}
-                    >
-                      {p.label}
-                    </button>
-                  ))}
+          ) : (
+            <>
+              {!(effectiveTab === 'safety' && presetKey === 'aviora') ? (
+                <div className="client-main-header">
+                  <h1 className="client-main-title">{mainTitle}</h1>
+                  <p className="client-main-sub">{mainSub}</p>
                 </div>
-                <div className="client-reports-actions">
-                  <button
-                    type="button"
-                    className="client-report-export"
-                    onClick={() =>
-                      setToast(`Export ${reportRange} bundle (PDF + CSV) — hook to your job queue in production.`)
-                    }
-                  >
-                    Export range
-                  </button>
-                  <button
-                    type="button"
-                    className="client-report-export client-report-export--ghost"
-                    onClick={() => setToast('Schedule digest — pick teams and cadence in settings.')}
-                  >
-                    Schedule digest
-                  </button>
-                </div>
-              </div>
-              <p className="client-text-lead">{ctx.reportsLead}</p>
-              <div className="client-dossier-grid">
-                {ctx.reports.map((r) => (
-                  <article key={r.title} className="client-dossier-card">
-                    <h3 className="client-dossier-card-title">{r.title}</h3>
-                    <p className="client-dossier-card-body">{r.text}</p>
-                  </article>
-                ))}
-              </div>
-              <p className="client-text-foot">PDF + Excel export · scheduled digest to your distribution lists</p>
-            </div>
-          ) : null}
+              ) : null}
 
-          {effectiveTab === 'insights' ? (
-            <div className="client-text-panel client-activities-page">
-              <section className="client-myhenry-panel" aria-label="MyHenry recommendations">
-                <h3 className="client-myhenry-title">AI Insight Panel (MyHenry)</h3>
-                <ul className="client-myhenry-list">
-                  {myHenryRecommendations.map((line) => (
-                    <li key={line}>{line}</li>
-                  ))}
-                </ul>
-                <button
-                  type="button"
-                  className="client-myhenry-cta"
-                  onClick={() => {
-                    if (typeof window !== 'undefined') {
-                      window.location.assign(BOOK_DEMO_URL)
-                    }
-                  }}
-                >
-                  Get Started with a Demo
-                </button>
-              </section>
-              <section className="client-insight-ask" aria-label="Ask HENRY">
-                <label htmlFor="insight-q" className="client-insight-ask-label">
-                  Ask in plain language
-                </label>
-                <div className="client-insight-ask-row">
-                  <input
-                    id="insight-q"
-                    type="text"
-                    className="client-insight-input"
-                    placeholder='e.g. “What drove scrap on Line 03 this week?”'
-                    value={insightQuestion}
-                    onChange={(e) => setInsightQuestion(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') runInsightAsk()
-                    }}
+              {effectiveTab === 'dashboard' || effectiveTab === 'locations' ? (
+                effectiveTab === 'dashboard' && presetKey === 'aviora' ? (
+                  <AvioraConstructionPortfolio
+                    companyName={ctx.portfolioCompanyName || user.company}
+                    nowTick={nowTick}
                   />
-                  <button type="button" className="client-insight-submit" onClick={runInsightAsk}>
-                    Ask HENRY
-                  </button>
-                </div>
-                <p className="client-insight-ask-hint">
-                  Answers will cite machines, lots, and timestamps when your data lake is connected.
-                </p>
-              </section>
-              <ActivitiesAnalyticsPanel
-                actId={activitiesVisId}
-                reportRange={reportRange}
-                onReportRange={setReportRange}
-                leadText={ctx.insightsLead}
-                sites={workspaceSites}
-              />
-              <p className="client-text-foot">
-                Demo charts mirror a Power BI–style canvas — replace with live measures from your warehouse or embed
-                reports.
-              </p>
-            </div>
-          ) : null}
+                ) : effectiveTab === 'dashboard' && presetKey === 'loco' ? (
+                  <LocoManufacturingPortfolio
+                    companyName={ctx.portfolioCompanyName || user.company}
+                    nowTick={nowTick}
+                  />
+                ) : effectiveTab === 'dashboard' && useHenry1InsetAiAlerts && workspaceSites.length === 1 ? (
+                  <FootprintSitesSection
+                    workspaceSites={workspaceSites}
+                    filteredGlobalSites={filteredGlobalSites}
+                    company={user.company}
+                    footprintBlurb={footprintBlurb}
+                    searchQ={searchQ}
+                    nowTick={nowTick}
+                    onOpenBuilding={openBuilding}
+                    hideSnapshotBranding={presetKey === 'aviora'}
+                    footprintLayout={presetKey === 'harland' ? 'harland' : 'classic'}
+                    onOpenAvioraProperty={
+                      presetKey === 'aviora'
+                        ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
+                        : undefined
+                    }
+                    topAlerts={
+                      <OverviewAiAlertsAside
+                        variant="inset"
+                        mirrorSite={workspaceSites[0]}
+                        nowTick={nowTick}
+                        ctx={ctx}
+                        visibleAlerts={visibleAlerts}
+                        alertFilter={alertFilter}
+                        onFilterChange={setAlertFilter}
+                        onAcknowledge={acknowledgeAlert}
+                        ackedIds={ackedIds}
+                        onViewAllAlerts={() => setTab('alerts')}
+                      />
+                    }
+                  />
+                ) : effectiveTab === 'dashboard' ? (
+                  <div className="client-sites-ribbon-wrap">
+                    <FootprintSitesSection
+                      workspaceSites={workspaceSites}
+                      filteredGlobalSites={filteredGlobalSites}
+                      company={user.company}
+                      footprintBlurb={footprintBlurb}
+                      searchQ={searchQ}
+                      nowTick={nowTick}
+                      onOpenBuilding={openBuilding}
+                      hideSnapshotBranding={presetKey === 'aviora'}
+                      footprintLayout={presetKey === 'harland' ? 'harland' : 'classic'}
+                      onOpenAvioraProperty={
+                        presetKey === 'aviora'
+                          ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
+                          : undefined
+                      }
+                    />
+                    {/* Full-width AI alerts below footprint; Henry1 uses inset alerts inside purple band */}
+                    <OverviewAiAlertsAside
+                      variant="ribbon"
+                      ctx={ctx}
+                      visibleAlerts={visibleAlerts}
+                      alertFilter={alertFilter}
+                      onFilterChange={setAlertFilter}
+                      onAcknowledge={acknowledgeAlert}
+                      ackedIds={ackedIds}
+                      onViewAllAlerts={() => setTab('alerts')}
+                    />
+                  </div>
+                ) : (
+                  <FootprintSitesSection
+                    workspaceSites={workspaceSites}
+                    filteredGlobalSites={filteredGlobalSites}
+                    company={user.company}
+                    footprintBlurb={footprintBlurb}
+                    searchQ={searchQ}
+                    nowTick={nowTick}
+                    onOpenBuilding={openBuilding}
+                    hideSnapshotBranding={presetKey === 'aviora'}
+                    footprintLayout={presetKey === 'harland' ? 'harland' : 'classic'}
+                    onOpenAvioraProperty={
+                      presetKey === 'aviora'
+                        ? (propertyId) => navigate(`/property/${encodeURIComponent(propertyId)}`)
+                        : undefined
+                    }
+                  />
+                )
+              ) : null}
 
-          {effectiveTab === 'maintenance' ? (
-            <div className="client-text-panel client-text-panel--placeholder" aria-labelledby="maintenance-h">
-              <h2 id="maintenance-h" className="client-panel-title">
-                Maintenance
-              </h2>
-              <p className="client-text-lead">
-                Preventive maintenance, work orders, and spare-parts context will appear here. Connect HENRY to your
-                CMMS or EAM in production.
-              </p>
-              <button
-                type="button"
-                className="client-help-link"
-                onClick={() => setToast('CMMS integration — link tickets, assets, and downtime codes (demo).')}
-              >
-                Plan integration
-              </button>
-            </div>
-          ) : null}
+              {effectiveTab === 'dashboard' ? (
+                <div
+                  className={`client-welcome${workspaceSites.length === 1 ? ' client-welcome--narrow' : ''}`}
+                  role="status"
+                >
+                  <div className="client-welcome-inner">
+                    <p className="client-welcome-greet">Welcome back, {greetName}</p>
+                    <p className="client-welcome-meta">
+                      Signed in as <strong>{user.email}</strong>
+                      {user.lastLoginAt ? (
+                        <>
+                          {' '}
+                          · Last session {formatSessionDate(user.lastLoginAt)}
+                        </>
+                      ) : null}
+                      . Demo data below — wire to your historians and MES when you go live.
+                    </p>
+                  </div>
+                </div>
+              ) : null}
 
-          {effectiveTab === 'users' ? (
-            <div className="client-text-panel client-text-panel--placeholder" aria-labelledby="users-h">
-              <h2 id="users-h" className="client-panel-title">
-                Users
-              </h2>
-              <p className="client-text-lead">
-                Invite operators, site leads, and corporate viewers; assign roles per site. Wire to your identity
-                provider and SCIM in production.
-              </p>
-              <button
-                type="button"
-                className="client-help-link"
-                onClick={() => setToast('User provisioning — SSO groups map to HENRY roles (demo).')}
-              >
-                View access model
-              </button>
-            </div>
-          ) : null}
+              {effectiveTab === 'dashboard' ? (
+                <div className="client-demo-dashes" aria-label="Demo snapshot: three health signals">
+                  <div className="client-demo-dashes-head">
+                    <span className="client-demo-dashes-badge">Demo</span>
+                    <span className="client-demo-dashes-title">Operational pulse</span>
+                    <span className="client-demo-dashes-caption">Synthetic signals · all corridors green</span>
+                  </div>
+                  <ul className="client-demo-dashes-grid">
+                    {[
+                      { id: 'oee', label: 'Throughput & OEE', sub: 'Line blend vs shift target' },
+                      { id: 'q', label: 'Quality & yield', sub: 'SPC checkpoints clear' },
+                      { id: 'u', label: 'Uptime & energy', sub: 'Voltage / load nominal' },
+                    ].map((row) => (
+                      <li key={row.id} className="client-demo-dashes-cell">
+                        <div className="client-demo-dashes-bars" aria-hidden="true">
+                          <span className="client-demo-dashes-bar client-demo-dashes-bar--long" />
+                          <span className="client-demo-dashes-bar client-demo-dashes-bar--mid" />
+                          <span className="client-demo-dashes-bar client-demo-dashes-bar--short" />
+                        </div>
+                        <div className="client-demo-dashes-body">
+                          <div className="client-demo-dashes-text">
+                            <strong>{row.label}</strong>
+                            <span>{row.sub}</span>
+                          </div>
+                          <span className="client-demo-dashes-good">
+                            <span className="client-demo-dashes-good-dot" aria-hidden="true" />
+                            Good
+                          </span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
 
-          {effectiveTab === 'account' ? (
-            <div className="client-account-panel">
-              <div className="client-account-hero">
-                <div className="client-account-hero-avatar" aria-hidden="true">
-                  {avatarLetter}
-                </div>
-                <div>
-                  <h2 className="client-account-hero-name">{user.company}</h2>
-                  <p className="client-account-hero-email">{user.email}</p>
-                </div>
-              </div>
-              <dl className="client-account-dl">
-                <div className="client-account-row">
-                  <dt>Work email</dt>
-                  <dd>{user.email}</dd>
-                </div>
-                <div className="client-account-row">
-                  <dt>Organization</dt>
-                  <dd>{user.company}</dd>
-                </div>
-                <div className="client-account-row">
-                  <dt>Workspace slug</dt>
-                  <dd>
-                    <code className="client-account-code">{user.slug}</code>
-                  </dd>
-                </div>
-                <div className="client-account-row">
-                  <dt>Plan</dt>
-                  <dd>
-                    {user.planId && SUBSCRIPTION_PLAN_LABEL[user.planId]
-                      ? SUBSCRIPTION_PLAN_LABEL[user.planId]
-                      : 'No plan on file — contact sales to align billing.'}
-                  </dd>
-                </div>
-                <div className="client-account-row">
-                  <dt>Active products</dt>
-                  <dd>
-                    {activeProductTitles.length ? (
-                      <ul className="client-account-product-list">
-                        {activeProductTitles.map((t) => (
-                          <li key={t}>{t}</li>
+              {effectiveTab === 'dashboard' && !onboard.hidden ? (
+                onboardAllDone ? (
+                  <div className="client-onboard-complete">
+                    <div>
+                      <strong>You&apos;re set.</strong>
+                      <span> You&apos;ve opened every area of this demo workspace.</span>
+                    </div>
+                    <button type="button" className="client-onboard-dismiss" onClick={dismissOnboard}>
+                      Hide checklist
+                    </button>
+                  </div>
+                ) : (
+                  <section className="client-onboard" aria-labelledby="client-onboard-title">
+                    <div className="client-onboard-head">
+                      <div>
+                        <h2 id="client-onboard-title" className="client-onboard-title">
+                          Getting started
+                        </h2>
+                        <p className="client-onboard-sub">
+                          Five quick steps — each jumps to the right place in your workspace.
+                        </p>
+                      </div>
+                      <button type="button" className="client-onboard-dismiss" onClick={dismissOnboard}>
+                        Dismiss
+                      </button>
+                    </div>
+                    <ol className="client-onboard-list">
+                      {ONBOARD_STEPS.map((step, idx) => {
+                        const done = onboard.done.includes(step.id)
+                        return (
+                          <li key={step.id} className={`client-onboard-step${done ? ' client-onboard-step--done' : ''}`}>
+                            <span className="client-onboard-idx" aria-hidden="true">
+                              {done ? '✓' : idx + 1}
+                            </span>
+                            <div className="client-onboard-step-body">
+                              <h3 className="client-onboard-step-title">{step.title}</h3>
+                              <p className="client-onboard-step-text">{step.body}</p>
+                            </div>
+                            {done ? (
+                              <span className="client-onboard-done-label">Done</span>
+                            ) : (
+                              <button
+                                type="button"
+                                className="client-onboard-go"
+                                onClick={() => runOnboardStep(step)}
+                              >
+                                {step.action === 'export' ? 'Run demo' : 'Go there'}
+                              </button>
+                            )}
+                          </li>
+                        )
+                      })}
+                    </ol>
+                  </section>
+                )
+              ) : null}
+
+              {effectiveTab === 'dashboard' ? (
+                <>
+                  <div className="client-kpi-grid" aria-label="Key performance indicators">
+                    {DASH_KPIS.map((k) => (
+                      <div key={k.label} className="client-kpi-card">
+                        <span className="client-kpi-label">{k.label}</span>
+                        <span className="client-kpi-value">{k.value}</span>
+                        <span className="client-kpi-hint">{k.hint}</span>
+                        {k.trend ? (
+                          <span
+                            className={`client-kpi-trend${k.up === true ? ' client-kpi-trend--up' : ''}${k.up === false ? ' client-kpi-trend--down' : ''}`}
+                          >
+                            {k.trend}
+                          </span>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="client-line-snapshot" aria-label="Line health snapshot">
+                    {PRODUCTION_LINES.slice(0, 3).map((line) => (
+                      <article key={line.id} className="client-line-mini">
+                        <span className={`client-line-pill client-line-pill--${line.status}`}>{line.status}</span>
+                        <div className="client-line-mini-body">
+                          <strong>{line.name}</strong>
+                          <span className="client-line-mini-oee">{line.oee} OEE</span>
+                        </div>
+                        <button
+                          type="button"
+                          className="client-line-mini-link"
+                          onClick={() => {
+                            setSearchQ('')
+                            setTab('lines')
+                          }}
+                        >
+                          Lines →
+                        </button>
+                      </article>
+                    ))}
+                  </div>
+
+                  <div className="client-quick-actions" aria-label="Quick actions">
+                    {QUICK_ACTIONS.map((a) => (
+                      <button
+                        key={a.id}
+                        type="button"
+                        className="client-quick-action"
+                        onClick={() => runQuickAction(a.id)}
+                      >
+                        <span className="client-quick-action-label">{a.label}</span>
+                        <span className="client-quick-action-detail">{a.detail}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="client-dash-extras">
+                    <section className="client-priorities" aria-labelledby="pri-title">
+                      <div className="client-priorities-head">
+                        <h2 id="pri-title" className="client-panel-title">
+                          Today&apos;s priorities
+                        </h2>
+                        <span className="client-panel-badge">{priorities.filter((p) => !p.done).length} open</span>
+                      </div>
+                      <ul className="client-priority-list">
+                        {priorities.map((p) => (
+                          <li key={p.id} className={`client-priority-row${p.done ? ' client-priority-row--done' : ''}`}>
+                            <button
+                              type="button"
+                              className={`client-priority-check${p.done ? ' is-done' : ''}`}
+                              aria-pressed={p.done}
+                              onClick={() => togglePriority(p.id)}
+                              aria-label={p.done ? 'Mark not done' : 'Mark done'}
+                            >
+                              {p.done ? '✓' : ''}
+                            </button>
+                            <span className="client-priority-label">{p.label}</span>
+                            <span className="client-priority-due">{p.due}</span>
+                          </li>
                         ))}
                       </ul>
-                    ) : (
-                      '—'
-                    )}
-                  </dd>
-                </div>
-                <div className="client-account-row">
-                  <dt>Member since</dt>
-                  <dd>{formatSessionDate(user.createdAt)}</dd>
-                </div>
-                <div className="client-account-row">
-                  <dt>Last sign-in</dt>
-                  <dd>{formatSessionDate(user.lastLoginAt)}</dd>
-                </div>
-              </dl>
-              <div className="client-account-actions" aria-label="Account actions">
-                <button
-                  type="button"
-                  className="client-account-action-card"
-                  onClick={() =>
-                    setToast('Connect Stripe, NetSuite, or your billing portal when you wire payments.')
-                  }
-                >
-                  <span className="client-account-action-title">Subscription &amp; billing</span>
-                  <span className="client-account-action-desc">Plan, invoices, and payment method</span>
-                </button>
-                <button
-                  type="button"
-                  className="client-account-action-card"
-                  onClick={() =>
-                    setToast('Add password reset and MFA here (e.g. email link + TOTP) for production.')
-                  }
-                >
-                  <span className="client-account-action-title">Security</span>
-                  <span className="client-account-action-desc">Password, sessions, and devices</span>
-                </button>
-                <button
-                  type="button"
-                  className="client-account-action-card"
-                  onClick={() =>
-                    setToast('Implementation guide: link your runbook, SCADA tags, and escalation policy.')
-                  }
-                >
-                  <span className="client-account-action-title">Implementation</span>
-                  <span className="client-account-action-desc">Integrations and go-live checklist</span>
-                </button>
-                <button
-                  type="button"
-                  className="client-account-action-card"
-                  onClick={() =>
-                    setToast('API keys & webhooks — rotate secrets and point HENRY at your MES / data warehouse.')
-                  }
-                >
-                  <span className="client-account-action-title">API &amp; webhooks</span>
-                  <span className="client-account-action-desc">Keys, event subscriptions, rate limits</span>
-                </button>
-              </div>
-              <p className="client-account-foot">
-                These tiles are ready for your real admin APIs and billing provider.
-              </p>
-            </div>
-          ) : null}
+                    </section>
+                    <section className="client-shift-panel" aria-labelledby="shift-title">
+                      <h2 id="shift-title" className="client-panel-title">
+                        Shift mix (rolling)
+                      </h2>
+                      <div
+                        className="client-shift-bar"
+                        role="img"
+                        aria-label="Shift A thirty-five percent, B forty, C twenty-five"
+                      >
+                        {SHIFT_SEGMENTS.map((s) => (
+                          <div
+                            key={s.label}
+                            className={`client-shift-seg client-shift-seg--${s.tone}`}
+                            style={{ width: `${s.pct}%` }}
+                            title={`${s.label} · ${s.pct}%`}
+                          />
+                        ))}
+                      </div>
+                      <ul className="client-shift-legend">
+                        {SHIFT_SEGMENTS.map((s) => (
+                          <li key={s.label}>
+                            <span className={`client-shift-dot client-shift-dot--${s.tone}`} aria-hidden="true" />
+                            {s.label} · {s.pct}%
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  </div>
 
-          <footer className="client-workspace-help">
-            <p className="client-workspace-help-text">
-              <strong>Workspace help</strong> — demo data only. For production, connect historians, MES, and
-              your alert destinations.
-            </p>
-            <div className="client-workspace-help-actions">
-              <button
-                type="button"
-                className="client-help-link"
-                onClick={() => setTab('alerts')}
-              >
-                Jump to alerts
-              </button>
-              <button
-                type="button"
-                className="client-help-link"
-                onClick={() => setToast('Document your internal support channel (Slack, PagerDuty, etc.).')}
-              >
-                Escalation policy
-              </button>
-            </div>
-          </footer>
+                  <div className="client-dash-split">
+                    <div className="client-dash-primary">
+                      <div className="client-pills">
+                        {ctx.pills.map((p) => (
+                          <span key={p.label} className={`client-pill ${p.className}`}>
+                            {p.label}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="client-charts-row">
+                        <div className="client-chart-card">
+                          <span className="client-chart-label">{ctx.unitsLabel}</span>
+                          <svg className="client-svg" viewBox="0 0 100 48" preserveAspectRatio="xMidYMid meet">
+                            <defs>
+                              <linearGradient id={`${chartUid}-bar`} x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#60a5fa" />
+                                <stop offset="100%" stopColor="#3b82f6" />
+                              </linearGradient>
+                            </defs>
+                            <rect
+                              x="8"
+                              y="28"
+                              width="14"
+                              height="16"
+                              rx="2"
+                              fill={`url(#${chartUid}-bar)`}
+                              opacity="0.9"
+                            />
+                            <rect x="28" y="18" width="14" height="26" rx="2" fill={`url(#${chartUid}-bar)`} />
+                            <rect
+                              x="48"
+                              y="22"
+                              width="14"
+                              height="22"
+                              rx="2"
+                              fill={`url(#${chartUid}-bar)`}
+                              opacity="0.85"
+                            />
+                            <rect
+                              x="68"
+                              y="12"
+                              width="14"
+                              height="32"
+                              rx="2"
+                              fill={`url(#${chartUid}-bar)`}
+                              opacity="0.95"
+                            />
+                          </svg>
+                        </div>
+                        <div className="client-chart-card">
+                          <span className="client-chart-label">Sensor trend</span>
+                          <svg className="client-svg" viewBox="0 0 100 48" preserveAspectRatio="xMidYMid meet">
+                            <defs>
+                              <linearGradient id={`${chartUid}-area`} x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.45" />
+                                <stop offset="100%" stopColor="#6366f1" stopOpacity="0.05" />
+                              </linearGradient>
+                              <linearGradient id={`${chartUid}-line`} x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stopColor="#8b5cf6" />
+                                <stop offset="100%" stopColor="#22d3ee" />
+                              </linearGradient>
+                            </defs>
+                            <path
+                              d="M 4 38 L 18 32 L 32 36 L 46 22 L 60 26 L 74 14 L 88 18 L 96 12 L 96 44 L 4 44 Z"
+                              fill={`url(#${chartUid}-area)`}
+                            />
+                            <path
+                              d="M 4 38 L 18 32 L 32 36 L 46 22 L 60 26 L 74 14 L 88 18 L 96 12"
+                              fill="none"
+                              stroke={`url(#${chartUid}-line)`}
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="client-anomaly">{ctx.anomaly}</div>
+                      <div className="client-chart-footer">
+                        <svg className="client-spark" viewBox="0 0 120 28" preserveAspectRatio="none">
+                          <line x1="0" y1="14" x2="120" y2="14" stroke="rgba(148,163,184,0.15)" strokeWidth="1" />
+                          <polyline
+                            fill="none"
+                            stroke="#38bdf8"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            points="0,20 12,18 24,22 36,14 48,16 60,8 72,12 84,6 96,10 108,4 120,7"
+                          />
+                          <polyline
+                            fill="none"
+                            stroke="#a78bfa"
+                            strokeWidth="1.2"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                            points="0,24 15,20 30,22 45,18 60,20 75,14 90,16 105,12 120,14"
+                          />
+                        </svg>
+                        <div className="client-metrics">
+                          <span>
+                            OEE <strong>{ctx.oee}</strong>
+                          </span>
+                          <span>
+                            MTBF <strong>{ctx.mtbf}</strong>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <aside className="client-activity-panel" aria-label="Recent activity">
+                      <h2 className="client-activity-title">Recent activity</h2>
+                      <ul className="client-activity-list">
+                        {ACTIVITY_FEED.map((row, i) => (
+                          <li key={i} className="client-activity-item">
+                            <span className="client-activity-dot" aria-hidden="true" />
+                            <div>
+                              <span className="client-activity-when">{row.when}</span>
+                              <p className="client-activity-text">{row.text}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </aside>
+                  </div>
+                </>
+              ) : null}
+
+              {effectiveTab === 'lines' ? (
+                <div className="client-lines-page">
+                  <p className="client-lines-lead">
+                    {searchQ.trim()
+                      ? `${filteredLines.length} line(s) match “${searchQ.trim()}”. Clear the search bar to see all.`
+                      : `${PRODUCTION_LINES.length} assets at this site. Use the top search to filter by name, SKU, or line ID.`}
+                  </p>
+                  <div className="client-line-grid">
+                    {filteredLines.map((line) => (
+                      <article key={line.id} className="client-line-card">
+                        <header className="client-line-card-head">
+                          <span className={`client-line-pill client-line-pill--${line.status}`}>{line.status}</span>
+                          <span className="client-line-id">{line.id}</span>
+                        </header>
+                        <h3 className="client-line-name">{line.name}</h3>
+                        <dl className="client-line-dl">
+                          <div>
+                            <dt>OEE</dt>
+                            <dd>{line.oee}</dd>
+                          </div>
+                          <div>
+                            <dt>Target</dt>
+                            <dd>{line.target}</dd>
+                          </div>
+                          <div className="client-line-dl-span">
+                            <dt>SKU / job</dt>
+                            <dd>{line.sku}</dd>
+                          </div>
+                        </dl>
+                        <p className="client-line-note">{line.note}</p>
+                        <button
+                          type="button"
+                          className="client-line-cta"
+                          onClick={() =>
+                            setToast(`Detail view for ${line.name} — trends, alarms, and work orders (demo).`)
+                          }
+                        >
+                          Open detail
+                        </button>
+                      </article>
+                    ))}
+                  </div>
+                  {filteredLines.length === 0 ? (
+                    <p className="client-lines-empty">No lines match that search.</p>
+                  ) : null}
+                </div>
+              ) : null}
+
+              {effectiveTab === 'alerts' ? (
+                <div className="client-alerts-panel">
+                  <p className="client-alerts-lead">{ctx.alertsLead}</p>
+                  <div className="client-odoo-bar">
+                    <span className="client-odoo-bar-label">
+                      {odooLink.configured ? 'Odoo connected' : 'Odoo'}
+                    </span>
+                    <a className="client-odoo-bar-link" href={odooLink.eventsAppUrl} target="_blank" rel="noreferrer">
+                      Open HENRY Events
+                    </a>
+                    <a className="client-odoo-bar-link" href={odooLink.snapshotUrl} target="_blank" rel="noreferrer">
+                      Open SnapShot site
+                    </a>
+                  </div>
+                  <div className="client-filter-row" role="toolbar" aria-label="Filter alerts by severity">
+                    {(['all', 'high', 'med', 'low']).map((f) => (
+                      <button
+                        key={f}
+                        type="button"
+                        className={`client-filter-chip${alertFilter === f ? ' active' : ''}`}
+                        onClick={() => setAlertFilter(f)}
+                      >
+                        {f === 'all' ? 'All' : f === 'high' ? 'High' : f === 'med' ? 'Medium' : 'Low'}
+                      </button>
+                    ))}
+                  </div>
+                  <ul className="client-alert-list">
+                    {visibleAlerts.map((a) => (
+                      <li key={a.id} className="client-alert-row">
+                        <span className={`client-sev client-sev--${a.severity}`}>
+                          {a.severity === 'high' ? 'High' : a.severity === 'med' ? 'Med' : 'Low'}
+                        </span>
+                        <div className="client-alert-body">
+                          <strong>{a.title}</strong>
+                          <p>{a.detail}</p>
+                          <span className="client-alert-when">{a.when}</span>
+                        </div>
+                        <button type="button" className="client-alert-ack" onClick={() => acknowledgeAlert(a.id)}>
+                          Acknowledge
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  {visibleAlerts.length === 0 ? (
+                    <p className="client-alerts-empty">
+                      {ackedIds.size > 0
+                        ? 'No alerts in this filter — try another severity or you’ve acknowledged them all.'
+                        : 'No alerts match this filter.'}
+                    </p>
+                  ) : null}
+                  <p className="client-alerts-foot">{ctx.alertsFoot}</p>
+                </div>
+              ) : null}
+
+              {effectiveTab === 'safety' ? (
+                <AvioraSafetySecurityDashboard
+                  companyName={ctx.portfolioCompanyName || user.company}
+                  nowTick={nowTick}
+                  onOpenStatus={() => setTab('dashboard')}
+                />
+              ) : null}
+
+              {effectiveTab === 'reports' ? (
+                <div className="client-text-panel">
+                  <div className="client-reports-toolbar">
+                    <div className="client-filter-row" role="toolbar" aria-label="Report time range">
+                      {REPORT_RANGE_PRESETS.map((p) => (
+                        <button
+                          key={p.id}
+                          type="button"
+                          className={`client-filter-chip${reportRange === p.id ? ' active' : ''}`}
+                          onClick={() => setReportRange(p.id)}
+                        >
+                          {p.label}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="client-reports-actions">
+                      <button
+                        type="button"
+                        className="client-report-export"
+                        onClick={() =>
+                          setToast(`Export ${reportRange} bundle (PDF + CSV) — hook to your job queue in production.`)
+                        }
+                      >
+                        Export range
+                      </button>
+                      <button
+                        type="button"
+                        className="client-report-export client-report-export--ghost"
+                        onClick={() => setToast('Schedule digest — pick teams and cadence in settings.')}
+                      >
+                        Schedule digest
+                      </button>
+                    </div>
+                  </div>
+                  <p className="client-text-lead">{ctx.reportsLead}</p>
+                  <div className="client-dossier-grid">
+                    {ctx.reports.map((r) => (
+                      <article key={r.title} className="client-dossier-card">
+                        <h3 className="client-dossier-card-title">{r.title}</h3>
+                        <p className="client-dossier-card-body">{r.text}</p>
+                      </article>
+                    ))}
+                  </div>
+                  <p className="client-text-foot">PDF + Excel export · scheduled digest to your distribution lists</p>
+                </div>
+              ) : null}
+
+              {effectiveTab === 'insights' ? (
+                <div className="client-text-panel client-activities-page">
+                  <section className="client-myhenry-panel" aria-label="MyHenry recommendations">
+                    <h3 className="client-myhenry-title">AI Insight Panel (MyHenry)</h3>
+                    <ul className="client-myhenry-list">
+                      {myHenryRecommendations.map((line) => (
+                        <li key={line}>{line}</li>
+                      ))}
+                    </ul>
+                    <button
+                      type="button"
+                      className="client-myhenry-cta"
+                      onClick={() => {
+                        if (typeof window !== 'undefined') {
+                          window.location.assign(BOOK_DEMO_URL)
+                        }
+                      }}
+                    >
+                      Get Started with a Demo
+                    </button>
+                  </section>
+                  <section className="client-insight-ask" aria-label="Ask HENRY">
+                    <label htmlFor="insight-q" className="client-insight-ask-label">
+                      Ask in plain language
+                    </label>
+                    <div className="client-insight-ask-row">
+                      <input
+                        id="insight-q"
+                        type="text"
+                        className="client-insight-input"
+                        placeholder='e.g. “What drove scrap on Line 03 this week?”'
+                        value={insightQuestion}
+                        onChange={(e) => setInsightQuestion(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') runInsightAsk()
+                        }}
+                      />
+                      <button type="button" className="client-insight-submit" onClick={runInsightAsk}>
+                        Ask HENRY
+                      </button>
+                    </div>
+                    <p className="client-insight-ask-hint">
+                      Answers will cite machines, lots, and timestamps when your data lake is connected.
+                    </p>
+                  </section>
+                  <ActivitiesAnalyticsPanel
+                    actId={activitiesVisId}
+                    reportRange={reportRange}
+                    onReportRange={setReportRange}
+                    leadText={ctx.insightsLead}
+                    sites={workspaceSites}
+                  />
+                  <p className="client-text-foot">
+                    Demo charts mirror a Power BI–style canvas — replace with live measures from your warehouse or embed
+                    reports.
+                  </p>
+                </div>
+              ) : null}
+
+              {effectiveTab === 'maintenance' ? (
+                <div className="client-text-panel client-text-panel--placeholder" aria-labelledby="maintenance-h">
+                  <h2 id="maintenance-h" className="client-panel-title">
+                    Maintenance
+                  </h2>
+                  <p className="client-text-lead">
+                    Preventive maintenance, work orders, and spare-parts context will appear here. Connect HENRY to your
+                    CMMS or EAM in production.
+                  </p>
+                  <button
+                    type="button"
+                    className="client-help-link"
+                    onClick={() => setToast('CMMS integration — link tickets, assets, and downtime codes (demo).')}
+                  >
+                    Plan integration
+                  </button>
+                </div>
+              ) : null}
+
+              {effectiveTab === 'users' ? (
+                <div className="client-text-panel client-text-panel--placeholder" aria-labelledby="users-h">
+                  <h2 id="users-h" className="client-panel-title">
+                    Users
+                  </h2>
+                  <p className="client-text-lead">
+                    Invite operators, site leads, and corporate viewers; assign roles per site. Wire to your identity
+                    provider and SCIM in production.
+                  </p>
+                  <button
+                    type="button"
+                    className="client-help-link"
+                    onClick={() => setToast('User provisioning — SSO groups map to HENRY roles (demo).')}
+                  >
+                    View access model
+                  </button>
+                </div>
+              ) : null}
+
+              {effectiveTab === 'account' ? (
+                <div className="client-account-panel">
+                  <div className="client-account-hero">
+                    <div className="client-account-hero-avatar" aria-hidden="true">
+                      {avatarLetter}
+                    </div>
+                    <div>
+                      <h2 className="client-account-hero-name">{user.company}</h2>
+                      <p className="client-account-hero-email">{user.email}</p>
+                    </div>
+                  </div>
+                  <dl className="client-account-dl">
+                    <div className="client-account-row">
+                      <dt>Work email</dt>
+                      <dd>{user.email}</dd>
+                    </div>
+                    <div className="client-account-row">
+                      <dt>Organization</dt>
+                      <dd>{user.company}</dd>
+                    </div>
+                    <div className="client-account-row">
+                      <dt>Workspace slug</dt>
+                      <dd>
+                        <code className="client-account-code">{user.slug}</code>
+                      </dd>
+                    </div>
+                    <div className="client-account-row">
+                      <dt>Plan</dt>
+                      <dd>
+                        {user.planId && SUBSCRIPTION_PLAN_LABEL[user.planId]
+                          ? SUBSCRIPTION_PLAN_LABEL[user.planId]
+                          : 'No plan on file — contact sales to align billing.'}
+                      </dd>
+                    </div>
+                    <div className="client-account-row">
+                      <dt>Active products</dt>
+                      <dd>
+                        {activeProductTitles.length ? (
+                          <ul className="client-account-product-list">
+                            {activeProductTitles.map((t) => (
+                              <li key={t}>{t}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          '—'
+                        )}
+                      </dd>
+                    </div>
+                    <div className="client-account-row">
+                      <dt>Member since</dt>
+                      <dd>{formatSessionDate(user.createdAt)}</dd>
+                    </div>
+                    <div className="client-account-row">
+                      <dt>Last sign-in</dt>
+                      <dd>{formatSessionDate(user.lastLoginAt)}</dd>
+                    </div>
+                  </dl>
+                  <div className="client-account-actions" aria-label="Account actions">
+                    <button
+                      type="button"
+                      className="client-account-action-card"
+                      onClick={() =>
+                        setToast('Connect Stripe, NetSuite, or your billing portal when you wire payments.')
+                      }
+                    >
+                      <span className="client-account-action-title">Subscription &amp; billing</span>
+                      <span className="client-account-action-desc">Plan, invoices, and payment method</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="client-account-action-card"
+                      onClick={() =>
+                        setToast('Add password reset and MFA here (e.g. email link + TOTP) for production.')
+                      }
+                    >
+                      <span className="client-account-action-title">Security</span>
+                      <span className="client-account-action-desc">Password, sessions, and devices</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="client-account-action-card"
+                      onClick={() =>
+                        setToast('Implementation guide: link your runbook, SCADA tags, and escalation policy.')
+                      }
+                    >
+                      <span className="client-account-action-title">Implementation</span>
+                      <span className="client-account-action-desc">Integrations and go-live checklist</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="client-account-action-card"
+                      onClick={() =>
+                        setToast('API keys & webhooks — rotate secrets and point HENRY at your MES / data warehouse.')
+                      }
+                    >
+                      <span className="client-account-action-title">API &amp; webhooks</span>
+                      <span className="client-account-action-desc">Keys, event subscriptions, rate limits</span>
+                    </button>
+                  </div>
+                  <p className="client-account-foot">
+                    These tiles are ready for your real admin APIs and billing provider.
+                  </p>
+                </div>
+              ) : null}
+
+              <footer className="client-workspace-help">
+                <p className="client-workspace-help-text">
+                  <strong>Workspace help</strong> — demo data only. For production, connect historians, MES, and
+                  your alert destinations.
+                </p>
+                <div className="client-workspace-help-actions">
+                  <button
+                    type="button"
+                    className="client-help-link"
+                    onClick={() => setTab('alerts')}
+                  >
+                    Jump to alerts
+                  </button>
+                  <button
+                    type="button"
+                    className="client-help-link"
+                    onClick={() => setToast('Document your internal support channel (Slack, PagerDuty, etc.).')}
+                  >
+                    Escalation policy
+                  </button>
+                </div>
+              </footer>
             </>
           )}
         </main>
@@ -5981,7 +6461,7 @@ export default function ClientDashboard({ user, onSignOut }) {
             type="button"
             className={`client-dock-item${effectiveTab === item.id ? ' is-active' : ''}`}
             onClick={() => {
-              if (routeBuildingSiteId || routeAvioraPropertyId) navigate('/')
+              if (routeBuildingSiteId || routeAvioraPropertyId || locoPlantPageActive) navigate('/')
               setTab(item.id)
             }}
           >

@@ -1,0 +1,77 @@
+export const LOCO_MANUFACTURING_PLANTS = [
+  {
+    id: 'northline',
+    statusKey: 'operational',
+    name: 'Northline Assembly Plant',
+    location: 'Detroit, MI',
+    siteTimeZone: 'America/Detroit',
+    lead: 'Sarah Coleman',
+    shiftProgress: { current: 72, total: 100, cyclePct: 72 },
+    operators: 68,
+    downtimeHrs: 1.2,
+    qualityYield: '98.1%',
+    output: { pct: 72, label: 'On Target', arrow: 'check' },
+    pillars: {
+      safetyPct: 90,
+      securityLevel: 'High',
+      systemsPct: 88,
+    },
+    footer: {
+      tone: 'good',
+      text: 'Production is on target and performing efficiently.',
+    },
+  },
+  {
+    id: 'greenbelt',
+    statusKey: 'monitoring',
+    name: 'Greenbelt Components',
+    location: 'Phoenix, AZ',
+    siteTimeZone: 'America/Phoenix',
+    lead: 'Ethan Brooks',
+    shiftProgress: { current: 48, total: 100, cyclePct: 48 },
+    operators: 54,
+    downtimeHrs: 4.8,
+    qualityYield: '93.7%',
+    output: { pct: 48, label: 'Slightly Behind', arrow: 'warn' },
+    pillars: {
+      safetyPct: 85,
+      securityLevel: 'Medium',
+      systemsPct: 76,
+    },
+    footer: {
+      tone: 'warn',
+      text: 'Line slowdown detected. Increased monitoring in progress.',
+    },
+  },
+  {
+    id: 'riverport',
+    statusKey: 'risk',
+    name: 'Riverport Fabrication',
+    location: 'Orlando, FL',
+    siteTimeZone: 'America/New_York',
+    lead: 'Maya Singh',
+    shiftProgress: { current: 36, total: 100, cyclePct: 36 },
+    operators: 41,
+    downtimeHrs: 8.9,
+    qualityYield: '89.4%',
+    output: { pct: 30, label: 'At Risk', arrow: 'bad' },
+    pillars: {
+      safetyPct: 82,
+      securityLevel: 'Medium',
+      systemsPct: 64,
+    },
+    footer: {
+      tone: 'bad',
+      text: 'Production delays and maintenance risks require immediate attention.',
+    },
+  },
+]
+
+export const LOCO_MANUFACTURING_FOOTER = {
+  activePlants: 3,
+  totalWorkforce: 163,
+  portfolioOutputAvg: 50,
+  scheduleAdherenceAvg: 78,
+  qualityScoreAvg: 94,
+  openIssuesTotal: 22,
+}
