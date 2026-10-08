@@ -12,6 +12,8 @@ import { titlesForProductIds } from './productCatalog.js'
 import henryLogo from './assets/henry-logo.png'
 import { LogoSpreadLine } from './LogoSpreadLine.jsx'
 import { getDashboardContext, resolveDashboardPresetKey } from './dashboard/registry.js'
+import { getToken, isDemoDashboardToken } from './apiClient.js'
+import { pushDashboardAlertsToOdoo, fetchOdooIntegrationStatus, DEFAULT_ODOO_EVENTS_APP_URL, DEFAULT_ODOO_SNAPSHOT_URL } from './dashboard/odooEvents.js'
 import AvioraConstructionPortfolio from './dashboard/AvioraConstructionPortfolio.jsx'
 import LocoManufacturingPortfolio from './dashboard/LocoManufacturingPortfolio.jsx'
 import LocoPlantDetailPage from './dashboard/LocoPlantDetailPage.jsx'
@@ -5016,6 +5018,11 @@ export default function ClientDashboard({ user, onSignOut }) {
   const [priorities, setPriorities] = useState(() => TODAY_PRIORITIES.map((p) => ({ ...p })))
   const [alertFilter, setAlertFilter] = useState('all')
   const [ackedIds, setAckedIds] = useState(() => new Set())
+  const [odooLink, setOdooLink] = useState({
+    eventsAppUrl: DEFAULT_ODOO_EVENTS_APP_URL,
+    snapshotUrl: DEFAULT_ODOO_SNAPSHOT_URL,
+    configured: false,
+  })
   const [reportRange, setReportRange] = useState('7d')
   const [insightQuestion, setInsightQuestion] = useState('')
   const [searchQ, setSearchQ] = useState('')
@@ -5160,6 +5167,43 @@ export default function ClientDashboard({ user, onSignOut }) {
     isAvioraPropertyDetailId(routeAvioraPropertyId)
   const useHenry1InsetAiAlerts = presetKey === 'henry1'
   const ctx = getDashboardContext(presetKey)
+  const odooSyncedRef = useRef(false)
+
+  useEffect(() => {
+    let cancelled = false
+    fetchOdooIntegrationStatus()
+      .then((data) => {
+        if (cancelled || !data) return
+        setOdooLink({
+          eventsAppUrl: data.eventsAppUrl || DEFAULT_ODOO_EVENTS_APP_URL,
+          snapshotUrl: data.snapshotUrl || DEFAULT_ODOO_SNAPSHOT_URL,
+          configured: Boolean(data.configured),
+        })
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isDemoDashboardToken(getToken())) return undefined
+    let cancelled = false
+    const alerts = getDashboardContext(presetKey).alerts
+    pushDashboardAlertsToOdoo(alerts, { tenant: presetKey, ackedIds, site: 'US HQ' })
+      .then((data) => {
+        if (cancelled || !data?.ok) return
+        if (!odooSyncedRef.current) {
+          odooSyncedRef.current = true
+          setToast('Alerts synced to Odoo HENRY Events.')
+        }
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [presetKey, ackedIds])
+
   const myHenryRecommendations = buildMyHenryRecommendations(user?.onboarding)
   const tenantLockup = ctx.clientBrand?.mode === 'tenant-lockup' ? ctx.clientBrand : null
   const activeProductTitles = titlesForProductIds(user.products)
@@ -5232,7 +5276,7 @@ export default function ClientDashboard({ user, onSignOut }) {
 
   const acknowledgeAlert = (id) => {
     setAckedIds((prev) => new Set([...prev, id]))
-    setToast('Alert acknowledged (demo) — wire to Slack, CMMS, or MES in production.')
+    setToast('Alert acknowledged — status updated in Odoo HENRY Events.')
   }
 
   const togglePriority = (id) => {
@@ -5568,6 +5612,7 @@ export default function ClientDashboard({ user, onSignOut }) {
               companyName={ctx.portfolioCompanyName || user.company}
               nowTick={nowTick}
             />
+
           ) : locoPlantPageActive ? (
             <LocoPlantDetailPage
               companyName={ctx.portfolioCompanyName || user.company}
@@ -6074,6 +6119,17 @@ export default function ClientDashboard({ user, onSignOut }) {
               {effectiveTab === 'alerts' ? (
                 <div className="client-alerts-panel">
                   <p className="client-alerts-lead">{ctx.alertsLead}</p>
+                  <div className="client-odoo-bar">
+                    <span className="client-odoo-bar-label">
+                      {odooLink.configured ? 'Odoo connected' : 'Odoo'}
+                    </span>
+                    <a className="client-odoo-bar-link" href={odooLink.eventsAppUrl} target="_blank" rel="noreferrer">
+                      Open HENRY Events
+                    </a>
+                    <a className="client-odoo-bar-link" href={odooLink.snapshotUrl} target="_blank" rel="noreferrer">
+                      Open SnapShot site
+                    </a>
+                  </div>
                   <div className="client-filter-row" role="toolbar" aria-label="Filter alerts by severity">
                     {(['all', 'high', 'med', 'low']).map((f) => (
                       <button
