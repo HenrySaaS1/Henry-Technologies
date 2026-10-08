@@ -7,6 +7,7 @@ import ProductsPage from './pages/ProductsPage.jsx'
 import CaseStudiesPage from './pages/CaseStudiesPage.jsx'
 import PricingPage from './pages/PricingPage.jsx'
 import HomePage from './pages/HomePage.jsx'
+import ComputerVisionTestPage from './pages/ComputerVisionTestPage.jsx'
 
 import SiteHeader, {
   SHOW_NAV_PRICING_LINK,
@@ -502,7 +503,12 @@ function App() {
     if (!currentUser || currentUser.onboardingComplete) return
     if (typeof window === 'undefined') return
     const path = window.location.pathname
-    if (path === '/onboarding' || path === '/onboarding/') return
+    if (
+      path === '/onboarding' ||
+      path === '/onboarding/' ||
+      path === '/test' ||
+      path === '/test/'
+    ) return
     window.location.replace('/onboarding')
   }, [currentUser])
 
@@ -976,6 +982,14 @@ function App() {
     { href: '/#about', label: 'ABOUT' },
     { href: '/#request-demo', label: 'CONTACT' },
   ]
+
+  // HENRY Computer Vision Test Dashboard
+  if (
+    typeof window !== 'undefined' &&
+    /^\/test\/?$/.test(window.location.pathname)
+  ) {
+    return <ComputerVisionTestPage />
+  }
 
   if (currentUser && isOnboardingPage && !currentUser.onboardingComplete) {
     return (
