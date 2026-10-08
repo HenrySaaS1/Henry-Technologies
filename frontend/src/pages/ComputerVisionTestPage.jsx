@@ -1,7 +1,43 @@
-
 import { useState, useEffect, useCallback } from 'react'
-import { apiJson } from '../apiClient.js'
 import './ComputerVisionTestPage.css'
+
+
+const API_BASE = import.meta.env.PROD
+  ? String(import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '')
+  : ''
+
+async function requestCvImages(cursor = null) {
+  if (import.meta.env.PROD && !API_BASE) {
+    throw new Error('Production image API URL is not configured.')
+  }
+
+  const query = cursor
+    ? `?cursor=${encodeURIComponent(cursor)}`
+    : ''
+
+  const response = await fetch(
+    `${API_BASE}/api/cv/images${query}`,
+    { cache: 'no-store' }
+  )
+
+  if (!response.ok) {
+    throw new Error(`Image API request failed (${response.status})`)
+  }
+
+  const contentType = response.headers.get('content-type') || ''
+
+  if (!contentType.includes('application/json')) {
+    throw new Error('Image API returned HTML instead of JSON.')
+  }
+
+  const data = await response.json()
+
+  if (!Array.isArray(data.images)) {
+    throw new Error('Image API did not return a valid image list.')
+  }
+
+  return data
+}
 
 export default function ComputerVisionTestPage() {
   const [images, setImages] = useState([])
@@ -15,7 +51,7 @@ export default function ComputerVisionTestPage() {
   const fetchImages = useCallback(async () => {
     try {
       setError('')
-      const data = await apiJson('/api/cv/images')
+      const data = await requestCvImages()
       setImages(data.images || [])
       setNextCursor(data.nextCursor || null)
       setLastSync(new Date())
@@ -38,9 +74,7 @@ export default function ComputerVisionTestPage() {
 
     setLoadingMore(true)
     try {
-      const data = await apiJson(
-        `/api/cv/images?cursor=${encodeURIComponent(nextCursor)}`
-      )
+      const data = await requestCvImages(nextCursor)
 
       setImages(prev => {
         const seen = new Set(prev.map(img => img.name))
