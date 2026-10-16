@@ -735,3 +735,169 @@
     transition: none;
   }
 }
+
+/* =========================================================
+   IMAGE CARDS — PHOTO / FILENAME / ANALYSIS / DATE
+   Matches the requested reference layout, while keeping
+   actual camera images and the existing dashboard theme.
+   ========================================================= */
+
+.cv-test-page .cv-image-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.cv-test-page .cv-image-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #34455c;
+  border-radius: 18px;
+  background: #0b1423;
+}
+
+.cv-test-page .cv-image-preview {
+  flex: 0 0 auto;
+  background: #080f1a;
+}
+
+.cv-test-page .cv-image-preview img {
+  width: 100%;
+  height: 245px;
+  object-fit: cover;
+}
+
+.cv-test-page .cv-image-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 0;
+  padding: 22px 24px 20px;
+}
+
+/* Filename stays above the hazard assessment. */
+.cv-test-page .cv-image-file {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.cv-test-page .cv-image-file strong {
+  color: #dbe8f8;
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+/* Title on the left; severity label on the right. */
+.cv-test-page .cv-analysis {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.cv-test-page .cv-analysis-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-bottom: 15px;
+}
+
+.cv-test-page .cv-analysis-heading h3 {
+  flex: 1 1 160px;
+  min-width: 0;
+  margin: 0;
+  color: #f6f9ff;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.cv-test-page .cv-risk-badge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 6px 14px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.cv-test-page .cv-risk-low {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.14);
+  border-color: rgba(74, 222, 128, 0.28);
+}
+
+.cv-test-page .cv-risk-medium {
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(251, 191, 36, 0.28);
+}
+
+.cv-test-page .cv-risk-high {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(248, 113, 113, 0.30);
+}
+
+.cv-test-page .cv-risk-unknown {
+  color: #cbd5e1;
+  background: rgba(148, 163, 184, 0.14);
+  border-color: rgba(148, 163, 184, 0.28);
+}
+
+.cv-test-page .cv-analysis-description {
+  margin: 0;
+  color: #d4dfed;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+/* Date sits below the divider at the bottom of each card. */
+.cv-test-page .cv-image-date {
+  margin-top: auto;
+  padding-top: 22px;
+  color: #a9bfd8;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.cv-test-page .cv-image-date::before {
+  content: '';
+  display: block;
+  height: 1px;
+  margin-bottom: 21px;
+  background: rgba(176, 199, 224, 0.17);
+}
+
+.cv-test-page .cv-analysis + .cv-image-date {
+  padding-top: 24px;
+}
+
+@media (max-width: 640px) {
+  .cv-test-page .cv-image-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .cv-test-page .cv-image-preview img {
+    height: 210px;
+  }
+
+  .cv-test-page .cv-image-info {
+    padding: 20px;
+  }
+}

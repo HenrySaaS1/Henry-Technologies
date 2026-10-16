@@ -39,6 +39,14 @@ async function requestCvImages(cursor = null) {
   return data
 }
 
+function riskStyle(riskStatus) {
+  const risk = String(riskStatus || '').trim().toLowerCase()
+  if (risk === 'high risk') return 'cv-risk-high'
+  if (risk === 'medium risk') return 'cv-risk-medium'
+  if (risk === 'low risk') return 'cv-risk-low'
+  return 'cv-risk-unknown'
+}
+
 export default function ComputerVisionTestPage() {
   const [images, setImages] = useState([])
   const [nextCursor, setNextCursor] = useState(null)
@@ -47,6 +55,7 @@ export default function ComputerVisionTestPage() {
   const [error, setError] = useState('')
   const [selectedImage, setSelectedImage] = useState(null)
   const [lastSync, setLastSync] = useState(null)
+  const [stream, setStream] = useState('STREAM_0')
 
   const fetchImages = useCallback(async () => {
     try {
@@ -54,6 +63,7 @@ export default function ComputerVisionTestPage() {
       const data = await requestCvImages()
       setImages(data.images || [])
       setNextCursor(data.nextCursor || null)
+      setStream(data.stream || 'STREAM_0')
       setLastSync(new Date())
     } catch (err) {
       setError(err.message || 'Unable to retrieve images.')
@@ -111,7 +121,7 @@ export default function ComputerVisionTestPage() {
     { label: 'Loaded Images', value: images.length },
     { label: "Today's Loaded Images", value: todayCount },
     { label: 'Location', value: 'Cuddalore, Tamil Nadu, India' },
-    { label: 'Camera / Stream', value: 'STREAM_0' },
+    { label: 'Camera / Stream', value: stream },
     {
       label: 'Latest Loaded Image',
       value: latestImage
@@ -146,7 +156,7 @@ export default function ComputerVisionTestPage() {
         <div className="cv-test-gallery-header">
           <div>
             <h2>Captured Images</h2>
-            <p>Azure Blob Storage / cv-container / STREAM_0</p>
+            <p>Azure Blob Storage / cv-container / {stream}</p>
           </div>
           <button
             className="cv-refresh-btn"
@@ -191,12 +201,31 @@ export default function ComputerVisionTestPage() {
                     />
                   </button>
                   <div className="cv-image-info">
-                    <strong>{img.filename}</strong>
-                    <span>
+                    <div className="cv-image-file">
+                      <strong>{img.filename}</strong>
+                    </div>
+
+                    {(img.title || img.description || img.risk_status) && (
+                      <div className="cv-analysis">
+                        <div className="cv-analysis-heading">
+                          {img.title && <h3>{img.title}</h3>}
+                          {img.risk_status && (
+                            <span className={`cv-risk-badge ${riskStyle(img.risk_status)}`}>
+                              {img.risk_status}
+                            </span>
+                          )}
+                        </div>
+                        {img.description && (
+                          <p className="cv-analysis-description">{img.description}</p>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="cv-image-date">
                       {img.uploadedAt
                         ? new Date(img.uploadedAt).toLocaleString()
                         : 'No timestamp'}
-                    </span>
+                    </div>
                   </div>
                 </div>
               ))}
