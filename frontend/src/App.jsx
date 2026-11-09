@@ -221,9 +221,9 @@ const PLAN_REGISTRATION_DEFAULTS = {
 }
 
 const PLAN_DISPLAY = {
-  basic: { label: 'Basic', price: '$150 / month' },
-  plus: { label: 'Plus', price: '$200 / month' },
-  premium: { label: 'Premium', price: '$300 / month' },
+  basic: { label: 'Basic', price: 'Pricing on request' },
+  plus: { label: 'Plus', price: 'Pricing on request' },
+  premium: { label: 'Enterprise', price: 'Custom pricing' },
 }
 const BOOK_DEMO_URL = 'https://larrya-dostiglobal61.zohobookings.com/#/yourbusinessname'
 
@@ -978,8 +978,8 @@ function App() {
     { href: '/products#systems', label: '   ◦ Systems' },
     { href: '/products#status', label: '   ◦ Status' },
     { href: '/case-studies', label: 'CASE STUDIES' },
-    ...(SHOW_NAV_PRICING_LINK ? [{ href: '/pricing', label: 'PRICING' }] : []),
     { href: '/#about', label: 'ABOUT' },
+    ...(SHOW_NAV_PRICING_LINK ? [{ href: '/pricing', label: 'PRICING' }] : []),
     { href: '/#request-demo', label: 'CONTACT' },
   ]
 
@@ -1056,22 +1056,7 @@ function App() {
           signOut={signOut}
         />
 
-        <PricingPage
-          onGetStarted={(planId) =>
-            AUTH_BYPASS
-              ? enterBypassWorkspace()
-              : openAuthModal('signup', { planId })
-          }
-        />
-
-        <RequestDemoIntroSection />
-
-        <RequestDemoSection
-          form={form}
-          status={status}
-          updateField={updateField}
-          submitContact={submitContact}
-        />
+        <PricingPage />
 
         <SiteFooter />
 

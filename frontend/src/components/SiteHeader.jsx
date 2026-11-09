@@ -70,11 +70,11 @@ function SiteHeader({
             CASE STUDIES
           </a>
 
-          <NavPricingMenuLink />
-
           <a href="/#about">
             ABOUT
           </a>
+
+          <NavPricingMenuLink />
 
           <a href="/#request-demo">
             CONTACT
